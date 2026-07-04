@@ -143,3 +143,36 @@ export function suggestICD(query: string, limit = 10): ICDSuggestion[] {
         .sort((a, b) => b.matchScore - a.matchScore)
         .slice(0, limit);
 }
+
+export interface ICD10Entry {
+    code: string;
+    description: string;
+    commonName?: string;
+    specialty?: string;
+}
+
+export function searchICD10(query: string): ICD10Entry[] {
+    if (!query || query.length < 2) return [];
+    const q = query.toLowerCase();
+    const seen = new Set<string>();
+    const results: ICD10Entry[] = [];
+    
+    for (const c of CONDITIONS) {
+        const hit = c.icd_code.toLowerCase().includes(q)
+            || c.condition_name.toLowerCase().includes(q)
+            || c.specialty.toLowerCase().includes(q);
+            
+        if (hit && !seen.has(c.icd_code)) {
+            seen.add(c.icd_code);
+            results.push({
+                code: c.icd_code,
+                description: c.condition_name,
+                commonName: c.condition_name,
+                specialty: c.specialty
+            });
+        }
+        if (results.length >= 12) break;
+    }
+    return results;
+}
+

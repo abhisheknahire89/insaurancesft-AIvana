@@ -21,6 +21,10 @@ interface RunMetrics {
   codeIssuesCount: number;
   authorityIssuesCount: number;
   missedGapsCount: number;
+  // Data source counters (Task 3)
+  liveGeminiCalls: number;
+  cachedGroundedCases: number;
+  demoFallbackCases: number;
 }
 
 // Utility: Shuffle array
@@ -37,7 +41,20 @@ function shuffleArray<T>(array: T[]): T[] {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function continuousAudit() {
-  console.log('🚀 Starting 18-Hour Continuous Testing + Gemini Audit Loop');
+  // ── Runtime controls via env vars (Task 5) ──────────────────────────────
+  const BATCH_LIMIT = parseInt(process.env.AUDIT_BATCH || '0', 10); // 0 = unlimited
+  const DURATION_MINS = parseInt(process.env.AUDIT_DURATION_MINS || '0', 10);
+  const DURATION_HOURS = parseInt(process.env.AUDIT_DURATION_HOURS || '0', 10);
+
+  const DURATION_MS = DURATION_MINS > 0
+    ? DURATION_MINS * 60 * 1000
+    : DURATION_HOURS > 0
+      ? DURATION_HOURS * 60 * 60 * 1000
+      : 18 * 60 * 60 * 1000; // default: 18 hours
+
+  const shortMode = BATCH_LIMIT > 0 || DURATION_MINS > 0;
+  console.log(`🚀 Starting Continuous Testing + Gemini Audit Loop`);
+  console.log(`   Mode:     ${shortMode ? `SHORT (${BATCH_LIMIT > 0 ? `max ${BATCH_LIMIT} cases` : 'unlimited cases'}, ${Math.round(DURATION_MS / 60000)} min)` : '18-HOUR FULL RUN'}`);
 
   if (!fs.existsSync(LOGS_DIR)) {
     fs.mkdirSync(LOGS_DIR, { recursive: true });
@@ -57,9 +74,9 @@ async function continuousAudit() {
     console.log('✅ GEMINI_API_KEY detected. Independent audit enabled.');
   }
 
-  const DURATION_MS = 18 * 60 * 60 * 1000; // 18 hours
   const endTime = Date.now() + DURATION_MS;
   let iterationCounter = 1;
+  let totalCasesRun = 0; // for BATCH_LIMIT enforcement
 
   let metrics: RunMetrics = {
     startTime: new Date().toISOString(),
@@ -69,19 +86,23 @@ async function continuousAudit() {
     factualIssuesCount: 0,
     codeIssuesCount: 0,
     authorityIssuesCount: 0,
-    missedGapsCount: 0
+    missedGapsCount: 0,
+    liveGeminiCalls: 0,
+    cachedGroundedCases: 0,
+    demoFallbackCases: 0
   };
 
   // Initialize markdown logs
   fs.writeFileSync(findingsPath, '# Continuous Audit Findings\\n\\n', 'utf-8');
 
-  while (Date.now() < endTime) {
+  while (Date.now() < endTime && !(BATCH_LIMIT > 0 && totalCasesRun >= BATCH_LIMIT)) {
     console.log(`\\n--- Starting Iteration Set ${iterationCounter} ---`);
 
     let currentBatch: GroundedTestCase[];
     if (iterationCounter === 1 || skipGemini) {
       console.log('Using static grounded cases for this iteration.');
       currentBatch = [...groundedCases];
+      metrics.cachedGroundedCases += groundedCases.length;
     } else {
       console.log('Synthesizing a dynamic batch of 20 authentic cases using Gemini...');
       let newCases = null;
@@ -97,6 +118,7 @@ async function continuousAudit() {
       } else {
         console.warn('⚠️ Dynamic generation failed or returned null. Falling back to static grounded cases.');
         currentBatch = [...groundedCases];
+        metrics.demoFallbackCases += groundedCases.length;
       }
     }
 
@@ -107,6 +129,11 @@ async function continuousAudit() {
         console.log('⏱️ Time limit reached. Stopping continuous audit.');
         break;
       }
+      if (BATCH_LIMIT > 0 && totalCasesRun >= BATCH_LIMIT) {
+        console.log(`🛑 Batch limit of ${BATCH_LIMIT} cases reached. Stopping.`);
+        break;
+      }
+      totalCasesRun++;
 
       console.log(`Running Case ${tc.id} (${tc.diagnosis})...`);
       const record = makePreAuthRecord(tc);
@@ -150,12 +177,13 @@ async function continuousAudit() {
           caseId: tc.id,
           engineOutput,
           verdict
-        }) + '\\n'
+        }) + '\n'
       );
 
       // Log findings if Gemini gave a verdict
       if (verdict) {
         metrics.totalEvaluated++;
+        metrics.liveGeminiCalls++;
         if (verdict.overallPass) {
           metrics.totalPassed++;
         } else {
@@ -179,10 +207,29 @@ async function continuousAudit() {
 
         // Rewrite summary metrics
         fs.writeFileSync(metaPath, JSON.stringify(metrics, null, 2), 'utf-8');
+
+        // Build audit_summary.md with Data Source block at the top
+        const totalSeen = metrics.liveGeminiCalls + metrics.cachedGroundedCases + metrics.demoFallbackCases;
+        const liveP = totalSeen > 0 ? ((metrics.liveGeminiCalls / totalSeen) * 100).toFixed(1) : '0.0';
+        const cacheP = totalSeen > 0 ? ((metrics.cachedGroundedCases / totalSeen) * 100).toFixed(1) : '0.0';
+        const demoP = totalSeen > 0 ? ((metrics.demoFallbackCases / totalSeen) * 100).toFixed(1) : '0.0';
+
         fs.writeFileSync(summaryPath, `
 # Audit Summary
+
+## ⚠️ Data Source — MUST READ BEFORE INTERPRETING RESULTS
+> A run with 0% live calls cannot be trusted as a true reflection of current model behavior.
+
+| Source | Cases | % |
+|---|---|---|
+| 🟢 Live Gemini judge calls | ${metrics.liveGeminiCalls} | ${liveP}% |
+| 🟡 Static grounded cases (no judge) | ${metrics.cachedGroundedCases} | ${cacheP}% |
+| 🔵 Demo fallback (generation failed) | ${metrics.demoFallbackCases} | ${demoP}% |
+| **Total processed** | **${totalSeen}** | **100%** |
+
+## Run Statistics
 - **Start Time:** ${metrics.startTime}
-- **Total Cases Evaluated:** ${metrics.totalEvaluated}
+- **Total Cases Evaluated (with Gemini verdict):** ${metrics.totalEvaluated}
 - **Total Passed:** ${metrics.totalPassed}
 - **Total Failed:** ${metrics.totalFailed}
 - **Pass Rate:** ${((metrics.totalPassed / Math.max(1, metrics.totalEvaluated)) * 100).toFixed(2)}%

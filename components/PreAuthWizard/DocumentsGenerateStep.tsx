@@ -11,6 +11,7 @@ import { generatePartC, generatePartCText, PartCOutput } from '../../engine/part
 import { logEvent } from '../../utils/auditLog';
 import { validateCode } from '../../services/icdService';
 import { computeReadiness } from '../../utils/readinessScore';
+import { logStageTimestamp } from '../../utils/stageLogger';
 
 interface DocGenerateStepProps {
     record: Partial<PreAuthRecord>;
@@ -62,6 +63,9 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                 const report = await priorAuthOrchestrator(record.uploadedDocuments || [], record);
                 if (active) {
                     setTpaReport(report);
+                    if (record.id) {
+                        logStageTimestamp(record.id, 'ai_review_complete');
+                    }
                     // Generate Part C immediately after evidence review
                     const partC = generatePartC(record, report);
                     setPartCOutput(partC);
@@ -205,10 +209,9 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
             const base64 = (e.target?.result as string) ?? '';
             const guessedCategory = guessCategory(file.name);
             
-            // Phase 2 Checks:
             // 1. Duplicate check
-            const isDuplicate = docs.some(d => d.fileName === file.name || d.base64Data === base64);
-            const duplicateWarning = isDuplicate ? '⚠️ Duplicate document name/content already uploaded' : undefined;
+            const isDuplicate = docs.some(d => d.base64Data === base64);
+            const duplicateWarning = isDuplicate ? '⚠️ Duplicate document content already uploaded' : undefined;
 
             // 2. Expiry check
             let expiryWarning = undefined;
@@ -242,6 +245,9 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                 readabilityConfidence
             };
             onRecordChange({ ...record, uploadedDocuments: [...docs, doc] });
+            if (record.id) {
+                logStageTimestamp(record.id, 'documents_uploaded');
+            }
         };
         reader.readAsDataURL(file);
     };
@@ -800,6 +806,19 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                             {doc.duplicateWarning && <div className="text-[9px] text-rose-400 font-bold mt-0.5">{doc.duplicateWarning}</div>}
                                                             {doc.expiryWarning && <div className="text-[9px] text-rose-400 font-bold mt-0.5">{doc.expiryWarning}</div>}
                                                             {doc.readabilityWarning && <div className="text-[9px] text-amber-400 font-bold mt-0.5">{doc.readabilityWarning}</div>}
+                                                            {doc.readabilityConfidence != null && (
+                                                                <div className="mt-1">
+                                                                    <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider ${
+                                                                        doc.readabilityConfidence < 70
+                                                                            ? 'bg-red-500/10 border-red-500/20 text-red-400 font-extrabold'
+                                                                            : doc.readabilityConfidence >= 80
+                                                                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                                                                            : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                                                                    }`}>
+                                                                        {doc.readabilityConfidence < 70 ? '⚠️ Needs Manual Check' : `OCR ${doc.readabilityConfidence}%`}
+                                                                    </span>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                         <select value={doc.documentCategory} onChange={e => updateDocCategory(doc.id, e.target.value as WizardDocCategory)}
                                                             className="bg-[#0D121F] border border-white/10 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">

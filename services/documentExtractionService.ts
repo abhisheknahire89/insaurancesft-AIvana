@@ -121,13 +121,13 @@ export const extractFromDocument = async (file: File): Promise<ExtractedPatientD
         file.name.toLowerCase().includes('ultrasound') ||
         file.name.toLowerCase().includes('cbc');
 
-    const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
+    const isDemoMode = (typeof import.meta.env !== 'undefined' ? import.meta.env.VITE_DEMO_MODE : process.env.VITE_DEMO_MODE) === 'true';
 
     if (isDemoMode && hasDemoDoc) {
         console.log("[documentExtractionService] Returning pre-cached demo excerpts and data.");
         const excerpts = getPreCachedExcerpts(file.name);
         const isGluc = file.name.includes('gluc');
-        const isCbc = file.name.includes('cbc');
+        const isPoor = file.name.toLowerCase().includes('blurry') || file.name.toLowerCase().includes('unreadable');
         const { extracted, missing } = computeExtractedMissingFields({
             patient: { name: 'Abhishek Nahire', age: 28, gender: 'Male' },
             insurance: { policy_number: 'POL-123456', insurance_company: 'Star Health', sum_insured: 500000 }
@@ -136,7 +136,7 @@ export const extractFromDocument = async (file: File): Promise<ExtractedPatientD
             document_type: isGluc ? 'policy_document' : 'unknown',
             patient: { name: 'Abhishek Nahire', age: 28, gender: 'Male' },
             insurance: { policy_number: 'POL-123456', insurance_company: 'Star Health', sum_insured: 500000 },
-            confidence: 99,
+            confidence: isPoor ? 0.42 : 0.99,
             extracted_fields: extracted,
             missing_fields: missing,
             clinical_excerpts: excerpts
@@ -190,8 +190,12 @@ export const extractFromDocument = async (file: File): Promise<ExtractedPatientD
             const data = JSON.parse(jsonStr);
             const { extracted, missing } = computeExtractedMissingFields(data);
 
+            const rawConfidence = Number(data.confidence ?? 85);
+            const normalizedConfidence = rawConfidence > 1 ? rawConfidence / 100 : rawConfidence;
+
             return {
                 ...data,
+                confidence: normalizedConfidence,
                 extracted_fields: extracted,
                 missing_fields: missing
             };

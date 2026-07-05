@@ -26,6 +26,20 @@ interface GroundedTestCase {
   reasonForHospitalisation?: string;
   uploadedDocuments?: string[]; // array of strings like 'doctor_notes', 'blood_test_reports', 'ecg'
   patientName?: string;
+  patient?: {
+    patientName?: string;
+    age?: number;
+    gender?: 'Male' | 'Female' | 'Other';
+    mobileNumber?: string;
+  };
+  insurance?: {
+    policyNumber?: string;
+    insurerName?: string;
+    tpaName?: string;
+    sumInsured?: number;
+    balanceSumInsured?: number;
+    tpaIdCardNumber?: string;
+  };
   vitals?: { bp?: string; pulse?: string; temp?: string; spo2?: string; rr?: string };
   expected: { mustFlag: string[]; mustNotFlag: string[]; shouldGenerate: boolean; };
   notes: string;

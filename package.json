@@ -6,7 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:battery": "tsx scripts/testBattery.ts",
+    "test:audit": "tsx scripts/continuousAudit.ts",
+    "test:audit:short": "AUDIT_BATCH=50 AUDIT_DURATION_MINS=30 tsx scripts/continuousAudit.ts",
+    "test:planted": "tsx scripts/plantedErrorCheck.ts",
+    "test:adversarial": "tsx scripts/qa/adversarialSafetyQA.ts",
+    "test:multi:audit": "tsx scripts/continuousMultiAudit.ts",
+    "test:multi:audit:short": "SINGLE_RUN=true tsx scripts/continuousMultiAudit.ts"
   },
   "dependencies": {
     "@google/genai": "^1.19.0",

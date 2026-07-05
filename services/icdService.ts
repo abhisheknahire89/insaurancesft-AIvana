@@ -66,11 +66,55 @@ export function getDescription(code: string): string {
   return 'Unknown Code';
 }
 
+// STARTER REGIONAL/HINGLISH TRANSLATION TABLE
+// Maps common transliterated Hindi/regional clinical expressions to English equivalents
+// to improve ICD-10 search matching. Clearly marked as starter set.
+const HINGLISH_TRANSLATION_MAP: Record<string, string> = {
+  'pet dard': 'abdominal pain',
+  'pait dard': 'abdominal pain',
+  'pet me dard': 'abdominal pain',
+  'pait me dard': 'abdominal pain',
+  'sir dard': 'headache',
+  'sar dard': 'headache',
+  'saans phoolna': 'dyspnea',
+  'sans phulna': 'dyspnea',
+  'dama': 'asthma',
+  'bukhar': 'fever',
+  'bukhaar': 'fever',
+  'thand lagna': 'chills',
+  'khoon ki kami': 'anemia',
+  'peeliya': 'jaundice',
+  'pila rang': 'jaundice',
+  'ulti': 'vomiting',
+  'kabz': 'constipation',
+  'seene me dard': 'chest pain',
+  'chhati me dard': 'chest pain',
+  'dil ka daura': 'myocardial infarction',
+  'pathri': 'kidney stone',
+  'mutra rog': 'urinary tract infection',
+  'peshab me jalan': 'urinary tract infection',
+  'loose motion': 'diarrhea',
+  'loose motions': 'diarrhea',
+  'dast': 'diarrhea',
+  'pet kharab': 'gastroenteritis'
+};
+
+export function translateHinglish(input: string): string {
+  if (!input) return '';
+  let text = input.toLowerCase().trim();
+  for (const [hinglish, english] of Object.entries(HINGLISH_TRANSLATION_MAP)) {
+    const regex = new RegExp(`\\b${hinglish}\\b`, 'gi');
+    text = text.replace(regex, english);
+  }
+  return text;
+}
+
 /**
  * Performs ranked searches on the WHO ICD-10 tables (synonym -> exact -> contains)
  */
 export function lookupICD(input: string): IcdCandidate[] {
-  const normalized = normalizeTerm(input);
+  const translated = translateHinglish(input);
+  const normalized = normalizeTerm(translated);
   if (!normalized) return [];
 
   // 1. Synonym Match

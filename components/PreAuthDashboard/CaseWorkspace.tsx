@@ -345,13 +345,13 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                         </div>
                                         {doc.readabilityConfidence != null && (
                                             <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider shrink-0 ${
-                                                doc.readabilityConfidence >= 80
+                                                doc.readabilityConfidence < 70
+                                                    ? 'bg-red-500/10 border-red-500/20 text-red-400 font-extrabold animate-pulse'
+                                                    : doc.readabilityConfidence >= 80
                                                     ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                                                    : doc.readabilityConfidence >= 50
-                                                    ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
-                                                    : 'bg-red-500/10 border-red-500/20 text-red-400'
+                                                    : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
                                             }`}>
-                                                OCR {doc.readabilityConfidence}%
+                                                {doc.readabilityConfidence < 70 ? '⚠️ Needs Manual Check' : `OCR ${doc.readabilityConfidence}%`}
                                             </span>
                                         )}
                                     </div>

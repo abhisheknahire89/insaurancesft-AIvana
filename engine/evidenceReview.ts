@@ -87,13 +87,17 @@ export const isNegated = (term: string, narrative: string): boolean => {
   const cleanTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/-/g, '\\s*[-]?\\s*');
   const suffix = /\w$/.test(cleanTerm) ? '(?:s|es)?' : '';
   
-  // 1. Negation word BEFORE the term (within 25 chars, not crossing sentence boundaries)
-  const regexBefore = new RegExp(`\\b(?:no|not|nil|missing|without|none|n/a|na|pending|absent|lack of)\\b[^.!?]{0,25}?\\b${cleanTerm}${suffix}\\b`, 'i');
+  // 1. Negation word BEFORE the term (within 60 chars, not crossing sentence boundaries)
+  const regexBefore = new RegExp(`\\b(?:no|not|nil|missing|without|none|n/a|na|pending|absent|lack of)\\b[^.!?]{0,60}?\\b${cleanTerm}${suffix}\\b`, 'i');
   if (regexBefore.test(narrative)) return true;
 
-  // 2. Negation word AFTER the term (within 25 chars, not crossing sentence boundaries)
-  const regexAfter = new RegExp(`\\b${cleanTerm}${suffix}\\b[^.!?]{0,25}?\\b(?:not\\s+(?:documented|available|done|present)|missing|pending|nil|none|n/a|na|absent)\\b`, 'i');
+  // 2. Negation word AFTER the term (within 60 chars, not crossing sentence boundaries)
+  const regexAfter = new RegExp(`\\b${cleanTerm}${suffix}\\b[^.!?]{0,60}?\\b(?:not\\s+(?:documented|available|done|present|attached|performed|reported|mentioned)|missing|pending|nil|none|n/a|na|absent|not\\s+done)\\b`, 'i');
   if (regexAfter.test(narrative)) return true;
+
+  // 3. Phrase-pattern catch: "<term> details not documented", "<term> not attached"
+  const regexPhrase = new RegExp(`\\b${cleanTerm}${suffix}\\b[^.!?]{0,80}?\\bdetails?\\s+(?:not|missing|absent)`, 'i');
+  if (regexPhrase.test(narrative)) return true;
 
   return false;
 };
@@ -417,10 +421,21 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
         extraAnchors.push('Holter monitoring');
       }
     }
-    if (dxLower.includes('heart failure') || dxLower.includes('chf')) {
+    if (dxLower.includes('heart failure') || dxLower.includes('chf') || dxLower.includes('congestive')) {
       const hasEcho = checkClinicalPresence('Echocardiogram', record) || checkClinicalPresence('Echo', record);
       if (!hasEcho) {
         extraAnchors.push('Echocardiogram', 'BNP level');
+      }
+    }
+    // CABG/surgical coronary procedures need angiography + necessity
+    if (dxLower.includes('cabg') || dxLower.includes('bypass') || dxLower.includes('coronary artery disease')) {
+      const hasNecessity = checkClinicalPresence('necessity', record) || checkClinicalPresence('surgical indication', record) || checkClinicalPresence('failed medical', record);
+      if (!hasNecessity) {
+        extraDiscriminators.push({
+          challenge: 'could this be managed as OPD?',
+          evidence: 'medical necessity for surgical intervention (multi-vessel CAD, failed medical management, or left main disease)',
+          reason: 'CABG claims require documented surgical necessity and failed conservative/medical therapy.'
+        });
       }
     }
   }
@@ -432,18 +447,32 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
         extraAnchors.push('vision acuity', 'fundoscopy', 'A-scan');
       }
     }
-    if (dxLower.includes('tonsil') || dxLower.includes('tympan') || dxLower.includes('hearing')) {
+    if (dxLower.includes('tonsil')) {
+      // Tonsillitis: check for conservative management failure and recurrence frequency
+      const hasConservative = checkClinicalPresence('conservative', record) || checkClinicalPresence('antibiotic', record) || checkClinicalPresence('recurrence', record);
+      if (!hasConservative) {
+        extraAnchors.push('conservative management', 'recurrence frequency', 'prior antibiotic courses');
+      }
+    }
+    if (dxLower.includes('tympan') || dxLower.includes('hearing')) {
       const hasAudio = checkClinicalPresence('audiometry', record) || checkClinicalPresence('audiogram', record);
-      if (!hasAudio && !dxLower.includes('tonsil')) {
+      if (!hasAudio) {
         extraAnchors.push('audiometry');
       }
     }
   }
   // Nephrology
-  else if (dxLower.includes('kidney') || dxLower.includes('renal') || dxLower.includes('dialysis') || dxLower.includes('nephro') || dxLower.includes('ckd')) {
+  else if (dxLower.includes('kidney') || dxLower.includes('renal') || dxLower.includes('dialysis') || dxLower.includes('nephro') || dxLower.includes('ckd') || dxLower.includes('aki') || dxLower.includes('acute kidney')) {
     const hasRenalLabs = checkClinicalPresence('creatinine', record) || checkClinicalPresence('urea', record) || checkClinicalPresence('egfr', record);
     if (!hasRenalLabs) {
       extraAnchors.push('creatinine', 'urea', 'eGFR');
+    }
+    // AKI requires serial creatinine trend
+    if (dxLower.includes('aki') || dxLower.includes('acute kidney') || dxLower.includes('acute renal')) {
+      const hasSerial = checkClinicalPresence('serial', record) || checkClinicalPresence('trend', record) || checkClinicalPresence('repeat', record);
+      if (!hasSerial) {
+        extraAnchors.push('serial creatinine trend', 'urine output monitoring');
+      }
     }
     // DJ stenting / ureteral issues may also need stone size + imaging
     if (dxLower.includes('dj stent') || dxLower.includes('ureter')) {
@@ -475,8 +504,8 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
       }
     }
   }
-  // Gastroenterology
-  else if (dxLower.includes('hernia') || dxLower.includes('chole') || dxLower.includes('appendi') || dxLower.includes('pancreat') || dxLower.includes('colic') || dxLower.includes('fistula') || dxLower.includes('pile') || dxLower.includes('fissure') || dxLower.includes('abscess')) {
+  // Gastroenterology — surgical and non-surgical
+  else if (dxLower.includes('hernia') || dxLower.includes('chole') || dxLower.includes('appendi') || dxLower.includes('pancreat') || dxLower.includes('colic') || dxLower.includes('fistula') || dxLower.includes('pile') || dxLower.includes('fissure') || dxLower.includes('hemorrhoid') || dxLower.includes('abscess')) {
     if (dxLower.includes('pancreat')) {
       const hasEnzymes = checkClinicalPresence('amylase', record) || checkClinicalPresence('lipase', record);
       if (!hasEnzymes) {
@@ -485,10 +514,28 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
       if (!hasImaging) {
         extraAnchors.push('imaging');
       }
+    } else if (dxLower.includes('hernia')) {
+      // Inguinal/other hernia: needs inpatient necessity or surgical indication
+      const hasNecessity = checkClinicalPresence('necessity', record) || checkClinicalPresence('obstruction', record) || checkClinicalPresence('strangulated', record);
+      if (!hasNecessity) {
+        extraDiscriminators.push({
+          challenge: 'could this be managed as OPD?',
+          evidence: 'medical necessity for inpatient admission (obstructed, strangulated hernia, or surgical complexity)',
+          reason: 'Elective hernia repairs require TPA documentation of why day-care OPD surgery is not appropriate.'
+        });
+        extraAnchors.push('OPD necessity');
+      }
     } else {
       if (!hasImaging) {
         extraAnchors.push('imaging');
       }
+    }
+    if (dxLower.includes('pile') || dxLower.includes('hemorrhoid') || dxLower.includes('fissure')) {
+      // Grade and conservative treatment are required for haemorrhoids/fissure
+      const hasGrade = checkClinicalPresence('grade', record) || checkClinicalPresence('classification', record);
+      if (!hasGrade) extraAnchors.push('haemorrhoid grade', 'Goligher grade');
+      const hasConservative = checkClinicalPresence('conservative', record) || checkClinicalPresence('sitz', record) || checkClinicalPresence('fibre', record);
+      if (!hasConservative) extraAnchors.push('conservative management', 'diet modification');
     }
     if (dxLower.includes('fistula') || dxLower.includes('fissure')) {
       const hasFistulaImg = checkClinicalPresence('fistulogram', record) || checkClinicalPresence('MRI', record);
@@ -507,6 +554,36 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
       if (!hasMRI) {
         extraAnchors.push('MRI');
       }
+    }
+  }
+  // GI — non-surgical: GERD, OPD-manageable conditions
+  else if (dxLower.includes('reflux') || dxLower.includes('gerd') || dxLower.includes('gastroesophageal') || dxLower.includes('peptic') || dxLower.includes('ulcer peptic')) {
+    extraDiscriminators.push({
+      challenge: 'could this be managed as OPD?',
+      evidence: 'medical necessity for inpatient admission (vitals instability, haematemesis, or failed outpatient treatment)',
+      reason: 'GERD and peptic conditions are typically OPD-manageable. TPA requires documented inpatient necessity.'
+    });
+    extraAnchors.push('OPD necessity', 'inpatient justification');
+  }
+  // Infectious Disease
+  else if (dxLower.includes('typhoid') || dxLower.includes('enteric') || dxLower.includes('salmonella')) {
+    const hasWidal = checkClinicalPresence('widal', record) || checkClinicalPresence('blood culture', record) || checkClinicalPresence('culture', record);
+    if (!hasWidal) {
+      extraAnchors.push('Widal test', 'blood culture', 'typhoid serology');
+    }
+    const hasOPDCheck = checkClinicalPresence('necessity', record) || checkClinicalPresence('vitals instability', record);
+    if (!hasOPDCheck) {
+      extraDiscriminators.push({
+        challenge: 'could this be managed as OPD?',
+        evidence: 'medical necessity for inpatient admission (high fever, severe dehydration, or complications)',
+        reason: 'Stable typhoid cases are routinely rejected by TPAs as OPD-manageable. Inpatient necessity must be documented.'
+      });
+    }
+  }
+  else if (dxLower.includes('malaria') || dxLower.includes('plasmodium') || dxLower.includes('falciparum') || dxLower.includes('vivax')) {
+    const hasSmear = checkClinicalPresence('smear', record) || checkClinicalPresence('antigen', record) || checkClinicalPresence('rdt', record);
+    if (!hasSmear) {
+      extraAnchors.push('malaria smear', 'rapid antigen test', 'blood culture');
     }
   }
   // Diabetic Foot / Gangrene / Ulcer (Case 31)

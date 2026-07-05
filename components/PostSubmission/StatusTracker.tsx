@@ -5,6 +5,8 @@ import type { DenialAppealResult } from '../../engine/denialAppealGenerator';
 import { StatusBadge } from '../PreAuthDashboard/StatusBadge';
 import { formatDateTime, formatCurrency } from '../../utils/formatters';
 import { logFeedbackEvent } from '../../utils/feedbackLogger';
+import { submitPreAuthToTPA } from '../../services/tpaPortalService';
+import { logStageTimestamp } from '../../utils/stageLogger';
 
 
 interface StatusTrackerProps {
@@ -20,6 +22,7 @@ export const StatusTracker: React.FC<StatusTrackerProps> = ({ record, onClose, o
     const [queryDetails, setQueryDetails] = useState(record.tpaResponse?.queryDetails ?? '');
     const [saving, setSaving] = useState(false);
     const [existingAppeal, setExistingAppeal] = useState<DenialAppealResult | null>(null);
+    const [submissionError, setSubmissionError] = useState<string | null>(null);
 
     // Load any existing appeal for this record
     useEffect(() => {
@@ -55,6 +58,15 @@ export const StatusTracker: React.FC<StatusTrackerProps> = ({ record, onClose, o
             tpaResponse: { respondedAt: new Date().toISOString(), status: tpaStatus, approvedAmount, denialReason, queryDetails },
         };
         await savePreAuth(updated);
+        
+        // Log stage updates for calibration & delay analysis
+        logStageTimestamp(record.id, 'response_received');
+        if (updatedStatus === 'approved') {
+            logStageTimestamp(record.id, 'final_outcome_approved');
+        } else if (updatedStatus === 'denied') {
+            logStageTimestamp(record.id, 'final_outcome_denied');
+        }
+        
         setSaving(false);
         onRecordUpdate(updated);
     };
@@ -191,20 +203,57 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
 
                     {/* Mark as Submitted */}
                     {(record.status === 'ready_to_submit' || record.status === 'draft') && (
-                        <button onClick={async () => {
-                            // Audit Feedback Loop: log if desk officer submits despite review warnings
-                            if (record.tpaEvidenceReview?.status === 'insufficient') {
-                                logFeedbackEvent(record.id, 'submitted_insufficient', {
-                                    diagnosis: record.clinical?.diagnoses?.[record.clinical.selectedDiagnosisIndex ?? 0]?.diagnosis
-                                });
-                            }
+                        <div className="space-y-2">
+                            {submissionError && (
+                                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3.5 text-xs text-red-400 font-semibold leading-normal">
+                                    ⚠️ Submission unconfirmed — retry. Error: {submissionError}
+                                </div>
+                            )}
+                            <button 
+                                disabled={saving}
+                                onClick={async () => {
+                                    setSubmissionError(null);
+                                    setSaving(true);
+                                    
+                                    try {
+                                        const res = await submitPreAuthToTPA(record);
+                                        if (res.success && res.receiptId) {
+                                            // Audit Feedback Loop: log if desk officer submits despite review warnings
+                                            if (record.tpaEvidenceReview?.status === 'insufficient') {
+                                                logFeedbackEvent(record.id, 'submitted_insufficient', {
+                                                    diagnosis: record.clinical?.diagnoses?.[record.clinical.selectedDiagnosisIndex ?? 0]?.diagnosis
+                                                });
+                                            }
 
-                            const updated = { ...record, status: 'submitted' as const, updatedAt: new Date().toISOString() };
-                            await savePreAuth(updated as PreAuthRecord);
-                            onRecordUpdate(updated as PreAuthRecord);
-                        }} className="w-full py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
-                            📤 Mark as Submitted to TPA
-                        </button>
+                                            const updated = { 
+                                                ...record, 
+                                                status: 'submitted' as const, 
+                                                updatedAt: new Date().toISOString(),
+                                                // Store receipt ID in record outputs
+                                                outputs: {
+                                                    ...(record.outputs ?? {}),
+                                                    tpaReceiptId: res.receiptId
+                                                }
+                                            };
+                                            await savePreAuth(updated as PreAuthRecord);
+                                            logStageTimestamp(record.id, 'submitted');
+                                            onRecordUpdate(updated as PreAuthRecord);
+                                        } else {
+                                            setSubmissionError(res.error || 'No confirmation receipt returned from TPA.');
+                                            logStageTimestamp(record.id, 'submission_unconfirmed');
+                                        }
+                                    } catch (err: any) {
+                                        setSubmissionError(err.message || 'Network gateway timeout.');
+                                        logStageTimestamp(record.id, 'submission_unconfirmed');
+                                    } finally {
+                                        setSaving(false);
+                                    }
+                                }} 
+                                className="w-full py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white disabled:opacity-50"
+                            >
+                                {saving ? 'Submitting to TPA Portal...' : '📤 Mark as Submitted to TPA'}
+                            </button>
+                        </div>
                     )}
 
                     {/* Appeal Status Card (for denied records) */}

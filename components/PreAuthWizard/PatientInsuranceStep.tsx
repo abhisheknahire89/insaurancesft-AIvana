@@ -92,9 +92,22 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
         
         try {
             const extracted = await extractFromDocument(file);
+            const normalizedConf = extracted.confidence > 1 ? extracted.confidence / 100 : extracted.confidence;
             
-            if (extracted.document_type === 'unknown' || extracted.confidence < 40) {
+            if (extracted.document_type === 'unknown' || normalizedConf < 0.4) {
                  setExtractionException("Could not read document clearly or invalid type. Please enter details manually.");
+                 setIsExtracting(false);
+                 return;
+            }
+
+            if (normalizedConf < 0.7) {
+                 setExtractionException(`⚠️ Needs Manual Check: AI extraction confidence is low (${Math.round(normalizedConf * 100)}%). Fields have not been populated to avoid incorrect data. Please enter details manually.`);
+                 setExtractionResult({
+                     filled: [],
+                     pending: ['Patient Name', 'Age / DOB', 'Gender', 'Contact Number', 'Insurance Company', 'TPA Name', 'Policy Number', 'Sum Insured']
+                 });
+                 setOcrDone(true);
+                 setEntryPath('manual');
                  setIsExtracting(false);
                  return;
             }
@@ -121,7 +134,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                 sumInsured: extracted.insurance?.sum_insured || insurance.sumInsured,
                 policyEndDate: endDate,
                 dataSource: 'ocr',
-                ocrConfidence: extracted.confidence
+                ocrConfidence: Math.round(normalizedConf * 100)
             });
             if (endDate) handlePolicyEndDate(endDate);
 

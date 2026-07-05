@@ -19,6 +19,8 @@ import { EvidenceReviewReport } from '../../engine/evidenceReview';
 import { DenialAppealResult, generateDenialAppeal } from '../../engine/denialAppealGenerator';
 import { getAllPreAuths, getAppeal, saveAppeal, updateAppealStatus } from '../../services/storageService';
 import { formatCurrency, formatDateTime } from '../../utils/formatters';
+import { submitPreAuthToTPA } from '../../services/tpaPortalService';
+import { logStageTimestamp } from '../../utils/stageLogger';
 
 // ─── Queue entry enriched with appeal data ───────────────────────────────────
 
@@ -54,6 +56,7 @@ export const DenialQueue: React.FC = () => {
     const [includeHindi, setIncludeHindi] = useState(false);
     const [activeTab, setActiveTab]     = useState<'english' | 'hindi'>('english');
     const [saving, setSaving]           = useState(false);
+    const [submissionError, setSubmissionError] = useState<string | null>(null);
 
     // ── Load denied records + any existing appeals ───────────────────────────
     const loadQueue = useCallback(async () => {
@@ -121,10 +124,34 @@ export const DenialQueue: React.FC = () => {
     // ── Status transitions ────────────────────────────────────────────────────
     const handleStatusChange = async (newStatus: DenialAppealResult['appealStatus']) => {
         if (!selected?.appeal) return;
+        setSubmissionError(null);
         setSaving(true);
         try {
+            if (newStatus === 'submitted') {
+                const res = await submitPreAuthToTPA(selected.record);
+                if (!res.success || !res.receiptId) {
+                    setSubmissionError(res.error || 'TPA gateway unconfirmed.');
+                    logStageTimestamp(selected.record.id, 'submission_unconfirmed');
+                    setSaving(false);
+                    return;
+                }
+                // Save receipt on success
+                selected.record.outputs = {
+                    ...(selected.record.outputs ?? {}),
+                    tpaReceiptId: res.receiptId
+                };
+                await savePreAuth(selected.record);
+            }
             await updateAppealStatus(selected.record.id, newStatus);
+            if (newStatus === 'submitted') {
+                logStageTimestamp(selected.record.id, 'submitted');
+            } else if (newStatus === 'resolved') {
+                logStageTimestamp(selected.record.id, 'final_outcome_approved');
+            }
             await loadQueue();
+        } catch (err: any) {
+            setSubmissionError(err.message || 'Submission error.');
+            logStageTimestamp(selected.record.id, 'submission_unconfirmed');
         } finally {
             setSaving(false);
         }
@@ -418,6 +445,11 @@ export const DenialQueue: React.FC = () => {
                                     </button>
 
                                     {/* Status actions */}
+                                    {submissionError && (
+                                        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-[10px] text-red-400 font-semibold leading-normal">
+                                            ⚠️ Submission unconfirmed — retry. Error: {submissionError}
+                                        </div>
+                                    )}
                                     <div className="grid grid-cols-2 gap-2.5 pt-1">
                                         <button
                                             onClick={() => handleStatusChange('submitted')}

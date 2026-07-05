@@ -49,8 +49,8 @@ export const CLINICAL_SYNONYMS: ClinicalSynonymGroup[] = [
     synonyms: ['visual acuity', 'acuity', 'vision', 'a-scan', 'iol', 'lens power', 'biometry', 'slit lamp', 'cataract']
   },
   {
-    keys: ['conservative', 'prior treatment', 'failed conservative', 'non-surgical'],
-    synonyms: ['conservative', 'physio', 'physiotherapy', 'analgesic', 'nsaid', 'injection', 'steroid', 'tablet', 'oral medication', 'pain management', 'brace', 'splint']
+    keys: ['conservative', 'conservative-management', 'prior treatment', 'failed conservative', 'non-surgical'],
+    synonyms: ['conservative', 'conservative management', 'conservative-management', 'physio', 'physiotherapy', 'analgesic', 'nsaid', 'injection', 'steroid', 'tablet', 'oral medication', 'pain management', 'brace', 'splint']
   },
   {
     keys: ['surgeon\'s note', 'surgeon note', 'indication for'],
@@ -65,8 +65,8 @@ export const CLINICAL_SYNONYMS: ClinicalSynonymGroup[] = [
     synonyms: ['usg', 'ultrasound', 'scan', 'sono', 'echo', 'sonography']
   },
   {
-    keys: ['mri', 'magnetic resonance'],
-    synonyms: ['mri', 'scan', 'neuroimaging']
+    keys: ['mri', 'magnetic resonance', 'neuroimaging'],
+    synonyms: ['mri', 'magnetic resonance', 'scan', 'neuroimaging', 'brain imaging', 'ct brain', 'mri brain', 'brain mri', 'brain scan', 'neuro imaging']
   },
   {
     keys: ['ct ', 'computed tomography'],
@@ -163,5 +163,38 @@ export const CLINICAL_SYNONYMS: ClinicalSynonymGroup[] = [
   {
     keys: ['csf', 'lumbar puncture', 'spinal fluid'],
     synonyms: ['csf', 'lumbar puncture', 'spinal fluid', 'cerebrospinal', 'lp done', 'meningitis']
+  },
+  // ── Groups added to fix 35% miss rate ──────────────────────────────────────
+  {
+    keys: ['echocardiogram', 'echo', 'bnp', '2d echo'],
+    synonyms: ['echo', 'echocardiogram', 'echocardio', '2d echo', 'lvef', 'ejection fraction', 'bnp', 'ef%', 'ef percentage', 'cardiac function', 'systolic function']
+  },
+  {
+    keys: ['investigation', 'workup', 'diagnostic'],
+    synonyms: ['investigation', 'investigate', 'workup', 'labs', 'lab work', 'diagnostic', 'test', 'report', 'laboratory']
+  },
+  {
+    keys: ['necessity', 'medical necessity', 'opd', 'inpatient justification'],
+    synonyms: ['necessity', 'necessary', 'inpatient justification', 'opd manageable', 'outpatient', 'medical necessity', 'opd', 'ambulatory', 'justify', 'justification', 'indication for admission']
+  },
+  {
+    keys: ['fistulogram', 'mri fistula'],
+    synonyms: ['fistulogram', 'fistula mri', 'mri fistula', 'fistula imaging', 'fistula scan', 'proctoscopy', 'endoscopy']
+  },
+  {
+    keys: ['grade', 'grading'],
+    synonyms: ['grade', 'grading', 'classification', 'stage', 'degree', 'severity', 'wagner', 'kellgren', 'lawrence']
+  },
+  {
+    keys: ['serial', 'trend', 'repeat'],
+    synonyms: ['serial', 'trend', 'repeat', 'follow-up', 'daily', 'monitoring', 'progressive', 'worsening']
+  },
+  {
+    keys: ['tap', 'drainage', 'aspiration'],
+    synonyms: ['tap', 'drainage', 'aspiration', 'paracentesis', 'thoracocentesis', 'tapping', 'drain']
+  },
+  {
+    keys: ['analysis', 'fluid analysis'],
+    synonyms: ['analysis', 'fluid analysis', 'cytology', 'culture', 'protein', 'sugar', 'cell count', 'lft', 'report']
   }
 ];

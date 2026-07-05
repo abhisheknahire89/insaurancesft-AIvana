@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = (typeof import.meta.env !== 'undefined' ? import.meta.env.VITE_API_URL : process.env.VITE_API_URL) || 'http://localhost:3001';
 
 // Create axios instance
 const api = axios.create({

@@ -52,6 +52,7 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string):
         });
 
         if (response.data?.choices?.[0]?.message?.content) {
+          console.log("[llmClient] [PATH: medgemma_endpoint] Query served successfully.");
           return response.data.choices[0].message.content.trim();
         }
         throw new Error('Malformed response structure from MedGemma endpoint');
@@ -61,21 +62,22 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string):
         console.warn(`[llmClient] Custom MedGemma endpoint call failed (attempts remaining: ${attempts}): ${error.message}`);
       }
     }
-    throw new Error(`Failed to query custom MedGemma endpoint after all attempts: ${lastError?.message || 'Unknown error'}`);
-  } else {
-    // Fall back to Gemini reasoning client if no dedicated MedGemma endpoint is active
-    try {
-      const ai = getGoogleGenAIClient();
-      const response = await ai.models.generateContent({
-        model: MODEL_TEXT,
-        contents: prompt,
-        config: { systemInstruction }
-      });
-      return response.text || '';
-    } catch (error: any) {
-      console.error("[llmClient] Gemini fallback for MedGemma failed:", error);
-      throw new Error(`MedGemma fallback to Gemini failed: ${error.message}`);
-    }
+    console.warn(`[llmClient] [PATH: gemini_fallback] MedGemma endpoint failed after attempts. Falling back silently to Gemini.`);
+  }
+
+  // Fall back to Gemini reasoning client if no dedicated MedGemma endpoint is active or it failed
+  try {
+    const ai = getGoogleGenAIClient();
+    const response = await ai.models.generateContent({
+      model: MODEL_TEXT,
+      contents: prompt,
+      config: { systemInstruction }
+    });
+    console.log(`[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback${endpointUrl ? ' after endpoint timeout.' : '.'}`);
+    return response.text || '';
+  } catch (error: any) {
+    console.error("[llmClient] Gemini fallback for MedGemma failed:", error);
+    throw new Error(`MedGemma fallback to Gemini failed: ${error.message}`);
   }
 }
 
@@ -108,7 +110,7 @@ export async function getReasoningFromMedGemma(
 
   // Return canned demo feedback immediately if explicitly in demo mode
   if (isDemoMode && demoKey) {
-    console.log(`[llmClient] Demo mode active. Returning pre-captured demo fallback for ${demoKey}.`);
+    console.log(`[llmClient] [PATH: demo_data] Demo mode active. Returning pre-captured demo fallback for ${demoKey}.`);
     return DEMO_FALLBACKS[demoKey];
   }
 

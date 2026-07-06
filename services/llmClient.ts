@@ -68,10 +68,14 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string):
   // Fall back to Gemini reasoning client if no dedicated MedGemma endpoint is active or it failed
   try {
     const ai = getGoogleGenAIClient();
+    const isJson = (systemInstruction?.toLowerCase().includes('json') || prompt.toLowerCase().includes('json'));
     const response = await ai.models.generateContent({
       model: MODEL_TEXT,
       contents: prompt,
-      config: { systemInstruction }
+      config: {
+        systemInstruction,
+        ...(isJson && { responseMimeType: 'application/json' })
+      }
     });
     console.log(`[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback${endpointUrl ? ' after endpoint timeout.' : '.'}`);
     return response.text || '';

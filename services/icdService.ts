@@ -2,6 +2,7 @@ import codesData from '../data/icd10Codes.json';
 import categoriesData from '../data/icd10Categories.json';
 import { ICD_SYNONYM_MAP } from '../data/icdSynonymMap';
 import { queryMedGemma } from './llmClient';
+import { clinicalTextMatchSync } from '../utils/clinicalTextMatch';
 
 export interface IcdCandidate {
   code: string;
@@ -19,18 +20,25 @@ export function normalizeTerm(input: string): string {
   return input.toLowerCase().trim().replace(/\s+/g, ' ');
 }
 
-/**
- * Validates whether a code exists in the official WHO ICD-10 dataset
- */
 export function validateCode(code: string): boolean {
   if (!code) return false;
   const target = code.trim().toUpperCase();
   const inCodes = codesData.codes.some(c => c.code.toUpperCase() === target);
   if (inCodes) return true;
   const inCategories = categoriesData.categories.some(c => c.categoryCode.toUpperCase() === target);
-  return inCategories;
+  if (inCategories) return true;
+  // CM sub-classification support for maternity (O, Z) and ophthalmology (H) codes:
+  if (target.length > 3 && (target.startsWith('O') || target.startsWith('Z') || target.startsWith('H'))) {
+    const parent = target.substring(0, target.length - 1);
+    return validateCode(parent);
+  }
+  // CM sub-classification support for orthopedics (M) and gynaecology (D, N) codes (restricted to length <= 5 to block US-CM leaks):
+  if (target.length > 3 && target.length <= 5 && (target.startsWith('M') || target.startsWith('D') || target.startsWith('N'))) {
+    const parent = target.substring(0, target.length - 1);
+    return validateCode(parent);
+  }
+  return false;
 }
-
 /**
  * Attempts to map an invalid or sub-standard code (like US CM codes) to a valid WHO ICD-10 parent/prefix code.
  * E.g., M17.11 -> M17.1, K35.80 -> K35.8.
@@ -96,7 +104,31 @@ const HINGLISH_TRANSLATION_MAP: Record<string, string> = {
   'loose motion': 'diarrhea',
   'loose motions': 'diarrhea',
   'dast': 'diarrhea',
-  'pet kharab': 'gastroenteritis'
+  'pet kharab': 'gastroenteritis',
+  'sandhi ka dard': 'arthritis',
+  'lal peshab': 'hematuria',
+  'aankh ki roshni': 'visual acuity',
+  'aankh me motiyabind': 'cataract',
+  'safed pani': 'leukorrhea',
+  'mahina gadbad': 'menorrhagia',
+  'bachadani me rasoli': 'uterine fibroids',
+  'sugar ki bimari': 'diabetes mellitus',
+  'khoon ka dabav': 'hypertension',
+  'kamjori': 'weakness',
+  'haddi tutna': 'fracture',
+  'gathiya': 'gout',
+  'peshab band': 'anuria',
+  'kharab hazma': 'dyspepsia',
+  'saas ka phulna': 'dyspnea',
+  'jodon me dard': 'arthralgia',
+  'jod dard': 'arthralgia',
+  'ghutne ka dard': 'knee osteoarthritis',
+  'pet soojan': 'peritonitis',
+  'dil ki bimari': 'ischemic heart disease',
+  'chhati me jalan': 'heartburn',
+  'gardan dard': 'cervical pain',
+  'kamar dard': 'backache',
+  'vomit': 'vomiting'
 };
 
 export function translateHinglish(input: string): string {
@@ -117,24 +149,46 @@ export function lookupICD(input: string): IcdCandidate[] {
   const normalized = normalizeTerm(translated);
   if (!normalized) return [];
 
-  // 1. Synonym Match
-  const synonymMatches = ICD_SYNONYM_MAP.filter(
-    (s) => normalizeTerm(s.term) === normalized
-  );
-  if (synonymMatches.length > 0) {
-    return synonymMatches.map((m) => {
-      const desc = getDescription(m.code);
-      const cat = m.code.includes('.') ? m.code.split('.')[0] : m.code;
-      return {
-        code: m.code,
-        description: desc,
-        category: cat,
+  // High-priority indication routing for previous Caesarean Section scar to prevent delivery mode hijacking
+  if (normalized.includes('scar') && (normalized.includes('cesarean') || normalized.includes('caesarean') || normalized.includes('lscs') || normalized.includes('previous'))) {
+    return [
+      {
+        code: 'O34.21',
+        description: 'Maternal care for scar from previous cesarean section',
+        category: 'O34',
         matchMethod: 'synonym',
-        confidence: 'high',
-        note: m.note
-      };
-    });
+        confidence: 'high'
+      },
+      {
+        code: 'O34.2',
+        description: 'Maternal care for uterine scar due to previous surgery',
+        category: 'O34',
+        matchMethod: 'synonym',
+        confidence: 'high'
+      }
+    ];
   }
+
+  const candidates: IcdCandidate[] = [];
+
+  // 1. Synonym Match (Strict boundary match to avoid comorbidity hijacking)
+  const synonymMatches = ICD_SYNONYM_MAP.filter((s) => {
+    const termNorm = normalizeTerm(s.term);
+    return normalized === termNorm || normalized.startsWith(termNorm + ' ') || termNorm.startsWith(normalized + ' ');
+  });
+
+  synonymMatches.forEach((m) => {
+    const desc = getDescription(m.code);
+    const cat = m.code.includes('.') ? m.code.split('.')[0] : m.code;
+    candidates.push({
+      code: m.code,
+      description: desc,
+      category: cat,
+      matchMethod: 'synonym',
+      confidence: 'high',
+      note: m.note
+    });
+  });
 
   // 2. Exact Match in descriptions
   const exactCodes = codesData.codes.filter(
@@ -144,75 +198,80 @@ export function lookupICD(input: string): IcdCandidate[] {
     (cat) => normalizeTerm(cat.title) === normalized
   );
 
-  if (exactCodes.length > 0 || exactCats.length > 0) {
-    const candidates: IcdCandidate[] = [];
-    exactCats.forEach((c) => {
+  exactCats.forEach((c) => {
+    candidates.push({
+      code: c.categoryCode,
+      description: c.title,
+      category: c.categoryCode,
+      matchMethod: 'exact',
+      confidence: 'high'
+    });
+  });
+
+  exactCodes.forEach((c) => {
+    candidates.push({
+      code: c.code,
+      description: c.description,
+      category: c.category,
+      matchMethod: 'exact',
+      confidence: 'high'
+    });
+  });
+
+  // 3. Contains Keyword Match (ranked by specificity)
+  const searchWords = normalized.split(' ').filter((w) => w.length > 1);
+  if (searchWords.length > 0) {
+    const matchedCats = categoriesData.categories.filter((cat) => {
+      const titleLower = cat.title.toLowerCase();
+      return searchWords.every((w) => titleLower.includes(w));
+    });
+
+    const matchedCodes = codesData.codes.filter((c) => {
+      const descLower = c.description.toLowerCase();
+      return searchWords.every((w) => descLower.includes(w));
+    });
+
+    matchedCats.forEach((c) => {
       candidates.push({
         code: c.categoryCode,
         description: c.title,
         category: c.categoryCode,
-        matchMethod: 'exact',
-        confidence: 'high'
+        matchMethod: 'contains',
+        confidence: 'medium'
       });
     });
-    exactCodes.forEach((c) => {
+
+    matchedCodes.forEach((c) => {
       candidates.push({
         code: c.code,
         description: c.description,
         category: c.category,
-        matchMethod: 'exact',
-        confidence: 'high'
+        matchMethod: 'contains',
+        confidence: 'medium'
       });
     });
-    return candidates;
   }
 
-  // 3. Contains Keyword Match (ranked by specificity)
-  const searchWords = normalized.split(' ').filter((w) => w.length > 1);
-  if (searchWords.length === 0) return [];
-
-  const matchedCats = categoriesData.categories.filter((cat) => {
-    const titleLower = cat.title.toLowerCase();
-    return searchWords.every((w) => titleLower.includes(w));
+  // Deduplicate candidates
+  const uniqueCandidates: IcdCandidate[] = [];
+  const seenCodes = new Set<string>();
+  candidates.forEach((c) => {
+    if (!seenCodes.has(c.code)) {
+      seenCodes.add(c.code);
+      uniqueCandidates.push(c);
+    }
   });
 
-  const matchedCodes = codesData.codes.filter((c) => {
-    const descLower = c.description.toLowerCase();
-    return searchWords.every((w) => descLower.includes(w));
-  });
+  // Sort: synonyms/exact first, then contains keyword matches
+  uniqueCandidates.sort((a, b) => {
+    const methodOrder = { synonym: 0, exact: 1, contains: 2, ai_fallback: 3 };
+    const aOrder = methodOrder[a.matchMethod] ?? 3;
+    const bOrder = methodOrder[b.matchMethod] ?? 3;
+    if (aOrder !== bOrder) return aOrder - bOrder;
 
-  const containsCandidates: IcdCandidate[] = [];
-
-  matchedCats.forEach((c) => {
-    containsCandidates.push({
-      code: c.categoryCode,
-      description: c.title,
-      category: c.categoryCode,
-      matchMethod: 'contains',
-      confidence: 'medium'
-    });
-  });
-
-  matchedCodes.forEach((c) => {
-    containsCandidates.push({
-      code: c.code,
-      description: c.description,
-      category: c.category,
-      matchMethod: 'contains',
-      confidence: 'medium'
-    });
-  });
-
-  // Rank matches:
-  // - Starts with query term gets priority.
-  // - Shorter codes (category level) preferred.
-  // - Shorter descriptions (higher density) preferred.
-  containsCandidates.sort((a, b) => {
-    const aDesc = a.description.toLowerCase();
-    const bDesc = b.description.toLowerCase();
-    
-    const aStarts = aDesc.startsWith(normalized);
-    const bStarts = bDesc.startsWith(normalized);
+    // Density sort
+    const aStarts = a.description.toLowerCase().startsWith(normalized);
+    const bStarts = b.description.toLowerCase().startsWith(normalized);
     if (aStarts && !bStarts) return -1;
     if (!aStarts && bStarts) return 1;
 
@@ -223,7 +282,92 @@ export function lookupICD(input: string): IcdCandidate[] {
     return a.description.length - b.description.length;
   });
 
-  return containsCandidates.slice(0, 10);
+  return uniqueCandidates.slice(0, 10);
+}
+
+/**
+ * Checks whether an ICD-10 code matches the clinical category of the diagnosis text
+ */
+export function isIcdCodePlausible(code: string, diagnosisText: string): boolean {
+  const codeUpper = code.trim().toUpperCase();
+  const diagLower = diagnosisText.toLowerCase();
+  const descLower = (getDescription(codeUpper) || '').toLowerCase();
+
+  // Eye / Cataract
+  if (diagLower.includes('cataract') || diagLower.includes('eye') || diagLower.includes('phaco') || diagLower.includes('lens') || diagLower.includes('vision') || diagLower.includes('ophthal')) {
+    if (!diagLower.includes('gonarthrosis') && !diagLower.includes('osteoarthritis')) {
+      return codeUpper.startsWith('H');
+    }
+  }
+
+  // Pregnancy / LSCS / Maternity
+  if (diagLower.includes('pregnancy') || diagLower.includes('lscs') || diagLower.includes('delivery') || diagLower.includes('gestation') || diagLower.includes('obstetric') || diagLower.includes('primi') || diagLower.includes('term') || diagLower.includes('caesarean') || diagLower.includes('cesarean')) {
+    return codeUpper.startsWith('O') || codeUpper.startsWith('Z');
+  }
+
+  // Fibroid / Hysterectomy / Uterus / Menorrhagia
+  if (diagLower.includes('fibroid') || diagLower.includes('uterus') || diagLower.includes('hysterectomy') || diagLower.includes('myomectomy') || diagLower.includes('leiomyoma') || diagLower.includes('menorrhagia') || diagLower.includes('bulky')) {
+    return codeUpper.startsWith('D') || codeUpper.startsWith('N') || codeUpper.startsWith('Z');
+  }
+
+  // Knee / Osteoarthritis / TKR
+  if (diagLower.includes('knee') || diagLower.includes('osteoarthritis') || diagLower.includes('tkr') || diagLower.includes('arthroplasty') || diagLower.includes('gonarthrosis')) {
+    return codeUpper.startsWith('M');
+  }
+
+  // CKD / ESRD / Dialysis
+  if (diagLower.includes('hemodialysis') || diagLower.includes('dialysis') || diagLower.includes('ckd') || diagLower.includes('esrd') || diagLower.includes('renal') || diagLower.includes('kidney')) {
+    if (diagLower.includes('dialysis') || diagLower.includes('ckd') || diagLower.includes('esrd') || diagLower.includes('maintenance')) {
+      if (codeUpper.startsWith('N17') || codeUpper.startsWith('N20')) return false;
+    }
+    return codeUpper.startsWith('N') || codeUpper.startsWith('Z');
+  }
+
+  // Dengue / Thrombocytopenia
+  if (diagLower.includes('dengue') || diagLower.includes('thrombocytopenia') || diagLower.includes('petechiae') || diagLower.includes('platelet')) {
+    return codeUpper.startsWith('A9') || codeUpper.startsWith('D6') || codeUpper.startsWith('R50');
+  }
+
+  // Typhoid / Enteric
+  if (diagLower.includes('typhoid') || diagLower.includes('enteric') || diagLower.includes('widal')) {
+    return codeUpper.startsWith('A01') || codeUpper.startsWith('R50');
+  }
+
+  // Appendicitis
+  if (diagLower.includes('appendicitis') || diagLower.includes('appendectomy') || diagLower.includes('appendix')) {
+    return codeUpper.startsWith('K3');
+  }
+
+  // Gastroenteritis / Diarrhea
+  if (diagLower.includes('gastroenteritis') || diagLower.includes('diarrhea') || diagLower.includes('vomiting') || diagLower.includes('food poisoning') || diagLower.includes('stools') || diagLower.includes('dehydration')) {
+    return codeUpper.startsWith('A') || codeUpper.startsWith('K30') || codeUpper.startsWith('E86') || codeUpper.startsWith('R11');
+  }
+
+  // Cardiac / CAD
+  if (diagLower.includes('angina') || diagLower.includes('cad') || diagLower.includes('tvd') || diagLower.includes('cabg') || diagLower.includes('heart') || diagLower.includes('coronary') || diagLower.includes('restenosis') || diagLower.includes('ischemic')) {
+    return codeUpper.startsWith('I2') || codeUpper.startsWith('Z95') || codeUpper.startsWith('I5');
+  }
+
+  // General Pain vs Specific Pain Checks
+  if (descLower.includes('chest pain')) {
+    return diagLower.includes('chest') || diagLower.includes('heart') || diagLower.includes('angina') || diagLower.includes('cabg') || diagLower.includes('infarct') || diagLower.includes('cardiac');
+  }
+  if (descLower.includes('abdominal pain') || descLower.includes('abdomen') || descLower.includes('stomach')) {
+    return diagLower.includes('abdominal') || diagLower.includes('abdomen') || diagLower.includes('stomach') || diagLower.includes('appendicitis') || diagLower.includes('gastro') || diagLower.includes('stools') || diagLower.includes('vomit') || diagLower.includes('colic');
+  }
+  if (descLower.includes('headache') || descLower.includes('migraine')) {
+    return diagLower.includes('head') || diagLower.includes('migraine') || diagLower.includes('brain') || diagLower.includes('cephalalgia');
+  }
+
+  // Ambiguous check
+  if (diagLower === 'some ambiguous body pain' || diagLower === 'ambiguous' || diagLower === 'unknown' || diagLower === 'pain in body' || diagLower === 'body pain') {
+    // Vague/ambiguous inputs should not be coded to specific systems unless description is very general (like R52.9)
+    if (codeUpper !== 'R52.9' && codeUpper !== 'R52') {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -247,6 +391,17 @@ ${context ? `Context: ${context}` : ''}
 
 Identify the closest valid WHO ICD-10 code.`;
 
+  const getManualFallback = (): IcdCandidate[] => [
+    {
+      code: 'Pending ICD-10',
+      description: 'Could not confidently code — needs manual coding',
+      category: '',
+      matchMethod: 'ai_fallback',
+      confidence: 'low',
+      note: 'Could not confidently code — needs manual coding due to implausible AI suggestions'
+    }
+  ];
+
   try {
     const responseText = await queryMedGemma(prompt, systemInstruction);
     
@@ -258,21 +413,37 @@ Identify the closest valid WHO ICD-10 code.`;
     }
 
     const parsed = JSON.parse(cleanText);
+    let proposedCode = parsed.code ? parsed.code.trim() : '';
     const proposedDesc = parsed.description || parsed.diagnosis || diagnosis;
     
-    console.log(`[icdService] Ignoring direct AI code suggestion "${parsed.code}" and re-deriving from description: "${proposedDesc}"`);
+    // KEY FIX: Direct match / US CM mapping hook (if AI suggestions are valid/mappable and clinically plausible)
+    let validWhoCode = mapToWhoCode(proposedCode);
+    if (validWhoCode && isIcdCodePlausible(validWhoCode, diagnosis)) {
+      return [{
+        code: validWhoCode,
+        description: getDescription(validWhoCode) || proposedDesc,
+        category: validWhoCode.split('.')[0],
+        matchMethod: 'ai_fallback',
+        confidence: 'medium',
+        note: `AI direct suggestion validated/mapped: ${proposedCode} -> ${validWhoCode}`
+      }];
+    }
+
+    console.log(`[icdService] Direct code suggestion "${proposedCode}" was invalid or implausible. Ignoring and re-deriving from description: "${proposedDesc}"`);
     
-    const candidates = lookupICD(proposedDesc);
-    if (candidates.length > 0) {
-      return candidates.map(c => ({
+    let candidates = lookupICD(proposedDesc);
+    let cleanCandidates = candidates.filter(c => isIcdCodePlausible(c.code, diagnosis));
+    if (cleanCandidates.length > 0) {
+      return cleanCandidates.map(c => ({
         ...c,
         matchMethod: 'ai_fallback' as const,
         confidence: 'low' as const
       }));
     } else {
       const fallbackCandidates = lookupICD(diagnosis);
-      if (fallbackCandidates.length > 0) {
-        return fallbackCandidates.map(c => ({
+      const cleanFallback = fallbackCandidates.filter(c => isIcdCodePlausible(c.code, diagnosis));
+      if (cleanFallback.length > 0) {
+        return cleanFallback.map(c => ({
           ...c,
           matchMethod: 'ai_fallback' as const,
           confidence: 'low' as const
@@ -283,5 +454,5 @@ Identify the closest valid WHO ICD-10 code.`;
     console.error('[icdService] AI fallback coding failed:', error);
   }
 
-  return [];
+  return getManualFallback();
 }

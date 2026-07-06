@@ -127,17 +127,28 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                                 <h3 className="text-sm font-bold text-gray-200 tracking-wide uppercase">Claim Scrubbing Report</h3>
                                 <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-xl tracking-wider border ${
                                     result.scrubbingStatus === 'Clean' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                                    result.scrubbingStatus === 'Failed' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
                                     'bg-amber-500/10 text-amber-400 border-amber-500/20'
                                 }`}>
                                     {result.scrubbingStatus}
                                 </span>
                             </div>
 
-                            {/* Coded Diagnoses (ICD-10) */}
-                            <div className="space-y-3">
-                                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-                                    <FileText className="w-3.5 h-3.5 text-purple-400" /> Coded ICD-10 Diagnoses
-                                </h4>
+                            {result.scrubbingStatus === 'Failed' ? (
+                                <div className="bg-rose-950/20 border border-rose-500/30 rounded-2xl p-6 text-center space-y-4">
+                                    <AlertTriangle className="w-12 h-12 text-rose-500 mx-auto" />
+                                    <h4 className="text-base font-bold text-rose-200">Manual Intervention Required</h4>
+                                    <p className="text-xs text-rose-300/80 leading-relaxed">
+                                        Automated extraction, coding, and scrubbing could not be completed safely. No automated clinical or billing suggestions are available. Please perform manual coding and TPA auditing.
+                                    </p>
+                                </div>
+                            ) : (
+                                <>
+                                    {/* Coded Diagnoses (ICD-10) */}
+                                    <div className="space-y-3">
+                                        <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                                            <FileText className="w-3.5 h-3.5 text-purple-400" /> Coded ICD-10 Diagnoses
+                                        </h4>
                                 <div className="space-y-2 bg-gray-950 p-4 rounded-2xl border border-white/5 text-xs">
                                     <div className="flex justify-between items-start gap-3">
                                         <span className="font-mono font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">{result.primaryICD10}</span>
@@ -234,7 +245,8 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                                     </div>
                                 </div>
                             </div>
-
+                        </>
+                    )}
                         </div>
                     ) : (
                         <div className="bg-gray-900/30 border border-dashed border-white/10 rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px]">

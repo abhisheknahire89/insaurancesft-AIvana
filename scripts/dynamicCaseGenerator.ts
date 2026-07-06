@@ -9,6 +9,14 @@ export async function generateBatchWithGemini(count: number = 20, modelName: str
 You are a highly experienced Indian clinical documentation specialist and TPA claims expert.
 Your task is to generate an array of ${count} highly realistic, completely fictional patient cases based on common Indian inpatient conditions.
 
+CRITICAL INSTRUCTION: You must bias case generation heavily toward the following specific scenario types to test edge cases:
+1. Cataract/Ophthalmic surgery (must test that ICD-10 chapter lock assigns H-codes correctly).
+2. LSCS/obstetric/maternity cases (must test that ICD-10 chapter lock assigns O/Z-codes correctly).
+3. Hysterectomy/fibroid/gynecological cases (must test that ICD-10 chapter lock assigns D/N/Z-codes correctly).
+4. Dengue-vs-Typhoid clinical confusion (to test clinical indicators and proper differentiation).
+5. TVD/CABG cardiology cases (to test cardiology coding).
+6. Denial appeal cases that explicitly need to cite comorbidities present in the clinical notes (such as a history of hypertension, a prior stent placed months earlier, or documented bleeding).
+
 CONDITIONS TO USE: Dengue Fever, Typhoid Fever, Ischemic Heart Disease / Planned CABG, Senile Cataract, Maintenance Hemodialysis, Acute Appendicitis, Osteoarthritis / Planned TKR, Acute Gastroenteritis, Maternity (LSCS), Uterine Fibroids / Hysterectomy.
 
 For each case, construct a JSON object matching this TypeScript interface exactly:
@@ -83,3 +91,273 @@ INSTRUCTIONS:
     return null;
   }
 }
+
+export interface MultiModuleTestCase extends GroundedTestCase {
+  rawDocumentText?: string;
+  simulatedDenialReason?: string;
+  difficulty?: 'medium' | 'high' | 'extreme';
+  focusCategory?: 'preauth_heavy' | 'denial_heavy' | 'billing_complex' | 'all';
+  expectedAnswer?: {
+    expectedExtraction?: {
+      patientName?: string | null;
+      age?: number | null;
+      gender?: 'Male' | 'Female' | 'Other' | null;
+      policyNumber?: string | null;
+      insurerName?: string | null;
+    } | null;
+    expectedReview?: {
+      mustFlag: string[];
+      mustNotFlag: string[];
+      shouldGenerate: boolean;
+    } | null;
+    expectedCode?: string | null;
+    expectedCost?: number | null;
+    expectedEligibility?: 'approved' | 'denied' | 'query' | 'partial_approved' | null;
+    expectedAppealCitations?: string[] | null;
+  } | null;
+}
+
+export async function generateMultiModuleBatchWithGemini(
+  count: number = 20,
+  modelName: string = MODEL_TEXT,
+  focusMode: string = 'all'
+): Promise<MultiModuleTestCase[] | null> {
+  const ai = getGoogleGenAIClient();
+
+  const focusPrompt = focusMode && focusMode !== 'all' ? `
+CRITICAL FOCUS MODE ACTIVE: You MUST generate cases matching the focus category "${focusMode}" for ALL generated cases:
+- preauth_heavy: Focus heavily on medical necessity queries, multiple comorbidities (e.g. chronic kidney disease, uncontrolled hypertension, history of stenting), joint replacement criteria, and oncology staging documents.
+- denial_heavy: Focus on cases starting with complex simulated TPA denials (e.g. denied due to non-surgical treatment trials not attempted, or missing clinical rationale), requiring robust clinical evidence reviews and appeal letters.
+- billing_complex: Focus on multi-procedure surgeries (e.g. laparotomy with cholecystectomy), package rate validation warnings, room rent capping excesses with patient-share calculations, and PM-JAY package exclusions.
+` : '';
+
+  const prompt = `
+You are a highly experienced Indian clinical documentation specialist and TPA claims expert.
+Your task is to generate an array of ${count} highly realistic, completely fictional patient cases based on common Indian inpatient conditions.
+
+CRITICAL INSTRUCTION: You must bias case generation heavily toward the following specific scenario types to test edge cases:
+1. Cataract/Ophthalmic surgery (must test that ICD-10 chapter lock assigns H-codes correctly).
+2. LSCS/obstetric/maternity cases (must test that ICD-10 chapter lock assigns O/Z-codes correctly).
+3. Hysterectomy/fibroid/gynecological cases (must test that ICD-10 chapter lock assigns D/N/Z-codes correctly).
+4. Dengue-vs-Typhoid clinical confusion (to test clinical indicators and proper differentiation).
+5. TVD/CABG cardiology cases (to test cardiology coding).
+6. Denial appeal cases that explicitly need to cite comorbidities present in the clinical notes (such as a history of hypertension, a prior stent placed months earlier, or documented bleeding).
+
+${focusPrompt}
+
+CONDITIONS TO USE: Dengue Fever, Typhoid Fever, Ischemic Heart Disease / Planned CABG, Senile Cataract, Maintenance Hemodialysis, Acute Appendicitis, Osteoarthritis / Planned TKR, Acute Gastroenteritis, Maternity (LSCS), Uterine Fibroids / Hysterectomy.
+
+For each case, construct a JSON object matching this TypeScript interface exactly:
+interface MultiModuleTestCase {
+  id: number;
+  category: 'A' | 'B' | 'C' | 'D' | 'E';
+  difficulty: 'medium' | 'high' | 'extreme';
+  focusCategory: 'preauth_heavy' | 'denial_heavy' | 'billing_complex';
+  diagnosis: string;
+  code: string; // Valid WHO ICD-10 code (e.g. J18.9, E11.9, etc.)
+  chiefComplaints: string;
+  hpi: string;
+  relevantClinicalFindings: string;
+  additionalClinicalNotes?: string;
+  duration?: string;
+  treatmentTakenSoFar?: string;
+  reasonForHospitalisation?: string;
+  uploadedDocuments?: string[]; // array of strings like 'doctor_notes', 'blood_test_reports', 'ecg'
+  patientName?: string;
+  patient?: {
+    patientName?: string;
+    age?: number;
+    gender?: 'Male' | 'Female' | 'Other';
+    mobileNumber?: string;
+  };
+  insurance?: {
+    policyNumber?: string;
+    insurerName?: string;
+    tpaName?: string;
+    sumInsured?: number;
+    balanceSumInsured?: number;
+    tpaIdCardNumber?: string;
+  };
+  vitals?: { bp?: string; pulse?: string; temp?: string; spo2?: string; rr?: string };
+  expected: { mustFlag: string[]; mustNotFlag: string[]; shouldGenerate: boolean; };
+  notes: string;
+  realGap: string; // The explicit, real-world TPA gap this case is designed to trigger
+  sourceReasoning: string; // The IRDAI/TPA rule justifying the gap.
+  rawDocumentText: string; // Full realistic unstructured document text (like a discharge summary or doctor letter) that contains all the patient name, age, gender, policy number, insurer name, diagnoses and findings. Integrate real Indian clinic/physician names and scanned medical jargon/short hands.
+  simulatedDenialReason?: string; // Attach a simulated TPA denial/query reason text (e.g. "prior authorization denied as medical necessity not established for normal ward stay", "unbundled modifier missing for surgeon package charges", "short stay observation under 24 hours is not admissible for inpatient pre-auth") for roughly 30-40% of cases. Otherwise, leave null or omit.
+  expectedAnswer: {
+    expectedExtraction: {
+      patientName: string | null;
+      age: number | null;
+      gender: 'Male' | 'Female' | 'Other' | null;
+      policyNumber: string | null;
+      insurerName: string | null;
+    } | null;
+    expectedReview: {
+      mustFlag: string[];
+      mustNotFlag: string[];
+      shouldGenerate: boolean;
+    } | null;
+    expectedCode: string | null; // The exact expected ICD-10 code
+    expectedCost: number | null; // Expected total cost in INR (numerical)
+    expectedEligibility: 'approved' | 'denied' | 'query' | 'partial_approved' | null; // expected outcome
+    expectedAppealCitations: string[] | null; // key findings/excerpts that must be cited in an appeal if denialReason is present
+  };
+}
+
+INSTRUCTIONS:
+1. Generate unique patient presentations, ages, and vitals for every case.
+2. For the expectedAnswer, leave fields null if a given case is not designed to exercise that module.
+3. Keep rawDocumentText medically realistic and comprehensive.
+4. Output ONLY a valid JSON array of ${count} objects. Do not include markdown code blocks.
+`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: modelName,
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+
+    const text = response.text;
+    if (!text) {
+      throw new Error("Empty response text from Gemini dynamic generation");
+    }
+
+    let generatedCases = JSON.parse(text) as MultiModuleTestCase[];
+
+    // Assign random unique IDs to avoid collisions
+    const baseId = Math.floor(Math.random() * 10000) + 15000;
+    generatedCases = generatedCases.map((tc, idx) => ({
+      ...tc,
+      id: baseId + idx
+    }));
+
+    return generatedCases;
+  } catch (error) {
+    console.error(`[DynamicCaseGenerator] Error synthesizing multi-module cases, using static highPainTestCases as fallback:`, error);
+    return highPainTestCases.slice(0, count);
+  }
+}
+
+export const highPainTestCases: MultiModuleTestCase[] = [
+  {
+    id: 22959,
+    category: 'A',
+    difficulty: "high",
+    focusCategory: "preauth_heavy",
+    diagnosisText: "Senile Nuclear Cataract right eye",
+    diagnosis: "Senile Nuclear Cataract right eye with visual acuity 6/60",
+    code: "H25.1",
+    chiefComplaints: "C/O gradual diminution of vision RE for 8 months.",
+    hpi: "C/O gradual diminution of vision RE for 8 months. A/H/O DM 12 years on OHA.",
+    relevantClinicalFindings: "O/E VA RE 6/60, LE 6/18. Slit lamp: Nuclear sclerosis grade III. Fundus: hazy view.",
+    additionalClinicalNotes: "Advised Phaco + IOL under LA. Pre-op ECG and sugar control required.",
+    uploadedDocuments: ["doctor_notes", "blood_test_reports"],
+    patientName: "Ramesh Sharma",
+    patient: { patientName: "Ramesh Sharma", age: 68, gender: "Male" },
+    insurance: { policyNumber: "STAR-987654", insurerName: "Star Health and Allied Insurance Co Ltd", tpaName: "Medi Assist", sumInsured: 500000 },
+    simulatedDenialReason: "Pre-authorization denied due to missing pre-operative blood sugar control documentation and ECG report.",
+    rawDocumentText: "PATIENT: Ramesh Sharma, Age: 68, Gender: Male. Policy Number: STAR-987654, Insurer: Star Health and Allied Insurance Co Ltd, TPA: Medi Assist. Clinical Notes: gradual diminution of vision RE for 8 months. DM 12 years on OHA. VA RE 6/60, LE 6/18. Slit lamp: Nuclear sclerosis grade III. Phaco + IOL under LA. Requested Room: General. Estimated Cost: 85000.",
+    cost: { totalEstimatedCost: 85000, wardType: "General" } as any,
+    expected: { mustFlag: ["Sugar Control"], mustNotFlag: [], shouldGenerate: true },
+    notes: "Cataract pre-op checks required",
+    realGap: "Missing blood sugar control documentation",
+    sourceReasoning: "Standard ophthalmic pre-op checklist rules",
+    expectedAnswer: {
+      expectedExtraction: {
+        patientName: "Ramesh Sharma",
+        age: 68,
+        gender: "Male",
+        policyNumber: "STAR-987654",
+        insurerName: "Star Health and Allied Insurance Co Ltd"
+      },
+      expectedReview: null,
+      expectedCode: "H25.1",
+      expectedCost: 85000,
+      expectedEligibility: "query",
+      expectedAppealCitations: ["DM 12 years", "Nuclear sclerosis grade III"]
+    }
+  },
+  {
+    id: 22960,
+    category: 'B',
+    difficulty: "extreme",
+    focusCategory: "denial_heavy",
+    focusCategory_simulated: "denial_heavy",
+    diagnosisText: "Maternal care for uterine scar from previous surgery",
+    diagnosis: "Previous LSCS with scar, now G2P1L1 at 37 weeks for elective repeat LSCS",
+    code: "O34.21",
+    chiefComplaints: "Pain abdomen since morning. A/H/O LSCS 4 years back.",
+    hpi: "G2P1L1 at 37 weeks. C/O pain abdomen since morning. Scar tenderness present.",
+    relevantClinicalFindings: "USG: Single live fetus, cephalic, AFI adequate.",
+    additionalClinicalNotes: "Advised elective repeat LSCS. Previous scar noted.",
+    uploadedDocuments: ["doctor_notes", "usg_report"],
+    patientName: "Priya Patel",
+    patient: { patientName: "Priya Patel", age: 32, gender: "Female" },
+    insurance: { policyNumber: "CARE-456789", insurerName: "Care Health Insurance", tpaName: "MDIndia", sumInsured: 300000 },
+    simulatedDenialReason: "Claim denied as previous LSCS scar not documented as high-risk factor in initial pre-auth submission.",
+    rawDocumentText: "PATIENT: Priya Patel, Age: 32, Gender: Female. Policy Number: CARE-456789, Insurer: Care Health Insurance, TPA: MDIndia. Clinical Notes: Previous LSCS 4 years back. Pain abdomen since morning. Scar tenderness present. Elective repeat LSCS. Expected Package: 125000.",
+    cost: { totalEstimatedCost: 125000, wardType: "Private" } as any,
+    expected: { mustFlag: ["Scar tenderness"], mustNotFlag: [], shouldGenerate: true },
+    notes: "LSCS repeat scar tenderness",
+    realGap: "Scar tenderness verification",
+    sourceReasoning: "Maternity high risk guidelines",
+    expectedAnswer: {
+      expectedExtraction: {
+        patientName: "Priya Patel",
+        age: 32,
+        gender: "Female",
+        policyNumber: "CARE-456789",
+        insurerName: "Care Health Insurance"
+      },
+      expectedReview: null,
+      expectedCode: "O34.21",
+      expectedCost: 125000,
+      expectedEligibility: "approved",
+      expectedAppealCitations: ["Scar tenderness present", "Previous LSCS 4 years back"]
+    }
+  },
+  {
+    id: 22961,
+    category: 'C',
+    difficulty: "high",
+    focusCategory: "billing_complex",
+    diagnosisText: "Primary osteoarthritis of knee",
+    diagnosis: "Bilateral Primary Gonarthrosis with severe pain, planned TKR right knee",
+    code: "M17.1",
+    chiefComplaints: "C/O bilateral knee pain for 5 years, worse on right.",
+    hpi: "Varus deformity, crepitus present. X-ray: Grade IV OA.",
+    relevantClinicalFindings: "Grade IV osteoarthritis of knee.",
+    additionalClinicalNotes: "Advised right TKR. Implant cost ₹1.8 lakh. Room rent capping applies.",
+    uploadedDocuments: ["doctor_notes", "xray_report"],
+    patientName: "Suresh Rao",
+    patient: { patientName: "Suresh Rao", age: 62, gender: "Male" },
+    insurance: { policyNumber: "HDFC-112233", insurerName: "HDFC ERGO General Insurance Co Ltd", tpaName: "Paramount Healthcare", sumInsured: 800000 },
+    simulatedDenialReason: "Room rent capping applied. Implant cost above package limit.",
+    rawDocumentText: "PATIENT: Suresh Rao, Age: 62, Gender: Male. Policy Number: HDFC-112233, Insurer: HDFC ERGO General Insurance Co Ltd, TPA: Paramount Healthcare. Clinical Notes: bilateral knee pain for 5 years. Varus deformity, crepitus. Grade IV OA. Right TKR planned. Implant cost: 1.8 lakh. Expected Cost: 450000.",
+    cost: { totalEstimatedCost: 450000, wardType: "Private" } as any,
+    expected: { mustFlag: ["Varus deformity"], mustNotFlag: [], shouldGenerate: true },
+    notes: "TKR implant costing and caps",
+    realGap: "Implant cost caps check",
+    sourceReasoning: "HDFC policy limits rules",
+    expectedAnswer: {
+      expectedExtraction: {
+        patientName: "Suresh Rao",
+        age: 62,
+        gender: "Male",
+        policyNumber: "HDFC-112233",
+        insurerName: "HDFC ERGO General Insurance Co Ltd"
+      },
+      expectedReview: null,
+      expectedCode: "M17.1",
+      expectedCost: 450000,
+      expectedEligibility: "partial_approved",
+      expectedAppealCitations: ["Grade IV OA", "bilateral knee pain for 5 years"]
+    }
+  }
+];
+
+export default highPainTestCases;

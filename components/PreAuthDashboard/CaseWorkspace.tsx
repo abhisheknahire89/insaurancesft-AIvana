@@ -217,6 +217,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                 : record.admission?.roomCategory === 'Semi-Private' ? 'Semi-Private'
                 : 'Private') as BillingInput['wardType'],
             requestedAmount: record.costEstimate?.totalEstimatedCost ?? 0,
+            resolvedICD10: icdCode
         };
 
         runBillingCodingWorkflow(input)

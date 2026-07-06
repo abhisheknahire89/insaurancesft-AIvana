@@ -328,7 +328,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
   <div class="meta">
     <div class="meta-row"><span class="label">Ref No:</span> ${record.id ?? '—'}</div>
     <div class="meta-row"><span class="label">Date:</span> ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
-    <div class="meta-row"><span class="label">Patient:</span> ${patient?.patientName ?? '—'}, ${patient?.age ?? '?'}Y ${patient?.gender ?? ''}</div>
+    <div class="meta-row"><span class="label">Patient:</span> ${patient?.patientName ?? '—'}, ${patient?.age ?? '?'}${patient?.ageUnit === 'months' ? 'M' : 'Y'} ${patient?.gender ?? ''}</div>
     <div class="meta-row"><span class="label">Policy No:</span> ${ins?.policyNumber ?? '—'}</div>
     <div class="meta-row"><span class="label">Insurer:</span> ${ins?.insurerName ?? '—'}</div>
     <div class="meta-row"><span class="label">TPA:</span> ${ins?.tpaName ?? '—'}</div>
@@ -908,7 +908,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                             <div className="bg-white/[0.01] border border-white/5 rounded-xl p-5 space-y-3.5 text-xs shadow-sm shadow-black/10">
                                 <h3 className="font-bold text-gray-300 uppercase tracking-wider border-b border-white/5 pb-2">Pre-Authorization Summary</h3>
                                 {[
-                                    ['Patient Details', `${record.patient?.patientName ?? '—'}, ${record.patient?.age ?? '?'}Y ${record.patient?.gender ?? ''}`],
+                                    ['Patient Details', `${record.patient?.patientName ?? '—'}, ${record.patient?.age ?? '?'}${record.patient?.ageUnit === 'months' ? 'M' : 'Y'} ${record.patient?.gender ?? ''}`],
                                     ['Policy Info', `${record.insurance?.policyNumber ?? '—'} (${record.insurance?.insurerName ?? '—'} via ${record.insurance?.tpaName ?? '—'})`],
                                     ['Primary Diagnosis', `${selectedDx?.diagnosis ?? '—'} (${selectedDx?.icd10Code ?? '—'})`],
                                     ['Admission Setup', `${record.admission?.admissionType ?? '—'} — ${record.admission?.dateOfAdmission ?? '—'} — ${record.admission?.roomCategory ?? '—'}`],
@@ -1067,7 +1067,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
                                         <div className="space-y-1">
                                             <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Demographics</div>
-                                            <div className="text-slate-300 font-semibold">{record.patient?.age ? `${record.patient.age}Y` : ''} {record.patient?.gender ?? ''}</div>
+                                            <div className="text-slate-300 font-semibold">{record.patient?.age ? `${record.patient.age}${record.patient.ageUnit === 'months' ? 'M' : 'Y'}` : ''} {record.patient?.gender ?? ''}</div>
                                             <div className="text-[10px] text-slate-500">UHID: {record.patient?.uhid || '—'}</div>
                                         </div>
                                         <div className="space-y-1">

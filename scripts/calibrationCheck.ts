@@ -99,7 +99,7 @@ This calibration demonstrates that our deduction models do not exhibit clusterin
 `;
 
   // Write output report to brain artifacts directory
-  const reportPath = '/Users/abhishekpravinnahire/.gemini/antigravity-ide/brain/c5f81ab3-f4b1-4eb6-be7f-c841cd879dd2/calibration_report.md';
+  const reportPath = '/Users/abhishekpravinnahire/.gemini/antigravity-ide/brain/6edd38dc-5c1e-4f74-8bea-e7713e92fe3e/calibration_report.md';
   fs.writeFileSync(reportPath, outputMarkdown, 'utf8');
   console.log(`[Calibration] Calibration report successfully written to: ${reportPath}`);
   console.log(outputMarkdown);

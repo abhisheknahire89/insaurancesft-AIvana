@@ -1,6 +1,6 @@
-import { PreAuthRecord, EvidenceReviewReport, WizardDocument } from '../components/PreAuthWizard/types';
+import { PreAuthRecord, WizardDocument } from '../components/PreAuthWizard/types';
 import { INSURANCE_POLICY_RULES, InsurancePolicyRule } from '../config/insurancePolicies';
-import { reviewEvidence } from './evidenceReview';
+import { reviewEvidence, EvidenceReviewReport } from './evidenceReview';
 import { extractFromDocument, ExtractedPatientData } from '../services/documentExtractionService';
 
 export interface ExtendedEvidenceReviewReport extends EvidenceReviewReport {
@@ -32,6 +32,7 @@ export interface PriorAuthInput {
   patientDetails: {
     name: string;
     age: number;
+    ageUnit?: 'years' | 'months';
     gender: string;
     stateCode: string;
   };
@@ -281,6 +282,7 @@ export async function runPriorAuthWorkflow(input: PriorAuthInput): Promise<Prior
     patient: {
       patientName: input.patientDetails.name,
       age: input.patientDetails.age,
+      ageUnit: input.patientDetails.ageUnit || 'years',
       gender: input.patientDetails.gender as any,
       uhid: 'UHID-DEMO-999'
     },

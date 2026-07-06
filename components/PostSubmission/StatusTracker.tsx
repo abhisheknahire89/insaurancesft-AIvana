@@ -90,7 +90,7 @@ export const StatusTracker: React.FC<StatusTrackerProps> = ({ record, onClose, o
                         </div>
                         <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-gray-400 pt-1">
                             <div>Patient: <span className="text-white">{record.patient?.patientName}</span></div>
-                            <div>Age/Sex: <span className="text-white">{record.patient?.age}Y {record.patient?.gender}</span></div>
+                            <div>Age/Sex: <span className="text-white">{record.patient?.age}{record.patient?.ageUnit === 'months' ? 'M' : 'Y'} {record.patient?.gender}</span></div>
                             <div>Diagnosis: <span className="text-white">{selectedDx?.diagnosis ?? '—'}</span></div>
                             <div>ICD-10: <span className="text-white font-mono">{selectedDx?.icd10Code ?? '—'}</span></div>
                             <div>Insurer: <span className="text-white">{record.insurance?.insurerName}</span></div>
@@ -117,7 +117,7 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
 <div class="meta">
 <div class="meta-row"><span class="label">Ref No:</span> ${record.id}</div>
 <div class="meta-row"><span class="label">Date:</span> ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
-<div class="meta-row"><span class="label">Patient:</span> ${record.patient?.patientName ?? '—'}, ${record.patient?.age ?? '?'}Y ${record.patient?.gender ?? ''}</div>
+<div class="meta-row"><span class="label">Patient:</span> ${record.patient?.patientName ?? '—'}, ${record.patient?.age ?? '?'}${record.patient?.ageUnit === 'months' ? 'M' : 'Y'} ${record.patient?.gender ?? ''}</div>
 <div class="meta-row"><span class="label">Policy No:</span> ${record.insurance?.policyNumber ?? '—'}</div>
 <div class="meta-row"><span class="label">Insurer:</span> ${record.insurance?.insurerName ?? '—'}</div>
 <div class="meta-row"><span class="label">TPA:</span> ${record.insurance?.tpaName ?? '—'}</div>

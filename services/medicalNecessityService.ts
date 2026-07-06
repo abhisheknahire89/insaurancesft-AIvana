@@ -135,7 +135,7 @@ ${tpaRisks.map((t: string) => `• ${t}`).join('\n')}`;
     const text = `MEDICAL NECESSITY STATEMENT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Patient: ${patient?.patientName ?? 'N/A'}, ${patient?.age ?? '?'} years, ${patient?.gender ?? 'N/A'}
+Patient: ${patient?.patientName ?? 'N/A'}, ${patient?.age ?? '?'}${patient?.ageUnit === 'months' ? ' months' : ' years'}, ${patient?.gender ?? 'N/A'}
 Diagnosis: ${selectedDx?.diagnosis ?? 'N/A'} (ICD-10: ${selectedDx?.icd10Code && validateCode(selectedDx.icd10Code) ? selectedDx.icd10Code : 'Pending ICD-10'})
 Diagnostic Confidence: ${selectedDx ? `${Math.round((selectedDx.probability ?? 0.85) * 100)}%` : 'N/A'}
 

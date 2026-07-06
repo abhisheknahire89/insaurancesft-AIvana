@@ -45,6 +45,7 @@ export interface PartCOutput {
   // Patient & policy section
   patientName: string;
   patientAge: number | null;
+  patientAgeUnit?: 'years' | 'months';
   patientGender: string;
   policyNumber: string;
   insurerName: string;
@@ -372,6 +373,7 @@ export function generatePartC(
     // Patient & policy
     patientName: record.patient?.patientName ?? '',
     patientAge: record.patient?.age ?? null,
+    patientAgeUnit: record.patient?.ageUnit ?? 'years',
     patientGender: record.patient?.gender ?? '',
     policyNumber: record.insurance?.policyNumber ?? '',
     insurerName: record.insurance?.insurerName ?? '',
@@ -480,7 +482,7 @@ export function generatePartCText(partC: PartCOutput): string {
   lines.push('SECTION 3 — PATIENT & POLICY');
   lines.push(sep);
   lines.push(`Patient Name        : ${partC.patientName}`);
-  lines.push(`Age / Gender        : ${partC.patientAge ?? '—'} / ${partC.patientGender}`);
+  lines.push(`Age / Gender        : ${partC.patientAge !== null && partC.patientAge !== undefined ? `${partC.patientAge}${partC.patientAgeUnit === 'months' ? 'M' : 'Y'}` : '—'} / ${partC.patientGender}`);
   lines.push(`Policy Number       : ${partC.policyNumber}`);
   lines.push(`Insurer             : ${partC.insurerName}`);
   lines.push(`TPA                 : ${partC.tpaName}`);

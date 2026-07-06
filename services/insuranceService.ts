@@ -267,7 +267,7 @@ SECTION 3: PATIENT PERSONAL DETAILS
 ────────────────────────────────────────────────────────────────────────────────
 Patient Name: ${formData.section3_PatientDetails.patientName}
 Date of Birth: ${formData.section3_PatientDetails.dateOfBirth}
-Age: ${formData.section3_PatientDetails.age} years
+Age: ${formData.section3_PatientDetails.age} ${formData.section3_PatientDetails.ageUnit === 'months' ? 'months' : 'years'}
 Gender: ${formData.section3_PatientDetails.gender}
 Marital Status: ${formData.section3_PatientDetails.maritalStatus}
 Occupation: ${formData.section3_PatientDetails.occupation}

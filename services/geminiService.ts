@@ -1,6 +1,7 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 import { MODEL_TEXT, MODEL_DOCUMENT } from '../config/modelConfig';
+import { getDescription } from './icdService';
 import {
   Message,
   DoctorProfile,
@@ -745,6 +746,9 @@ export interface BillingCodingOutput {
     copayDeductions: number;
     cashlessApproved: number;
     patientShare: number;
+    copayPercentage?: number;
+    nonMedicalDeduction?: number;
+    roomRentDeduction?: number;
 }
 
 export const extractBillingCodesAI = async (
@@ -752,7 +756,8 @@ export const extractBillingCodesAI = async (
     insurerName: string,
     sumInsured: number,
     wardType: string,
-    requestedAmount: number
+    requestedAmount: number,
+    resolvedICD10?: string
 ): Promise<BillingCodingOutput> => {
     const systemInstruction = `You are an expert Medical Coder and Claim Auditor specializing in India-adapted ICD-10 and procedure coding (CPT/PM-JAY package codes).
     Analyze the clinical note and generate:
@@ -817,26 +822,77 @@ export const extractBillingCodesAI = async (
                         scrubbingStatus: { type: Type.STRING, enum: ['Clean', 'Warnings', 'Failed'] },
                         copayDeductions: { type: Type.NUMBER },
                         cashlessApproved: { type: Type.NUMBER },
-                        patientShare: { type: Type.NUMBER }
+                        patientShare: { type: Type.NUMBER },
+                        copayPercentage: { type: Type.NUMBER },
+                        nonMedicalDeduction: { type: Type.NUMBER },
+                        roomRentDeduction: { type: Type.NUMBER }
                     },
-                    required: ['primaryICD10', 'primaryDescription', 'secondaryICD10', 'suggestedCPT', 'validationWarnings', 'scrubbingStatus', 'copayDeductions', 'cashlessApproved', 'patientShare']
+                    required: [
+                        'primaryICD10', 'primaryDescription', 'secondaryICD10', 'suggestedCPT', 
+                        'validationWarnings', 'scrubbingStatus', 'copayDeductions', 'cashlessApproved', 
+                        'patientShare', 'copayPercentage', 'nonMedicalDeduction', 'roomRentDeduction'
+                    ]
                 }
             }
         });
 
-        return JSON.parse(response.text || '{}') as BillingCodingOutput;
+        const result = JSON.parse(response.text || '{}') as BillingCodingOutput;
+
+        // Task 3: Consume resolved ICD-10 if provided
+        if (resolvedICD10) {
+            result.primaryICD10 = resolvedICD10;
+            const desc = getDescription(resolvedICD10);
+            if (desc) {
+                result.primaryDescription = desc;
+            }
+        }
+
+        // Task 1: Deterministic check - cashlessApproved + patientShare + copayDeductions must equal requestedAmount (within 1%)
+        const sum = result.cashlessApproved + result.patientShare + result.copayDeductions;
+        const tolerance = 0.01 * requestedAmount;
+        
+        if (Math.abs(sum - requestedAmount) > tolerance || (result.cashlessApproved === 0 && requestedAmount > 0)) {
+            const nonMed = result.nonMedicalDeduction && result.nonMedicalDeduction > 0
+                ? result.nonMedicalDeduction
+                : (requestedAmount * 0.09); // default to 9% non-medical deductions
+            
+            const rr = result.roomRentDeduction && result.roomRentDeduction > 0
+                ? result.roomRentDeduction
+                : 0;
+
+            const copayPct = result.copayPercentage && result.copayPercentage > 0
+                ? result.copayPercentage
+                : 0;
+
+            const totalDeds = nonMed + rr;
+            const eligible = Math.max(0, requestedAmount - totalDeds);
+            const copayVal = eligible * (copayPct / 100);
+            
+            const finalCashless = Math.max(0, eligible - copayVal);
+            const finalPatientShare = requestedAmount - finalCashless - copayVal;
+
+            result.copayDeductions = Math.round(copayVal);
+            result.cashlessApproved = Math.round(finalCashless);
+            result.patientShare = Math.round(finalPatientShare);
+        } else {
+            // Reconcile exact rounding error even if within 1%
+            result.patientShare = requestedAmount - result.cashlessApproved - result.copayDeductions;
+        }
+
+        return result;
     } catch (e) {
         console.error("Error in extractBillingCodesAI:", e);
+        // Task 5: Return failed status rather than fake Pneumonia (J18.9)
         return {
-            primaryICD10: 'J18.9',
-            primaryDescription: 'Pneumonia, unspecified organism',
-            secondaryICD10: [{ code: 'E11.9', description: 'Type 2 diabetes mellitus without complications' }],
-            suggestedCPT: [{ code: '99222', description: 'Initial hospital care', estimatedRate: 5000 }],
-            validationWarnings: ['Manual audit required due to server connection issues.'],
-            scrubbingStatus: 'Warnings',
+            primaryICD10: 'FAILED',
+            primaryDescription: 'generation failed — requires manual coding',
+            secondaryICD10: [],
+            suggestedCPT: [],
+            validationWarnings: ['Generation failed — requires manual coding due to model connection error.'],
+            scrubbingStatus: 'Failed',
             copayDeductions: 0,
-            cashlessApproved: requestedAmount * 0.9,
-            patientShare: requestedAmount * 0.1
+            cashlessApproved: 0,
+            patientShare: requestedAmount
         };
     }
 };

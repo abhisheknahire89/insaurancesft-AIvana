@@ -126,6 +126,7 @@ export interface PatientRecord {
     patientName: string;
     dateOfBirth: string;
     age: number;
+    ageUnit?: 'years' | 'months';
     gender: 'Male' | 'Female' | 'Other';
     maritalStatus: 'Single' | 'Married' | 'Widowed' | 'Divorced';
     occupation: string;

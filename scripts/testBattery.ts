@@ -111,7 +111,8 @@ export function makePreAuthRecord(tc: TestCase): PreAuthRecord {
     isRequired: true
   }));
 
-  const mustFlag = tc.expected.mustFlag.map(f => f.toLowerCase());
+  const expected = tc.expected || {};
+  const mustFlag = (expected.mustFlag || []).map(f => f.toLowerCase());
   const needsSpO2 = mustFlag.some(f => f.includes('spo2') || f.includes('oxygen'));
   const needsTemp = mustFlag.some(f => f.includes('temp') || f.includes('fever') || f.includes('pyrexia'));
   const needsDuration = mustFlag.some(f => f.includes('duration'));
@@ -2092,13 +2093,15 @@ async function executeBattery() {
           (record.costEstimate?.surgeonFee ?? 0) === 0 && 
           (record.costEstimate?.totalImplantsCost ?? 0) === 0;
 
-      const icdCode = record.clinical?.diagnoses?.[0]?.icd10Code || '';
-      const hasInvalidICD = !icdCode || icdCode === 'Pending ICD-10' || icdCode === 'Selection required' || !validateCode(icdCode);
+      const selectedDx = record.clinical?.diagnoses?.[0];
+      const icdCode = selectedDx?.icd10Code || '';
+      const isLowConfidenceAi = selectedDx?.icd10MatchMethod === 'ai_fallback' || (selectedDx as any).confidence === 'low' || (selectedDx as any).icd10MatchMethod?.includes('low');
+      const hasInvalidICD = !icdCode || icdCode === 'Pending ICD-10' || icdCode === 'Selection required' || !validateCode(icdCode) || isLowConfidenceAi;
 
       const blockingGaps = [
         !record.patient?.patientName ? 'Patient Name is required.' : null,
         !record.clinical?.diagnoses?.[0]?.diagnosis ? 'Diagnosis is required.' : null,
-        hasInvalidICD ? 'A confirmed, valid ICD-10 code is required.' : null,
+        hasInvalidICD ? (isLowConfidenceAi ? 'Low-confidence AI code requires manual confirmation.' : 'A confirmed, valid ICD-10 code is required.') : null,
         !record.declarations?.doctor?.doctorRegistrationNumber ? 'Doctor Registration Number is required.' : null,
         !record.admission?.dateOfAdmission ? 'Date of Admission is required.' : null,
         hasZeroSurgicalCosts ? 'Surgical procedure requires Surgeon Fee, OT Charges, or Implants Cost to be non-zero.' : null,
@@ -2375,7 +2378,12 @@ function lookupICD(diagnosis: string) {
   return candidates;
 }
 
-executeBattery().catch(err => {
-  console.error('Fatal crash during test battery execution:', err);
-  process.exit(1);
-});
+// Only run if executed directly
+import { argv } from 'process';
+const isMain = argv[1] && (argv[1].endsWith('testBattery.ts') || argv[1].endsWith('testBattery'));
+if (isMain) {
+  executeBattery().catch(err => {
+    console.error('Fatal crash during test battery execution:', err);
+    process.exit(1);
+  });
+}

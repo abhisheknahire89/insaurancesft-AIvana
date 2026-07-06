@@ -113,5 +113,32 @@ export const ICD_SYNONYM_MAP: IcdSynonym[] = [
   { term: "fracture", code: "T14.8", note: "Fracture/injury unspecified Body region" },
   { term: "haddi tootna", code: "T14.8", note: "Fracture" },
   { term: "head injury", code: "S09.9", note: "Unspecified injury of head [WHO ICD-10]" },
-  { term: "sir me chot", code: "S09.9", note: "Unspecified injury of head (Sir me chot)" }
+  { term: "sir me chot", code: "S09.9", note: "Unspecified injury of head (Sir me chot)" },
+
+  // Orthopedics / Osteoarthritis
+  { term: "osteoarthritis knee", code: "M17.9", note: "Gonarthrosis, unspecified" },
+  { term: "bilateral knee osteoarthritis", code: "M17.0", note: "Primary gonarthrosis, bilateral" },
+  { term: "bilateral osteoarthritis knee", code: "M17.0", note: "Primary gonarthrosis, bilateral" },
+  { term: "knee osteoarthritis", code: "M17.9", note: "Gonarthrosis, unspecified" },
+  { term: "osteoarthritis of knee", code: "M17.9", note: "Gonarthrosis, unspecified" },
+  { term: "bilateral primary osteoarthritis knee", code: "M17.0", note: "Primary gonarthrosis, bilateral" },
+  { term: "osteoarthritis", code: "M19.9", note: "Osteoarthritis, unspecified" },
+
+  // Maternity, LSCS & Delivery
+  { term: "lscs", code: "O82.9", note: "Delivery by Caesarean section, unspecified" },
+  { term: "emergency lscs", code: "O82.1", note: "Delivery by emergency Caesarean section" },
+  { term: "elective lscs", code: "O82.0", note: "Delivery by elective Caesarean section" },
+  { term: "repeat lscs", code: "O82.1", note: "Delivery by emergency Caesarean section (often emergency/previous scar)" },
+  { term: "caesarean section", code: "O82.9", note: "Delivery by Caesarean section, unspecified" },
+  { term: "cesarean section", code: "O82.9", note: "Delivery by Caesarean section, unspecified" },
+  { term: "caesarean", code: "O82.9", note: "Delivery by Caesarean section, unspecified" },
+  { term: "cesarean", code: "O82.9", note: "Delivery by Caesarean section, unspecified" },
+  { term: "delivery", code: "O80.9", note: "Single spontaneous delivery, unspecified" },
+  { term: "maternity", code: "O80.9", note: "Single spontaneous delivery, unspecified" },
+
+  // Gynecology / Fibroids
+  { term: "uterine fibroids", code: "D25.9", note: "Leiomyoma of uterus, unspecified" },
+  { term: "uterine fibroid", code: "D25.9", note: "Leiomyoma of uterus, unspecified" },
+  { term: "fibroid uterus", code: "D25.9", note: "Leiomyoma of uterus, unspecified" },
+  { term: "hysterectomy", code: "N85.9", note: "Noninflammatory disorder of uterus, unspecified (Hysterectomy target)" }
 ];

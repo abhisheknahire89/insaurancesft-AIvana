@@ -32,8 +32,3 @@
 - [x] Delete root `auth.txt` file
 - [x] Delete `components/cost claculator uses ICD databases` and its twin
 - [x] Delete diverged duplicate suffix-2 files (8 files) after user approval
-
-## Task 8: Mine existing synthetic test data as initial calibration set
-- [x] Write script `scripts/calibrationCheck.ts` running test battery cases through `readinessScore.ts`
-- [x] Report score distribution and assess approval thresholds (80/40)
-

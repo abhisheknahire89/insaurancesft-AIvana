@@ -336,7 +336,7 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                                     <td className="px-4 py-3">
                                                         <div className="font-medium text-sm text-white">{rec.patient?.patientName ?? '—'}</div>
                                                         <div className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                                                            {rec.patient?.age ? `${rec.patient.age}Y` : ''} {rec.patient?.gender ?? ''}
+                                                            {rec.patient?.age ? `${rec.patient.age}${rec.patient.ageUnit === 'months' ? 'M' : 'Y'}` : ''} {rec.patient?.gender ?? ''}
                                                         </div>
                                                     </td>
 

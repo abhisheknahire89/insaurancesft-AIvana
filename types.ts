@@ -247,6 +247,7 @@ export interface VoiceCapturedFinding {
 export interface PatientInfo {
   name: string;
   age: number;
+  ageUnit?: 'years' | 'months';
   gender: 'Male' | 'Female' | 'Other';
   uhid: string;
   policyNumber?: string;
@@ -385,6 +386,7 @@ export interface IRDAIPreAuthForm {
     patientName: string;
     dateOfBirth: string;
     age: number;
+    ageUnit?: 'years' | 'months';
     gender: 'Male' | 'Female' | 'Other';
     maritalStatus: 'Single' | 'Married' | 'Widowed' | 'Divorced';
     occupation: string;

@@ -50,11 +50,11 @@ async function continuousAudit() {
     ? DURATION_MINS * 60 * 1000
     : DURATION_HOURS > 0
       ? DURATION_HOURS * 60 * 60 * 1000
-      : 18 * 60 * 60 * 1000; // default: 18 hours
+      : 8 * 60 * 60 * 1000; // default: 8 hours
 
   const shortMode = BATCH_LIMIT > 0 || DURATION_MINS > 0;
   console.log(`🚀 Starting Continuous Testing + Gemini Audit Loop`);
-  console.log(`   Mode:     ${shortMode ? `SHORT (${BATCH_LIMIT > 0 ? `max ${BATCH_LIMIT} cases` : 'unlimited cases'}, ${Math.round(DURATION_MS / 60000)} min)` : '18-HOUR FULL RUN'}`);
+  console.log(`   Mode:     ${shortMode ? `SHORT (${BATCH_LIMIT > 0 ? `max ${BATCH_LIMIT} cases` : 'unlimited cases'}, ${Math.round(DURATION_MS / 60000)} min)` : '8-HOUR FULL RUN'}`);
 
   if (!fs.existsSync(LOGS_DIR)) {
     fs.mkdirSync(LOGS_DIR, { recursive: true });
@@ -95,7 +95,7 @@ async function continuousAudit() {
   // Initialize markdown logs
   fs.writeFileSync(findingsPath, '# Continuous Audit Findings\\n\\n', 'utf-8');
 
-  while (Date.now() < endTime && !(BATCH_LIMIT > 0 && totalCasesRun >= BATCH_LIMIT)) {
+  while (Date.now() < endTime) {
     console.log(`\\n--- Starting Iteration Set ${iterationCounter} ---`);
 
     let currentBatch: GroundedTestCase[];

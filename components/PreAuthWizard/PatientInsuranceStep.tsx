@@ -119,6 +119,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                 patientName: extracted.patient?.name || patient.patientName,
                 dateOfBirth: dob,
                 age: extracted.patient?.age || (dob ? calculateAge(dob) : patient.age),
+                ageUnit: extracted.patient?.ageUnit || 'years',
                 gender: (extracted.patient?.gender as any) || patient.gender,
                 mobileNumber: extracted.patient?.phone || patient.mobileNumber,
                 city: patient.city, 
@@ -268,7 +269,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                                         <div className="text-xs text-gray-400 mt-1 flex gap-3 font-mono">
                                             <span>UHID: {p.uhid || 'N/A'}</span>
                                             <span>Phone: {p.mobileNumber}</span>
-                                            <span>{p.gender}, {p.age}y</span>
+                                            <span>{p.gender}, {p.age}{p.ageUnit === 'months' ? 'm' : 'y'}</span>
                                         </div>
                                     </div>
                                     {p.lastKnownPolicyNumber && (

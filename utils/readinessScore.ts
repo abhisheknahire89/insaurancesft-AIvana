@@ -47,7 +47,8 @@ export function computeReadiness(
     const icdCode = selectedDx?.icd10Code ?? '';
     const requiredDocs: DocumentRequirement[] = getRequiredDocuments(selectedDx?.icd10Code ?? selectedDx?.diagnosis ?? '');
 
-    const hasInvalidICD = !icdCode || icdCode === 'Pending ICD-10' || icdCode === 'Selection required' || !validateCode(icdCode);
+    const isLowConfidenceAi = selectedDx?.icd10MatchMethod === 'ai_fallback' || (selectedDx as any).confidence === 'low' || (selectedDx as any).icd10MatchMethod?.includes('low');
+    const hasInvalidICD = !icdCode || icdCode === 'Pending ICD-10' || icdCode === 'Selection required' || !validateCode(icdCode) || isLowConfidenceAi;
     const isSurgical = record.clinical?.proposedLineOfTreatment?.surgical || false;
     const isSurgicalZeroCost = isSurgical &&
         (record.costEstimate?.otCharges ?? 0) === 0 &&
@@ -57,7 +58,7 @@ export function computeReadiness(
     const blockingGaps = [
         !record.patient?.patientName ? 'Patient Name is required.' : null,
         !selectedDx?.diagnosis ? 'Diagnosis is required.' : null,
-        hasInvalidICD ? 'A confirmed, valid ICD-10 code is required.' : null,
+        hasInvalidICD ? (isLowConfidenceAi ? 'Low-confidence AI code requires manual confirmation.' : 'A confirmed, valid ICD-10 code is required.') : null,
         !record.declarations?.doctor?.doctorRegistrationNumber ? 'Doctor Registration Number is required.' : null,
         !record.admission?.dateOfAdmission ? 'Date of Admission is required.' : null,
         isSurgicalZeroCost ? 'Surgical procedure requires Surgeon Fee, OT Charges, or Implants Cost to be non-zero.' : null,
@@ -77,7 +78,10 @@ export function computeReadiness(
     }
     if (hasInvalidICD) {
         val -= 15;
-        missingItems.push({ text: 'A confirmed WHO ICD-10 code is required', deduction: 15, step: 2 });
+        const text = isLowConfidenceAi 
+            ? 'Low-confidence AI code requires manual confirmation' 
+            : 'A confirmed WHO ICD-10 code is required';
+        missingItems.push({ text, deduction: 15, step: 2 });
     }
     if (!record.declarations?.doctor?.doctorRegistrationNumber) {
         val -= 15;

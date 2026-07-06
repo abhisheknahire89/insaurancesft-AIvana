@@ -345,7 +345,7 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
                     {/* Patient */}
                     <Section title="👤 Patient Details" color="blue">
                         <FIELD_ROW label="Name" value={patient.patientName} />
-                        <FIELD_ROW label="Age / Gender" value={patient.age ? `${patient.age}Y · ${patient.gender ?? ''}` : null} />
+                        <FIELD_ROW label="Age / Gender" value={patient.age ? `${patient.age}${patient.ageUnit === 'months' ? 'M' : 'Y'} · ${patient.gender ?? ''}` : null} />
                         <FIELD_ROW label="Phone" value={patient.mobileNumber} />
                         <FIELD_ROW label="City" value={patient.city} />
                         <FIELD_ROW label="Address" value={patient.address} />

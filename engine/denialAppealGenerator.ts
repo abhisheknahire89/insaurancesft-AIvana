@@ -151,7 +151,8 @@ CRITICAL CONSTRAINT - ZERO-TOLERANCE RULES:
 1. ONLY cite evidence items that are explicitly listed in the "Available Clinical Pool".
 2. Under NO circumstances may you fabricate or hallucinate any symptoms, clinical vitals, lab reports, diagnostics, or patient history that are not explicitly present in the provided clinical pool.
 3. If a denial reason cannot be resolved or supported by any item in the Clinical Pool, you MUST list it under "stillMissing" and state that supplementary documentation is required. Do not construct a fake citation or claim evidence is present when it is not.
-4. Output strictly a JSON response matching the schema. Do not include markdown code block formatting (like \`\`\`json). Just the raw JSON.`;
+4. Output strictly a JSON response matching the schema. Do not include markdown code block formatting (like \`\`\`json). Just the raw JSON.
+5. JSON ESCAPE RULE: In the "appealTextBody" string, you must escape any double quotes (use \\" instead of ") and represent newlines using \\n. The JSON must be fully valid and parseable without syntax errors.`;
 
   const prompt = `
 DENIAL REASONS TO CHALLENGE:
@@ -166,8 +167,8 @@ Your response must be a JSON object structured exactly as follows:
     {
       "denialReason": "the exact denial reason text",
       "evidenceItem": "the exact text of the matched evidence item from the Clinical Pool",
-      "source": "anchor" or "discriminator",
-      "forChallenge": "associated challenge or null"
+      "source": "anchor",
+      "forChallenge": "associated challenge"
     }
   ],
   "stillMissing": [
@@ -176,8 +177,10 @@ Your response must be a JSON object structured exactly as follows:
       "explanation": "No matching evidence found in existing report"
     }
   ],
-  "appealTextBody": "Write a professional medical appeal letter body. Directly link the cited evidence items above to refute the denial reasons, keeping the tone highly clinical, assertive, and factual. Refer to standard IRDAI guidelines where applicable."
+  "appealTextBody": "Write a professional medical appeal letter body. Directly link the cited evidence items above to refute the denial reasons, keeping the tone highly clinical, assertive, and factual. Refer to standard IRDAI guidelines where applicable. ESCAPE DOUBLE QUOTES (use \\\\") AND REPRESENT NEWLINES AS \\\\n IN THIS VALUE."
 }
+
+NOTE: For the "source" field in citedEvidence, use either "anchor" or "discriminator". For "forChallenge", use the associated challenge string or null.
 `;
 
   const citedEvidence: CitedEvidenceItem[] = [];
@@ -187,18 +190,84 @@ Your response must be a JSON object structured exactly as follows:
   try {
     const responseText = await queryMedGemma(prompt, systemInstruction);
     let cleanText = responseText.trim();
-    const jsonMatch = cleanText.match(/(\{[\s\S]*?\})/);
-    if (jsonMatch) {
-      cleanText = jsonMatch[1].trim();
+    const startIdx = cleanText.indexOf('{');
+    const endIdx = cleanText.lastIndexOf('}');
+    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+      cleanText = cleanText.substring(startIdx, endIdx + 1);
     }
 
-    const parsed = JSON.parse(cleanText);
+    let parsed: any;
+    try {
+      parsed = JSON.parse(cleanText);
+    } catch (parseErr) {
+      // Robust regex-based fallback parser for unescaped double quotes or raw newlines inside JSON string fields
+      const fallbackResult: any = { citedEvidence: [], stillMissing: [], appealTextBody: '' };
+      
+      const citedMatch = cleanText.match(/"citedEvidence"\s*:\s*(\[[\s\S]*?\])\s*(?:,|$)/);
+      if (citedMatch) {
+        try {
+          fallbackResult.citedEvidence = JSON.parse(citedMatch[1]);
+        } catch (e) {
+          const objMatches = citedMatch[1].match(/\{[\s\S]*?\}/g);
+          if (objMatches) {
+            fallbackResult.citedEvidence = objMatches.map(str => {
+              try { return JSON.parse(str); } catch (err) { return null; }
+            }).filter(Boolean);
+          }
+        }
+      }
+
+      const missingMatch = cleanText.match(/"stillMissing"\s*:\s*(\[[\s\S]*?\])\s*(?:,|$)/);
+      if (missingMatch) {
+        try {
+          fallbackResult.stillMissing = JSON.parse(missingMatch[1]);
+        } catch (e) {
+          const objMatches = missingMatch[1].match(/\{[\s\S]*?\}/g);
+          if (objMatches) {
+            fallbackResult.stillMissing = objMatches.map(str => {
+              try { return JSON.parse(str); } catch (err) { return null; }
+            }).filter(Boolean);
+          }
+        }
+      }
+
+      const bodyIndex = cleanText.indexOf('"appealTextBody"');
+      if (bodyIndex !== -1) {
+        const remaining = cleanText.substring(bodyIndex);
+        const colonIndex = remaining.indexOf(':');
+        if (colonIndex !== -1) {
+          const firstQuoteAfterColon = remaining.indexOf('"', colonIndex);
+          if (firstQuoteAfterColon !== -1) {
+            let bodyStr = remaining.substring(firstQuoteAfterColon + 1);
+            const lastCurly = bodyStr.lastIndexOf('}');
+            if (lastCurly !== -1) {
+              bodyStr = bodyStr.substring(0, lastCurly).trim();
+              if (bodyStr.endsWith('"')) {
+                bodyStr = bodyStr.substring(0, bodyStr.length - 1);
+              }
+              fallbackResult.appealTextBody = bodyStr.trim();
+            }
+          }
+        }
+      }
+
+      if (fallbackResult.citedEvidence.length > 0 || fallbackResult.appealTextBody) {
+        parsed = fallbackResult;
+      } else {
+        throw parseErr;
+      }
+    }
+
     appealTextBody = parsed.appealTextBody || '';
 
-    // Deterministic Verification Post-Processor (zero tolerance enforcement)
+    // Deterministic Verification Post-Processor (zero tolerance enforcement with fuzzy/substring support)
     if (parsed && Array.isArray(parsed.citedEvidence)) {
       parsed.citedEvidence.forEach((item: any) => {
-        const matched = clinicalPool.find(c => c.item.toLowerCase().trim() === (item.evidenceItem || '').toLowerCase().trim());
+        const matched = clinicalPool.find(c => {
+          const cItem = c.item.toLowerCase().trim();
+          const eItem = (item.evidenceItem || '').toLowerCase().trim();
+          return cItem === eItem || cItem.includes(eItem) || eItem.includes(cItem);
+        });
         if (matched) {
           citedEvidence.push({
             denialReason: item.denialReason,

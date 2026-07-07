@@ -587,28 +587,28 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
     if (generated) {
         const isComplete = partCOutput?.submittabilityStatus === 'complete';
         return (
-            <div className="space-y-5">
+            <div className="space-y-5 text-opd-text-primary">
                 {/* Dynamic Success Banner */}
                 <div className={`border rounded-2xl p-6 text-center space-y-3 shadow-sm ${
                     isComplete
-                        ? 'bg-emerald-500/[0.02] border-emerald-500/15 text-emerald-400'
-                        : 'bg-amber-500/[0.02] border-amber-500/15 text-amber-400'
+                        ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                        : 'bg-amber-50 border-amber-200 text-amber-800'
                 }`}>
                     <div className="text-3xl">✨</div>
-                    <h2 className="text-lg font-bold text-white">Pre-Auth Document Ready</h2>
-                    <div className={`font-mono text-xs px-2.5 py-1 rounded-md inline-block ${
+                    <h2 className="text-lg font-bold font-lora text-opd-text-primary">Pre-Auth Document Ready</h2>
+                    <div className={`font-mono text-xs px-2.5 py-1 rounded-md inline-block border ${
                         isComplete
-                            ? 'bg-emerald-950/40 border border-emerald-500/20 text-emerald-400'
-                            : 'bg-amber-950/40 border border-amber-500/20 text-amber-400'
+                            ? 'bg-white border-emerald-200 text-emerald-700'
+                            : 'bg-white border-amber-200 text-amber-700'
                     }`}>{record.id}</div>
                     
-                    {/* Part C Submittability Status */}
+                    {/* Dynamic submittability badge */}
                     <div className="pt-1.5">
                         {partCOutput && (
-                            <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold border ${
+                            <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold border shadow-sm ${
                                 isComplete
-                                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                                    : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                                    : 'bg-amber-50 border-amber-200 text-amber-700'
                             }`}>
                                 <span>{isComplete ? '✓' : '⚠'}</span>
                                 <span>{isComplete
@@ -619,24 +619,24 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                         )}
                     </div>
                     {missingDocs.length > 0 && (
-                        <div className="bg-amber-500/5 border border-amber-500/15 rounded-xl p-3 text-amber-300 text-xs font-semibold max-w-md mx-auto">
+                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-amber-800 text-xs font-semibold max-w-md mx-auto shadow-sm">
                             ⚠️ {missingDocs.length} required document(s) missing — flagged PENDING DOCUMENTS
                         </div>
                     )}
                 </div>
 
                 {/* Action Buttons — sticky above document */}
-                <div className="sticky top-0 z-10 bg-gray-950/95 backdrop-blur-sm pb-3.5 pt-1">
+                <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm pb-3.5 pt-1 border-b border-opd-border">
                     <div className="grid grid-cols-3 gap-3">
                         <button
                             onClick={() => navigator.clipboard.writeText(irdaiText)}
-                            className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 hover:text-white transition-all active:scale-[0.98]"
+                            className="btn-secondary flex items-center justify-center gap-1.5 py-2.5"
                             type="button">
                             Copy Text
                         </button>
                         <button
                             onClick={handlePrint}
-                            className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold bg-white/5 border border-white/10 hover:bg-white/10 text-blue-400 hover:text-blue-300 transition-all active:scale-[0.98]"
+                            className="btn-secondary flex items-center justify-center gap-1.5 py-2.5 text-opd-primary border-opd-primary/20"
                             type="button">
                             Print
                         </button>
@@ -644,27 +644,26 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                             onClick={handleDownloadPDF}
                             className={`flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold transition-all active:scale-[0.98] ${
                                 isComplete
-                                    ? 'bg-emerald-600 hover:bg-emerald-500 shadow-md shadow-emerald-500/10 text-white'
-                                    : 'bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-500/10 text-white'
+                                    ? 'bg-emerald-700 hover:bg-emerald-600 shadow-sm text-white'
+                                    : 'bg-opd-primary hover:bg-opd-primary/95 shadow-sm text-white'
                             }`}
                             type="button">
-                            Save PDF
+                            Download PDF
                         </button>
                     </div>
                 </div>
 
-                {/* Centered Premium Document Preview */}
-                <div className="flex flex-col items-center justify-center p-5 bg-black/20 border border-white/5 rounded-2xl">
-                    <div className="w-full border-b border-white/5 pb-2 mb-3.5 flex items-center justify-between">
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Generated IRDAI Pre-Auth Document Preview</h3>
-                        <span className="text-[9px] text-gray-500 font-mono uppercase tracking-wider font-bold">Format: IRDAI PART C</span>
+                <div className="flex flex-col items-center gap-2">
+                    <div className="w-full max-w-3xl flex justify-between items-center px-1">
+                        <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider font-lora">Generated Pre-Authorization Request Form</span>
+                        <span className="text-[9px] text-opd-text-muted font-mono uppercase tracking-wider font-bold">Format: IRDAI PART C</span>
                     </div>
-                    <pre className="w-full max-w-3xl bg-[#080B11] border border-white/10 rounded-xl p-6 text-xs font-mono text-gray-300 overflow-x-auto overflow-y-auto whitespace-pre-wrap leading-relaxed max-h-[500px] shadow-2xl custom-scrollbar select-all">
+                    <pre className="w-full max-w-3xl bg-opd-input-bg border border-opd-border rounded-xl p-6 text-xs font-mono text-opd-text-primary overflow-x-auto overflow-y-auto whitespace-pre-wrap leading-relaxed max-h-[500px] shadow-sm select-all">
                         {irdaiText}
                     </pre>
                 </div>
 
-                <button onClick={() => setGenerated(false)} className="w-full py-2.5 rounded-lg text-xs font-semibold bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 hover:text-white transition-all active:scale-[0.98]" type="button">
+                <button onClick={() => setGenerated(false)} className="btn-secondary w-full py-2.5" type="button">
                     ← Back to Edit
                 </button>
             </div>
@@ -672,95 +671,92 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
     }
 
     return (
-        <div className="space-y-4">
-            {/* ── Compact case context strip ────────────────────────────── */}
-            <div
-                className="rounded-xl px-4 py-3 flex items-center gap-4 flex-wrap"
-                style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}
-            >
+        <div className="space-y-4 text-opd-text-primary">
+            {/* Case context strip */}
+            <div className="rounded-xl px-4 py-3 flex items-center gap-4 flex-wrap bg-opd-input-bg border border-opd-border shadow-sm">
                 <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.3)' }}>Patient</span>
-                    <span className="text-xs font-semibold text-white truncate">{record.patient?.patientName || '—'}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-muted">Patient</span>
+                    <span className="text-xs font-semibold text-opd-text-primary truncate">{record.patient?.patientName || '-'}</span>
                 </div>
-                <div className="w-px h-3" style={{ background: 'rgba(255,255,255,0.1)' }} />
+                <div className="w-px h-3 bg-opd-border" />
                 <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.3)' }}>Dx</span>
-                    <span className="text-xs font-medium truncate" style={{ color: 'rgba(255,255,255,0.7)' }}>{diagnosisText || 'Pending'}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-muted">Dx</span>
+                    <span className="text-xs font-medium truncate text-opd-text-secondary">{diagnosisText || 'Pending'}</span>
                     {icdCode && !hasInvalidICD && (
-                        <span className="font-mono text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.15)' }}>
+                        <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                             {icdCode}
                         </span>
                     )}
                 </div>
-                <div className="w-px h-3" style={{ background: 'rgba(255,255,255,0.1)' }} />
+                <div className="w-px h-3 bg-opd-border" />
                 <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.3)' }}>Cost</span>
-                    <span className="text-xs font-bold font-mono" style={{ color: 'rgba(255,255,255,0.8)' }}>₹{(record.costEstimate?.totalEstimatedCost ?? 0).toLocaleString('en-IN')}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-muted">Cost</span>
+                    <span className="text-xs font-bold font-mono text-opd-text-primary">Rs. {(record.costEstimate?.totalEstimatedCost ?? 0).toLocaleString('en-IN')}</span>
                 </div>
-                <div className="w-px h-3" style={{ background: 'rgba(255,255,255,0.1)' }} />
+                <div className="w-px h-3 bg-opd-border" />
                 <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.3)' }}>TPA</span>
-                    <span className="text-xs truncate" style={{ color: 'rgba(255,255,255,0.6)' }}>{record.insurance?.tpaName || record.insurance?.insurerName || '—'}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-muted">TPA</span>
+                    <span className="text-xs truncate text-opd-text-secondary">{record.insurance?.tpaName || record.insurance?.insurerName || '-'}</span>
                 </div>
             </div>
 
-            {/* ── Tabs ─────────────────────────────────────────────────────── */}
-            <div className="flex gap-1 bg-gray-950/60 border border-white/5 rounded-xl p-1 select-none">
-                        {TABS.map(tab => (
-                            <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                                className={`flex-1 py-2 rounded-lg text-xs transition-all ${activeTab === tab.id ? 'bg-blue-600 text-white font-bold shadow-sm shadow-blue-500/10' : 'text-gray-400 hover:text-gray-200 font-semibold hover:bg-white/5'}`}
-                                type="button">
-                                {tab.label}
-                            </button>
-                        ))}
+            {/* Tabs */}
+            <div className="flex gap-1 bg-opd-input-bg border border-opd-border rounded-xl p-1 select-none shadow-sm">
+                {TABS.map(tab => (
+                    <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
+                        className={`flex-1 py-2 rounded-lg text-xs transition-all ${activeTab === tab.id ? 'bg-opd-primary text-white font-bold shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary font-semibold hover:bg-white/5'}`}
+                        type="button">
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
+            {/* Validation Blocker Alert */}
+            {hasBlockers && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-2 shadow-sm text-red-800">
+                    <div className="flex items-center gap-2 text-red-700 font-bold text-xs uppercase tracking-wider font-lora">
+                        <span>[-]</span> Submission Blocked - Required Data Missing
                     </div>
+                    <ul className="list-disc list-inside space-y-1 text-xs text-red-800 font-medium leading-relaxed">
+                        {blockingGaps.map((bg, idx) => <li key={idx}>{bg}</li>)}
+                    </ul>
+                </div>
+            )}
 
-                    {/* Validation Blocker Alert */}
-                    {hasBlockers && (
-                        <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-4 space-y-2">
-                            <div className="flex items-center gap-2 text-red-400 font-bold text-xs uppercase tracking-wider">
-                                <span>⛔</span> Submission Blocked — Required Data Missing
-                            </div>
-                            <ul className="list-disc list-inside space-y-1 text-xs text-red-300 font-medium leading-relaxed">
-                                {blockingGaps.map((bg, idx) => <li key={idx}>{bg}</li>)}
-                            </ul>
-                        </div>
-                    )}
+            {/* Consistency Warnings Alert */}
+            {!hasBlockers && currentPartC?.warnings && currentPartC.warnings.length > 0 && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2 shadow-sm text-amber-800">
+                    <div className="flex items-center gap-2 text-amber-700 font-semibold text-xs uppercase tracking-wider font-lora">
+                        <span>[!]</span> Internal Consistency Warnings
+                    </div>
+                    <ul className="list-disc list-inside space-y-1 text-xs text-amber-800 font-medium leading-relaxed">
+                        {currentPartC.warnings.map((w, idx) => <li key={idx}>{w}</li>)}
+                    </ul>
+                </div>
+            )}
 
-                    {/* Consistency Warnings Alert */}
-                    {!hasBlockers && currentPartC?.warnings && currentPartC.warnings.length > 0 && (
-                        <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 space-y-2">
-                            <div className="flex items-center gap-2 text-amber-400 font-semibold text-xs uppercase tracking-wider">
-                                <span>⚠️</span> Internal Consistency Warnings
-                            </div>
-                            <ul className="list-disc list-inside space-y-1 text-xs text-amber-300 font-medium leading-relaxed">
-                                {currentPartC.warnings.map((w, idx) => <li key={idx}>{w}</li>)}
-                            </ul>
-                        </div>
-                    )}
-
-                    {/* Active tab contents */}
+            {/* Active tab contents */}
+            <div className="space-y-4">
+                {/* Documents Tab */}
+                {activeTab === 'docs' && (
                     <div className="space-y-4">
-                        {/* Documents Tab */}
-                        {activeTab === 'docs' && (
-                            <div className="space-y-4">
-                                {/* Missing Evidence Alert */}
-                                {missingDocs.length > 0 && (
-                                    <div className="bg-rose-500/5 border border-rose-500/20 rounded-2xl p-4 space-y-2">
-                                        <div className="flex items-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-wider">
-                                            <span>📂 Missing Diagnostic Evidence ({missingDocs.length})</span>
-                                        </div>
-                                        <p className="text-gray-300 text-xs font-medium">Required documents according to clinical guidelines for <strong>{diagnosisText}</strong>:</p>
-                                        <ul className="space-y-1">
-                                            {missingDocs.map(d => (
-                                                <li key={d.category} className="flex items-center gap-2 text-xs text-rose-300 font-semibold">
-                                                    <span className="text-rose-500 font-bold">✗</span>
-                                                    <strong>{d.displayName}</strong> — {d.description}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
+                        {/* Missing Evidence Alert */}
+                        {missingDocs.length > 0 && (
+                            <div className="bg-red-50 border border-red-200 rounded-2xl p-4 space-y-2 shadow-sm">
+                                <div className="flex items-center gap-2 text-red-700 font-bold text-xs uppercase tracking-wider font-lora">
+                                    <span>[📂]</span> Missing Diagnostic Evidence ({missingDocs.length})
+                                </div>
+                                <p className="text-opd-text-secondary text-xs font-medium">Required documents according to clinical guidelines for <strong>{diagnosisText}</strong>:</p>
+                                <ul className="space-y-1">
+                                    {missingDocs.map(d => (
+                                        <li key={d.category} className="flex items-center gap-2 text-xs text-red-800 font-semibold">
+                                            <span className="text-red-700 font-bold">x</span>
+                                            <strong>{d.displayName}</strong> - {d.description}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
 
                                 {docs.length > 0 ? (
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

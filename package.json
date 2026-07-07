@@ -13,7 +13,12 @@
     "test:planted": "tsx scripts/plantedErrorCheck.ts",
     "test:adversarial": "tsx scripts/qa/adversarialSafetyQA.ts",
     "test:multi:audit": "tsx scripts/continuousMultiAudit.ts",
-    "test:multi:audit:short": "SINGLE_RUN=true tsx scripts/continuousMultiAudit.ts"
+    "test:multi:audit:short": "SINGLE_RUN=true tsx scripts/continuousMultiAudit.ts",
+    "test:quality:gate": "tsx scripts/qualityGate.ts",
+    "failures:dashboard": "tsx scripts/failureIntelligenceDashboard.ts",
+    "failures:critical": "tsx scripts/failureIntelligenceDashboard.ts --risk critical",
+    "failures:report": "tsx scripts/failureIntelligenceDashboard.ts --export",
+    "test:concurrency:stress": "npx tsx scripts/stressTestConcurrency.ts"
   },
   "dependencies": {
     "@google/genai": "^1.19.0",

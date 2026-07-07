@@ -34,16 +34,16 @@ function ScoreRing({ score }: { score: number }) {
             <svg width={RING_SIZE} height={RING_SIZE} style={{ transform: 'rotate(-90deg)' }}
                 viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}>
                 <circle cx={RING_CX} cy={RING_CY} r={RING_R} fill="none"
-                    stroke="rgba(255,255,255,0.03)" strokeWidth={5} />
+                    stroke="#E1E7E6" strokeWidth={5} />
                 <circle cx={RING_CX} cy={RING_CY} r={RING_R} fill="none"
                     stroke={colors.stroke} strokeWidth={5} strokeLinecap="round"
                     strokeDasharray={CIRCUMFERENCE} strokeDashoffset={offset}
                     style={{ transition: 'stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1)' }} />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-bold tabular-nums leading-none"
+                <span className="font-bold font-lora tabular-nums leading-none"
                     style={{ fontSize: 20, color: colors.stroke }}>{score}</span>
-                <span className="text-[7px] font-bold uppercase tracking-wider text-slate-500 mt-0.5">/100</span>
+                <span className="text-[7px] font-bold uppercase tracking-wider text-opd-text-muted mt-0.5">/100</span>
             </div>
         </div>
     );
@@ -60,30 +60,28 @@ interface HighlightCardProps {
 
 const HighlightCard: React.FC<HighlightCardProps> = ({ excerpt, relatedRule, sourceDocument, supportsOrContradicts }) => {
     const isSupport = supportsOrContradicts === 'supports';
-    // Use the existing app convention: emerald for supporting, red for gaps
     return (
-        <div className={`border rounded-xl p-3.5 space-y-2 border-l-4 ${
+        <div className={`border rounded-xl p-3.5 space-y-2 border-l-4 shadow-sm ${
             isSupport
-                ? 'border-l-emerald-500 bg-emerald-500/[0.015] border-y border-r border-white/5'
-                : 'border-l-red-500 bg-red-500/[0.015] border-y border-r border-white/5'
+                ? 'border-l-emerald-500 bg-emerald-50/30 border-y border-r border-opd-border'
+                : 'border-l-red-500 bg-red-50/30 border-y border-r border-opd-border'
         }`}>
             <div className="flex items-center justify-between gap-2 flex-wrap">
                 <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border ${
                     isSupport
-                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                        : 'bg-red-500/10 text-red-400 border-red-500/20'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : 'bg-red-50 text-red-700 border-red-200'
                 }`}>
                     {isSupport ? 'Supports Admission' : 'Contradicts / Gap'}
                 </span>
-                <span className="text-[9px] font-mono text-slate-500 truncate max-w-[160px]">{sourceDocument}</span>
+                <span className="text-[9px] font-mono text-opd-text-secondary truncate max-w-[160px]">{sourceDocument}</span>
             </div>
-            {/* Actual substring extracted from the document — never placeholder */}
-            <blockquote className="text-xs italic text-white/85 bg-black/20 border border-white/[0.04] rounded-lg px-3 py-2 leading-relaxed">
+            <blockquote className="text-xs italic text-opd-text-secondary bg-opd-input-bg border border-opd-border rounded-lg px-3 py-2 leading-relaxed">
                 "{excerpt}"
             </blockquote>
-            <div className="text-[9px] text-slate-500 font-semibold flex items-center gap-1">
-                <span className="text-slate-600">Rule:</span>
-                <span className="text-slate-300 font-bold">{relatedRule}</span>
+            <div className="text-[9px] text-opd-text-secondary font-semibold flex items-center gap-1">
+                <span className="text-opd-text-muted">Rule:</span>
+                <span className="text-opd-text-primary font-bold">{relatedRule}</span>
             </div>
         </div>
     );
@@ -100,20 +98,20 @@ interface IcdTagProps {
 
 const IcdTag: React.FC<IcdTagProps> = ({ code, description, estimatedCost, confidence }) => {
     const confColor = confidence === 'high'
-        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+        ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
         : confidence === 'medium'
-        ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
-        : 'bg-slate-500/10 border-slate-500/20 text-slate-400';
+        ? 'bg-amber-50 border-amber-200 text-amber-700'
+        : 'bg-gray-50 border-gray-200 text-gray-700';
 
     return (
-        <div className="flex items-center justify-between gap-2 rounded-lg border border-white/5 bg-slate-900/15 px-3 py-2">
+        <div className="flex items-center justify-between gap-2 rounded-lg border border-opd-border bg-white px-3 py-2 shadow-sm">
             <div className="flex items-center gap-2 min-w-0">
-                <span className="font-mono text-[10px] font-bold text-blue-400 shrink-0">{code}</span>
-                <span className="text-[10px] text-slate-300 truncate">{description}</span>
+                <span className="font-mono text-[10px] font-bold text-opd-primary shrink-0">{code}</span>
+                <span className="text-[10px] text-opd-text-secondary truncate">{description}</span>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
                 {estimatedCost != null && (
-                    <span className="text-[9px] font-bold text-white/80 font-mono">
+                    <span className="text-[9px] font-bold text-opd-text-primary font-mono">
                         ₹{estimatedCost.toLocaleString('en-IN')}
                     </span>
                 )}
@@ -132,23 +130,23 @@ type EligibilityType = 'cashless' | 'reimbursement' | 'needs_verification';
 const ELIG_CONFIG: Record<EligibilityType, { label: string; text: string; bg: string; border: string; icon: string }> = {
     cashless: {
         label: 'Cashless Eligible',
-        text: 'text-emerald-400',
-        bg: 'bg-emerald-500/10',
-        border: 'border-emerald-500/20',
+        text: 'text-emerald-700',
+        bg: 'bg-emerald-50',
+        border: 'border-emerald-200',
         icon: '✓',
     },
     reimbursement: {
         label: 'Reimbursement Only',
-        text: 'text-amber-400',
-        bg: 'bg-amber-500/10',
-        border: 'border-amber-500/20',
+        text: 'text-amber-700',
+        bg: 'bg-amber-50',
+        border: 'border-amber-200',
         icon: '⚠',
     },
     needs_verification: {
         label: 'Needs Verification',
-        text: 'text-red-400',
-        bg: 'bg-red-500/10',
-        border: 'border-red-500/20',
+        text: 'text-red-700',
+        bg: 'bg-red-50',
+        border: 'border-red-200',
         icon: '!',
     },
 };
@@ -276,31 +274,31 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
     }
 
     return (
-        <div className="flex flex-col h-full min-h-screen bg-gray-950">
+        <div className="flex flex-col h-full min-h-screen bg-opd-bg text-opd-text-primary">
             {/* ── Header bar ────────────────────────────────────────────────── */}
-            <div className="shrink-0 border-b border-white/5 bg-slate-950/40 backdrop-blur-sm px-4 py-3 flex items-center gap-3 flex-wrap">
+            <div className="shrink-0 border-b border-opd-border bg-white px-4 py-3 flex items-center gap-3 flex-wrap shadow-sm">
                 {/* Back affordance */}
                 <button
                     type="button"
                     onClick={onBack}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors px-2.5 py-1.5 rounded-lg border border-white/5 hover:border-white/15 hover:bg-white/5 shrink-0"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-opd-text-secondary hover:text-opd-primary transition-all px-3 py-1.5 rounded-lg border border-opd-border bg-opd-input-bg"
                 >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 text-opd-text-secondary" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                     </svg>
                     Case List
                 </button>
 
-                <div className="w-px h-4 bg-white/10 shrink-0" />
+                <div className="w-px h-4 bg-opd-border shrink-0" />
 
                 {/* Case meta */}
                 <div className="flex items-center gap-3 flex-1 flex-wrap min-w-0">
-                    <span className="font-mono text-[10px] text-blue-400 font-bold shrink-0">{record.id}</span>
-                    <span className="text-sm font-semibold text-white truncate">{record.patient?.patientName || '—'}</span>
-                    <div className="w-px h-3 bg-white/10 shrink-0" />
-                    <span className="text-xs text-slate-400 truncate max-w-[200px]">{diagnosisText}</span>
+                    <span className="font-mono text-[10px] text-opd-primary font-bold shrink-0">{record.id}</span>
+                    <span className="text-sm font-semibold text-opd-text-primary truncate">{record.patient?.patientName || '—'}</span>
+                    <div className="w-px h-3 bg-opd-border shrink-0" />
+                    <span className="text-xs text-opd-text-secondary truncate max-w-[200px]">{diagnosisText}</span>
                     {icdCode && !hasInvalidICD && (
-                        <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/15 text-emerald-400 shrink-0">
+                        <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 shrink-0">
                             {icdCode}
                         </span>
                     )}
@@ -318,39 +316,39 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                     {/* Uploaded documents */}
                     <section>
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5 pb-2 mb-3">
+                        <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2 mb-3">
                             Uploaded Documents ({record.uploadedDocuments?.length ?? 0})
                         </div>
                         {(record.uploadedDocuments?.length ?? 0) === 0 ? (
-                            <div className="text-xs text-slate-500 font-medium py-4 text-center border border-dashed border-white/5 rounded-xl">
+                            <div className="text-xs text-opd-text-muted font-medium py-4 text-center border border-dashed border-opd-border rounded-xl bg-white">
                                 No documents uploaded
                             </div>
                         ) : (
                             <div className="space-y-2">
                                 {record.uploadedDocuments.map(doc => (
                                     <div key={doc.id}
-                                        className="flex items-center gap-3 rounded-xl border border-white/5 bg-slate-900/15 px-3 py-2.5">
+                                        className="flex items-center gap-3 rounded-xl border border-opd-border bg-white px-3 py-2.5 shadow-sm text-opd-text-primary">
                                         <span className="text-base shrink-0">{doc.fileType === 'pdf' ? '📄' : '🖼️'}</span>
                                         <div className="flex-1 min-w-0">
-                                            <div className="text-xs font-semibold text-white/90 truncate">{doc.fileName}</div>
-                                            <div className="text-[9px] text-slate-500 font-medium">{doc.documentCategory.replace(/_/g, ' ')} · {doc.fileSizeDisplay}</div>
+                                            <div className="text-xs font-semibold text-opd-text-primary truncate">{doc.fileName}</div>
+                                            <div className="text-[9px] text-opd-text-secondary font-medium">{doc.documentCategory.replace(/_/g, ' ')} · {doc.fileSizeDisplay}</div>
                                             {doc.duplicateWarning && (
-                                                <div className="text-[9px] text-red-400 font-bold mt-0.5">{doc.duplicateWarning}</div>
+                                                <div className="text-[9px] text-opd-error font-bold mt-0.5">{doc.duplicateWarning}</div>
                                             )}
                                             {doc.expiryWarning && (
-                                                <div className="text-[9px] text-red-400 font-bold mt-0.5">{doc.expiryWarning}</div>
+                                                <div className="text-[9px] text-opd-error font-bold mt-0.5">{doc.expiryWarning}</div>
                                             )}
                                             {doc.readabilityWarning && (
-                                                <div className="text-[9px] text-amber-400 font-bold mt-0.5">{doc.readabilityWarning}</div>
+                                                <div className="text-[9px] text-amber-600 font-bold mt-0.5">{doc.readabilityWarning}</div>
                                             )}
                                         </div>
                                         {doc.readabilityConfidence != null && (
                                             <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider shrink-0 ${
                                                 doc.readabilityConfidence < 70
-                                                    ? 'bg-red-500/10 border-red-500/20 text-red-400 font-extrabold animate-pulse'
+                                                    ? 'bg-red-50 border-red-200 text-red-700 font-extrabold animate-pulse'
                                                     : doc.readabilityConfidence >= 80
-                                                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                                                    : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                                                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                                                    : 'bg-amber-50 border-amber-200 text-amber-700'
                                             }`}>
                                                 {doc.readabilityConfidence < 70 ? '⚠️ Needs Manual Check' : `OCR ${doc.readabilityConfidence}%`}
                                             </span>
@@ -363,10 +361,10 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                     {/* Evidence highlights */}
                     <section>
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5 pb-2 mb-3">
+                        <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2 mb-3">
                             Evidence Highlights
                             {tpaLoading && (
-                                <span className="ml-2 text-slate-600 normal-case font-normal">— running review…</span>
+                                <span className="ml-2 text-opd-text-muted normal-case font-normal">— running review…</span>
                             )}
                         </div>
 
@@ -374,13 +372,13 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                             <div className="flex items-center gap-2 py-6 px-3">
                                 <div className="flex gap-1">
                                     {[0, 1, 2].map(i => (
-                                        <span key={i} className="pulse-dot inline-block w-1 h-1 rounded-full bg-slate-400" />
+                                        <span key={i} className="pulse-dot inline-block w-1 h-1 rounded-full bg-opd-primary" />
                                     ))}
                                 </div>
-                                <span className="text-xs text-slate-400 font-medium">Running Aivana review…</span>
+                                <span className="text-xs text-opd-text-secondary font-medium">Running Aivana review…</span>
                             </div>
                         ) : evidenceHighlights.length === 0 ? (
-                            <div className="text-xs text-slate-500 font-medium py-4 text-center border border-dashed border-white/5 rounded-xl">
+                            <div className="text-xs text-opd-text-muted font-medium py-4 text-center border border-dashed border-opd-border rounded-xl bg-white">
                                 {record.uploadedDocuments?.length
                                     ? 'No evidence highlights extracted. Upload richer documents to see verbatim excerpts.'
                                     : 'Upload documents for AI evidence extraction.'}
@@ -390,7 +388,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                 {/* Supporting first */}
                                 {supportHighlights.length > 0 && (
                                     <div className="space-y-2">
-                                        <div className="text-[9px] font-bold uppercase tracking-wider text-emerald-400">
+                                        <div className="text-[9px] font-bold uppercase tracking-wider text-emerald-700">
                                             Supporting Evidence ({supportHighlights.length})
                                         </div>
                                         {supportHighlights.map((h, i) => (
@@ -401,7 +399,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                 {/* Contradicting / gaps */}
                                 {contradictHighlights.length > 0 && (
                                     <div className="space-y-2">
-                                        <div className="text-[9px] font-bold uppercase tracking-wider text-red-400">
+                                        <div className="text-[9px] font-bold uppercase tracking-wider text-red-700">
                                             Gaps & Contradictions ({contradictHighlights.length})
                                         </div>
                                         {contradictHighlights.map((h, i) => (
@@ -415,34 +413,34 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                 </div>
 
                 {/* ── RIGHT RAIL ────────────────────────────────────────────── */}
-                <aside className="hidden lg:flex flex-col w-[292px] shrink-0 overflow-y-auto border-l border-white/5 bg-slate-950/20 px-4 py-5 gap-5 custom-scrollbar shadow-[inset_1px_0_0_rgba(255,255,255,0.03)]">
+                <aside className="hidden lg:flex flex-col w-[292px] shrink-0 overflow-y-auto border-l border-opd-border bg-white px-4 py-5 gap-5 custom-scrollbar shadow-sm">
 
                     {/* (a) Readiness score */}
                     <section>
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 pb-2.5 border-b border-white/5 mb-3">
+                        <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
                             Claim Readiness
                         </div>
-                        <div className="rounded-xl p-4 bg-slate-900/15 border border-white/5 flex flex-col items-center gap-2.5 shadow-sm shadow-black/10">
+                        <div className="rounded-xl p-4 bg-opd-input-bg border border-opd-border flex flex-col items-center gap-2.5 shadow-sm">
                             <ScoreRing score={score} />
                             <span className={`text-[9px] font-bold px-2.5 py-0.5 rounded uppercase tracking-wider border ${colors.bg} ${colors.text} ${colors.border}`}>
                                 {colors.label}
                             </span>
-                            <p className="text-[10px] text-center font-medium text-slate-400 leading-normal max-w-[200px]">
+                            <p className="text-[10px] text-center font-medium text-opd-text-secondary leading-normal max-w-[200px]">
                                 {statusLine}
                             </p>
                             {/* Quick chips */}
                             <div className="flex flex-wrap gap-1.5 mt-1 justify-center">
                                 <span className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border ${
                                     docsUploaded >= docsRequired
-                                        ? 'bg-emerald-500/5 border-emerald-500/10 text-emerald-400'
-                                        : 'bg-red-500/5 border-red-500/10 text-red-400'
+                                        ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                                        : 'bg-red-50 border-red-200 text-red-700'
                                 }`}>
                                     {docsUploaded >= docsRequired ? '✓' : '✗'} Docs {docsUploaded}/{docsRequired}
                                 </span>
                                 <span className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border ${
                                     !hasInvalidICD
-                                        ? 'bg-emerald-500/5 border-emerald-500/10 text-emerald-400'
-                                        : 'bg-red-500/5 border-red-500/10 text-red-400'
+                                        ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                                        : 'bg-red-50 border-red-200 text-red-700'
                                 }`}>
                                     {!hasInvalidICD ? '✓' : '✗'} ICD-10
                                 </span>
@@ -453,24 +451,24 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                     {/* (b) Missing items checklist */}
                     {missingItems.length > 0 && (
                         <section>
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 pb-2.5 border-b border-white/5 mb-3">
+                            <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
                                 What to Fix ({missingItems.length})
                             </div>
                             <div className="flex flex-col gap-1.5 max-h-[220px] overflow-y-auto custom-scrollbar pr-0.5">
                                 {missingItems.slice(0, 8).map((item, idx) => (
                                     <div key={idx}
-                                        className="flex items-start gap-2 rounded-lg p-2.5 border border-white/5 bg-slate-900/10">
+                                        className="flex items-start gap-2 rounded-lg p-2.5 border border-opd-border bg-white shadow-sm">
                                         <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 mt-1.5" />
                                         <div className="flex-1 min-w-0">
-                                            <div className="text-xs font-semibold text-slate-200 leading-normal">{item.text}</div>
+                                            <div className="text-xs font-semibold text-opd-text-secondary leading-normal">{item.text}</div>
                                         </div>
-                                        <span className="text-[9px] font-extrabold text-red-400/90 bg-red-500/10 border border-red-500/15 px-1 py-0.5 rounded shrink-0">
+                                        <span className="text-[9px] font-extrabold text-red-700 bg-red-50 border border-red-200 px-1 py-0.5 rounded shrink-0">
                                             -{item.deduction}
                                         </span>
                                     </div>
                                 ))}
                                 {missingItems.length > 8 && (
-                                    <p className="text-[10px] text-center text-slate-500 font-medium">
+                                    <p className="text-[10px] text-center text-opd-text-muted font-medium">
                                         +{missingItems.length - 8} more to address
                                     </p>
                                 )}
@@ -480,20 +478,20 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                     {/* (c) Suggested ICD codes with cost */}
                     <section>
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 pb-2.5 border-b border-white/5 mb-3">
+                        <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
                             Billing Codes & Cost
                         </div>
                         {billingLoading ? (
                             <div className="flex items-center gap-2 py-3">
                                 <div className="flex gap-1">
                                     {[0, 1, 2].map(i => (
-                                        <span key={i} className="pulse-dot inline-block w-1 h-1 rounded-full bg-slate-400" />
+                                        <span key={i} className="pulse-dot inline-block w-1 h-1 rounded-full bg-opd-primary" />
                                     ))}
                                 </div>
-                                <span className="text-xs text-slate-400 font-medium">Running billing coder…</span>
+                                <span className="text-xs text-opd-text-secondary font-medium">Running billing coder…</span>
                             </div>
                         ) : suggestedCodes.length === 0 ? (
-                            <div className="text-xs text-slate-500 font-medium py-3 text-center border border-dashed border-white/5 rounded-xl">
+                            <div className="text-xs text-opd-text-muted font-medium py-3 text-center border border-dashed border-opd-border rounded-xl bg-white">
                                 No codes available — add a diagnosis to generate billing suggestions.
                             </div>
                         ) : (
@@ -503,17 +501,17 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                         estimatedCost={c.cost} confidence={c.confidence} />
                                 ))}
                                 {billingOutput?.cashlessApproved != null && (
-                                    <div className="mt-2 rounded-lg border border-white/5 bg-slate-900/15 px-3 py-2.5 flex justify-between items-center">
-                                        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Cashless Approved Est.</span>
-                                        <span className="font-mono text-xs font-bold text-emerald-400">
+                                    <div className="mt-2 rounded-lg border border-opd-border bg-opd-input-bg px-3 py-2.5 flex justify-between items-center shadow-sm">
+                                        <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-secondary">Cashless Approved Est.</span>
+                                        <span className="font-mono text-xs font-bold text-emerald-700">
                                             ₹{billingOutput.cashlessApproved.toLocaleString('en-IN')}
                                         </span>
                                     </div>
                                 )}
                                 {billingOutput?.patientShare != null && (
-                                    <div className="rounded-lg border border-white/5 bg-slate-900/15 px-3 py-2.5 flex justify-between items-center">
-                                        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Patient Share Est.</span>
-                                        <span className="font-mono text-xs font-bold text-amber-400">
+                                    <div className="rounded-lg border border-opd-border bg-opd-input-bg px-3 py-2.5 flex justify-between items-center shadow-sm">
+                                        <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-secondary">Patient Share Est.</span>
+                                        <span className="font-mono text-xs font-bold text-amber-700">
                                             ₹{billingOutput.patientShare.toLocaleString('en-IN')}
                                         </span>
                                     </div>
@@ -524,7 +522,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                         {(billingOutput?.validationWarnings?.length ?? 0) > 0 && (
                             <div className="mt-2 space-y-1.5">
                                 {billingOutput!.validationWarnings.slice(0, 3).map((w, i) => (
-                                    <div key={i} className="text-[9px] text-amber-400 font-semibold bg-amber-500/5 border border-amber-500/10 rounded-lg px-2.5 py-1.5 leading-snug">
+                                    <div key={i} className="text-[9px] text-amber-700 font-semibold bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5 leading-snug">
                                         ⚠ {w}
                                     </div>
                                 ))}
@@ -534,16 +532,16 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                     {/* (d) Eligibility indicator */}
                     <section>
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 pb-2.5 border-b border-white/5 mb-3">
+                        <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
                             Eligibility Status
                         </div>
-                        <div className={`rounded-xl border px-4 py-3.5 flex items-center gap-3 ${eligCfg.bg} ${eligCfg.border}`}>
+                        <div className={`rounded-xl border px-4 py-3.5 flex items-center gap-3 shadow-sm ${eligCfg.bg} ${eligCfg.border}`}>
                             <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border ${eligCfg.text} ${eligCfg.border}`}>
                                 {eligCfg.icon}
                             </span>
                             <div>
                                 <div className={`text-xs font-bold ${eligCfg.text}`}>{eligCfg.label}</div>
-                                <div className="text-[9px] text-slate-500 font-medium mt-0.5">
+                                <div className="text-[9px] text-opd-text-secondary font-medium mt-0.5">
                                     {eligibility === 'cashless'
                                         ? 'Claim can be processed as cashless'
                                         : eligibility === 'reimbursement'

@@ -328,26 +328,26 @@ export const InsurancePreAuthModal: React.FC<InsurancePreAuthModalProps> = ({
     const { status, pendingList } = calculateDocumentationStatus();
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-gray-900 border border-gray-700 w-full max-w-4xl max-h-[90vh] rounded-xl flex flex-col shadow-2xl">
-                <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center bg-gray-900 rounded-t-xl sticky top-0 z-10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white border border-opd-border w-full max-w-4xl max-h-[90vh] rounded-xl flex flex-col shadow-2xl text-opd-text-primary">
+                <div className="px-6 py-4 border-b border-opd-border flex justify-between items-center bg-white rounded-t-xl sticky top-0 z-10 text-left">
                     <div>
-                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                            <span className="text-blue-400">⚡</span>
+                        <h2 className="text-xl font-bold text-opd-primary font-lora flex items-center gap-2">
+                            <span className="text-opd-primary">⚡</span>
                             Insurance Pre-Authorization
                         </h2>
-                        <p className="text-sm text-gray-400 mt-1 flex gap-4">
+                        <p className="text-sm text-opd-text-secondary mt-1 flex gap-4">
                             <span>Patient: {patientInfo.name} ({patientInfo.uhid})</span>
                             <span>•</span>
                             <span>TPA: {patientInfo.tpaName || 'Not specified'}</span>
                         </p>
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white transition p-2">
+                    <button onClick={onClose} className="text-opd-text-secondary hover:text-opd-primary transition p-2" type="button">
                         ✕
                     </button>
                 </div>
 
-                <div className="flex border-b border-gray-800 bg-gray-900/50">
+                <div className="flex border-b border-opd-border bg-opd-input-bg">
                     {[
                         { num: 1, label: 'Review Admission' },
                         { num: 2, label: 'Policy Details' },
@@ -358,11 +358,11 @@ export const InsurancePreAuthModal: React.FC<InsurancePreAuthModalProps> = ({
                         <div
                             key={step.num}
                             className={`flex-1 py-3 px-2 md:px-4 text-center text-xs md:text-sm font-medium border-b-2 transition-colors
-                ${currentStep === step.num
-                                    ? 'border-blue-500 text-blue-400 bg-blue-500/10'
+                                ${currentStep === step.num
+                                    ? 'border-opd-primary text-opd-primary bg-primary-tint/15'
                                     : currentStep > step.num
-                                        ? 'border-gray-600 text-gray-300'
-                                        : 'border-transparent text-gray-600'
+                                        ? 'border-opd-border text-opd-text-primary'
+                                        : 'border-transparent text-opd-text-muted'
                                 }`}
                         >
                             Step {step.num}: {step.label}
@@ -370,7 +370,7 @@ export const InsurancePreAuthModal: React.FC<InsurancePreAuthModalProps> = ({
                     ))}
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 bg-gray-900 relative">
+                <div className="flex-1 overflow-y-auto p-6 bg-white relative">
                     {currentStep === 1 && (
                         <InsuranceStepReview
                             nexusData={nexusOutput}
@@ -411,8 +411,8 @@ export const InsurancePreAuthModal: React.FC<InsurancePreAuthModalProps> = ({
                     {currentStep === 5 && (
                         generatingStatement ? (
                             <div className="flex flex-col items-center justify-center h-48 space-y-4">
-                                <div className="w-8 h-8 rounded-full border-4 border-gray-700 border-t-purple-500 animate-spin" />
-                                <p className="text-gray-400 animate-pulse">Generating Medical Necessity Statement...</p>
+                                <div className="w-8 h-8 rounded-full border-4 border-opd-border border-t-opd-primary animate-spin" />
+                                <p className="text-opd-text-secondary animate-pulse">Generating Medical Necessity Statement...</p>
                             </div>
                         ) : (
                             <InsuranceStepConfirm
@@ -428,11 +428,12 @@ export const InsurancePreAuthModal: React.FC<InsurancePreAuthModalProps> = ({
                     )}
                 </div>
 
-                <div className="p-4 border-t border-gray-700 bg-gray-900 rounded-b-xl flex justify-between items-center">
+                <div className="p-4 border-t border-opd-border bg-opd-input-bg rounded-b-xl flex justify-between items-center">
                     <button
                         onClick={currentStep === 1 ? onClose : handlePrevStep}
                         disabled={isSubmitting}
-                        className="px-6 py-2 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 transition disabled:opacity-50"
+                        className="px-6 py-2 rounded-lg text-sm font-medium text-opd-text-secondary hover:bg-white hover:border-opd-border transition disabled:opacity-50"
+                        type="button"
                     >
                         {currentStep === 1 ? 'Cancel' : '← Back'}
                     </button>
@@ -440,7 +441,8 @@ export const InsurancePreAuthModal: React.FC<InsurancePreAuthModalProps> = ({
                     {currentStep < 5 ? (
                         <button
                             onClick={handleNextStep}
-                            className="px-6 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white transition disabled:opacity-50"
+                            className="px-6 py-2 rounded-lg text-sm font-medium bg-opd-primary hover:bg-opd-primary/95 text-white transition disabled:opacity-50 shadow-sm"
+                            type="button"
                         >
                             Next Step →
                         </button>
@@ -448,11 +450,8 @@ export const InsurancePreAuthModal: React.FC<InsurancePreAuthModalProps> = ({
                         <button
                             onClick={handleSubmit}
                             disabled={!doctorConfirmed || isSubmitting}
-                            className={`px-8 py-2 rounded-lg text-sm font-medium flex items-center justify-center min-w-[140px] transition
-                ${!doctorConfirmed
-                                    ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                                    : 'bg-green-600 hover:bg-green-500 text-white shadow-lg shadow-green-600/20'
-                                }`}
+                            className="px-8 py-2 rounded-lg text-sm font-medium flex items-center justify-center min-w-[140px] transition bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-50 shadow-sm"
+                            type="button"
                         >
                             {isSubmitting ? (
                                 <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />

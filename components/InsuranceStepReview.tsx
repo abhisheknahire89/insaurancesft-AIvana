@@ -115,13 +115,13 @@ export const InsuranceStepReview: React.FC<InsuranceStepReviewProps> = ({
                     </label>
 
                     {severityOverride.overridden && (
-                        <div className="mt-4 space-y-4 pl-7 border-l-2 border-purple-500/50">
+                        <div className="mt-4 space-y-4 pl-7 border-l-2 border-opd-primary">
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">New Severity Level</label>
+                                <label className="block text-sm text-opd-text-secondary mb-1">New Severity Level</label>
                                 <select
                                     value={severityOverride.newSeverity}
                                     onChange={handleSeverityChange}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white"
+                                    className="w-full bg-opd-input-bg border border-opd-border rounded p-2 text-opd-text-primary focus:outline-none focus:border-opd-primary transition"
                                 >
                                     <option value="">Select severity...</option>
                                     <option value="critical">Critical (Immediate Admission)</option>
@@ -132,12 +132,12 @@ export const InsuranceStepReview: React.FC<InsuranceStepReviewProps> = ({
                             </div>
 
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Clinical Justification</label>
+                                <label className="block text-sm text-opd-text-secondary mb-1">Clinical Justification</label>
                                 <textarea
                                     value={severityOverride.justification}
                                     onChange={handleJustificationChange}
                                     placeholder="Provide clinical rationale for overriding the AI assessment..."
-                                    className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white h-24"
+                                    className="w-full bg-opd-input-bg border border-opd-border rounded p-2 text-opd-text-primary h-24 focus:outline-none focus:border-opd-primary transition"
                                 />
                             </div>
                         </div>

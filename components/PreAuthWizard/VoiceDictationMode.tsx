@@ -150,27 +150,27 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
 
     const FIELD_ROW = ({ label, value }: { label: string; value?: string | number | null }) =>
         value != null && value !== '' && value !== 0 ? (
-            <div className="flex items-start gap-2 text-xs">
-                <span className="text-gray-500 min-w-[130px] flex-shrink-0">{label}</span>
-                <span className="text-white font-medium break-words">{String(value)}</span>
+            <div className="flex items-start gap-2 text-xs text-opd-text-primary">
+                <span className="text-opd-text-secondary min-w-[130px] flex-shrink-0">{label}</span>
+                <span className="text-opd-text-primary font-semibold break-words">{String(value)}</span>
             </div>
         ) : null;
 
     // ─── IDLE ──────────────────────────────────────────────────────────────────
     if (phase === 'idle' || phase === 'error') {
         return (
-            <div className="space-y-6 text-center">
+            <div className="space-y-6 text-center text-opd-text-primary">
                 <div className="space-y-2">
                     <div className="text-5xl">🎙️</div>
-                    <h2 className="text-xl font-bold text-white">Voice Dictation Mode</h2>
-                    <p className="text-gray-400 text-sm max-w-md mx-auto">
-                        Speak the patient's full clinical notes — name, age, diagnosis, vitals, history, treatment plan, cost estimate.
-                        AI will extract and fill <strong className="text-white">every field</strong> automatically.
+                    <h2 className="text-xl font-bold font-lora text-opd-primary">Voice Dictation Mode</h2>
+                    <p className="text-opd-text-secondary text-sm max-w-md mx-auto">
+                        Speak the patient's full clinical notes - name, age, diagnosis, vitals, history, treatment plan, cost estimate.
+                        AI will extract and fill <strong className="text-opd-text-primary">every field</strong> automatically.
                     </p>
                 </div>
 
-                <div className="bg-white/[0.01] border border-white/5 rounded-xl p-4 text-left space-y-1.5 text-xs text-gray-400">
-                    <div className="text-blue-400 font-bold mb-2 uppercase tracking-wider text-[10px]">🗣️ What to include in your dictation:</div>
+                <div className="bg-white border border-opd-border rounded-xl p-4 text-left space-y-1.5 text-xs text-opd-text-secondary shadow-sm">
+                    <div className="text-opd-primary font-bold mb-2 uppercase tracking-wider text-[10px] font-lora">🗣️ What to include in your dictation:</div>
                     {[
                         'Patient: name, age, gender, phone, city',
                         'Insurance: insurer name, TPA, policy number, sum insured',
@@ -186,18 +186,19 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
                 </div>
 
                 {phase === 'error' && (
-                    <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-3 text-red-300 text-xs text-left">
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-red-800 text-xs text-left shadow-sm">
                         ⚠️ {errorMsg}
                     </div>
                 )}
 
                 <div className="flex gap-3">
                     <button onClick={onCancel}
-                        className="flex-1 py-2 rounded-lg text-xs font-semibold border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                        className="btn-secondary flex-1 py-2"
+                        type="button">
                         ← Back
                     </button>
                     <button onClick={startRecording}
-                        className="flex-1 py-2 rounded-lg text-xs font-semibold bg-red-600 hover:bg-red-500 text-white transition-all shadow-sm active:scale-[0.98]">
+                        className="btn-primary flex-1 py-2 bg-red-700 hover:bg-red-600 text-white font-semibold shadow-sm">
                         🎙️ Start Recording
                     </button>
                 </div>
@@ -208,7 +209,7 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
     // ─── RECORDING ─────────────────────────────────────────────────────────────
     if (phase === 'recording') {
         return (
-            <div className="space-y-5 text-center">
+            <div className="space-y-5 text-center text-opd-text-primary">
                 <div className="space-y-3">
                     {/* Animated mic */}
                     <div className="relative inline-flex items-center justify-center">
@@ -218,27 +219,29 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
                             <span className="text-xl">🎙️</span>
                         </div>
                     </div>
-                    <div className="text-red-400 font-mono text-base font-bold">{formatElapsed(elapsed)}</div>
-                    <div className="text-xs text-gray-300 font-semibold uppercase tracking-wider">Recording... Speak clearly</div>
+                    <div className="text-red-700 font-mono text-base font-bold">{formatElapsed(elapsed)}</div>
+                    <div className="text-xs text-opd-text-secondary font-semibold uppercase tracking-wider">Recording... Speak clearly</div>
                 </div>
 
                 {/* Live transcript */}
-                <div className="bg-white/[0.03] border border-white/10 rounded-lg p-4 min-h-[120px] text-left text-xs font-mono leading-relaxed max-h-48 overflow-y-auto">
-                    <span className="text-gray-300">{transcript}</span>
-                    <span className="text-gray-500 italic">{interimText}</span>
+                <div className="bg-opd-input-bg border border-opd-border rounded-lg p-4 min-h-[120px] text-left text-xs font-mono leading-relaxed max-h-48 overflow-y-auto shadow-sm">
+                    <span className="text-opd-text-primary">{transcript}</span>
+                    <span className="text-opd-text-secondary italic">{interimText}</span>
                     {!transcript && !interimText && (
-                        <span className="text-gray-600 italic">Listening for speech...</span>
+                        <span className="text-opd-text-muted italic">Listening for speech...</span>
                     )}
                 </div>
 
                 <div className="flex gap-3">
                     <button onClick={() => { stopRecording(); setPhase('idle'); setTranscript(''); }}
-                        className="flex-1 py-2 rounded-lg text-xs font-semibold border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                        className="btn-secondary flex-1 py-2"
+                        type="button">
                         Discard
                     </button>
                     <button onClick={stopRecording}
-                        className="flex-1 py-2 rounded-lg text-xs font-semibold bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-all">
-                        ⏹ Stop Recording
+                        className="btn-secondary flex-1 py-2 font-bold text-red-750 hover:text-red-800"
+                        type="button">
+                        Stop Recording
                     </button>
                 </div>
             </div>
@@ -248,24 +251,27 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
     // ─── RECORDED (review transcript before processing) ────────────────────────
     if (phase === 'recorded') {
         return (
-            <div className="space-y-4">
+            <div className="space-y-4 text-opd-text-primary">
                 <div>
-                    <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Recording Complete</h2>
-                    <p className="text-gray-400 text-xs mt-1">Review or edit the transcript, then let AI extract all fields.</p>
+                    <h2 className="text-sm font-semibold text-opd-primary font-lora uppercase tracking-wider">Recording Complete</h2>
+                    <p className="text-opd-text-secondary text-xs mt-1">Review or edit the transcript, then let AI extract all fields.</p>
                 </div>
 
                 <div className="flex gap-2">
                     <button onClick={() => setEditMode(e => !e)}
-                        className={`px-2.5 py-1 rounded text-[10px] uppercase font-bold border transition-colors ${editMode ? 'border-blue-500 text-blue-300 bg-blue-500/10' : 'border-white/10 text-gray-400 hover:text-white'}`}>
+                        className={`px-2.5 py-1 rounded text-[10px] uppercase font-bold border transition-colors ${editMode ? 'border-opd-primary text-opd-primary bg-primary-tint/20' : 'border-opd-border text-opd-text-secondary hover:text-opd-primary'}`}
+                        type="button">
                         {editMode ? '✓ Editing' : '✏️ Edit transcript'}
                     </button>
                     <button onClick={() => { setTranscript(''); setPhase('idle'); }}
-                        className="px-2.5 py-1 rounded text-[10px] uppercase font-bold border border-white/10 text-gray-500 hover:text-white transition-colors">
-                        🔄 Re-record
+                        className="px-2.5 py-1 rounded text-[10px] uppercase font-bold border border-opd-border text-opd-text-secondary hover:text-opd-primary hover:bg-gray-50 transition-colors"
+                        type="button">
+                        Re-record
                     </button>
                     <button onClick={startRecording}
-                        className="px-2.5 py-1 rounded text-[10px] uppercase font-bold border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10 transition-colors">
-                        ➕ Add more
+                        className="px-2.5 py-1 rounded text-[10px] uppercase font-bold border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition-colors"
+                        type="button">
+                        Add more
                     </button>
                 </div>
 
@@ -275,22 +281,24 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
                         value={transcript}
                         onChange={e => setTranscript(e.target.value)}
                         rows={10}
-                        className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-3 text-xs text-gray-200 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none"
+                        className="form-input font-mono"
                     />
                 ) : (
-                    <div className="bg-white/[0.03] border border-white/10 rounded-lg p-4 text-xs font-mono text-gray-300 leading-relaxed max-h-64 overflow-y-auto whitespace-pre-wrap">
-                        {transcript || <span className="text-gray-600 italic">No speech captured</span>}
+                    <div className="bg-opd-input-bg border border-opd-border rounded-lg p-4 text-xs font-mono text-opd-text-primary leading-relaxed max-h-64 overflow-y-auto whitespace-pre-wrap shadow-sm">
+                        {transcript || <span className="text-opd-text-muted italic">No speech captured</span>}
                     </div>
                 )}
 
                 <div className="flex gap-3">
                     <button onClick={() => setPhase('idle')}
-                        className="flex-1 py-2 rounded-lg text-xs font-semibold border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                        className="btn-secondary flex-1 py-2"
+                        type="button">
                         ← Back
                     </button>
                     <button onClick={processWithAI} disabled={!transcript.trim()}
-                        className="flex-1 py-2 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all">
-                        ✨ Process with AI →
+                        className="btn-primary flex-1 py-2 bg-opd-primary text-white disabled:opacity-40 disabled:cursor-not-allowed font-semibold shadow-sm"
+                        type="button">
+                        Process with AI
                     </button>
                 </div>
             </div>
@@ -300,19 +308,19 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
     // ─── PROCESSING ────────────────────────────────────────────────────────────
     if (phase === 'processing') {
         return (
-            <div className="flex flex-col items-center justify-center py-20 space-y-6">
+            <div className="flex flex-col items-center justify-center py-20 space-y-6 text-opd-text-primary">
                 <div className="relative">
-                    <div className="w-20 h-20 rounded-full border-4 border-blue-500/30 border-t-blue-500 animate-spin" />
+                    <div className="w-20 h-20 rounded-full border-4 border-opd-primary/25 border-t-opd-primary animate-spin" />
                     <div className="absolute inset-0 flex items-center justify-center text-2xl">🧠</div>
                 </div>
                 <div className="text-center space-y-2">
-                    <div className="text-white font-bold">Gemini AI is extracting clinical data...</div>
-                    <div className="text-gray-400 text-sm">Parsing patient details, vitals, diagnosis, treatment plan, and cost estimates</div>
+                    <div className="text-opd-text-primary font-bold">Gemini AI is extracting clinical data...</div>
+                    <div className="text-opd-text-secondary text-sm">Parsing patient details, vitals, diagnosis, treatment plan, and cost estimates</div>
                 </div>
                 <div className="flex gap-1.5">
                     {['Patient', 'Clinical', 'Admission', 'Billing'].map((label, i) => (
-                        <div key={label} className="flex items-center gap-1 text-xs text-gray-500">
-                            <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                        <div key={label} className="flex items-center gap-1 text-xs text-opd-text-secondary">
+                            <div className="w-2 h-2 rounded-full bg-opd-primary animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
                             {label}
                         </div>
                     ))}
@@ -330,13 +338,13 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
         const presentConditions = pmh ? Object.entries(pmh).filter(([, v]: any) => v?.present).map(([k]) => k) : [];
 
         return (
-            <div className="space-y-4">
+            <div className="space-y-4 text-opd-text-primary">
                 {/* Header */}
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-base">✅</div>
+                <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 shadow-sm">
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-base shrink-0">✅</div>
                     <div>
-                        <h2 className="text-lg font-bold text-white">AI Extraction Complete</h2>
-                        <p className="text-gray-400 text-xs">Review extracted data, then confirm to fill all wizard fields</p>
+                        <h2 className="text-sm font-bold text-emerald-800 font-lora">AI Extraction Complete</h2>
+                        <p className="text-emerald-700 text-xs mt-0.5">Review extracted data, then confirm to fill all wizard fields</p>
                     </div>
                 </div>
 
@@ -380,15 +388,15 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
                         <Section title="💊 Vitals" color="amber">
                             <div className="grid grid-cols-5 gap-2">
                                 {([['BP', vitals.bp], ['Pulse', vitals.pulse], ['Temp', vitals.temp ? `${vitals.temp}°F` : ''], ['SpO2', vitals.spo2 ? `${vitals.spo2}%` : ''], ['RR', vitals.rr]] as [string, string][]).map(([l, v]) => v ? (
-                                    <div key={l} className={`bg-white/[0.02] border border-white/5 rounded-lg p-2 text-center ${l === 'SpO2' && parseInt(v) < 94 ? 'border-red-500/40 bg-red-500/5' : ''}`}>
-                                        <div className={`text-xs font-bold ${l === 'SpO2' && parseInt(v) < 94 ? 'text-red-400' : 'text-white'}`}>{v}</div>
-                                        <div className="text-[10px] text-gray-500 mt-0.5">{l}</div>
+                                    <div key={l} className={`bg-white border border-opd-border rounded-lg p-2 text-center shadow-sm ${l === 'SpO2' && parseInt(v) < 94 ? 'border-red-200 bg-red-50 text-red-800' : ''}`}>
+                                        <div className={`text-xs font-bold font-mono ${l === 'SpO2' && parseInt(v) < 94 ? 'text-red-700' : 'text-opd-text-primary'}`}>{v}</div>
+                                        <div className="text-[10px] text-opd-text-secondary mt-0.5">{l}</div>
                                     </div>
                                 ) : null)}
                             </div>
                             {vitals.spo2 && parseInt(vitals.spo2) < 94 && (
-                                <div className="bg-red-500/5 border border-red-500/20 rounded-lg p-2.5 text-red-300 text-xs font-medium leading-relaxed">
-                                    ⚠️ SpO2 {vitals.spo2}% — Critical hypoxia. This strongly supports inpatient necessity.
+                                <div className="bg-red-50 border border-red-200 rounded-lg p-2.5 text-red-800 text-xs font-semibold leading-relaxed shadow-sm">
+                                    ⚠️ SpO2 {vitals.spo2}% - Critical hypoxia. This strongly supports inpatient necessity.
                                 </div>
                             )}
                         </Section>
@@ -410,7 +418,7 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
                         <Section title="💊 Treatment Plan" color="rose">
                             <div className="flex flex-wrap gap-2">
                                 {Object.entries(clinical.proposedLineOfTreatment).filter(([, v]) => v).map(([k]) => (
-                                    <span key={k} className="px-2 py-1 bg-blue-500/10 border border-blue-500/20 rounded-md text-[10px] text-blue-300 font-bold uppercase tracking-wider capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
+                                    <span key={k} className="px-2 py-1 bg-primary-tint border border-opd-primary/10 rounded-md text-[10px] text-opd-primary font-bold uppercase tracking-wider capitalize font-mono shadow-sm">{k.replace(/([A-Z])/g, ' $1')}</span>
                                 ))}
                             </div>
                         </Section>
@@ -419,12 +427,14 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
 
                 <div className="flex gap-3 pt-1">
                     <button onClick={() => setPhase('recorded')}
-                        className="flex-1 py-2 rounded-lg text-xs font-semibold border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                        className="btn-secondary flex-1 py-2"
+                        type="button">
                         ← Re-process
                     </button>
                     <button onClick={confirmAndFill}
-                        className="flex-1 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm active:scale-[0.98]">
-                        ✅ Fill All Fields & Continue →
+                        className="btn-primary flex-1 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold shadow-sm"
+                        type="button">
+                        ✓ Confirm & Fill Fields
                     </button>
                 </div>
             </div>
@@ -436,12 +446,12 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
 
 // ─── Section wrapper ───────────────────────────────────────────────────────────
 const COLOR_MAP: Record<string, string> = {
-    blue: 'border-white/5 bg-white/[0.01]',
-    purple: 'border-white/5 bg-white/[0.01]',
-    cyan: 'border-white/5 bg-white/[0.01]',
-    amber: 'border-white/5 bg-white/[0.01]',
-    green: 'border-white/5 bg-white/[0.01]',
-    rose: 'border-white/5 bg-white/[0.01]',
+    blue: 'border-opd-border bg-white shadow-sm',
+    purple: 'border-opd-border bg-white shadow-sm',
+    cyan: 'border-opd-border bg-white shadow-sm',
+    amber: 'border-opd-border bg-white shadow-sm',
+    green: 'border-opd-border bg-white shadow-sm',
+    rose: 'border-opd-border bg-white shadow-sm',
 };
 
 const Section: React.FC<{ title: string; color: string; children: React.ReactNode }> = ({ title, color, children }) => {
@@ -449,7 +459,7 @@ const Section: React.FC<{ title: string; color: string; children: React.ReactNod
     if (!hasContent) return null;
     return (
         <div className={`rounded-lg border p-4 space-y-2.5 ${COLOR_MAP[color] ?? ''}`}>
-            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider border-b border-white/5 pb-1.5">{title}</div>
+            <div className="text-[10px] font-bold text-opd-primary font-lora uppercase tracking-wider border-b border-opd-border pb-1.5">{title}</div>
             {children}
         </div>
     );

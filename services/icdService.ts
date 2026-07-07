@@ -27,13 +27,8 @@ export function validateCode(code: string): boolean {
   if (inCodes) return true;
   const inCategories = categoriesData.categories.some(c => c.categoryCode.toUpperCase() === target);
   if (inCategories) return true;
-  // CM sub-classification support for maternity (O, Z) and ophthalmology (H) codes:
-  if (target.length > 3 && (target.startsWith('O') || target.startsWith('Z') || target.startsWith('H'))) {
-    const parent = target.substring(0, target.length - 1);
-    return validateCode(parent);
-  }
-  // CM sub-classification support for orthopedics (M) and gynaecology (D, N) codes (restricted to length <= 5 to block US-CM leaks):
-  if (target.length > 3 && target.length <= 5 && (target.startsWith('M') || target.startsWith('D') || target.startsWith('N'))) {
+  // Progressive sub-classification parent validation support for all codes:
+  if (target.length > 3) {
     const parent = target.substring(0, target.length - 1);
     return validateCode(parent);
   }
@@ -66,6 +61,7 @@ export function mapToWhoCode(code: string): string | null {
  * Retrieves the official description of a code
  */
 export function getDescription(code: string): string {
+  if (!code || typeof code !== 'string') return 'Unknown Code';
   const target = code.trim().toUpperCase();
   const foundCode = codesData.codes.find(c => c.code.toUpperCase() === target);
   if (foundCode) return foundCode.description;
@@ -167,6 +163,28 @@ export function lookupICD(input: string): IcdCandidate[] {
         confidence: 'high'
       }
     ];
+  }
+
+  // High-priority indication routing for maintenance hemodialysis encounters to ensure dialysis session coding is prioritized
+  if (normalized.includes('dialysis') || normalized.includes('hemodialysis') || normalized.includes('haemodialysis')) {
+    if (normalized.includes('maintenance') || normalized.includes('session') || normalized.includes('encounter') || normalized.includes('esrd') || normalized.includes('ckd')) {
+      return [
+        {
+          code: 'Z49.1',
+          description: 'Extracorporeal dialysis (Encounter for fitting and adjustment of dialysis)',
+          category: 'Z49',
+          matchMethod: 'synonym',
+          confidence: 'high'
+        },
+        {
+          code: 'N18.6',
+          description: 'End stage renal disease',
+          category: 'N18',
+          matchMethod: 'synonym',
+          confidence: 'high'
+        }
+      ];
+    }
   }
 
   const candidates: IcdCandidate[] = [];

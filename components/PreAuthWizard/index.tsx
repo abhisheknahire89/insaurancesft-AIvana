@@ -285,31 +285,31 @@ export const PreAuthWizard: React.FC<PreAuthWizardProps> = ({
     // ── Voice dictation overlay ─────────────────────────────────────────────────
     if (showVoiceMode) {
         return (
-            <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-y-auto">
-                <div className="bg-gray-950 border border-white/10 rounded-2xl w-full max-w-3xl my-8 mx-4 shadow-2xl overflow-hidden">
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-gray-900/20">
+            <div className="fixed inset-0 z-50 flex items-start justify-center bg-opd-text-primary/45 backdrop-blur-sm overflow-y-auto">
+                <div className="bg-white border border-opd-border rounded-2xl w-full max-w-3xl my-8 mx-4 shadow-2xl overflow-hidden text-opd-text-primary">
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-opd-border bg-opd-input-bg">
                         <div className="flex items-center gap-3">
-                            <span className="font-semibold text-sm text-white">Voice Dictation</span>
-                            <span className="font-mono text-xs px-2 py-0.5 bg-gray-900 border border-white/5 text-gray-400 rounded-md select-all">{record.id}</span>
+                            <span className="font-bold text-sm text-opd-text-primary font-lora">Voice Dictation</span>
+                            <span className="font-mono text-xs px-2 py-0.5 bg-white border border-opd-border text-opd-text-secondary rounded-md select-all">{record.id}</span>
                         </div>
                         <div className="flex items-center gap-4">
                             {saving && (
-                                <span className="text-[11px] text-gray-500 flex items-center gap-1.5">
-                                    <svg className="w-3.5 h-3.5 animate-spin text-gray-500" fill="none" viewBox="0 0 24 24">
+                                <span className="text-[11px] text-opd-text-secondary flex items-center gap-1.5">
+                                    <svg className="w-3.5 h-3.5 animate-spin text-opd-primary" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                     </svg>
                                     Saving...
                                 </span>
                             )}
-                            <button onClick={onClose} className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/5 transition-colors" type="button">
+                            <button onClick={onClose} className="text-opd-text-secondary hover:text-opd-primary p-1 rounded-lg hover:bg-opd-bg transition-colors" type="button">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
                     </div>
-                    <div className="px-6 py-6">
+                    <div className="px-6 py-6 bg-white">
                         <VoiceDictationMode
                             onComplete={handleVoiceComplete}
                             onCancel={() => setShowVoiceMode(false)}
@@ -321,18 +321,18 @@ export const PreAuthWizard: React.FC<PreAuthWizardProps> = ({
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-y-auto">
-            <div className="bg-[#0D121F]/90 border border-white/5 rounded-2xl w-full max-w-5xl my-8 mx-4 shadow-2xl overflow-hidden backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-opd-text-primary/45 backdrop-blur-sm overflow-y-auto">
+            <div className="bg-white border border-opd-border rounded-2xl w-full max-w-5xl my-8 mx-4 shadow-2xl overflow-hidden flex flex-col" style={{ display: 'flex', flexDirection: 'column' }}>
                 {/* Modal Header */}
-                <div className="flex items-center justify-between px-6 py-3.5 border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-opd-border bg-opd-input-bg text-opd-text-primary">
                     <div className="flex items-center gap-3">
-                        <span className="font-semibold text-xs text-white uppercase tracking-wider">New Pre-Authorization</span>
-                        <span className="font-mono text-[10px] px-2 py-0.5 bg-black/30 border border-white/5 text-gray-400 rounded-md select-all">{record.id}</span>
+                        <span className="font-bold text-sm text-opd-primary font-lora">New Pre-Authorization</span>
+                        <span className="font-mono text-[10px] px-2 py-0.5 bg-white border border-opd-border text-opd-text-secondary rounded-md select-all">{record.id}</span>
                         {record.complexity && (
                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
-                                record.complexity === 'Low' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
-                                record.complexity === 'Medium' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' :
-                                'bg-rose-500/10 border-rose-500/20 text-rose-400'
+                                record.complexity === 'Low' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                                record.complexity === 'Medium' ? 'bg-sky-50 border-sky-200 text-sky-700' :
+                                'bg-rose-50 border-rose-200 text-rose-700'
                             }`} title={record.complexityReason}>
                                 {record.complexity} Complexity {record.complexity === 'Low' && '⚡ Fast-Track'}
                             </span>
@@ -340,15 +340,15 @@ export const PreAuthWizard: React.FC<PreAuthWizardProps> = ({
                     </div>
                     <div className="flex items-center gap-4">
                         {saving && (
-                            <span className="text-[10px] text-gray-500 flex items-center gap-1.5 font-medium">
-                                <svg className="w-3 h-3 animate-spin text-gray-500" fill="none" viewBox="0 0 24 24">
+                            <span className="text-[10px] text-opd-text-secondary flex items-center gap-1.5 font-medium">
+                                <svg className="w-3 h-3 animate-spin text-opd-primary" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                 </svg>
                                 Saving...
                             </span>
                         )}
-                        <button onClick={onClose} className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/5 transition-colors" type="button">
+                        <button onClick={onClose} className="text-opd-text-secondary hover:text-opd-primary p-1 rounded-lg hover:bg-opd-bg transition-colors" type="button">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -358,24 +358,24 @@ export const PreAuthWizard: React.FC<PreAuthWizardProps> = ({
 
                 {/* Voice Dictation Banner — shown on step 1 */}
                 {step === 1 && (
-                    <div className="mx-6 mt-5 bg-white/[0.02] border border-white/5 rounded-xl p-4 flex items-center justify-between shadow-sm">
+                    <div className="mx-6 mt-5 bg-primary-tint/30 border border-opd-primary/20 rounded-xl p-4 flex items-center justify-between shadow-sm">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
+                            <div className="w-8 h-8 rounded-lg bg-primary-tint flex items-center justify-center text-opd-primary shadow-sm">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
                                 </svg>
                             </div>
                             <div>
-                                <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                                <div className="text-xs font-bold text-opd-primary flex items-center gap-1.5 font-lora">
                                     Voice Dictation
-                                    <span className="text-[9px] uppercase tracking-wider bg-blue-500/10 text-blue-400 px-1.5 py-0.5 rounded font-extrabold font-sans border border-blue-500/20">AI-Assistant</span>
+                                    <span className="text-[9px] uppercase tracking-wider bg-primary-tint text-opd-primary px-1.5 py-0.5 rounded font-extrabold font-sans border border-opd-primary/20">AI-Assistant</span>
                                 </div>
-                                <div className="text-[11px] text-gray-400 mt-0.5">Speak patient notes to automatically populate clinical fields.</div>
+                                <div className="text-[11px] text-opd-text-secondary mt-0.5">Speak patient notes to automatically populate clinical fields.</div>
                             </div>
                         </div>
                         <button
                             onClick={() => setShowVoiceMode(true)}
-                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-sm active:scale-[0.98]"
+                            className="btn-primary"
                             type="button">
                             Start Dictating
                         </button>

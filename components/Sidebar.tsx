@@ -40,15 +40,15 @@ const DoctorProfileSwitcher: React.FC<{
 
     return (
         <div>
-            <label className="block text-xs font-medium text-gray-500 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-opd-text-secondary mb-2 font-lora">
                 Clinician Profile
             </label>
-            <div className="flex bg-aivana-grey rounded-lg p-1 gap-1">
+            <div className="flex bg-opd-input-bg border border-opd-border rounded-lg p-1 gap-1">
                 {profiles.map(p => (
                     <button
                         key={p.qualification}
                         onClick={() => setProfile(p)}
-                        className={`flex-1 text-xs px-2 py-1.5 rounded-md transition-colors ${profile.qualification === p.qualification ? 'bg-aivana-accent text-white font-semibold' : 'text-gray-400 hover:text-white hover:bg-aivana-light-grey'}`}
+                        className={`flex-1 text-xs px-2 py-1.5 rounded-md transition-colors ${profile.qualification === p.qualification ? 'bg-opd-primary text-white font-semibold shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary hover:bg-white/50'}`}
                     >
                         {p.qualification}
                     </button>
@@ -60,14 +60,14 @@ const DoctorProfileSwitcher: React.FC<{
 
 const LanguageSelector: React.FC<{ language: string; setLanguage: (lang: string) => void }> = ({ language, setLanguage }) => (
     <div className="mt-4">
-        <label className="block text-xs font-medium text-gray-500 mb-2">
+        <label className="block text-xs font-bold uppercase tracking-wider text-opd-text-secondary mb-2 font-lora">
             Response Language
         </label>
         <div className="relative">
             <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="w-full bg-aivana-grey text-white text-sm rounded-lg border border-transparent px-3 py-2 appearance-none focus:ring-1 focus:ring-aivana-accent outline-none cursor-pointer hover:bg-aivana-light-grey transition-colors"
+                className="w-full bg-white border border-opd-border text-opd-text-primary text-sm rounded-lg px-3 py-2 appearance-none focus:ring-1 focus:ring-opd-primary focus:border-opd-primary outline-none cursor-pointer hover:bg-opd-bg transition-colors"
             >
                 <option value="English">English</option>
                 <option value="Hindi">Hindi</option>
@@ -76,7 +76,7 @@ const LanguageSelector: React.FC<{ language: string; setLanguage: (lang: string)
                 <option value="Tamil">Tamil</option>
                 <option value="Bengali">Bengali</option>
             </select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-400">
+            <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-opd-text-secondary">
                 <Icon name="chevronDown" className="w-4 h-4" />
             </div>
         </div>
@@ -91,7 +91,7 @@ const UserMenu: React.FC<{ onShowAuthModal?: () => void }> = ({ onShowAuthModal 
         return (
             <button
                 onClick={onShowAuthModal}
-                className="w-full flex items-center gap-2 px-3 py-2 bg-aivana-accent hover:bg-purple-700 text-white rounded-lg transition-colors text-sm font-medium"
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-opd-primary hover:bg-opd-primary-dark text-white rounded-lg transition-colors text-sm font-semibold shadow-sm"
             >
                 <LogIn className="w-4 h-4" />
                 <span>Login / Sign Up</span>
@@ -103,25 +103,25 @@ const UserMenu: React.FC<{ onShowAuthModal?: () => void }> = ({ onShowAuthModal 
         <div className="relative">
             <button
                 onClick={() => setShowMenu(!showMenu)}
-                className="w-full flex items-center gap-2 px-3 py-2 bg-aivana-grey hover:bg-aivana-light-grey text-white rounded-lg transition-colors text-sm"
+                className="w-full flex items-center gap-2 px-3 py-2 bg-white border border-opd-border text-opd-text-primary rounded-lg transition-colors text-sm font-medium hover:bg-gray-50 shadow-sm"
             >
-                <User className="w-4 h-4" />
+                <User className="w-4 h-4 text-opd-primary" />
                 <span className="flex-1 text-left truncate">{user.firstName} {user.lastName}</span>
-                <Icon name="chevronDown" className={`w-4 h-4 transition-transform ${showMenu ? 'rotate-180' : ''}`} />
+                <Icon name="chevronDown" className={`w-4 h-4 text-opd-text-secondary transition-transform ${showMenu ? 'rotate-180' : ''}`} />
             </button>
 
             {showMenu && (
-                <div className="absolute bottom-full left-0 right-0 mb-2 bg-aivana-grey border border-gray-700 rounded-lg shadow-lg overflow-hidden">
-                    <div className="px-3 py-2 border-b border-gray-700">
-                        <p className="text-xs text-gray-400">Signed in as</p>
-                        <p className="text-sm text-white truncate">{user.email}</p>
+                <div className="absolute bottom-full left-0 right-0 mb-2 bg-white border border-opd-border rounded-lg shadow-lg overflow-hidden text-opd-text-primary z-50">
+                    <div className="px-3 py-2 border-b border-opd-border">
+                        <p className="text-xs text-opd-text-muted">Signed in as</p>
+                        <p className="text-sm font-semibold truncate text-opd-text-primary">{user.email}</p>
                     </div>
                     <button
                         onClick={() => {
                             logout();
                             setShowMenu(false);
                         }}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-aivana-light-grey transition-colors"
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors"
                     >
                         <LogOut className="w-4 h-4" />
                         <span>Logout</span>
@@ -181,24 +181,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Overlay for mobile */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-60 z-20 md:hidden"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-xs z-20 md:hidden"
                     onClick={() => setIsOpen(false)}
                 ></div>
             )}
 
             {/* Sidebar */}
             <div
-                className={`fixed top-0 left-0 w-72 h-full bg-black z-30 transform transition-transform duration-300 ease-in-out border-r border-gray-800 no-print ${isOpen ? 'translate-x-0' : '-translate-x-full'
-                    } md:relative md:translate-x-0 md:flex-shrink-0 flex flex-col`}
+                className={`fixed top-0 left-0 w-72 h-full bg-white z-30 transform transition-transform duration-300 ease-in-out border-r border-opd-border no-print ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                    } md:relative md:translate-x-0 md:flex-shrink-0 flex flex-col text-opd-text-primary`}
             >
                 {/* Header */}
                 <div className="p-4 flex-shrink-0 flex justify-between items-center mb-2">
                     <div className="flex items-center gap-2">
-                        <Icon name="logo" className="w-6 h-6 text-white" />
-                        <span className="font-bold text-lg text-white">OPD Platform</span>
+                        <div className="w-8 h-8 rounded-lg bg-primary-tint flex items-center justify-center text-opd-primary shadow-sm">
+                            <Icon name="logo" className="w-5 h-5 text-opd-primary" />
+                        </div>
+                        <span className="font-bold text-base text-opd-text-primary font-lora leading-tight">OPD Platform</span>
                     </div>
-                    <button onClick={() => setIsOpen(false)} className="md:hidden p-1 rounded-md hover:bg-gray-800 text-white">
-                        <Icon name="close" className="w-6 h-6" />
+                    <button onClick={() => setIsOpen(false)} className="md:hidden p-1.5 rounded-md hover:bg-opd-bg text-opd-text-secondary hover:text-opd-primary transition-colors">
+                        <Icon name="close" className="w-5 h-5" />
                     </button>
                 </div>
 
@@ -206,29 +208,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <div className="px-3 pb-4 flex-shrink-0 space-y-3">
                     <button
                         onClick={onStartScribeSession}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all border border-gray-800 ${activeView === 'scribe'
-                            ? 'bg-gray-800 text-white'
-                            : 'bg-[#1c1c1c] hover:bg-gray-800 text-gray-200'
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all border ${activeView === 'scribe'
+                            ? 'bg-primary-tint text-opd-primary border-opd-primary/20 shadow-sm font-semibold'
+                            : 'bg-opd-input-bg border-opd-border text-opd-text-secondary hover:bg-primary-tint hover:text-opd-primary hover:border-opd-primary/20'
                             }`}
                     >
-                        <Icon name="sparkles" className="w-5 h-5 text-aivana-accent" />
+                        <Icon name="sparkles" className={`w-5 h-5 ${activeView === 'scribe' ? 'text-opd-primary' : 'text-opd-text-secondary'}`} />
                         <span className="font-medium text-sm">Start Veda Session</span>
                     </button>
 
                     <button
                         onClick={onStartInsuranceModule}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all border border-gray-800 ${activeView === 'insurance'
-                            ? 'bg-gray-800 text-white'
-                            : 'bg-[#1c1c1c] hover:bg-gray-800 text-gray-200'
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all border ${activeView === 'insurance'
+                            ? 'bg-primary-tint text-opd-primary border-opd-primary/20 shadow-sm font-semibold'
+                            : 'bg-opd-input-bg border-opd-border text-opd-text-secondary hover:bg-primary-tint hover:text-opd-primary hover:border-opd-primary/20'
                             }`}
                     >
-                        <Icon name="document-text" className="w-5 h-5 text-blue-400" />
-                        <span className="font-medium text-sm text-blue-400">Insurance Center</span>
+                        <Icon name="document-text" className={`w-5 h-5 ${activeView === 'insurance' ? 'text-opd-primary' : 'text-opd-text-secondary'}`} />
+                        <span className="font-medium text-sm">Insurance Center</span>
                     </button>
 
                     <button
                         onClick={() => onNewChat()}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-aivana-accent hover:bg-purple-700 text-white font-medium text-sm rounded-lg transition-colors"
+                        className="btn-primary w-full flex items-center justify-center gap-2 px-4 py-3 bg-opd-primary hover:bg-opd-primary-dark text-white font-bold text-sm shadow-sm"
                     >
                         <Icon name="newChat" className="w-5 h-5" />
                         New Chat
@@ -240,25 +242,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                     {/* Explore Section */}
                     <div>
-                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2">Explore</h3>
+                        <h3 className="text-xs font-bold text-opd-primary uppercase tracking-wider mb-2 px-2 font-lora">Explore</h3>
                         <div className="space-y-1">
-                            {displayedGpts.slice(0, 5).map((gpt) => (
-                                <button
-                                    key={gpt.id}
-                                    onClick={() => onNewChat(gpt)}
-                                    className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${activeChatId && chats.find(c => c.id === activeChatId)?.gptId === gpt.id
-                                        ? 'bg-gray-800 text-white'
-                                        : 'text-gray-400 hover:text-white hover:bg-gray-800'
-                                        }`}
-                                >
-                                    <div className="text-gray-500 group-hover:text-white transition-colors">
-                                        {React.cloneElement(gpt.icon as React.ReactElement<any>, { className: 'w-4 h-4' })}
-                                    </div>
-                                    <span className="text-sm truncate">
-                                        {gpt.title}
-                                    </span>
-                                </button>
-                            ))}
+                            {displayedGpts.slice(0, 5).map((gpt) => {
+                                const isActive = activeChatId && chats.find(c => c.id === activeChatId)?.gptId === gpt.id;
+                                return (
+                                    <button
+                                        key={gpt.id}
+                                        onClick={() => onNewChat(gpt)}
+                                        className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${isActive
+                                            ? 'bg-primary-tint text-opd-primary font-semibold border border-opd-primary/10 shadow-sm'
+                                            : 'text-opd-text-secondary hover:text-opd-primary hover:bg-opd-bg/50 border border-transparent'
+                                            }`}
+                                    >
+                                        <div className={isActive ? 'text-opd-primary' : 'text-opd-text-secondary group-hover:text-opd-primary transition-colors'}>
+                                            {React.cloneElement(gpt.icon as React.ReactElement<any>, { className: 'w-4 h-4' })}
+                                        </div>
+                                        <span className="text-sm truncate">
+                                            {gpt.title}
+                                        </span>
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -268,21 +273,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             <button
                                 onClick={onGenerateCaseSummary}
                                 disabled={!canGenerateSummary}
-                                className="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-800 disabled:opacity-50"
+                                className="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-opd-text-secondary hover:text-opd-primary hover:bg-opd-bg/50 disabled:opacity-50"
                             >
                                 <Icon name="document-text" className="w-4 h-4" />
                                 <span className="text-sm">Case Summary</span>
                             </button>
                             <button
                                 onClick={onShowPrintModal}
-                                className="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-800"
+                                className="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-opd-text-secondary hover:text-opd-primary hover:bg-opd-bg/50"
                             >
                                 <Icon name="print" className="w-4 h-4" />
                                 <span className="text-sm">Print Cards</span>
                             </button>
                             <button
                                 onClick={handleDownloadMtpJson}
-                                className="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-800"
+                                className="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-opd-text-secondary hover:text-opd-primary hover:bg-opd-bg/50"
                             >
                                 <Icon name="download" className="w-4 h-4" />
                                 <span className="text-sm">Download Protocol JSON</span>
@@ -293,7 +298,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </nav>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-gray-800 flex-shrink-0 bg-black space-y-3">
+                <div className="p-4 border-t border-opd-border flex-shrink-0 bg-white space-y-3">
                     {/* User Menu */}
                     <UserMenu onShowAuthModal={onShowAuthModal} />
 

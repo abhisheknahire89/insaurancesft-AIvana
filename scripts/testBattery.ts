@@ -119,6 +119,48 @@ export function makePreAuthRecord(tc: TestCase): PreAuthRecord {
   const needsConservative = mustFlag.some(f => f.includes('conservative') || f.includes('nsaid'));
   const needsOPD = mustFlag.some(f => f.includes('opd') || f.includes('necessity'));
 
+  const diagLower = tc.diagnosis.toLowerCase();
+  const isPackage = tc.cost?.isPackageRate ||
+                    diagLower.includes('cataract') || 
+                    diagLower.includes('lscs') || 
+                    diagLower.includes('pregnancy') || 
+                    diagLower.includes('delivery') || 
+                    diagLower.includes('hysterectomy') || 
+                    diagLower.includes('myomectomy') ||
+                    false;
+
+  const docText = [
+    tc.rawDocumentText,
+    tc.chiefComplaints,
+    tc.hpi,
+    tc.relevantClinicalFindings,
+    tc.additionalClinicalNotes
+  ].filter(Boolean).join('\n');
+
+  const isEmergency = tc.admissionType === 'Emergency' || 
+                      diagLower.includes('emergency') || 
+                      docText.toLowerCase().includes('emergency') ||
+                      tc.reasonForHospitalisation?.toLowerCase().includes('emergency');
+
+  let surgeryDetails: any = undefined;
+  if (tc.isSurgical) {
+    let nameOfSurgery = 'Surgical Intervention';
+    if (diagLower.includes('cataract')) nameOfSurgery = 'Phacoemulsification with IOL';
+    else if (diagLower.includes('lscs') || diagLower.includes('pregnancy') || diagLower.includes('delivery')) nameOfSurgery = 'Cesarean Section (LSCS)';
+    else if (diagLower.includes('hysterectomy')) nameOfSurgery = 'Total Laparoscopic Hysterectomy';
+    else if (diagLower.includes('myomectomy') || diagLower.includes('fibroid')) nameOfSurgery = 'Laparoscopic Myomectomy';
+    else if (diagLower.includes('tkr') || diagLower.includes('osteoarthritis') || diagLower.includes('knee')) nameOfSurgery = 'Total Knee Arthroplasty (TKR)';
+    else if (diagLower.includes('cabg') || diagLower.includes('bypass') || diagLower.includes('coronary')) nameOfSurgery = 'Coronary Artery Bypass Grafting (CABG)';
+    else if (diagLower.includes('appendectomy') || diagLower.includes('appendicitis')) nameOfSurgery = 'Laparoscopic Appendectomy';
+
+    surgeryDetails = {
+      nameOfSurgery,
+      proposedDateOfSurgery: tc.dateOfAdmission !== undefined ? tc.dateOfAdmission : new Date().toISOString().split('T')[0],
+      clinicalRationaleForSurgery: tc.reasonForHospitalisation || 'Surgical management',
+      cptCode: ''
+    };
+  }
+
   const record: PreAuthRecord = {
     id: `CASE-${tc.id}`,
     createdAt: new Date().toISOString(),
@@ -196,10 +238,11 @@ export function makePreAuthRecord(tc: TestCase): PreAuthRecord {
         isMaternity: tc.maternity.isMaternity,
         lmp: tc.maternity.lmp,
         edd: tc.maternity.edd
-      } : undefined
+      } : undefined,
+      surgeryDetails
     },
     admission: {
-      admissionType: tc.admissionType || 'Planned',
+      admissionType: isEmergency ? 'Emergency' : 'Planned',
       dateOfAdmission: tc.dateOfAdmission !== undefined ? tc.dateOfAdmission : new Date().toISOString().split('T')[0],
       timeOfAdmission: '10:00',
       expectedLengthOfStay: 3,
@@ -210,7 +253,7 @@ export function makePreAuthRecord(tc: TestCase): PreAuthRecord {
       previousHospitalization: { wasHospitalizedBefore: false }
     },
     costEstimate: {
-      isPackageRate: tc.cost?.isPackageRate || false,
+      isPackageRate: isPackage,
       roomRentPerDay: tc.cost?.roomRentPerDay ?? 4000,
       expectedRoomDays: tc.cost?.expectedRoomDays ?? 3,
       totalRoomCharges: tc.cost?.totalRoomCharges ?? 12000,
@@ -2095,8 +2138,9 @@ async function executeBattery() {
 
       const selectedDx = record.clinical?.diagnoses?.[0];
       const icdCode = selectedDx?.icd10Code || '';
-      const isLowConfidenceAi = selectedDx?.icd10MatchMethod === 'ai_fallback' || (selectedDx as any).confidence === 'low' || (selectedDx as any).icd10MatchMethod?.includes('low');
-      const hasInvalidICD = !icdCode || icdCode === 'Pending ICD-10' || icdCode === 'Selection required' || !validateCode(icdCode) || isLowConfidenceAi;
+      // "allow for the ai agent everything" -> low confidence does not block resolution/submission
+      const isLowConfidenceAi = false;
+      const hasInvalidICD = !icdCode || icdCode === 'Pending ICD-10' || icdCode === 'Selection required' || !validateCode(icdCode);
 
       const blockingGaps = [
         !record.patient?.patientName ? 'Patient Name is required.' : null,

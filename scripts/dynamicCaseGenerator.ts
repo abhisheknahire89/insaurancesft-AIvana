@@ -129,23 +129,41 @@ CRITICAL FOCUS MODE ACTIVE: You MUST generate cases matching the focus category 
 - preauth_heavy: Focus heavily on medical necessity queries, multiple comorbidities (e.g. chronic kidney disease, uncontrolled hypertension, history of stenting), joint replacement criteria, and oncology staging documents.
 - denial_heavy: Focus on cases starting with complex simulated TPA denials (e.g. denied due to non-surgical treatment trials not attempted, or missing clinical rationale), requiring robust clinical evidence reviews and appeal letters.
 - billing_complex: Focus on multi-procedure surgeries (e.g. laparotomy with cholecystectomy), package rate validation warnings, room rent capping excesses with patient-share calculations, and PM-JAY package exclusions.
+- insurer_rules: Focus heavily on insurer-specific policy validation rules (e.g. Star Health, Care Health, HDFC ERGO) and verifying documentary evidence.
+- specialty_caps: Focus heavily on medical specialty codes (ophthalmology/H-codes, maternity/O-codes, orthopedics/M-codes, gynecology/D-N-Z codes) to test ICD-10 chapter locks.
+- diagnosis_codes: Focus on clinical differentiation scenarios (e.g., Dengue Fever vs Typhoid Fever, or appendicitis) to test diagnostic accuracy.
+- hospital_rent: Focus heavily on room rent capping (Normal vs ICU), stayed duration audits, and proportional room rent deductions.
 ` : '';
+
+  const seed = Date.now() + Math.random().toString(36).substring(7);
 
   const prompt = `
 You are a highly experienced Indian clinical documentation specialist and TPA claims expert.
 Your task is to generate an array of ${count} highly realistic, completely fictional patient cases based on common Indian inpatient conditions.
+Dynamic Randomization Seed: ${seed}
 
-CRITICAL INSTRUCTION: You must bias case generation heavily toward the following specific scenario types to test edge cases:
-1. Cataract/Ophthalmic surgery (must test that ICD-10 chapter lock assigns H-codes correctly).
-2. LSCS/obstetric/maternity cases (must test that ICD-10 chapter lock assigns O/Z-codes correctly).
-3. Hysterectomy/fibroid/gynecological cases (must test that ICD-10 chapter lock assigns D/N/Z-codes correctly).
-4. Dengue-vs-Typhoid clinical confusion (to test clinical indicators and proper differentiation).
-5. TVD/CABG cardiology cases (to test cardiology coding).
-6. Denial appeal cases that explicitly need to cite comorbidities present in the clinical notes (such as a history of hypertension, a prior stent placed months earlier, or documented bleeding).
+CRITICAL INSTRUCTIONS:
+1. You must bias case generation heavily toward the following specific scenario types to test edge cases:
+   - Cataract/Ophthalmic surgery (must test that ICD-10 chapter lock assigns H-codes correctly).
+   - LSCS/obstetric/maternity cases (must test that ICD-10 chapter lock assigns O/Z-codes correctly).
+   - Hysterectomy/fibroid/gynecological cases (must test that ICD-10 chapter lock assigns D/N/Z-codes correctly).
+   - Dengue-vs-Typhoid clinical confusion (to test clinical indicators and proper differentiation).
+   - TVD/CABG cardiology cases (to test cardiology coding).
+   - Denial appeal cases that explicitly need to cite comorbidities present in the clinical notes (such as a history of hypertension, a prior stent placed months earlier, or documented bleeding).
+   - Acute Myocardial Infarction (Acute MI) and Community-acquired Pneumonia (Pneumonia) cases.
+
+2. **ICD-10 CODE COMPLIANCE**:
+   - For all diagnoses, you MUST use strictly valid WHO-compliant ICD-10 codes (3 or 4 characters, e.g. H25.1, J18.9, M17.1, O34.2).
+   - DO NOT use US-specific ICD-10-CM codes with lateralization/clinical modification suffixes (such as H25.11, M17.11, O34.21, I25.10).
+   - Ensure the expected ICD code maps to the correct category lock:
+     * Ophthalmology/Cataract must map to H codes (e.g. H25.1, H25.9, not H25.11).
+     * Maternity/LSCS/Delivery must map to O or Z codes (e.g. O82, O34.2, not O34.21).
+     * Gynecology/Hysterectomy must map to D, N, or Z codes.
+     * Orthopedics/Osteoarthritis/TKR must map to M codes (e.g. M17.1, not M17.11).
 
 ${focusPrompt}
 
-CONDITIONS TO USE: Dengue Fever, Typhoid Fever, Ischemic Heart Disease / Planned CABG, Senile Cataract, Maintenance Hemodialysis, Acute Appendicitis, Osteoarthritis / Planned TKR, Acute Gastroenteritis, Maternity (LSCS), Uterine Fibroids / Hysterectomy.
+CONDITIONS TO USE: Dengue Fever, Typhoid Fever, Ischemic Heart Disease / Planned CABG, Acute Myocardial Infarction (Acute MI), Community-acquired Pneumonia (Pneumonia), Senile Cataract, Maintenance Hemodialysis, Acute Appendicitis, Osteoarthritis / Planned TKR, Acute Gastroenteritis, Maternity (LSCS), Uterine Fibroids / Hysterectomy.
 
 For each case, construct a JSON object matching this TypeScript interface exactly:
 interface MultiModuleTestCase {
@@ -154,7 +172,7 @@ interface MultiModuleTestCase {
   difficulty: 'medium' | 'high' | 'extreme';
   focusCategory: 'preauth_heavy' | 'denial_heavy' | 'billing_complex';
   diagnosis: string;
-  code: string; // Valid WHO ICD-10 code (e.g. J18.9, E11.9, etc.)
+  code: string; // Valid 3 or 4-digit WHO ICD-10 code (e.g. J18.9, E11.9, H25.1, M17.1)
   chiefComplaints: string;
   hpi: string;
   relevantClinicalFindings: string;
@@ -198,7 +216,7 @@ interface MultiModuleTestCase {
       mustNotFlag: string[];
       shouldGenerate: boolean;
     } | null;
-    expectedCode: string | null; // The exact expected ICD-10 code
+    expectedCode: string | null; // The exact expected 3 or 4-digit WHO ICD-10 code (no CM lateralization suffixes like H25.11, M17.11)
     expectedCost: number | null; // Expected total cost in INR (numerical)
     expectedEligibility: 'approved' | 'denied' | 'query' | 'partial_approved' | null; // expected outcome
     expectedAppealCitations: string[] | null; // key findings/excerpts that must be cited in an appeal if denialReason is present

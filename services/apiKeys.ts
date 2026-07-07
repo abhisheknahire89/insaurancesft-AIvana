@@ -1,7 +1,36 @@
 import { GoogleGenAI } from "@google/genai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import * as fs from 'fs';
+import * as path from 'path';
 
 const isBrowser = typeof window !== 'undefined';
+
+function loadEnv() {
+    if (isBrowser) return;
+    try {
+        const envPath = path.join(process.cwd(), '.env');
+        if (fs.existsSync(envPath)) {
+            const lines = fs.readFileSync(envPath, 'utf-8').split('\n');
+            for (const line of lines) {
+                const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+                if (match) {
+                    const key = match[1];
+                    let value = (match[2] || '').trim();
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.substring(1, value.length - 1);
+                    } else if (value.startsWith("'") && value.endsWith("'")) {
+                        value = value.substring(1, value.length - 1);
+                    }
+                    process.env[key] = value.trim();
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Failed to load inline .env file:", e);
+    }
+}
+
+loadEnv();
 
 export function getActiveApiKey(): string {
     const key = isBrowser
@@ -49,10 +78,42 @@ async function proxyGenerateContent(sdkType: 'genai' | 'generative-ai', args: an
     return await response.json();
 }
 
+/**
+ * Exponential backoff retry for rate-limited API calls.
+ * Retries on 429 (rate limit) and 503 (overloaded) errors.
+ */
+async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 4, baseDelayMs = 1000): Promise<T> {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        try {
+            return await fn();
+        } catch (err: any) {
+            const status = err?.status ?? err?.code ?? err?.httpStatus ?? 0;
+            const msg = String(err?.message ?? '');
+            const isRateLimit = status === 429 || status === 503 ||
+                msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED') ||
+                msg.includes('503') || msg.includes('quota');
+            if (isRateLimit && attempt < maxAttempts - 1) {
+                const delayMs = baseDelayMs * Math.pow(2, attempt) + Math.random() * 200;
+                console.warn(`[apiKeys] Rate limit hit (attempt ${attempt + 1}/${maxAttempts}). Retrying in ${Math.round(delayMs)}ms...`);
+                await new Promise(res => setTimeout(res, delayMs));
+            } else {
+                throw err;
+            }
+        }
+    }
+    throw new Error('withRetry: exhausted all attempts');
+}
+
 export function getGoogleGenAIClient(): any {
     if (!isBrowser) {
-        // Node environment (scripts): talk to SDK directly
-        return new GoogleGenAI({ apiKey: getActiveApiKey() });
+        // Node environment (scripts): talk to SDK directly with retry wrapper
+        const sdk = new GoogleGenAI({ apiKey: getActiveApiKey() });
+        return {
+            models: {
+                generateContent: (args: any) => withRetry(() => sdk.models.generateContent(args)),
+                generateContentStream: (args: any) => sdk.models.generateContentStream(args),
+            }
+        };
     }
 
     // Browser: proxy via /api/gemini serverless function

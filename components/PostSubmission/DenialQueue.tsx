@@ -34,10 +34,10 @@ interface QueueEntry {
 
 const AppealStatusBadge: React.FC<{ status: DenialAppealResult['appealStatus'] | 'none' }> = ({ status }) => {
     const cfg = {
-        none:      { label: 'Not Started',  cls: 'bg-gray-800 text-gray-400 border-white/5' },
-        draft:     { label: 'Draft',         cls: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
-        submitted: { label: 'Submitted',     cls: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-        resolved:  { label: 'Resolved',      cls: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+        none:      { label: 'Not Started',  cls: 'bg-gray-50 text-gray-700 border-gray-200' },
+        draft:     { label: 'Draft',         cls: 'bg-amber-50 text-amber-700 border-amber-200' },
+        submitted: { label: 'Submitted',     cls: 'bg-blue-50 text-blue-700 border-blue-200' },
+        resolved:  { label: 'Resolved',      cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
     }[status];
     return (
         <span className={`px-2.5 py-0.5 rounded-xl text-[9px] font-black uppercase tracking-wider border ${cfg.cls}`}>
@@ -165,21 +165,21 @@ export const DenialQueue: React.FC = () => {
     };
 
     const coverageColor = (entry: QueueEntry): string => {
-        if (!entry.appeal) return 'text-gray-500';
+        if (!entry.appeal) return 'text-opd-text-muted';
         const ratio = entry.appeal.totalReasons > 0
             ? entry.appeal.addressedCount / entry.appeal.totalReasons : 0;
-        if (ratio >= 0.75) return 'text-emerald-400';
-        if (ratio >= 0.5)  return 'text-amber-400';
-        return 'text-red-400';
+        if (ratio >= 0.75) return 'text-emerald-700';
+        if (ratio >= 0.5)  return 'text-amber-700';
+        return 'text-red-700';
     };
 
     // ── Empty state ───────────────────────────────────────────────────────────
     if (!loading && queue.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4 bg-gray-900/30 border border-dashed border-white/10 rounded-3xl p-12">
-                <Inbox className="w-12 h-12 text-gray-600" />
-                <h3 className="text-sm font-bold text-gray-300">No Denied Claims in Queue</h3>
-                <p className="text-xs text-gray-500 max-w-xs text-center">
+            <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4 bg-white border border-dashed border-opd-border rounded-3xl p-12 shadow-sm text-opd-text-primary">
+                <Inbox className="w-12 h-12 text-opd-text-muted" />
+                <h3 className="text-sm font-bold font-lora text-opd-primary">No Denied Claims in Queue</h3>
+                <p className="text-xs text-opd-text-secondary max-w-xs text-center leading-relaxed">
                     Denied pre-auth records will appear here once a TPA denial response is recorded via the Status Tracker in the Pre-Auth Dashboard.
                 </p>
             </div>
@@ -188,27 +188,27 @@ export const DenialQueue: React.FC = () => {
 
     // ── Main Render ───────────────────────────────────────────────────────────
     return (
-        <div className="space-y-6 animate-fadeInUp">
+        <div className="space-y-6 animate-fadeInUp text-opd-text-primary">
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-900/40 p-6 rounded-3xl border border-white/5 backdrop-blur-md">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-opd-border shadow-sm">
                 <div>
-                    <div className="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
+                    <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
                         <ShieldAlert className="w-3.5 h-3.5" /> Live Denial Queue
                     </div>
-                    <h2 className="text-xl font-bold tracking-tight">Citation-Backed Appeal Generator</h2>
-                    <p className="text-xs text-gray-400 mt-0.5">
+                    <h2 className="text-xl font-bold tracking-tight text-opd-text-primary font-lora">Citation-Backed Appeal Generator</h2>
+                    <p className="text-xs text-opd-text-secondary mt-0.5 leading-relaxed">
                         Appeals cite only evidence already confirmed present in the original pre-auth review — no fabricated citations. Missing evidence is flagged explicitly.
                     </p>
                 </div>
                 <div className="flex items-center gap-4 text-xs font-semibold">
-                    <div className="bg-gray-950 px-4 py-2.5 rounded-2xl border border-white/5">
-                        <span className="text-gray-400">Open Denials: </span>
-                        <span className="text-white font-bold">{queue.length}</span>
+                    <div className="bg-opd-input-bg px-4 py-2.5 rounded-2xl border border-opd-border text-opd-text-primary">
+                        <span className="text-opd-text-secondary">Open Denials: </span>
+                        <span className="text-opd-text-primary font-bold">{queue.length}</span>
                     </div>
-                    <div className="bg-gray-950 px-4 py-2.5 rounded-2xl border border-white/5">
-                        <span className="text-gray-400">At Risk: </span>
-                        <span className="text-rose-400 font-bold">
+                    <div className="bg-opd-input-bg px-4 py-2.5 rounded-2xl border border-opd-border text-opd-text-primary">
+                        <span className="text-opd-text-secondary">At Risk: </span>
+                        <span className="text-red-750 font-bold">
                             ₹{queue
                                 .filter(e => e.appeal?.appealStatus !== 'resolved')
                                 .reduce((s, e) => s + (e.record.costEstimate?.amountClaimedFromInsurer ?? 0), 0)
@@ -218,27 +218,28 @@ export const DenialQueue: React.FC = () => {
                     <button
                         onClick={loadQueue}
                         disabled={loading}
-                        className="p-2.5 rounded-xl bg-gray-800 border border-white/5 hover:bg-gray-700 transition"
+                        className="p-2.5 rounded-xl bg-opd-input-bg border border-opd-border text-opd-text-secondary hover:bg-gray-50 transition"
                         title="Refresh queue"
+                        type="button"
                     >
-                        <RefreshCw className={`w-4 h-4 text-gray-400 ${loading ? 'animate-spin' : ''}`} />
+                        <RefreshCw className={`w-4 h-4 text-opd-text-secondary ${loading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                {/* ── Left: Priority Queue Table ─────────────────────────────── */}
-                <div className="lg:col-span-7 bg-gray-900 border border-white/5 rounded-3xl p-6 space-y-4">
-                    <div className="flex justify-between items-center pb-2 border-b border-white/5">
-                        <h3 className="text-sm font-bold text-gray-200 tracking-wide uppercase">Prioritized Denial Backlog</h3>
-                        {loading && <RefreshCw className="w-4 h-4 animate-spin text-blue-500" />}
+                {/* Left: Priority Queue Table */}
+                <div className="lg:col-span-7 bg-white border border-opd-border rounded-3xl p-6 space-y-4 shadow-sm">
+                    <div className="flex justify-between items-center pb-2 border-b border-opd-border">
+                        <h3 className="text-sm font-bold text-opd-primary tracking-wide uppercase font-lora">Prioritized Denial Backlog</h3>
+                        {loading && <RefreshCw className="w-4 h-4 animate-spin text-opd-primary" />}
                     </div>
 
                     <div className="overflow-x-auto custom-scrollbar">
                         <table className="w-full text-left text-xs border-collapse">
                             <thead>
-                                <tr className="text-gray-400 font-semibold border-b border-white/10 uppercase tracking-wider text-[10px]">
+                                <tr className="text-opd-text-secondary font-semibold border-b border-opd-border uppercase tracking-wider text-[10px] font-lora">
                                     <th className="py-3 px-2">#</th>
                                     <th className="py-3 px-2">Patient</th>
                                     <th className="py-3 px-2">TPA / Insurer</th>
@@ -252,26 +253,26 @@ export const DenialQueue: React.FC = () => {
                                     <tr
                                         key={entry.record.id}
                                         onClick={() => setSelected(entry)}
-                                        className={`border-b border-white/5 hover:bg-white/5 transition cursor-pointer ${selected?.record.id === entry.record.id ? 'bg-blue-600/10 border-blue-500/30' : ''}`}
+                                        className={`border-b border-opd-border hover:bg-opd-bg/50 transition cursor-pointer ${selected?.record.id === entry.record.id ? 'bg-primary-tint/30' : ''}`}
                                     >
-                                        <td className="py-4 px-2 font-mono font-bold text-gray-300">
+                                        <td className="py-4 px-2 font-mono font-bold text-opd-text-primary">
                                             {index + 1}.
-                                            <span className="text-[9px] text-gray-500 font-semibold block">
+                                            <span className="text-[9px] text-opd-text-muted font-semibold block">
                                                 Score: {entry.priorityScore.toLocaleString('en-IN')}
                                             </span>
                                         </td>
                                         <td className="py-4 px-2">
-                                            <div className="font-bold text-gray-200">{entry.record.patient?.patientName ?? '—'}</div>
-                                            <div className="text-[10px] text-gray-400 mt-0.5">
-                                                {entry.record.clinical?.diagnoses?.[entry.record.clinical.selectedDiagnosisIndex ?? 0]?.diagnosis ?? '—'}
+                                            <div className="font-bold text-opd-text-primary">{entry.record.patient?.patientName ?? '-'}</div>
+                                            <div className="text-[10px] text-opd-text-secondary mt-0.5">
+                                                {entry.record.clinical?.diagnoses?.[entry.record.clinical.selectedDiagnosisIndex ?? 0]?.diagnosis ?? '-'}
                                             </div>
-                                            <div className="text-[10px] text-gray-500 font-mono">{entry.record.id}</div>
+                                            <div className="text-[10px] text-opd-text-muted font-mono">{entry.record.id}</div>
                                         </td>
                                         <td className="py-4 px-2">
-                                            <div className="text-gray-200 font-semibold">{entry.record.insurance?.tpaName ?? '—'}</div>
-                                            <div className="text-[10px] text-gray-500 mt-0.5">{entry.record.insurance?.insurerName ?? '—'}</div>
+                                            <div className="text-opd-text-primary font-semibold">{entry.record.insurance?.tpaName ?? '-'}</div>
+                                            <div className="text-[10px] text-opd-text-secondary mt-0.5">{entry.record.insurance?.insurerName ?? '-'}</div>
                                         </td>
-                                        <td className="py-4 px-2 font-bold font-mono text-gray-100">
+                                        <td className="py-4 px-2 font-bold font-mono text-opd-text-primary">
                                             ₹{(entry.record.costEstimate?.amountClaimedFromInsurer ?? 0).toLocaleString('en-IN')}
                                         </td>
                                         <td className="py-4 px-2">
@@ -289,39 +290,39 @@ export const DenialQueue: React.FC = () => {
                     </div>
                 </div>
 
-                {/* ── Right: Appeal Editor Panel ─────────────────────────────── */}
+                {/* Right: Appeal Editor Panel */}
                 <div className="lg:col-span-5 space-y-4">
                     {selected ? (
-                        <div className="bg-gray-900 border border-white/5 rounded-3xl p-6 space-y-5">
+                        <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-5 shadow-sm text-opd-text-primary">
 
                             {/* Case header */}
-                            <div className="flex justify-between items-start border-b border-white/5 pb-3">
+                            <div className="flex justify-between items-start border-b border-opd-border pb-3">
                                 <div>
-                                    <h3 className="text-sm font-bold text-gray-200">
-                                        {selected.record.patient?.patientName ?? '—'}
+                                    <h3 className="text-sm font-bold text-opd-primary font-lora">
+                                        {selected.record.patient?.patientName ?? '-'}
                                     </h3>
-                                    <p className="text-[10px] text-gray-400 mt-0.5">
-                                        {selected.record.id} · {selected.record.insurance?.tpaName ?? '—'}
+                                    <p className="text-[10px] text-opd-text-secondary mt-0.5">
+                                        {selected.record.id} * {selected.record.insurance?.tpaName ?? '-'}
                                     </p>
                                 </div>
                                 <AppealStatusBadge status={selected.appeal?.appealStatus ?? 'none'} />
                             </div>
 
                             {/* Denial reason block */}
-                            <div className="space-y-1.5">
-                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">TPA Denial Reason</span>
-                                <div className="bg-gray-950 border border-white/5 rounded-2xl p-3 text-[11px] font-mono text-gray-300 leading-relaxed max-h-28 overflow-y-auto custom-scrollbar">
+                            <div className="space-y-1.5 text-left">
+                                <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">TPA Denial Reason</span>
+                                <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-3 text-[11px] font-mono text-opd-text-primary leading-relaxed max-h-28 overflow-y-auto custom-scrollbar">
                                     {selected.record.tpaResponse?.denialReason || (
-                                        <span className="text-gray-500 italic">No denial reason recorded. Update the Status Tracker to record the TPA denial text.</span>
+                                        <span className="text-opd-text-muted italic">No denial reason recorded. Update the Status Tracker to record the TPA denial text.</span>
                                     )}
                                 </div>
                             </div>
 
                             {/* Evidence coverage breakdown (from existing appeal) */}
                             {selected.appeal && (
-                                <div className="space-y-3">
+                                <div className="space-y-3 text-left">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Evidence Coverage</span>
+                                        <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Evidence Coverage</span>
                                         <span className={`text-[10px] font-black ${coverageColor(selected)}`}>
                                             {selected.appeal.addressedCount} of {selected.appeal.totalReasons} denial reasons addressed with existing evidence
                                         </span>
@@ -334,28 +335,28 @@ export const DenialQueue: React.FC = () => {
                                             return (
                                                 <div
                                                     key={idx}
-                                                    className={`p-3 rounded-2xl border text-[11px] leading-relaxed ${cited.length > 0 ? 'bg-emerald-500/5 border-emerald-500/15' : 'bg-rose-500/5 border-rose-500/15'}`}
+                                                    className={`p-3 rounded-2xl border text-[11px] leading-relaxed ${cited.length > 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}
                                                 >
                                                     <div className="flex items-start gap-2">
                                                         {cited.length > 0
-                                                            ? <BadgeCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                                                            : <BadgeAlert className="w-3.5 h-3.5 text-rose-400 shrink-0 mt-0.5" />
+                                                            ? <BadgeCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
+                                                            : <BadgeAlert className="w-3.5 h-3.5 text-red-700 shrink-0 mt-0.5" />
                                                         }
                                                         <div className="flex-1 min-w-0">
-                                                            <p className={`font-medium ${cited.length > 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
+                                                            <p className={`font-semibold ${cited.length > 0 ? 'text-emerald-800' : 'text-red-800'}`}>
                                                                 {reason}
                                                             </p>
                                                             {cited.map((ce, ci) => (
-                                                                <div key={ci} className="mt-1.5 pl-2 border-l-2 border-emerald-500/30">
-                                                                    <span className="text-[9px] font-bold uppercase text-emerald-500/70 tracking-wider">
+                                                                <div key={ci} className="mt-1.5 pl-2 border-l-2 border-emerald-400">
+                                                                    <span className="text-[9px] font-bold uppercase text-emerald-700 tracking-wider">
                                                                         {ce.source} evidence cited:
                                                                     </span>
-                                                                    <p className="text-emerald-200/80 text-[10px] mt-0.5">"{ce.evidenceItem}"</p>
+                                                                    <p className="text-opd-text-secondary text-[10px] mt-0.5">"{ce.evidenceItem}"</p>
                                                                 </div>
                                                             ))}
                                                             {isMissing && (
-                                                                <p className="text-[10px] text-rose-400/80 mt-1">
-                                                                    ⚠ Still missing — no confirmed evidence in existing report
+                                                                <p className="text-[10px] text-red-700 mt-1 font-medium">
+                                                                    [!] Still missing - no confirmed evidence in existing report
                                                                 </p>
                                                             )}
                                                         </div>
@@ -369,15 +370,15 @@ export const DenialQueue: React.FC = () => {
 
                             {/* Hindi toggle */}
                             {!selected.appeal && (
-                                <label className="flex items-center gap-2.5 cursor-pointer">
+                                <label className="flex items-center gap-2.5 cursor-pointer select-none">
                                     <input
                                         type="checkbox"
                                         checked={includeHindi}
                                         onChange={e => setIncludeHindi(e.target.checked)}
-                                        className="accent-blue-500 w-3.5 h-3.5"
+                                        className="accent-opd-primary w-3.5 h-3.5"
                                     />
-                                    <span className="text-xs text-gray-400 font-medium">Include Hindi translation</span>
-                                    <span className="text-[9px] text-amber-400/70 font-semibold">(machine-translated, not official)</span>
+                                    <span className="text-xs text-opd-text-secondary font-medium">Include Hindi translation</span>
+                                    <span className="text-[9px] text-amber-600 font-semibold">(machine-translated, not official)</span>
                                 </label>
                             )}
 
@@ -386,7 +387,8 @@ export const DenialQueue: React.FC = () => {
                                 <button
                                     onClick={handleGenerate}
                                     disabled={generating || !selected.record.tpaResponse?.denialReason}
-                                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98]"
+                                    className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
+                                    type="button"
                                 >
                                     {generating ? (
                                         <><RefreshCw className="w-4 h-4 animate-spin" /><span>Generating Citation-Backed Appeal...</span></>
@@ -398,19 +400,21 @@ export const DenialQueue: React.FC = () => {
 
                             {/* Appeal letter preview with tab for Hindi */}
                             {selected.appeal && (
-                                <div className="space-y-3 border-t border-white/5 pt-4">
+                                <div className="space-y-3 border-t border-opd-border pt-4 text-left">
                                     {/* Tab bar */}
                                     <div className="flex items-center gap-2">
                                         <button
                                             onClick={() => setActiveTab('english')}
-                                            className={`px-3 py-1 rounded-lg text-[10px] font-bold transition ${activeTab === 'english' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-gray-200'}`}
+                                            className={`px-3 py-1 rounded-lg text-[10px] font-bold transition ${activeTab === 'english' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
+                                            type="button"
                                         >
                                             English
                                         </button>
                                         {selected.appeal.hindiTranslation && (
                                             <button
                                                 onClick={() => setActiveTab('hindi')}
-                                                className={`px-3 py-1 rounded-lg text-[10px] font-bold transition ${activeTab === 'hindi' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-gray-200'}`}
+                                                className={`px-3 py-1 rounded-lg text-[10px] font-bold transition ${activeTab === 'hindi' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
+                                                type="button"
                                             >
                                                 हिंदी
                                             </button>
@@ -419,15 +423,15 @@ export const DenialQueue: React.FC = () => {
 
                                     {/* Machine-translated warning */}
                                     {activeTab === 'hindi' && selected.appeal.machineTranslatedWarning && (
-                                        <div className="flex items-start gap-2 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2">
-                                            <Languages className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                                            <p className="text-[10px] text-amber-300 font-medium">
+                                        <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+                                            <Languages className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
+                                            <p className="text-[10px] text-amber-800 font-medium leading-relaxed">
                                                 <strong>Machine-translated only</strong> — This Hindi version is AI-generated and has NOT been reviewed by a qualified translator. Do not present it as a certified or official translation.
                                             </p>
                                         </div>
                                     )}
 
-                                    <div className="bg-gray-950 border border-white/5 rounded-2xl p-4 max-h-52 overflow-y-auto custom-scrollbar font-mono text-[10px] text-gray-300 whitespace-pre-wrap leading-relaxed">
+                                    <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 max-h-52 overflow-y-auto custom-scrollbar font-mono text-[10px] text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
                                         {activeTab === 'english'
                                             ? selected.appeal.appealText
                                             : selected.appeal.hindiTranslation}
@@ -439,14 +443,15 @@ export const DenialQueue: React.FC = () => {
                                             const txt = activeTab === 'english' ? selected.appeal!.appealText : (selected.appeal!.hindiTranslation ?? '');
                                             navigator.clipboard.writeText(txt);
                                         }}
-                                        className="text-[10px] text-blue-400 hover:text-blue-300 font-bold transition underline"
+                                        className="text-[10px] text-opd-primary hover:text-opd-primary/80 font-bold transition underline"
+                                        type="button"
                                     >
                                         Copy to clipboard
                                     </button>
 
                                     {/* Status actions */}
                                     {submissionError && (
-                                        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-[10px] text-red-400 font-semibold leading-normal">
+                                        <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-[10px] text-red-800 font-semibold leading-normal">
                                             ⚠️ Submission unconfirmed — retry. Error: {submissionError}
                                         </div>
                                     )}
@@ -454,14 +459,16 @@ export const DenialQueue: React.FC = () => {
                                         <button
                                             onClick={() => handleStatusChange('submitted')}
                                             disabled={saving || selected.appeal.appealStatus === 'submitted' || selected.appeal.appealStatus === 'resolved'}
-                                            className="py-2.5 rounded-xl text-xs font-bold bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/20 transition disabled:opacity-40 flex items-center justify-center gap-1"
+                                            className="btn-secondary py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold"
+                                            type="button"
                                         >
                                             <Send className="w-3.5 h-3.5" /> Mark Submitted
                                         </button>
                                         <button
                                             onClick={() => handleStatusChange('resolved')}
                                             disabled={saving || selected.appeal.appealStatus === 'resolved'}
-                                            className="py-2.5 rounded-xl text-xs font-bold bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/20 transition disabled:opacity-40 flex items-center justify-center gap-1"
+                                            className="btn-secondary py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-900"
+                                            type="button"
                                         >
                                             <CheckCircle className="w-3.5 h-3.5" /> Mark Resolved
                                         </button>
@@ -471,7 +478,8 @@ export const DenialQueue: React.FC = () => {
                                         onClick={() => {
                                             setSelected(prev => prev ? { ...prev, appeal: null } : prev);
                                         }}
-                                        className="w-full py-2 rounded-xl text-[10px] font-bold text-gray-500 hover:text-gray-300 border border-white/5 hover:border-white/15 transition"
+                                        className="w-full py-2 rounded-xl text-[10px] font-bold text-opd-text-secondary hover:text-opd-primary border border-opd-border hover:bg-gray-50 transition"
+                                        type="button"
                                     >
                                         ↺ Regenerate Appeal
                                     </button>
@@ -480,10 +488,10 @@ export const DenialQueue: React.FC = () => {
 
                         </div>
                     ) : (
-                        <div className="bg-gray-900/30 border border-dashed border-white/10 rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px]">
-                            <ChevronRight className="w-12 h-12 text-gray-600 mb-3" />
-                            <h3 className="text-sm font-bold text-gray-300">Select a Denied Claim</h3>
-                            <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">
+                        <div className="bg-white border border-dashed border-opd-border rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px] shadow-sm">
+                            <ChevronRight className="w-12 h-12 text-opd-text-muted mb-3" />
+                            <h3 className="text-sm font-bold font-lora text-opd-primary">Select a Denied Claim</h3>
+                            <p className="text-xs text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">
                                 Click any row in the denial queue to open the citation-backed appeal generator.
                             </p>
                         </div>

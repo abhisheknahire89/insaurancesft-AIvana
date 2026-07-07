@@ -160,17 +160,17 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
 
     if (!entryPath) {
         return (
-            <div className="space-y-6">
+            <div className="space-y-6 text-opd-text-primary bg-white p-6 rounded-2xl border border-opd-border shadow-sm">
                 <div>
-                    <h2 className="text-lg font-semibold text-white">Patient & Insurance Details</h2>
-                    <p className="text-gray-400 text-sm mt-1">Select an option to begin entering information</p>
+                    <h2 className="text-lg font-bold font-lora text-opd-primary">Patient & Insurance Details</h2>
+                    <p className="text-opd-text-secondary text-sm mt-1">Select an option to begin entering information</p>
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                     {[
                         {
                             path: 'scan_card' as EntryPath,
                             icon: (
-                                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/15 group-hover:bg-blue-500/20 transition-colors">
+                                <div className="w-12 h-12 rounded-xl bg-primary-tint flex items-center justify-center text-opd-primary border border-opd-primary/10 group-hover:bg-primary-tint/80 transition-colors">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                     </svg>
@@ -183,7 +183,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                         {
                             path: 'manual' as EntryPath,
                             icon: (
-                                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 border border-indigo-500/15 group-hover:bg-indigo-500/20 transition-colors">
+                                <div className="w-12 h-12 rounded-xl bg-primary-tint flex items-center justify-center text-opd-primary border border-opd-primary/10 group-hover:bg-primary-tint/80 transition-colors">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 11-2.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                     </svg>
@@ -196,7 +196,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                         {
                             path: 'search_existing' as EntryPath,
                             icon: (
-                                <div className="w-12 h-12 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-400 border border-sky-500/15 group-hover:bg-sky-500/20 transition-colors">
+                                <div className="w-12 h-12 rounded-xl bg-primary-tint flex items-center justify-center text-opd-primary border border-opd-primary/10 group-hover:bg-primary-tint/80 transition-colors">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632zM21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                                     </svg>
@@ -208,12 +208,12 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                         },
                     ].map(opt => (
                         <button key={opt.path} onClick={() => setEntryPath(opt.path)}
-                            className="flex flex-col items-center gap-4 p-6 bg-gray-900/40 hover:bg-gray-900 border border-white/5 hover:border-blue-500/30 rounded-2xl text-center transition-all duration-300 group hover:scale-[1.02] active:scale-[0.98] shadow-sm">
+                            className="flex flex-col items-center gap-4 p-6 bg-opd-input-bg hover:bg-primary-tint/10 border border-opd-border hover:border-opd-primary rounded-2xl text-center transition-all duration-200 group hover:scale-[1.02] shadow-sm">
                             {opt.icon}
                             <div className="space-y-1">
-                                <div className="font-semibold text-sm text-white">{opt.title}</div>
-                                <div className="text-[11px] text-gray-400 leading-normal">{opt.desc}</div>
-                                {opt.badge && <div className="mt-2 inline-block text-[10px] bg-blue-500/15 text-blue-300 px-2 py-0.5 rounded-full border border-blue-500/10 font-bold">{opt.badge}</div>}
+                                <div className="font-bold text-sm text-opd-text-primary font-lora">{opt.title}</div>
+                                <div className="text-[11px] text-opd-text-secondary leading-normal">{opt.desc}</div>
+                                {opt.badge && <div className="mt-2 inline-block text-[10px] bg-primary-tint text-opd-primary px-2 py-0.5 rounded-full border border-opd-primary/10 font-bold">{opt.badge}</div>}
                             </div>
                         </button>
                     ))}
@@ -224,16 +224,16 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
 
     if (entryPath === 'search_existing') {
         return (
-            <div className="space-y-6">
-                <button onClick={() => setEntryPath(null)} className="text-gray-400 hover:text-white text-xs flex items-center gap-1.5 font-medium transition-colors" type="button">
+            <div className="space-y-6 text-opd-text-primary bg-white p-6 rounded-2xl border border-opd-border shadow-sm">
+                <button onClick={() => setEntryPath(null)} className="btn-secondary px-3 py-1.5 text-xs flex items-center gap-1.5" type="button">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
                     Back
                 </button>
                 <div>
-                    <h2 className="text-lg font-semibold text-white">Search Patient Registry</h2>
-                    <p className="text-gray-400 text-sm mt-1">Search patient by name, mobile, or UHID identifier</p>
+                    <h2 className="text-lg font-bold font-lora text-opd-primary">Search Patient Registry</h2>
+                    <p className="text-opd-text-secondary text-sm mt-1">Search patient by name, mobile, or UHID identifier</p>
                 </div>
                 <div className="space-y-4">
                     <div className="relative">
@@ -241,13 +241,13 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                             type="text"
                             value={searchQuery}
                             onChange={e => handleSearch(e.target.value)}
-                            className="w-full bg-gray-900 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-colors"
+                            className="form-input pl-10"
                             placeholder="Enter Name, Mobile, UHID..."
                             autoFocus
                         />
-                        <div className="absolute left-3 top-3.5 text-gray-500">
+                        <div className="absolute left-3 top-3.5 text-opd-text-muted">
                             {searching ? (
-                                <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                                <div className="w-4 h-4 border-2 border-opd-primary border-t-transparent rounded-full animate-spin"></div>
                             ) : (
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -257,16 +257,16 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                     </div>
 
                     {searchResults.length > 0 ? (
-                        <div className="bg-gray-900/40 border border-white/5 rounded-xl divide-y divide-white/5 overflow-hidden">
+                        <div className="bg-white border border-opd-border rounded-xl divide-y divide-opd-border overflow-hidden shadow-sm">
                             {searchResults.map(p => (
                                 <div
                                     key={p.id}
                                     onClick={() => handleSelectPatient(p)}
-                                    className="p-4 hover:bg-white/5 cursor-pointer flex justify-between items-start transition-colors"
+                                    className="p-4 hover:bg-opd-bg/20 cursor-pointer flex justify-between items-start transition-colors"
                                 >
                                     <div>
-                                        <div className="font-semibold text-sm text-white">{p.patientName}</div>
-                                        <div className="text-xs text-gray-400 mt-1 flex gap-3 font-mono">
+                                        <div className="font-bold text-sm text-opd-text-primary font-lora">{p.patientName}</div>
+                                        <div className="text-xs text-opd-text-secondary mt-1 flex gap-3 font-mono">
                                             <span>UHID: {p.uhid || 'N/A'}</span>
                                             <span>Phone: {p.mobileNumber}</span>
                                             <span>{p.gender}, {p.age}{p.ageUnit === 'months' ? 'm' : 'y'}</span>
@@ -274,17 +274,17 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                                     </div>
                                     {p.lastKnownPolicyNumber && (
                                         <div className="text-right">
-                                            <span className="text-[10px] uppercase font-bold tracking-wider text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/10 block">
+                                            <span className="text-[10px] uppercase font-bold tracking-wider text-opd-primary bg-primary-tint px-2 py-0.5 rounded border border-opd-primary/10 block">
                                                 {p.lastKnownInsurer || 'Has Policy'}
                                             </span>
-                                            <span className="text-[9px] text-gray-500 font-mono block mt-1">Pol: {p.lastKnownPolicyNumber}</span>
+                                            <span className="text-[9px] text-opd-text-muted font-mono block mt-1">Pol: {p.lastKnownPolicyNumber}</span>
                                         </div>
                                     )}
                                 </div>
                             ))}
                         </div>
                     ) : searchQuery.trim().length > 1 ? (
-                        <p className="text-xs text-gray-500 text-center py-6">No matching patient records found.</p>
+                        <p className="text-xs text-opd-text-muted text-center py-6">No matching patient records found.</p>
                     ) : null}
                 </div>
             </div>
@@ -293,92 +293,92 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
 
     if (entryPath === 'scan_card' && !ocrDone) {
         return (
-            <div className="space-y-6">
-                <button onClick={() => setEntryPath(null)} className="text-gray-400 hover:text-white text-xs flex items-center gap-1.5 font-medium transition-colors">
+            <div className="space-y-6 bg-white p-6 rounded-2xl border border-opd-border shadow-sm text-opd-text-primary">
+                <button onClick={() => setEntryPath(null)} className="btn-secondary px-3 py-1.5 text-xs flex items-center gap-1.5">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
                     Back
                 </button>
-                <h2 className="text-lg font-semibold text-white">Extract from Document</h2>
+                <h2 className="text-lg font-bold font-lora text-opd-primary">Extract from Document</h2>
                 
                 {isExtracting ? (
-                  <div className="flex items-center gap-3.5 p-5 bg-blue-950/20 rounded-2xl border border-blue-500/20">
-                    <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="flex items-center gap-3.5 p-5 bg-primary-tint/30 rounded-2xl border border-opd-primary/20">
+                    <div className="w-5 h-5 border-2 border-opd-primary border-t-transparent rounded-full animate-spin"></div>
                     <div>
-                      <p className="font-semibold text-xs text-white">Extracting information...</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">Reading document fields with AI model</p>
+                      <p className="font-semibold text-xs text-opd-primary">Extracting information...</p>
+                      <p className="text-[11px] text-opd-text-secondary mt-0.5">Reading document fields with AI model</p>
                     </div>
                   </div>
                 ) : (
                   <div
                       onClick={() => { if (!isExtracting) fileRef.current?.click() }}
-                      className={`border-2 border-dashed ${extractionException ? 'border-red-500/40 hover:border-red-400 bg-red-500/5' : 'border-blue-500/35 hover:border-blue-400/80 bg-blue-500/5 hover:bg-blue-500/10'} rounded-2xl p-12 text-center cursor-pointer transition-all duration-300`}
+                      className={`border-2 border-dashed ${extractionException ? 'border-red-300 hover:border-red-400 bg-red-50/50' : 'border-opd-primary/35 hover:border-opd-primary bg-primary-tint/5 hover:bg-primary-tint/10'} rounded-2xl p-12 text-center cursor-pointer transition-all duration-200 shadow-sm`}
                   >
                         <div className="space-y-3.5">
-                            <div className="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-400 border border-blue-500/10 flex items-center justify-center mx-auto">
+                            <div className="w-14 h-14 rounded-2xl bg-primary-tint text-opd-primary border border-opd-primary/10 flex items-center justify-center mx-auto">
                                 <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
-                            <div className="text-sm text-white font-bold">Drop PDF or Image here, or click to upload</div>
-                            <div className="text-gray-500 text-[11px] max-w-sm mx-auto leading-normal">Upload Hospital Registration PDF, TPA Card, ID Card, or Policy Document</div>
-                            {extractionException && <div className="text-red-400 mt-3 text-xs font-semibold">{extractionException}</div>}
+                            <div className="text-sm text-opd-text-primary font-bold font-lora">Drop PDF or Image here, or click to upload</div>
+                            <div className="text-opd-text-secondary text-[11px] max-w-sm mx-auto leading-normal">Upload Hospital Registration PDF, TPA Card, ID Card, or Policy Document</div>
+                            {extractionException && <div className="text-opd-error mt-3 text-xs font-semibold">{extractionException}</div>}
                         </div>
                   </div>
                 )}
 
                 <input ref={fileRef} type="file" accept="image/*,.pdf" className="hidden"
                     onChange={e => e.target.files?.[0] && handleDocumentUpload(e.target.files[0])} />
-                <button onClick={() => setEntryPath('manual')} className="text-xs text-gray-400 hover:text-white transition-colors underline block">Skip Extraction — enter manually instead</button>
+                <button onClick={() => setEntryPath('manual')} className="text-xs text-opd-text-secondary hover:text-opd-primary transition-colors underline block">Skip Extraction — enter manually instead</button>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 text-opd-text-primary">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Patient & Insurance Details</h2>
+                    <h2 className="text-sm font-semibold text-opd-primary font-lora uppercase tracking-wider">Patient & Insurance Details</h2>
                 </div>
-                <button onClick={() => setEntryPath(null)} className="text-xs text-blue-400 hover:text-blue-300 font-semibold transition-colors" type="button">Change Entry Method</button>
+                <button onClick={() => setEntryPath(null)} className="text-xs text-opd-primary hover:text-opd-primary-dark font-semibold transition-colors underline" type="button">Change Entry Method</button>
             </div>
 
             {/* Extraction Results Summary */}
             {ocrDone && extractionResult && (
-                <div className="bg-blue-950/10 border border-blue-500/20 rounded-xl p-5 mb-4 max-w-full overflow-hidden">
+                <div className="bg-primary-tint/20 border border-opd-primary/20 rounded-xl p-5 mb-4 max-w-full overflow-hidden shadow-sm">
                     <div className="flex gap-3 mb-4 items-center">
-                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-sm font-bold">✨</div>
+                        <div className="w-8 h-8 rounded-lg bg-primary-tint text-opd-primary flex items-center justify-center text-sm font-bold">✨</div>
                         <div>
-                            <h3 className="text-white font-semibold text-xs uppercase tracking-wider">Extraction Complete</h3>
-                            <p className="text-gray-400 text-xs mt-0.5">Aivana OCR parsed registration details</p>
+                            <h3 className="text-opd-primary font-bold text-xs uppercase tracking-wider font-lora">Extraction Complete</h3>
+                            <p className="text-opd-text-secondary text-xs mt-0.5">Aivana OCR parsed registration details</p>
                         </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 bg-black/30 p-4 rounded-xl">
+                    <div className="grid grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-opd-border shadow-sm">
                         <div>
-                            <div className="text-green-400 text-xs font-bold flex items-center gap-1.5 mb-2">
+                            <div className="text-emerald-700 text-xs font-bold flex items-center gap-1.5 mb-2">
                                 <span>✓</span>
                                 <span>Auto-filled fields:</span>
                             </div>
-                            <ul className="text-green-300/80 text-[11px] space-y-1 ml-5 list-disc leading-relaxed font-semibold">
+                            <ul className="text-emerald-700/80 text-[11px] space-y-1 ml-5 list-disc leading-relaxed font-semibold">
                                 {extractionResult.filled.length > 0 ? (
                                     extractionResult.filled.map(f => (<li key={f}>{f}</li>))
                                 ) : (
-                                    <li className="text-gray-500 list-none -ml-4">No fields reliably found.</li>
+                                    <li className="text-opd-text-muted list-none -ml-4">No fields reliably found.</li>
                                 )}
                             </ul>
                         </div>
                         <div>
-                            <div className="text-amber-400 text-xs font-bold flex items-center gap-1.5 mb-2">
+                            <div className="text-amber-700 text-xs font-bold flex items-center gap-1.5 mb-2">
                                 <span>ℹ</span>
                                 <span>Fill manually:</span>
                             </div>
-                            <ul className="text-amber-300/80 text-[11px] space-y-1 ml-5 list-disc leading-relaxed font-semibold">
+                            <ul className="text-amber-700/80 text-[11px] space-y-1 ml-5 list-disc leading-relaxed font-semibold">
                                 {extractionResult.pending.length > 0 ? (
                                     extractionResult.pending.map(f => (<li key={f}>{f}</li>))
                                 ) : (
-                                    <li className="text-gray-500 list-none -ml-4">All required fields extracted successfully.</li>
+                                    <li className="text-opd-text-muted list-none -ml-4">All required fields extracted successfully.</li>
                                 )}
                             </ul>
                         </div>
@@ -387,144 +387,144 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
             )}
 
             {/* Patient Demographics */}
-            <div className="bg-white/[0.01] border border-white/5 rounded-xl p-5 space-y-4 shadow-sm">
-                <h3 className="font-semibold text-gray-300 text-[10px] uppercase tracking-wider border-b border-white/5 pb-2">👤 Patient Demographics</h3>
+            <div className="card-premium space-y-4">
+                <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 font-lora">👤 Patient Demographics</h3>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-2">
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Full Name *</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Full Name *</label>
                         <input value={patient.patientName ?? ''} onChange={e => onPatientChange({ ...patient, patientName: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" placeholder="As on insurance card" />
+                            className="form-input" placeholder="As on insurance card" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Date of Birth</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Date of Birth</label>
                         <input type="date" value={patient.dateOfBirth ?? ''} onChange={e => handleDOBChange(e.target.value)}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+                            className="form-input" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Age *</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Age *</label>
                         <input type="number" value={patient.age ?? ''} onChange={e => onPatientChange({ ...patient, age: +e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" placeholder="Years" />
+                            className="form-input" placeholder="Years" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Gender *</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Gender *</label>
                         <select value={patient.gender ?? ''} onChange={e => onPatientChange({ ...patient, gender: e.target.value as any })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
-                            <option value="" className="bg-[#0B0F19]">Select</option>
-                            <option value="Male" className="bg-[#0B0F19]">Male</option>
-                            <option value="Female" className="bg-[#0B0F19]">Female</option>
-                            <option value="Other" className="bg-[#0B0F19]">Other</option>
+                            className="form-input">
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Marital Status</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Marital Status</label>
                         <select value={patient.maritalStatus ?? ''} onChange={e => onPatientChange({ ...patient, maritalStatus: e.target.value as any })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
-                            <option value="" className="bg-[#0B0F19]">Select</option>
-                            <option className="bg-[#0B0F19]">Single</option><option className="bg-[#0B0F19]">Married</option><option className="bg-[#0B0F19]">Widowed</option><option className="bg-[#0B0F19]">Divorced</option>
+                            className="form-input">
+                            <option value="">Select</option>
+                            <option>Single</option><option>Married</option><option>Widowed</option><option>Divorced</option>
                         </select>
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Mobile Number *</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Mobile Number *</label>
                         <input type="tel" value={patient.mobileNumber ?? ''} onChange={e => onPatientChange({ ...patient, mobileNumber: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" placeholder="+91 XXXXX XXXXX" />
+                            className="form-input" placeholder="+91 XXXXX XXXXX" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Email</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Email</label>
                         <input type="email" value={patient.email ?? ''} onChange={e => onPatientChange({ ...patient, email: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" placeholder="optional" />
+                            className="form-input" placeholder="optional" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">City *</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">City *</label>
                         <input value={patient.city ?? ''} onChange={e => onPatientChange({ ...patient, city: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+                            className="form-input" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">State *</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">State *</label>
                         <select value={patient.state ?? ''} onChange={e => onPatientChange({ ...patient, state: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
-                            <option value="" className="bg-[#0B0F19]">Select State</option>
-                            {INDIAN_STATES.map(s => <option key={s} className="bg-[#0B0F19]">{s}</option>)}
+                            className="form-input">
+                            <option value="">Select State</option>
+                            {INDIAN_STATES.map(s => <option key={s}>{s}</option>)}
                         </select>
                     </div>
                     <div className="col-span-2">
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">UHID (Hospital ID)</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">UHID (Hospital ID)</label>
                         <input value={patient.uhid ?? ''} onChange={e => onPatientChange({ ...patient, uhid: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" placeholder="Optional identifier" />
+                            className="form-input" placeholder="Optional identifier" />
                     </div>
                 </div>
             </div>
 
             {/* Insurance Details */}
-            <div className="bg-white/[0.01] border border-white/5 rounded-xl p-5 space-y-4 shadow-sm">
-                <h3 className="font-semibold text-gray-300 text-[10px] uppercase tracking-wider border-b border-white/5 pb-2">🛡️ Insurance & Policy Details</h3>
+            <div className="card-premium space-y-4">
+                <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 font-lora">🛡️ Insurance & Policy Details</h3>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Insurance Company *</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Insurance Company *</label>
                         <datalist id="insurer-list">{INSURER_LIST.map(i => <option key={i} value={i} />)}</datalist>
                         <input list="insurer-list" value={insurance.insurerName ?? ''} onChange={e => onInsuranceChange({ ...insurance, insurerName: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" placeholder="Start typing insurer..." />
+                            className="form-input" placeholder="Start typing insurer..." />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">TPA Name *</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">TPA Name *</label>
                         <select value={insurance.tpaName ?? ''} onChange={e => onInsuranceChange({ ...insurance, tpaName: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
-                            <option value="" className="bg-[#0B0F19]">Select TPA</option>
-                            {TPA_NAMES.map(t => <option key={t} className="bg-[#0B0F19]">{t}</option>)}
+                            className="form-input">
+                            <option value="">Select TPA</option>
+                            {TPA_NAMES.map(t => <option key={t}>{t}</option>)}
                         </select>
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Policy Number *</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Policy Number *</label>
                         <input value={insurance.policyNumber ?? ''} onChange={e => onInsuranceChange({ ...insurance, policyNumber: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+                            className="form-input" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">TPA ID Card Number</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">TPA ID Card Number</label>
                         <input value={insurance.tpaIdCardNumber ?? ''} onChange={e => onInsuranceChange({ ...insurance, tpaIdCardNumber: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+                            className="form-input" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Policy Type</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Policy Type</label>
                         <select value={insurance.policyType ?? 'Individual'} onChange={e => onInsuranceChange({ ...insurance, policyType: e.target.value as any })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
-                            <option className="bg-[#0B0F19]">Individual</option><option className="bg-[#0B0F19]">Floater</option><option className="bg-[#0B0F19]">Corporate</option><option className="bg-[#0B0F19]">Group</option>
+                            className="form-input">
+                            <option>Individual</option><option>Floater</option><option>Corporate</option><option>Group</option>
                         </select>
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Sum Insured (₹) *</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Sum Insured (₹) *</label>
                         <input type="number" value={insurance.sumInsured ?? ''} onChange={e => onInsuranceChange({ ...insurance, sumInsured: +e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" placeholder="e.g. 500000" />
+                            className="form-input" placeholder="e.g. 500000" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Policy Start Date</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Policy Start Date</label>
                         <input type="date" value={insurance.policyStartDate ?? ''} onChange={e => onInsuranceChange({ ...insurance, policyStartDate: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+                            className="form-input" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Policy End Date</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Policy End Date</label>
                         <input type="date" value={insurance.policyEndDate ?? ''} onChange={e => handlePolicyEndDate(e.target.value)}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
-                        {policyDateWarning && <p className="text-amber-400 text-[11px] font-semibold mt-1.5">{policyDateWarning}</p>}
+                            className="form-input" />
+                        {policyDateWarning && <p className="text-opd-error text-[11px] font-semibold mt-1.5">{policyDateWarning}</p>}
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Proposer Name</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Proposer Name</label>
                         <input value={insurance.proposerName ?? ''} onChange={e => onInsuranceChange({ ...insurance, proposerName: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" placeholder="Defaults to patient name" />
+                            className="form-input" placeholder="Defaults to patient name" />
                     </div>
                     <div>
-                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Relationship with Proposer</label>
+                        <label className="form-label uppercase tracking-wider text-[9px] mb-1">Relationship with Proposer</label>
                         <select value={insurance.relationshipWithProposer ?? 'Self'} onChange={e => onInsuranceChange({ ...insurance, relationshipWithProposer: e.target.value })}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
-                            <option className="bg-[#0B0F19]">Self</option><option className="bg-[#0B0F19]">Spouse</option><option className="bg-[#0B0F19]">Son</option><option className="bg-[#0B0F19]">Daughter</option><option className="bg-[#0B0F19]">Father</option><option className="bg-[#0B0F19]">Mother</option><option className="bg-[#0B0F19]">Other</option>
+                            className="form-input">
+                            <option>Self</option><option>Spouse</option><option>Son</option><option>Daughter</option><option>Father</option><option>Mother</option><option>Other</option>
                         </select>
                     </div>
                 </div>
             </div>
 
             <button onClick={onNext} disabled={!isValid} type="button"
-                className={`w-full py-2.5 rounded-lg font-bold text-xs transition-all duration-150 ${isValid ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-sm' : 'bg-white/5 border border-white/5 text-gray-500 cursor-not-allowed'}`}>
+                className="w-full btn-primary py-2.5">
                 Continue to Clinical Details
             </button>
-            {!isValid && <p className="text-[10px] text-amber-500 font-semibold text-center mt-1">Fill all required (*) fields to continue</p>}
+            {!isValid && <p className="text-[10px] text-amber-600 font-semibold text-center mt-1">Fill all required (*) fields to continue</p>}
         </div>
     );
 };

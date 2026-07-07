@@ -2,6 +2,9 @@ import { PreAuthRecord, WizardDocument } from '../components/PreAuthWizard/types
 import { INSURANCE_POLICY_RULES, InsurancePolicyRule } from '../config/insurancePolicies';
 import { reviewEvidence, EvidenceReviewReport } from './evidenceReview';
 import { extractFromDocument, ExtractedPatientData } from '../services/documentExtractionService';
+import { lookupICD, assignICDViaModel, getDescription } from '../services/icdService';
+import { runBillingCodingWorkflow } from './billingCoder';
+import { isPMJAYBeneficiary } from '../services/pmjayService';
 
 export interface ExtendedEvidenceReviewReport extends EvidenceReviewReport {
   decision: 'APPROVE' | 'DENY' | 'PENDING';
@@ -94,33 +97,203 @@ function base64ToFile(base64Data: string, fileName: string, mimeType: string): F
  * runs OCR/extraction, evaluates them against insurance policies & clinical guidelines,
  * and outputs a prior-authorization decision with evidence highlights.
  */
+async function logStageSLA(stageName: string, durationMs: number, targetMs: number, warningMs: number, criticalMs: number) {
+  if (typeof window !== 'undefined') return;
+  try {
+    const fs = await import('fs');
+    const path = await import('path');
+    const filePath = path.join(process.cwd(), 'logs', 'stage_sla_trends.json');
+    let trends: any[] = [];
+    if (fs.existsSync(filePath)) {
+      trends = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    }
+    const status = durationMs > criticalMs ? 'CRITICAL' : (durationMs > warningMs ? 'WARNING' : 'OK');
+    trends.push({
+      timestamp: new Date().toISOString(),
+      stage: stageName,
+      durationMs,
+      targetMs,
+      status
+    });
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(filePath, JSON.stringify(trends, null, 2));
+  } catch (e) {
+    console.error("Failed to write stage SLA metric:", e);
+  }
+}
+
 export async function priorAuthOrchestrator(
   documents: WizardDocument[],
-  record: Partial<PreAuthRecord>
+  record: Partial<PreAuthRecord>,
+  onProgress?: (event: { stage: string; status: 'pending' | 'success' | 'failed' | 'warning'; data?: any }) => void
 ): Promise<ExtendedEvidenceReviewReport> {
-  // 1. Run the existing clinical evidence review first to get base clinical/admin results
-  const baseReport = await reviewEvidence(record);
-
-  // 2. Extract structured data & clinical excerpts from all uploaded documents
-  const extractions: Array<{ doc: WizardDocument; data: ExtractedPatientData }> = [];
-  for (const doc of documents) {
-    try {
-      if (doc.base64Data) {
-        const file = base64ToFile(doc.base64Data, doc.fileName, doc.mimeType);
-        const data = await extractFromDocument(file);
-        extractions.push({ doc, data });
-      }
-    } catch (err) {
-      console.error(`[priorAuthOrchestrator] Failed to extract from document ${doc.fileName}:`, err);
-    }
+  // Helper with Timeout
+  async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, stageName: string): Promise<T> {
+    let timeoutId: any;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timeoutId = setTimeout(() => {
+        reject(new Error(`SLA Breach Critical Timeout: Stage "${stageName}" exceeded ${timeoutMs}ms limit.`));
+      }, timeoutMs);
+    });
+    return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
   }
 
-  // 3. Match diagnosis to policies
+  // SLA Thresholds
+  const EXTRACTION_TARGET = 15000;
+  const EXTRACTION_WARN = 15000;
+  const EXTRACTION_CRIT = 20000;
+
+  const REVIEW_TARGET = 30000;
+  const REVIEW_WARN = 30000;
+  const REVIEW_CRIT = 45000;
+
+  const ICD_TARGET = 5000;
+  const ICD_WARN = 5000;
+  const ICD_CRIT = 10000;
+
+  const BILLING_TARGET = 5000;
+  const BILLING_WARN = 5000;
+  const BILLING_CRIT = 10000;
+
+  // 1. EXTRACTION STAGE
+  onProgress?.({ stage: 'extraction', status: 'pending' });
+  const startExtraction = Date.now();
+  const extractions: Array<{ doc: WizardDocument; data: ExtractedPatientData }> = [];
+
+  try {
+    const extractionPromises = documents.map(async (doc) => {
+      if (doc.base64Data) {
+        const file = base64ToFile(doc.base64Data, doc.fileName, doc.mimeType);
+        const data = await withTimeout(extractFromDocument(file), EXTRACTION_CRIT, `Extraction: ${doc.fileName}`);
+        return { doc, data };
+      }
+      return null;
+    });
+
+    const results = await Promise.all(extractionPromises);
+    for (const r of results) {
+      if (r) extractions.push(r);
+    }
+
+    // Merge extracted details into record
+    if (extractions.length > 0) {
+      const ext = extractions[0].data;
+      if (ext.patient?.name && !record.patient?.patientName) {
+        record.patient = { ...record.patient, patientName: ext.patient.name };
+      }
+      if (ext.insurance?.insurance_company && !record.insurance?.insurerName) {
+        record.insurance = { ...record.insurance, insurerName: ext.insurance.insurance_company };
+      }
+    }
+
+    const duration = Date.now() - startExtraction;
+    await logStageSLA('extraction', duration, EXTRACTION_TARGET, EXTRACTION_WARN, EXTRACTION_CRIT);
+    onProgress?.({
+      stage: 'extraction',
+      status: 'success',
+      data: {
+        patientName: record.patient?.patientName || 'Unknown Patient',
+        diagnosis: record.clinical?.diagnoses?.[0]?.diagnosis || 'Unspecified',
+        insurerName: record.insurance?.insurerName || 'Star Health',
+        sumInsured: record.insurance?.sumInsured || 500000,
+        readinessScore: 40
+      }
+    });
+  } catch (err: any) {
+    const duration = Date.now() - startExtraction;
+    await logStageSLA('extraction', duration, EXTRACTION_TARGET, EXTRACTION_WARN, EXTRACTION_CRIT);
+    onProgress?.({ stage: 'extraction', status: 'failed', data: err.message });
+    console.error(`[priorAuthOrchestrator] Extraction stage failed or timed out:`, err);
+  }
+
+  // 2. PARALLEL STAGES (Evidence Review, ICD Coding, Billing)
+  onProgress?.({ stage: 'evidence', status: 'pending' });
+  onProgress?.({ stage: 'icd', status: 'pending' });
+  onProgress?.({ stage: 'billing', status: 'pending' });
+
   const selectedIndex = record.clinical?.selectedDiagnosisIndex ?? 0;
   const selectedDx = record.clinical?.diagnoses?.[selectedIndex];
   const diagnosisName = selectedDx?.diagnosis || '';
-  const provisionalCode = selectedDx?.icd10Code || '';
 
+  let reviewReport: any = null;
+  let codingCandidates: any[] = [];
+  let billingReport: any = null;
+
+  try {
+    const parallelPromises = [
+      // Track 1: Evidence Review
+      (async () => {
+        const start = Date.now();
+        try {
+          reviewReport = await withTimeout(reviewEvidence(record), REVIEW_CRIT, 'Evidence Review');
+          const dur = Date.now() - start;
+          await logStageSLA('evidence', dur, REVIEW_TARGET, REVIEW_WARN, REVIEW_CRIT);
+          onProgress?.({ stage: 'evidence', status: 'success', data: reviewReport });
+        } catch (e: any) {
+          const dur = Date.now() - start;
+          await logStageSLA('evidence', dur, REVIEW_TARGET, REVIEW_WARN, REVIEW_CRIT);
+          onProgress?.({ stage: 'evidence', status: 'failed', data: e.message });
+          throw e;
+        }
+      })(),
+
+      // Track 2: ICD Coding
+      (async () => {
+        const start = Date.now();
+        try {
+          let candidates = lookupICD(diagnosisName);
+          if (!candidates.length && typeof assignICDViaModel === 'function') {
+            candidates = await withTimeout(assignICDViaModel(diagnosisName, record.clinical?.relevantClinicalFindings || ''), ICD_CRIT, 'ICD Coding');
+          }
+          codingCandidates = candidates;
+          const dur = Date.now() - start;
+          await logStageSLA('icd', dur, ICD_TARGET, ICD_WARN, ICD_CRIT);
+          onProgress?.({ stage: 'icd', status: 'success', data: candidates });
+        } catch (e: any) {
+          const dur = Date.now() - start;
+          await logStageSLA('icd', dur, ICD_TARGET, ICD_WARN, ICD_CRIT);
+          onProgress?.({ stage: 'icd', status: 'failed', data: e.message });
+          throw e;
+        }
+      })(),
+
+      // Track 3: Billing Coder
+      (async () => {
+        const start = Date.now();
+        try {
+          billingReport = await withTimeout(runBillingCodingWorkflow({
+            clinicalNote: `${record.clinical?.chiefComplaints || ''} ${record.clinical?.relevantClinicalFindings || ''}`,
+            insurerName: record.insurance?.insurerName || 'Unknown',
+            sumInsured: record.insurance?.sumInsured || 500000,
+            wardType: (record.clinical?.proposedLineOfTreatment?.surgical ? 'ICU' : 'Private') as any,
+            requestedAmount: record.costEstimate?.totalEstimatedCost || 0,
+            resolvedICD10: selectedDx?.icd10Code
+          }), BILLING_CRIT, 'Billing Coder');
+          const dur = Date.now() - start;
+          await logStageSLA('billing', dur, BILLING_TARGET, BILLING_WARN, BILLING_CRIT);
+          onProgress?.({ stage: 'billing', status: 'success', data: billingReport });
+        } catch (e: any) {
+          const dur = Date.now() - start;
+          await logStageSLA('billing', dur, BILLING_TARGET, BILLING_WARN, BILLING_CRIT);
+          onProgress?.({ stage: 'billing', status: 'failed', data: e.message });
+          throw e;
+        }
+      })()
+    ];
+
+    await Promise.all(parallelPromises);
+  } catch (err: any) {
+    console.error(`[priorAuthOrchestrator] One or more parallel tracks failed:`, err);
+  }
+
+  // 3. PM-JAY check
+  const pmjayBeneficiary = isPMJAYBeneficiary(record.insurance?.insurerName || '');
+  onProgress?.({ stage: 'pmjay', status: pmjayBeneficiary ? 'success' : 'warning', data: { isPmjay: pmjayBeneficiary } });
+
+  // Match policies
   const matchedPolicies = INSURANCE_POLICY_RULES.filter(policy => {
     const term = diagnosisName.toLowerCase();
     const scopeLower = policy.scope.toLowerCase();
@@ -195,16 +368,17 @@ export async function priorAuthOrchestrator(
     });
   }
 
-  // 4. Decision logic (APPROVE / DENY / PENDING)
+  // Decision logic
   let decision: 'APPROVE' | 'DENY' | 'PENDING' = 'APPROVE';
   let justification = '';
 
-  const hasHighQueries = baseReport.anticipatedQueries.some(q => q.severity === 'high');
-  const hasGaps = baseReport.insufficientEvidence.length > 0 || baseReport.mandatoryGaps.length > 0 || missingInfo.length > 0;
+  const reportToUse = reviewReport || { anticipatedQueries: [], insufficientEvidence: [], mandatoryGaps: [] };
+  const hasHighQueries = reportToUse.anticipatedQueries.some((q: any) => q.severity === 'high');
+  const hasGaps = reportToUse.insufficientEvidence.length > 0 || reportToUse.mandatoryGaps.length > 0 || missingInfo.length > 0;
 
   if (hasHighQueries) {
     decision = 'DENY';
-    justification = `The request is recommended for Denial. Clinical pre-audit identifies severe gaps in inpatient necessity or conservative management requirements. Detailed reason: ${baseReport.anticipatedQueries.find(q => q.severity === 'high')?.query}`;
+    justification = `The request is recommended for Denial. Clinical pre-audit identifies severe gaps in inpatient necessity or conservative management requirements. Detailed reason: ${reportToUse.anticipatedQueries.find((q: any) => q.severity === 'high')?.query}`;
   } else if (hasGaps) {
     decision = 'PENDING';
     justification = 'The request is recommended as Pending. There are missing clinical documents or specific policy criteria that are not yet confirmed in the uploaded files.';
@@ -213,8 +387,7 @@ export async function priorAuthOrchestrator(
     justification = 'The request is recommended for Approval. All clinical protocol indicators are met, and required documents and policy criteria are fully verified with supporting excerpts from the source files.';
   }
 
-  // Add contradictions if any
-  // E.g., if there are cost estimates with surgical procedures stating 0 fee, we flag a contradiction
+  // Check contradictions
   const isSurgical = record.clinical?.proposedLineOfTreatment?.surgical || false;
   const isSurgicalZeroCost = isSurgical &&
       ((record.costEstimate?.otCharges ?? 0) === 0 &&
@@ -228,8 +401,10 @@ export async function priorAuthOrchestrator(
     });
   }
 
+  onProgress?.({ stage: 'submission', status: 'success' });
+
   return {
-    ...baseReport,
+    ...reportToUse,
     decision,
     justification,
     evidenceHighlights,

@@ -198,21 +198,22 @@ export const PriorAuthCopilot: React.FC = () => {
     return (
         <div className="space-y-6 animate-fadeInUp">
             {/* Header section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-900/40 p-6 rounded-3xl border border-white/5 backdrop-blur-md">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-opd-border shadow-sm text-left">
                 <div>
-                    <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
+                    <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
                         <Globe className="w-3.5 h-3.5" /> Fairway Style Pre-Auth Copilot
                     </div>
-                    <h2 className="text-xl font-bold tracking-tight">Prior Authorization Audit & Medical Necessity Engine</h2>
-                    <p className="text-xs text-gray-400 mt-0.5">Automating medical necessity justifications, evidence matching, and TPA checklist verification using Gemini Multimodal reasoning.</p>
+                    <h2 className="text-xl font-bold tracking-tight text-opd-text-primary font-lora">Prior Authorization Audit & Medical Necessity Engine</h2>
+                    <p className="text-xs text-opd-text-secondary mt-0.5 leading-relaxed">Automating medical necessity justifications, evidence matching, and TPA checklist verification using Gemini Multimodal reasoning.</p>
                 </div>
                 <div className="flex items-center gap-2.5">
                     {DEMO_CHARTS.map(chart => (
                         <button
                             key={chart.id}
                             onClick={() => loadDemoChart(chart.id)}
-                            className="px-3.5 py-2 bg-gray-800 hover:bg-gray-700 text-[11px] font-bold text-gray-300 rounded-xl transition border border-white/5 active:scale-95 text-left max-w-xs"
+                            className="px-3.5 py-2 bg-opd-input-bg hover:bg-gray-50 text-[11px] font-bold text-opd-text-primary rounded-xl transition border border-opd-border active:scale-95 text-left max-w-xs shadow-sm"
                             title={chart.description}
+                            type="button"
                         >
                             ⚡ Load {chart.id.includes('dengue') ? 'Dengue' : 'CABG'} Chart
                         </button>
@@ -221,16 +222,17 @@ export const PriorAuthCopilot: React.FC = () => {
             </div>
 
             {/* Input Workspace split layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-left">
                 
                 {/* Left Side: Medical Record & Settings Input (7 cols) */}
                 <div className="lg:col-span-7 space-y-6">
-                    <div className="bg-gray-900 border border-white/5 rounded-3xl p-6 space-y-4">
+                    <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-4 shadow-sm text-opd-text-primary">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-sm font-bold text-gray-200 tracking-wide uppercase">Patient Clinical Chart Note</h3>
+                            <h3 className="text-sm font-bold text-opd-primary tracking-wide uppercase font-lora">Patient Clinical Chart Note</h3>
                             <button
                                 onClick={() => setClinicalNote('')}
-                                className="text-[10px] text-gray-500 hover:text-white transition uppercase font-semibold"
+                                className="text-[10px] text-opd-text-secondary hover:text-opd-primary transition uppercase font-semibold"
+                                type="button"
                             >
                                 Clear Note
                             </button>
@@ -241,7 +243,7 @@ export const PriorAuthCopilot: React.FC = () => {
                             onChange={(e) => setClinicalNote(e.target.value)}
                             placeholder="Type or paste the messy clinical note, outpatient logs, or laboratory results here..."
                             rows={8}
-                            className="w-full bg-gray-950 border border-white/10 rounded-2xl p-4 text-xs font-mono text-gray-300 placeholder-gray-600 focus:outline-none focus:border-blue-500 transition leading-relaxed custom-scrollbar"
+                            className="form-input font-mono"
                         />
 
                         {/* File Upload Zone */}
@@ -251,8 +253,8 @@ export const PriorAuthCopilot: React.FC = () => {
                             onDragLeave={handleDrag}
                             onDrop={handleDrop}
                             onClick={() => fileInputRef.current?.click()}
-                            className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition ${
-                                dragActive ? 'border-blue-500 bg-blue-500/5' : 'border-white/10 hover:border-white/20 bg-gray-950/40'
+                            className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition shadow-sm ${
+                                dragActive ? 'border-opd-primary bg-primary-tint/10' : 'border-opd-border hover:border-opd-primary bg-opd-input-bg/30'
                             }`}
                         >
                             <input
@@ -262,22 +264,23 @@ export const PriorAuthCopilot: React.FC = () => {
                                 multiple
                                 className="hidden"
                             />
-                            <Upload className="w-8 h-8 text-gray-500 mx-auto mb-2" />
-                            <p className="text-xs font-bold text-gray-300">Drag & drop scanned reports, ECGs, or pre-auth forms here</p>
-                            <p className="text-[10px] text-gray-500 mt-1">Supports PDF, JPG, PNG, and XLSX files for vision extraction</p>
+                            <Upload className="w-8 h-8 text-opd-text-muted mx-auto mb-2" />
+                            <p className="text-xs font-bold text-opd-text-primary">Drag & drop scanned reports, ECGs, or pre-auth forms here</p>
+                            <p className="text-[10px] text-opd-text-secondary mt-1">Supports PDF, JPG, PNG, and XLSX files for vision extraction</p>
                         </div>
 
                         {/* Attachments List */}
                         {attachments.length > 0 && (
                             <div className="space-y-1.5 pt-2">
-                                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Uploaded Evidentiary Documents ({attachments.length})</h4>
+                                <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wide">Uploaded Evidentiary Documents ({attachments.length})</h4>
                                 <div className="grid grid-cols-2 gap-2">
                                     {attachments.map((file, idx) => (
-                                        <div key={idx} className="flex items-center justify-between p-2.5 bg-gray-950 rounded-xl border border-white/5 text-[11px]">
-                                            <span className="truncate text-gray-300 max-w-[150px] font-medium" title={file.name}>📄 {file.name}</span>
+                                        <div key={idx} className="flex items-center justify-between p-2.5 bg-opd-input-bg rounded-xl border border-opd-border text-[11px] shadow-sm">
+                                            <span className="truncate text-opd-text-primary max-w-[150px] font-medium" title={file.name}>📄 {file.name}</span>
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); removeAttachment(idx); }}
-                                                className="text-red-400 hover:text-red-300 font-bold ml-2 text-xs"
+                                                className="text-red-700 hover:text-red-800 font-bold ml-2 text-xs font-sans"
+                                                type="button"
                                             >
                                                 ✕
                                             </button>
@@ -289,15 +292,15 @@ export const PriorAuthCopilot: React.FC = () => {
                     </div>
 
                     {/* Insurer and Doctor Settings Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                         {/* Insurance Parameters */}
-                        <div className="bg-gray-900 border border-white/5 rounded-3xl p-6 space-y-4">
-                            <h3 className="text-xs font-bold text-gray-200 tracking-wide uppercase border-b border-white/5 pb-2">Insurance Parameters</h3>
+                        <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-4 shadow-sm text-opd-text-primary">
+                            <h3 className="text-xs font-bold text-opd-primary font-lora border-b border-opd-border pb-2">Insurance Parameters</h3>
                             <div className="space-y-3 text-xs">
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label className="text-[10px] text-gray-400 font-semibold mb-1 block">TPA / Insurer</label>
-                                        <select value={tpaName} onChange={(e) => setTpaName(e.target.value)} className="w-full p-2 bg-gray-950 border border-white/10 rounded-xl text-xs text-gray-200">
+                                        <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">TPA / Insurer</label>
+                                        <select value={tpaName} onChange={(e) => setTpaName(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
                                             <option value="Medi Assist TPA">Medi Assist TPA</option>
                                             <option value="Paramount Health Services TPA">Paramount TPA</option>
                                             <option value="MDIndia Health Insurance TPA">MDIndia TPA</option>
@@ -305,8 +308,8 @@ export const PriorAuthCopilot: React.FC = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="text-[10px] text-gray-400 font-semibold mb-1 block">State Scheme Jurisdiction</label>
-                                        <select value={stateCode} onChange={(e) => setStateCode(e.target.value)} className="w-full p-2 bg-gray-950 border border-white/10 rounded-xl text-xs text-gray-200">
+                                        <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">State Scheme Jurisdiction</label>
+                                        <select value={stateCode} onChange={(e) => setStateCode(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
                                             <option value="MH">Maharashtra (MJPJAY)</option>
                                             <option value="KA">Karnataka (AB-ArK)</option>
                                             <option value="TN">Tamil Nadu (CMCHIS)</option>
@@ -317,12 +320,12 @@ export const PriorAuthCopilot: React.FC = () => {
                                 </div>
                                 <div className="grid grid-cols-3 gap-2">
                                     <div>
-                                        <label className="text-[10px] text-gray-400 font-semibold mb-1 block">Sum Insured (₹)</label>
-                                        <input type="number" value={sumInsured} onChange={(e) => setSumInsured(Number(e.target.value))} className="w-full p-2 bg-gray-950 border border-white/10 rounded-xl text-xs text-gray-200" />
+                                        <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">Sum Insured (₹)</label>
+                                        <input type="number" value={sumInsured} onChange={(e) => setSumInsured(Number(e.target.value))} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] text-gray-400 font-semibold mb-1 block">Ward Type</label>
-                                        <select value={wardType} onChange={(e) => setWardType(e.target.value as any)} className="w-full p-2 bg-gray-950 border border-white/10 rounded-xl text-xs text-gray-200">
+                                        <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">Ward Type</label>
+                                        <select value={wardType} onChange={(e) => setWardType(e.target.value as any)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
                                             <option value="General">General</option>
                                             <option value="Semi-Private">Semi-Private</option>
                                             <option value="Private">Private</option>
@@ -330,13 +333,13 @@ export const PriorAuthCopilot: React.FC = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="text-[10px] text-gray-400 font-semibold mb-1 block">Room Rent/Day (₹)</label>
-                                        <input type="number" value={roomRent} onChange={(e) => setRoomRent(Number(e.target.value))} className="w-full p-2 bg-gray-950 border border-white/10 rounded-xl text-xs text-gray-200" />
+                                        <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">Room Rent/Day (₹)</label>
+                                        <input type="number" value={roomRent} onChange={(e) => setRoomRent(Number(e.target.value))} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                     </div>
                                 </div>
                                 <div className="flex items-center pt-2">
-                                    <label className="flex items-center space-x-2 cursor-pointer font-semibold text-gray-300">
-                                        <input type="checkbox" checked={isEmergency} onChange={(e) => setIsEmergency(e.target.checked)} className="rounded border-white/10 bg-gray-950" />
+                                    <label className="flex items-center space-x-2 cursor-pointer font-semibold text-opd-text-secondary select-none">
+                                        <input type="checkbox" checked={isEmergency} onChange={(e) => setIsEmergency(e.target.checked)} className="accent-opd-primary" />
                                         <span>Emergency Admission</span>
                                     </label>
                                 </div>
@@ -344,24 +347,24 @@ export const PriorAuthCopilot: React.FC = () => {
                         </div>
 
                         {/* Doctor Declarations */}
-                        <div className="bg-gray-900 border border-white/5 rounded-3xl p-6 space-y-4">
-                            <h3 className="text-xs font-bold text-gray-200 tracking-wide uppercase border-b border-white/5 pb-2">Medical Declarations & Seals</h3>
+                        <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-4 shadow-sm text-opd-text-primary">
+                            <h3 className="text-xs font-bold text-opd-primary font-lora border-b border-opd-border pb-2">Medical Declarations & Seals</h3>
                             <div className="space-y-3 text-xs">
                                 <div>
-                                    <label className="text-[10px] text-gray-400 font-semibold mb-1 block">Doctor Name</label>
-                                    <input type="text" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} className="w-full p-2 bg-gray-950 border border-white/10 rounded-xl text-xs text-gray-200" />
+                                    <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">Doctor Name</label>
+                                    <input type="text" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] text-gray-400 font-semibold mb-1 block">MCI / State Medical Council Registration No.</label>
-                                    <input type="text" value={doctorReg} onChange={(e) => setDoctorReg(e.target.value)} placeholder="E.g. MCI-12345" className="w-full p-2 bg-gray-950 border border-white/10 rounded-xl text-xs text-gray-200" />
+                                    <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">MCI / State Medical Council Registration No.</label>
+                                    <input type="text" value={doctorReg} onChange={(e) => setDoctorReg(e.target.value)} placeholder="E.g. MCI-12345" className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                 </div>
-                                <div className="grid grid-cols-2 gap-2 pt-1 font-semibold text-gray-300">
-                                    <label className="flex items-center space-x-2 cursor-pointer">
-                                        <input type="checkbox" checked={sealApplied} onChange={(e) => setSealApplied(e.target.checked)} className="rounded border-white/10 bg-gray-950" />
+                                <div className="grid grid-cols-2 gap-2 pt-1 font-semibold text-opd-text-secondary">
+                                    <label className="flex items-center space-x-2 cursor-pointer select-none">
+                                        <input type="checkbox" checked={sealApplied} onChange={(e) => setSealApplied(e.target.checked)} className="accent-opd-primary" />
                                         <span>Hospital Seal Applied</span>
                                     </label>
-                                    <label className="flex items-center space-x-2 cursor-pointer">
-                                        <input type="checkbox" checked={sigConfirmed} onChange={(e) => setSigConfirmed(e.target.checked)} className="rounded border-white/10 bg-gray-950" />
+                                    <label className="flex items-center space-x-2 cursor-pointer select-none">
+                                        <input type="checkbox" checked={sigConfirmed} onChange={(e) => setSigConfirmed(e.target.checked)} className="accent-opd-primary" />
                                         <span>Doctor Sign-off Done</span>
                                     </label>
                                 </div>
@@ -373,7 +376,8 @@ export const PriorAuthCopilot: React.FC = () => {
                     <button
                         onClick={runAnalysis}
                         disabled={loading || !clinicalNote}
-                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold tracking-wider text-sm transition shadow-lg disabled:opacity-40 disabled:pointer-events-none active:scale-[0.99] flex items-center justify-center gap-2"
+                        className="w-full py-4 rounded-2xl bg-opd-primary hover:bg-opd-primary/95 text-white font-bold tracking-wider text-sm transition shadow-sm disabled:opacity-40 disabled:pointer-events-none active:scale-[0.99] flex items-center justify-center gap-2"
+                        type="button"
                     >
                         {loading ? (
                             <>
@@ -389,15 +393,15 @@ export const PriorAuthCopilot: React.FC = () => {
                 {/* Right Side: Audit Results Console (5 cols) */}
                 <div className="lg:col-span-5 space-y-6">
                     {analysis ? (
-                        <div className="bg-gray-900 border border-white/10 rounded-3xl p-6 space-y-6 overflow-hidden relative shadow-2xl">
+                        <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-6 overflow-hidden relative shadow-sm text-opd-text-primary text-left">
                             
                             {/* Top Decision Badge */}
-                            <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                                <h3 className="text-sm font-bold text-gray-200 tracking-wide uppercase">Audit Report</h3>
+                            <div className="flex items-center justify-between border-b border-opd-border pb-4">
+                                <h3 className="text-sm font-bold text-opd-primary font-lora tracking-wide uppercase">Audit Report</h3>
                                 <span className={`text-xs font-black uppercase px-3 py-1.5 rounded-xl tracking-wider border ${
-                                    analysis.decision === 'Approved' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                                    analysis.decision === 'Denied' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                                    'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                    analysis.decision === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                    analysis.decision === 'Denied' ? 'bg-red-50 text-red-750 border-red-200' :
+                                    'bg-amber-50 text-amber-700 border-amber-200'
                                 }`}>
                                     {analysis.decision}
                                 </span>
@@ -405,82 +409,84 @@ export const PriorAuthCopilot: React.FC = () => {
 
                             {/* Medical Necessity Reasoning */}
                             <div className="space-y-2">
-                                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-                                    <Award className="w-3.5 h-3.5 text-blue-400" /> Medical Necessity Verdict
+                                <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                    <Award className="w-3.5 h-3.5 text-opd-primary" /> Medical Necessity Verdict
                                 </h4>
-                                <p className="text-xs text-gray-200 leading-relaxed bg-gray-950 p-4 rounded-2xl border border-white/5">
+                                <p className="text-xs text-opd-text-primary leading-relaxed bg-opd-input-bg p-4 rounded-2xl border border-opd-border shadow-sm">
                                     {analysis.justification}
                                 </p>
                             </div>
 
                             {/* Multi-lingual summary tab */}
-                            <div className="border border-white/5 rounded-2xl overflow-hidden">
-                                <div className="flex bg-gray-950 border-b border-white/5 text-[11px] font-bold">
+                            <div className="border border-opd-border rounded-2xl overflow-hidden shadow-sm">
+                                <div className="flex bg-opd-input-bg border-b border-opd-border text-[11px] font-bold">
                                     <button
                                         onClick={() => setLanguageTab('en')}
-                                        className={`flex-1 py-2.5 transition flex items-center justify-center gap-1.5 ${languageTab === 'en' ? 'bg-gray-900 text-white border-b-2 border-blue-500' : 'text-gray-400 hover:text-gray-200'}`}
+                                        className={`flex-1 py-2.5 transition flex items-center justify-center gap-1.5 ${languageTab === 'en' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
+                                        type="button"
                                     >
                                         English Summary
                                     </button>
                                     <button
                                         onClick={() => setLanguageTab('hi')}
-                                        className={`flex-1 py-2.5 transition flex items-center justify-center gap-1.5 ${languageTab === 'hi' ? 'bg-gray-900 text-white border-b-2 border-blue-500' : 'text-gray-400 hover:text-gray-200'}`}
+                                        className={`flex-1 py-2.5 transition flex items-center justify-center gap-1.5 ${languageTab === 'hi' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
+                                        type="button"
                                     >
                                         हिन्दी सारांश (Hindi)
                                     </button>
                                 </div>
-                                <div className="p-4 bg-gray-950/40 text-xs leading-relaxed text-gray-300 font-medium">
+                                <div className="p-4 bg-white text-xs leading-relaxed text-opd-text-primary font-medium">
                                     {languageTab === 'en' ? (
                                         <p>{analysis.englishSummary}</p>
                                     ) : (
-                                        <p className="font-sans text-gray-200">{analysis.hindiSummary}</p>
+                                        <p className="font-sans text-opd-text-primary">{analysis.hindiSummary}</p>
                                     )}
                                 </div>
                             </div>
 
                             {/* Evidence Highlights (Messy Document matching) */}
                             <div className="space-y-3">
-                                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-                                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Highlighted Evidence Ingested
+                                <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                    <CheckCircle className="w-3.5 h-3.5 text-emerald-700" /> Highlighted Evidence Ingested
                                 </h4>
                                 <div className="space-y-2 max-h-56 overflow-y-auto custom-scrollbar">
                                     {analysis.evidenceHighlights.map((hl, idx) => (
                                         <div key={idx} className={`p-3 rounded-2xl border text-[11px] leading-relaxed ${
                                             hl.severity === 'supportive' 
-                                                ? 'bg-emerald-500/5 border-emerald-500/10 text-emerald-300' 
-                                                : 'bg-red-500/5 border-red-500/10 text-red-300'
+                                                ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
+                                                : 'bg-red-50 border-red-200 text-red-800'
                                         }`}>
                                             <span className="font-bold text-[9px] block uppercase tracking-wider mb-1 opacity-70">
                                                 {hl.severity === 'supportive' ? '✓ SUPPORTIVE EVIDENCE' : '⚠ CLINICAL CHALLENGE'}
                                             </span>
-                                            <blockquote className="font-mono bg-black/40 px-2 py-1 rounded border border-white/5 my-1 block">
+                                            <blockquote className="font-mono bg-opd-input-bg px-2 py-1 rounded border border-opd-border my-1 block text-opd-text-primary">
                                                 "{hl.snippet}"
                                             </blockquote>
-                                            <span className="text-[10px] text-gray-400 mt-1 block font-sans">
+                                            <span className="text-[10px] text-opd-text-secondary mt-1 block font-sans">
                                                 <strong>Relevance:</strong> {hl.relevance}
                                             </span>
                                         </div>
                                     ))}
                                     {analysis.evidenceHighlights.length === 0 && (
-                                        <p className="text-xs text-gray-500 italic">No structured highlights detected in notes.</p>
+                                        <p className="text-xs text-opd-text-muted italic">No structured highlights detected in notes.</p>
                                     )}
                                 </div>
                             </div>
 
                             {/* Information Gaps and Missing Items */}
                             <div className="space-y-3">
-                                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-                                    <ShieldAlert className="w-3.5 h-3.5 text-amber-500" /> Insufficient Information Gaps
+                                <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                    <ShieldAlert className="w-3.5 h-3.5 text-amber-600" /> Insufficient Information Gaps
                                 </h4>
-                                <div className="bg-amber-950/15 border border-amber-500/10 rounded-2xl p-4 space-y-2">
+                                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-2 shadow-sm">
                                     {analysis.missingInformation.length > 0 ? (
-                                        <ul className="list-disc pl-4 space-y-1.5 text-xs text-amber-300 font-medium">
+                                        <ul className="list-disc pl-4 space-y-1.5 text-xs text-amber-800 font-medium">
                                             {analysis.missingInformation.map((gap, idx) => (
                                                 <li key={idx}>{gap}</li>
                                             ))}
                                         </ul>
                                     ) : (
-                                        <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold">
+                                        <div className="flex items-center gap-2 text-emerald-700 text-xs font-bold">
                                             <CheckCircle className="w-4 h-4" /> All clinical & mandatory verification gaps resolved.
                                         </div>
                                     )}
@@ -489,37 +495,37 @@ export const PriorAuthCopilot: React.FC = () => {
 
                             {/* Policy Citations Card */}
                             <div className="space-y-3">
-                                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-                                    <FileText className="w-3.5 h-3.5 text-cyan-400" /> Payer Policy & IRDAI Citations
+                                <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                    <FileText className="w-3.5 h-3.5 text-opd-primary" /> Payer Policy & IRDAI Citations
                                 </h4>
                                 <div className="space-y-2">
                                     {analysis.policyCitations.map((cite, idx) => (
-                                        <div key={idx} className="p-3 bg-gray-950 rounded-2xl border border-white/5 flex justify-between items-start gap-4">
+                                        <div key={idx} className="p-3 bg-opd-input-bg rounded-2xl border border-opd-border flex justify-between items-start gap-4 shadow-sm">
                                             <div className="text-[11px]">
-                                                <span className="font-bold text-gray-200 block">{cite.clause}</span>
-                                                <span className="text-gray-400 mt-0.5 block">{cite.description}</span>
+                                                <span className="font-bold text-opd-text-primary block">{cite.clause}</span>
+                                                <span className="text-opd-text-secondary mt-0.5 block">{cite.description}</span>
                                             </div>
                                             <span className={`text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-black border ${
-                                                cite.status === 'Compliant' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                                                cite.status === 'Non-Compliant' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                                                'bg-gray-800 text-gray-400 border-white/5'
+                                                cite.status === 'Compliant' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                                cite.status === 'Non-Compliant' ? 'bg-red-50 text-red-750 border-red-200' :
+                                                'bg-gray-50 text-gray-700 border-gray-200'
                                             }`}>
                                                 {cite.status}
                                             </span>
                                         </div>
                                     ))}
                                     {analysis.policyCitations.length === 0 && (
-                                        <p className="text-xs text-gray-500 italic">No matching policy clauses cited.</p>
+                                        <p className="text-xs text-opd-text-muted italic">No matching policy clauses cited.</p>
                                     )}
                                 </div>
                             </div>
 
                         </div>
                     ) : (
-                        <div className="bg-gray-900/30 border border-dashed border-white/10 rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px]">
-                            <FileText className="w-12 h-12 text-gray-600 mb-3" />
-                            <h3 className="text-sm font-bold text-gray-300">Awaiting Clinical Audit Analysis</h3>
-                            <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">Fill out the clinical note or load a pre-seeded demo chart on the left, then trigger the engine audit to view results.</p>
+                        <div className="bg-white border border-dashed border-opd-border rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px] shadow-sm text-opd-text-primary">
+                            <FileText className="w-12 h-12 text-opd-text-muted mb-3" />
+                            <h3 className="text-sm font-bold font-lora text-opd-primary">Awaiting Clinical Audit Analysis</h3>
+                            <p className="text-xs text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">Fill out the clinical note or load a pre-seeded demo chart on the left, then trigger the engine audit to view results.</p>
                         </div>
                     )}
                 </div>

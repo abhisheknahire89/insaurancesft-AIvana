@@ -110,40 +110,40 @@ export const DenialHub: React.FC = () => {
     return (
         <div className="space-y-6 animate-fadeInUp">
             {/* Header banner */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-900/40 p-6 rounded-3xl border border-white/5 backdrop-blur-md">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-opd-border shadow-sm text-left">
                 <div>
-                    <div className="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
+                    <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
                         <ShieldAlert className="w-3.5 h-3.5" /> Aegis Style Appeal Engine
                     </div>
-                    <h2 className="text-xl font-bold tracking-tight">Automated Denial Ingestion & Grievance Appeal Builder</h2>
-                    <p className="text-xs text-gray-400 mt-0.5">Scoring claim denials by financial loss, clinical urgency, and overturn probability, with compliant IRDAI appeal packet generation.</p>
+                    <h2 className="text-xl font-bold tracking-tight text-opd-text-primary font-lora">Automated Denial Ingestion & Grievance Appeal Builder</h2>
+                    <p className="text-xs text-opd-text-secondary mt-0.5 leading-relaxed">Scoring claim denials by financial loss, clinical urgency, and overturn probability, with compliant IRDAI appeal packet generation.</p>
                 </div>
                 <div className="flex items-center gap-4 text-xs font-semibold">
-                    <div className="bg-gray-950 px-4 py-2.5 rounded-2xl border border-white/5">
-                        <span className="text-gray-400">Claims Ingested: </span>
-                        <span className="text-white font-bold">{denials.length}</span>
+                    <div className="bg-opd-input-bg px-4 py-2.5 rounded-2xl border border-opd-border shadow-sm">
+                        <span className="text-opd-text-secondary font-medium">Claims Ingested: </span>
+                        <span className="text-opd-text-primary font-bold">{denials.length}</span>
                     </div>
-                    <div className="bg-gray-950 px-4 py-2.5 rounded-2xl border border-white/5">
-                        <span className="text-gray-400">Priority Backlog: </span>
-                        <span className="text-rose-400 font-bold">₹{denials.reduce((acc, curr) => curr.status === 'Pending Review' ? acc + curr.claimAmount : acc, 0).toLocaleString('en-IN')}</span>
+                    <div className="bg-opd-input-bg px-4 py-2.5 rounded-2xl border border-opd-border shadow-sm">
+                        <span className="text-opd-text-secondary font-medium">Priority Backlog: </span>
+                        <span className="text-red-750 font-bold">₹{denials.reduce((acc, curr) => curr.status === 'Pending Review' ? acc + curr.claimAmount : acc, 0).toLocaleString('en-IN')}</span>
                     </div>
                 </div>
             </div>
 
             {/* Split layout: Queue (7 cols) and Appeal Editor (5 cols) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-left">
                 
                 {/* Prioritized Denial Queue Table */}
-                <div className="lg:col-span-7 bg-gray-900 border border-white/5 rounded-3xl p-6 space-y-4">
-                    <div className="flex justify-between items-center pb-2 border-b border-white/5">
-                        <h3 className="text-sm font-bold text-gray-200 tracking-wide uppercase">Prioritized Denial Backlog</h3>
-                        {loadingQueue && <RefreshCw className="w-4 h-4 animate-spin text-blue-500" />}
+                <div className="lg:col-span-7 bg-white border border-opd-border rounded-3xl p-6 space-y-4 shadow-sm">
+                    <div className="flex justify-between items-center pb-2 border-b border-opd-border">
+                        <h3 className="text-sm font-bold text-opd-primary font-lora tracking-wide uppercase">Prioritized Denial Backlog</h3>
+                        {loadingQueue && <RefreshCw className="w-4 h-4 animate-spin text-opd-primary" />}
                     </div>
 
                     <div className="overflow-x-auto custom-scrollbar">
                         <table className="w-full text-left text-xs border-collapse">
                             <thead>
-                                <tr className="text-gray-400 font-semibold border-b border-white/10 uppercase tracking-wider text-[10px]">
+                                <tr className="text-opd-text-secondary font-semibold border-b border-opd-border uppercase tracking-wider text-[10px]">
                                     <th className="py-3 px-2">Priority Rank</th>
                                     <th className="py-3 px-2">Patient</th>
                                     <th className="py-3 px-2">TPA / Insurer</th>
@@ -157,37 +157,37 @@ export const DenialHub: React.FC = () => {
                                     <tr
                                         key={denial.id}
                                         onClick={() => handleSelectDenial(denial)}
-                                        className={`border-b border-white/5 hover:bg-white/5 transition cursor-pointer ${selectedDenial?.id === denial.id ? 'bg-blue-600/10 border-blue-500/30' : ''}`}
+                                        className={`border-b border-opd-border hover:bg-opd-input-bg/40 transition cursor-pointer ${selectedDenial?.id === denial.id ? 'bg-primary-tint/20 border-opd-primary' : ''}`}
                                     >
-                                        <td className="py-4 px-2 font-mono font-bold text-gray-300">
-                                            {index + 1}. <span className="text-[10px] text-gray-500 font-semibold">(Score: {denial.priorityScore ?? '—'})</span>
+                                        <td className="py-4 px-2 font-mono font-bold text-opd-text-primary">
+                                            {index + 1}. <span className="text-[10px] text-opd-text-secondary font-semibold">(Score: {denial.priorityScore ?? '—'})</span>
                                         </td>
                                         <td className="py-4 px-2">
-                                            <div className="font-bold text-gray-200">{denial.patientName}</div>
-                                            <div className="text-[10px] text-gray-400 mt-0.5">Policy: {denial.policyNumber}</div>
+                                            <div className="font-bold text-opd-text-primary">{denial.patientName}</div>
+                                            <div className="text-[10px] text-opd-text-secondary mt-0.5">Policy: {denial.policyNumber}</div>
                                         </td>
                                         <td className="py-4 px-2">
-                                            <div className="text-gray-200 font-semibold">{denial.tpaName}</div>
-                                            <div className="text-[10px] text-gray-500 mt-0.5">{denial.insurerName}</div>
+                                            <div className="text-opd-text-primary font-semibold">{denial.tpaName}</div>
+                                            <div className="text-[10px] text-opd-text-secondary mt-0.5">{denial.insurerName}</div>
                                         </td>
-                                        <td className="py-4 px-2 font-bold font-mono text-gray-100">
+                                        <td className="py-4 px-2 font-bold font-mono text-opd-text-primary">
                                             ₹{denial.claimAmount.toLocaleString('en-IN')}
                                         </td>
                                         <td className="py-4 px-2 text-center">
                                             <span className={`px-2 py-0.5 rounded text-[10px] font-black border ${
-                                                (denial.analysis?.overturnProbability || 0) >= 0.7 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                                                (denial.analysis?.overturnProbability || 0) >= 0.5 ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                                                'bg-red-500/10 text-red-400 border-red-500/20'
+                                                (denial.analysis?.overturnProbability || 0) >= 0.7 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                                (denial.analysis?.overturnProbability || 0) >= 0.5 ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                                                'bg-red-50 text-red-750 border-red-200'
                                             }`}>
                                                 {denial.analysis ? `${Math.round(denial.analysis.overturnProbability * 100)}%` : 'Auditing...'}
                                             </span>
                                         </td>
                                         <td className="py-4 px-2 text-center">
-                                            <span className={`px-2.5 py-1 rounded-xl text-[9px] font-bold uppercase tracking-wider ${
-                                                denial.status === 'Claim Overturned' ? 'bg-emerald-500/15 text-emerald-400' :
-                                                denial.status === 'Appeal Submitted' ? 'bg-blue-500/15 text-blue-400 border border-blue-500/20' :
-                                                denial.status === 'Appeal Generated' ? 'bg-purple-500/15 text-purple-400 border border-purple-500/20' :
-                                                'bg-gray-800 text-gray-400'
+                                            <span className={`px-2.5 py-1 rounded-xl text-[9px] font-bold uppercase tracking-wider border ${
+                                                denial.status === 'Claim Overturned' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                                denial.status === 'Appeal Submitted' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+                                                denial.status === 'Appeal Generated' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                                                'bg-gray-50 text-gray-700 border-gray-200'
                                             }`}>
                                                 {denial.status}
                                             </span>
@@ -202,41 +202,41 @@ export const DenialHub: React.FC = () => {
                 {/* Right Side: Appeal Package Builder & Editor */}
                 <div className="lg:col-span-5 space-y-6">
                     {selectedDenial ? (
-                        <div className="bg-gray-900 border border-white/5 rounded-3xl p-6 space-y-5">
-                            <div className="flex justify-between items-start border-b border-white/5 pb-3">
+                        <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-5 shadow-sm text-opd-text-primary text-left">
+                            <div className="flex justify-between items-start border-b border-opd-border pb-3">
                                 <div>
-                                    <h3 className="text-sm font-bold text-gray-200">Ingested Case Audit: {selectedDenial.patientName}</h3>
-                                    <p className="text-[10px] text-gray-400 mt-0.5">Denial Ref: {selectedDenial.id}</p>
+                                    <h3 className="text-sm font-bold text-opd-text-primary font-lora">Ingested Case Audit: {selectedDenial.patientName}</h3>
+                                    <p className="text-[10px] text-opd-text-secondary mt-0.5">Denial Ref: {selectedDenial.id}</p>
                                 </div>
                                 <span className={`text-[10px] font-black px-2 py-0.5 rounded border uppercase tracking-wider ${
-                                    selectedDenial.analysis?.category === 'Clinical Necessity' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                                    selectedDenial.analysis?.category === 'Pre-Existing Disease' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
-                                    'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                    selectedDenial.analysis?.category === 'Clinical Necessity' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                    selectedDenial.analysis?.category === 'Pre-Existing Disease' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                                    'bg-amber-50 text-amber-700 border-amber-200'
                                 }`}>
                                     {selectedDenial.analysis?.category || 'Auditing'}
                                 </span>
                             </div>
 
                             {/* Denial Details & Impact */}
-                            <div className="bg-gray-950 border border-white/5 rounded-2xl p-4 space-y-3 text-xs">
+                            <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 space-y-3 text-xs shadow-sm">
                                 <div>
-                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">TPA Denial Clause / EOB Reason</span>
-                                    <p className="text-gray-200 mt-1 leading-relaxed font-mono text-[11px] bg-black/40 p-2.5 rounded border border-white/5 max-h-32 overflow-y-auto custom-scrollbar">
+                                    <span className="text-[10px] text-opd-text-secondary font-bold uppercase tracking-wider">TPA Denial Clause / EOB Reason</span>
+                                    <p className="text-opd-text-primary mt-1 leading-relaxed font-mono text-[11px] bg-white p-2.5 rounded border border-opd-border max-h-32 overflow-y-auto custom-scrollbar shadow-sm">
                                         {selectedDenial.eobText}
                                     </p>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3 border-t border-white/5 pt-3">
+                                <div className="grid grid-cols-2 gap-3 border-t border-opd-border pt-3">
                                     <div>
-                                        <span className="text-[10px] text-gray-500 font-bold block">DISALLOWED AMOUNT</span>
-                                        <span className="text-red-400 font-mono font-bold text-sm">₹{selectedDenial.claimAmount.toLocaleString('en-IN')}</span>
+                                        <span className="text-[10px] text-opd-text-secondary font-bold block">DISALLOWED AMOUNT</span>
+                                        <span className="text-red-750 font-mono font-bold text-sm">₹{selectedDenial.claimAmount.toLocaleString('en-IN')}</span>
                                     </div>
                                     <div>
-                                        <span className="text-[10px] text-gray-500 font-bold block">OVERTURN LIKELIHOOD</span>
+                                        <span className="text-[10px] text-opd-text-secondary font-bold block">OVERTURN LIKELIHOOD</span>
                                         <span className={`font-bold text-sm ${
-                                            (selectedDenial.analysis?.overturnProbability || 0) >= 0.7 ? 'text-emerald-400' :
-                                            (selectedDenial.analysis?.overturnProbability || 0) >= 0.5 ? 'text-amber-400' :
-                                            'text-red-400'
+                                            (selectedDenial.analysis?.overturnProbability || 0) >= 0.7 ? 'text-emerald-700' :
+                                            (selectedDenial.analysis?.overturnProbability || 0) >= 0.5 ? 'text-amber-700' :
+                                            'text-red-750'
                                         }`}>
                                             {selectedDenial.analysis ? `${Math.round(selectedDenial.analysis.overturnProbability * 100)}%` : 'Auditing...'}
                                         </span>
@@ -246,25 +246,25 @@ export const DenialHub: React.FC = () => {
 
                             {/* Appeal Formulation Form */}
                             <div className="space-y-4">
-                                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Draft Appeal Parameters</h4>
+                                <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Draft Appeal Parameters</h4>
                                 <div className="space-y-3 text-xs">
                                     <div>
-                                        <label className="text-[10px] text-gray-400 font-bold mb-1 block">Clinical / Administrative Justification (Edit if needed)</label>
+                                        <label className="text-[10px] text-opd-text-secondary font-bold mb-1 block">Clinical / Administrative Justification (Edit if needed)</label>
                                         <textarea
                                             value={clinicalJustification}
                                             onChange={(e) => setClinicalJustification(e.target.value)}
                                             rows={4}
-                                            className="w-full bg-gray-950 border border-white/10 rounded-2xl p-3 text-xs text-gray-300 placeholder-gray-600 focus:outline-none focus:border-blue-500 transition leading-relaxed custom-scrollbar"
+                                            className="form-input text-xs text-opd-text-primary"
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label className="text-[10px] text-gray-400 font-semibold mb-1 block">Doctor Name</label>
-                                            <input type="text" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} className="w-full p-2 bg-gray-950 border border-white/10 rounded-xl text-xs text-gray-200" />
+                                            <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">Doctor Name</label>
+                                            <input type="text" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                         </div>
                                         <div>
-                                            <label className="text-[10px] text-gray-400 font-semibold mb-1 block">MCI / SMC Registration</label>
-                                            <input type="text" value={doctorReg} onChange={(e) => setDoctorReg(e.target.value)} className="w-full p-2 bg-gray-950 border border-white/10 rounded-xl text-xs text-gray-200" />
+                                            <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">MCI / SMC Registration</label>
+                                            <input type="text" value={doctorReg} onChange={(e) => setDoctorReg(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +272,8 @@ export const DenialHub: React.FC = () => {
                                 <button
                                     onClick={handleCreateAppeal}
                                     disabled={generatingAppeal || !clinicalJustification}
-                                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-98"
+                                    className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-98 shadow-sm"
+                                    type="button"
                                 >
                                     {generatingAppeal ? (
                                         <>
@@ -290,28 +291,29 @@ export const DenialHub: React.FC = () => {
 
                             {/* Appeal Package Preview Section */}
                             {appealPackage && (
-                                <div className="space-y-4 border-t border-white/5 pt-4 animate-fadeInUp">
+                                <div className="space-y-4 border-t border-opd-border pt-4 animate-fadeInUp">
                                     <div className="flex justify-between items-center">
-                                        <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Appeal Letter Draft Ready</h4>
+                                        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Appeal Letter Draft Ready</h4>
                                         <button
                                             onClick={() => setShowPreviewModal(true)}
-                                            className="text-[10px] text-blue-400 hover:text-blue-300 font-bold transition uppercase underline"
+                                            className="text-[10px] text-opd-primary hover:underline font-bold transition uppercase"
+                                            type="button"
                                         >
                                             Fullscreen Preview
                                         </button>
                                     </div>
 
-                                    <div className="bg-gray-950 p-4 border border-white/5 rounded-2xl max-h-52 overflow-y-auto custom-scrollbar font-mono text-[10px] text-gray-300 whitespace-pre-wrap leading-relaxed">
+                                    <div className="bg-opd-input-bg p-4 border border-opd-border rounded-2xl max-h-52 overflow-y-auto custom-scrollbar font-mono text-[10px] text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
                                         {appealPackage.letterContent}
                                     </div>
 
                                     {/* Checklist attachments */}
                                     <div className="space-y-2 text-xs">
-                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Mandatory Attachment Pack</span>
-                                        <div className="space-y-1 bg-gray-950 p-3 rounded-2xl border border-white/5">
+                                        <span className="text-[10px] text-opd-text-secondary font-bold uppercase tracking-wider">Mandatory Attachment Pack</span>
+                                        <div className="space-y-1 bg-opd-input-bg p-3 rounded-2xl border border-opd-border shadow-sm">
                                             {appealPackage.suggestedAttachments.map((att, index) => (
-                                                <label key={index} className="flex items-center space-x-2 text-[11px] text-gray-300 font-medium py-0.5">
-                                                    <input type="checkbox" defaultChecked className="rounded border-white/10 bg-black" />
+                                                <label key={index} className="flex items-center space-x-2 text-[11px] text-opd-text-primary font-medium py-0.5 cursor-pointer select-none">
+                                                    <input type="checkbox" defaultChecked className="rounded border-opd-border accent-opd-primary" />
                                                     <span>📎 {att}</span>
                                                 </label>
                                             ))}
@@ -322,7 +324,8 @@ export const DenialHub: React.FC = () => {
                                     <button
                                         onClick={handleSimulateSubmission}
                                         disabled={submittingAppeal}
-                                        className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 active:scale-98 shadow-lg shadow-emerald-600/10"
+                                        className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 active:scale-98 shadow-sm"
+                                        type="button"
                                     >
                                         {submittingAppeal ? (
                                             <>
@@ -351,10 +354,10 @@ export const DenialHub: React.FC = () => {
 
                         </div>
                     ) : (
-                        <div className="bg-gray-900/30 border border-dashed border-white/10 rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px]">
-                            <HelpCircle className="w-12 h-12 text-gray-600 mb-3" />
-                            <h3 className="text-sm font-bold text-gray-300">Select Ingested Denial</h3>
-                            <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">Select any claim denial item from the prioritized backlog queue on the left to analyze and appeal.</p>
+                        <div className="bg-white border border-dashed border-opd-border rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px] shadow-sm text-opd-text-primary">
+                            <HelpCircle className="w-12 h-12 text-opd-text-muted mb-3" />
+                            <h3 className="text-sm font-bold font-lora text-opd-primary">Select Ingested Denial</h3>
+                            <p className="text-xs text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">Select any claim denial item from the prioritized backlog queue on the left to analyze and appeal.</p>
                         </div>
                     )}
                 </div>
@@ -363,33 +366,36 @@ export const DenialHub: React.FC = () => {
 
             {/* Fullscreen letter preview modal */}
             {showPreviewModal && appealPackage && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
-                    <div className="bg-gray-900 border border-white/10 w-full max-w-3xl rounded-3xl overflow-hidden flex flex-col shadow-2xl animate-fadeInUp">
-                        <div className="p-5 border-b border-white/5 flex justify-between items-center">
-                            <h3 className="text-sm font-bold text-gray-200">Formal Appeal Grievance Letter Draft</h3>
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white border border-opd-border w-full max-w-3xl rounded-3xl overflow-hidden flex flex-col shadow-xl animate-fadeInUp text-left">
+                        <div className="p-5 border-b border-opd-border flex justify-between items-center">
+                            <h3 className="text-sm font-bold text-opd-primary font-lora">Formal Appeal Grievance Letter Draft</h3>
                             <button
                                 onClick={() => setShowPreviewModal(false)}
-                                className="text-xs text-gray-400 hover:text-white transition font-bold"
+                                className="text-xs text-opd-text-secondary hover:text-opd-primary transition font-bold"
+                                type="button"
                             >
                                 CLOSE ✕
                             </button>
                         </div>
-                        <div className="p-6 overflow-y-auto max-h-[70vh] custom-scrollbar bg-gray-950 font-mono text-xs text-gray-300 whitespace-pre-wrap leading-relaxed border-b border-white/5">
+                        <div className="p-6 overflow-y-auto max-h-[70vh] custom-scrollbar bg-opd-input-bg font-mono text-xs text-opd-text-primary whitespace-pre-wrap leading-relaxed border-b border-opd-border">
                             {appealPackage.letterContent}
                         </div>
-                        <div className="p-4 bg-gray-900/60 flex justify-end gap-3">
+                        <div className="p-4 bg-opd-input-bg flex justify-end gap-3">
                             <button
                                 onClick={() => {
                                     navigator.clipboard.writeText(appealPackage.letterContent);
                                     alert("Appeal letter copied to clipboard!");
                                 }}
-                                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 font-bold text-xs text-gray-300 rounded-xl transition border border-white/5"
+                                className="px-4 py-2 bg-white hover:bg-gray-50 font-bold text-xs text-opd-text-primary rounded-xl transition border border-opd-border shadow-sm"
+                                type="button"
                             >
                                 Copy to Clipboard
                             </button>
                             <button
                                 onClick={() => setShowPreviewModal(false)}
-                                className="px-5 py-2 bg-blue-600 hover:bg-blue-500 font-bold text-xs text-white rounded-xl transition"
+                                className="px-5 py-2 bg-opd-primary hover:bg-opd-primary/95 font-bold text-xs text-white rounded-xl transition shadow-sm"
+                                type="button"
                             >
                                 Done
                             </button>

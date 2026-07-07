@@ -76,27 +76,27 @@ export const StatusTracker: React.FC<StatusTrackerProps> = ({ record, onClose, o
 
     return (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-y-auto">
-            <div className="bg-gray-950 border border-white/10 rounded-2xl w-full max-w-2xl my-8 mx-4 shadow-2xl">
-                <div className="flex justify-between items-center px-6 py-4 border-b border-white/10">
-                    <h2 className="font-bold text-white">Pre-Auth Details</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-white text-xl">✕</button>
+            <div className="bg-white border border-opd-border rounded-2xl w-full max-w-2xl my-8 mx-4 shadow-2xl text-opd-text-primary text-left">
+                <div className="flex justify-between items-center px-6 py-4 border-b border-opd-border">
+                    <h2 className="font-bold text-opd-primary font-lora">Pre-Auth Details</h2>
+                    <button onClick={onClose} className="text-opd-text-muted hover:text-opd-primary text-xl" type="button">✕</button>
                 </div>
                 <div className="px-6 py-5 space-y-5">
                     {/* Summary */}
-                    <div className="bg-gray-900 rounded-xl p-4 space-y-2 text-sm">
+                    <div className="bg-opd-input-bg border border-opd-border rounded-xl p-4 space-y-2 text-sm shadow-sm">
                         <div className="flex justify-between items-center">
-                            <span className="font-mono text-blue-400 text-xs">{record.id}</span>
+                            <span className="font-mono text-opd-primary text-xs font-bold">{record.id}</span>
                             <StatusBadge status={record.status} />
                         </div>
-                        <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-gray-400 pt-1">
-                            <div>Patient: <span className="text-white">{record.patient?.patientName}</span></div>
-                            <div>Age/Sex: <span className="text-white">{record.patient?.age}{record.patient?.ageUnit === 'months' ? 'M' : 'Y'} {record.patient?.gender}</span></div>
-                            <div>Diagnosis: <span className="text-white">{selectedDx?.diagnosis ?? '—'}</span></div>
-                            <div>ICD-10: <span className="text-white font-mono">{selectedDx?.icd10Code ?? '—'}</span></div>
-                            <div>Insurer: <span className="text-white">{record.insurance?.insurerName}</span></div>
-                            <div>TPA: <span className="text-white">{record.insurance?.tpaName}</span></div>
-                            <div>Amount: <span className="text-white">₹{(record.costEstimate?.amountClaimedFromInsurer ?? 0).toLocaleString('en-IN')}</span></div>
-                            <div>Updated: <span className="text-white">{formatDateTime(record.updatedAt)}</span></div>
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-xs text-opd-text-secondary pt-1">
+                            <div>Patient: <span className="text-opd-text-primary font-semibold">{record.patient?.patientName}</span></div>
+                            <div>Age/Sex: <span className="text-opd-text-primary font-semibold">{record.patient?.age}{record.patient?.ageUnit === 'months' ? 'M' : 'Y'} · {record.patient?.gender}</span></div>
+                            <div>Diagnosis: <span className="text-opd-text-primary font-semibold">{selectedDx?.diagnosis ?? '-'}</span></div>
+                            <div>ICD-10: <span className="text-opd-text-primary font-mono font-semibold">{selectedDx?.icd10Code ?? '-'}</span></div>
+                            <div>Insurer: <span className="text-opd-text-primary font-semibold">{record.insurance?.insurerName}</span></div>
+                            <div>TPA: <span className="text-opd-text-primary font-semibold">{record.insurance?.tpaName}</span></div>
+                            <div>Amount: <span className="text-opd-text-primary font-semibold">₹{(record.costEstimate?.amountClaimedFromInsurer ?? 0).toLocaleString('en-IN')}</span></div>
+                            <div>Updated: <span className="text-opd-text-primary font-semibold">{formatDateTime(record.updatedAt)}</span></div>
                         </div>
                     </div>
 
@@ -138,24 +138,27 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
                             setTimeout(() => w.print(), 400);
                         };
                         return (
-                            <div className="space-y-2">
-                                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">IRDAI Pre-Auth Document</h3>
+                            <div className="space-y-2 text-left">
+                                <h3 className="text-xs font-semibold text-opd-text-secondary uppercase tracking-wide">IRDAI Pre-Auth Document</h3>
                                 <div className="grid grid-cols-3 gap-2">
                                     <button onClick={() => navigator.clipboard.writeText(record.outputs.irdaiText!)}
-                                        className="flex items-center justify-center gap-1 py-2 rounded-xl text-xs font-medium bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 hover:text-white transition-colors">
+                                        className="btn-secondary py-2 font-semibold text-xs flex items-center justify-center gap-1"
+                                        type="button">
                                         📋 Copy
                                     </button>
                                     <button onClick={openPrint}
-                                        className="flex items-center justify-center gap-1 py-2 rounded-xl text-xs font-medium bg-blue-900/30 hover:bg-blue-900/50 border border-blue-500/30 text-blue-300 hover:text-white transition-colors">
+                                        className="btn-secondary py-2 font-semibold text-xs text-opd-primary border-opd-primary/30 flex items-center justify-center gap-1"
+                                        type="button">
                                         🖨️ Print
                                     </button>
                                     <button onClick={openPrint}
-                                        className="flex items-center justify-center gap-1 py-2 rounded-xl text-xs font-medium bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white transition-all">
+                                        className="btn-primary py-2 font-semibold text-xs bg-opd-primary text-white flex items-center justify-center gap-1"
+                                        type="button">
                                         📄 PDF
                                     </button>
                                 </div>
                                 <textarea readOnly value={record.outputs.irdaiText} rows={8}
-                                    className="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-xs font-mono text-gray-300 focus:outline-none resize-none" />
+                                    className="form-input font-mono" />
                             </div>
                         );
                     })()}
@@ -163,40 +166,41 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
 
                     {/* TPA Response Entry */}
                     {(record.status === 'submitted' || record.status === 'query_raised' || record.status === 'approved' || record.status === 'denied') && (
-                        <div className="bg-gray-800/50 rounded-xl p-4 space-y-4">
-                            <h3 className="font-semibold text-blue-300 text-sm">📨 Record TPA Response</h3>
+                        <div className="bg-opd-input-bg border border-opd-border rounded-xl p-4 space-y-4 shadow-sm text-left">
+                            <h3 className="font-semibold text-opd-primary text-sm font-lora">📨 Record TPA Response</h3>
                             <div className="grid grid-cols-2 gap-3">
                                 {(['approved', 'partial_approved', 'query', 'denied'] as const).map(s => (
-                                    <label key={s} className="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="tpaStatus" value={s} checked={tpaStatus === s} onChange={() => setTpaStatus(s)} className="accent-blue-500" />
-                                        <span className="text-sm text-gray-300 capitalize">{s.replace('_', ' ')}</span>
+                                    <label key={s} className="flex items-center gap-2 cursor-pointer select-none">
+                                        <input type="radio" name="tpaStatus" value={s} checked={tpaStatus === s} onChange={() => setTpaStatus(s)} className="accent-opd-primary" />
+                                        <span className="text-sm text-opd-text-secondary capitalize">{s.replace('_', ' ')}</span>
                                     </label>
                                 ))}
                             </div>
                             {(tpaStatus === 'approved' || tpaStatus === 'partial_approved') && (
-                                <div>
-                                    <label className="block text-xs text-gray-400 mb-1">Approved Amount (₹)</label>
+                                <div className="space-y-1">
+                                    <label className="block text-xs text-opd-text-secondary mb-1">Approved Amount (₹)</label>
                                     <input type="number" value={approvedAmount} onChange={e => setApprovedAmount(+e.target.value)}
-                                        className="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none" />
+                                        className="form-input" />
                                 </div>
                             )}
                             {tpaStatus === 'denied' && (
-                                <div>
-                                    <label className="block text-xs text-gray-400 mb-1">Denial Reason</label>
+                                <div className="space-y-1">
+                                    <label className="block text-xs text-opd-text-secondary mb-1">Denial Reason</label>
                                     <textarea value={denialReason} onChange={e => setDenialReason(e.target.value)} rows={3}
-                                        className="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none resize-none" />
+                                        className="form-input" />
                                 </div>
                             )}
                             {tpaStatus === 'query' && (
-                                <div>
-                                    <label className="block text-xs text-gray-400 mb-1">TPA Query Details</label>
+                                <div className="space-y-1">
+                                    <label className="block text-xs text-opd-text-secondary mb-1">TPA Query Details</label>
                                     <textarea value={queryDetails} onChange={e => setQueryDetails(e.target.value)} rows={3}
-                                        className="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none resize-none" />
+                                        className="form-input" />
                                 </div>
                             )}
                             <button onClick={handleSave} disabled={saving}
-                                className="w-full py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white disabled:opacity-50">
-                                {saving ? 'Saving...' : '💾 Save TPA Response'}
+                                className="w-full btn-primary bg-opd-primary hover:bg-opd-primary/95 text-white py-2.5 shadow-sm text-sm"
+                                type="button">
+                                {saving ? 'Saving...' : 'Save TPA Response'}
                             </button>
                         </div>
                     )}
@@ -205,7 +209,7 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
                     {(record.status === 'ready_to_submit' || record.status === 'draft') && (
                         <div className="space-y-2">
                             {submissionError && (
-                                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3.5 text-xs text-red-400 font-semibold leading-normal">
+                                <div className="bg-red-50 border border-red-200 rounded-xl p-3.5 text-xs text-red-800 font-semibold leading-normal shadow-sm">
                                     ⚠️ Submission unconfirmed — retry. Error: {submissionError}
                                 </div>
                             )}
@@ -249,7 +253,8 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
                                         setSaving(false);
                                     }
                                 }} 
-                                className="w-full py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white disabled:opacity-50"
+                                className="w-full btn-primary bg-opd-primary hover:bg-opd-primary/95 text-white py-2.5 shadow-sm text-sm"
+                                type="button"
                             >
                                 {saving ? 'Submitting to TPA Portal...' : '📤 Mark as Submitted to TPA'}
                             </button>
@@ -258,30 +263,30 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
 
                     {/* Appeal Status Card (for denied records) */}
                     {record.status === 'denied' && (
-                        <div className={`rounded-xl p-4 border space-y-2 ${
-                            existingAppeal ? 'bg-rose-950/20 border-rose-500/15' : 'bg-gray-800/30 border-white/5'
+                        <div className={`rounded-xl p-4 border space-y-2 text-left shadow-sm ${
+                            existingAppeal ? 'bg-red-50 border-red-200' : 'bg-opd-input-bg border-opd-border'
                         }`}>
-                            <h3 className="font-semibold text-sm text-rose-300">⚖️ Appeal Status</h3>
+                            <h3 className="font-semibold text-sm text-opd-primary font-lora">⚖️ Appeal Status</h3>
                             {existingAppeal ? (
                                 <div className="space-y-1 text-xs">
                                     <div className="flex items-center gap-2">
                                         <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase border ${
-                                            existingAppeal.appealStatus === 'resolved' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                                            existingAppeal.appealStatus === 'submitted' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                                            'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                            existingAppeal.appealStatus === 'resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                            existingAppeal.appealStatus === 'submitted' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                            'bg-amber-50 text-amber-700 border-amber-200'
                                         }`}>
                                             {existingAppeal.appealStatus}
                                         </span>
-                                        <span className="text-gray-400">
+                                        <span className="text-opd-text-secondary">
                                             {existingAppeal.addressedCount} of {existingAppeal.totalReasons} denial reasons addressed with existing evidence
                                         </span>
                                     </div>
-                                    <p className="text-[10px] text-gray-500">
+                                    <p className="text-[10px] text-opd-text-muted mt-1 leading-relaxed">
                                         Generated: {new Date(existingAppeal.generatedAt).toLocaleDateString('en-IN')} · Open the Denial Queue to edit or submit.
                                     </p>
                                 </div>
                             ) : (
-                                <p className="text-xs text-gray-400">
+                                <p className="text-xs text-opd-text-secondary leading-relaxed">
                                     No appeal generated yet. Use the <strong>Denial Queue</strong> tab in the TPA Center to generate a citation-backed appeal.
                                 </p>
                             )}

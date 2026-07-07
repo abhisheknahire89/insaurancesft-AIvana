@@ -849,7 +849,7 @@ export const extractBillingCodesAI = async (
 
         // Task 1: Deterministic check - cashlessApproved + patientShare + copayDeductions must equal requestedAmount (within 1%)
         const sum = result.cashlessApproved + result.patientShare + result.copayDeductions;
-        const tolerance = 0.01 * requestedAmount;
+        const tolerance = 0.005 * requestedAmount;
         
         if (Math.abs(sum - requestedAmount) > tolerance || (result.cashlessApproved === 0 && requestedAmount > 0)) {
             const nonMed = result.nonMedicalDeduction && result.nonMedicalDeduction > 0

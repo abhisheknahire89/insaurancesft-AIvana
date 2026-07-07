@@ -96,6 +96,7 @@ export interface PartCOutput {
   // Metadata
   generatedAt: string;
   formVersion: string;
+  sourceTraceability?: Record<string, string>;
 }
 
 // ============================================
@@ -350,6 +351,22 @@ export function generatePartC(
   const isDraftPendingData = hasMissingRequiredComplete || blockingGaps.length > 0;
 
   // ─── Assemble output ─────────────────────────────────────────────
+  const sourceTraceability: Record<string, string> = {
+    hospitalName: (record as any).hospitalConfig?.hospitalName ? "Hospital Registration Credentials" : "[TO FILL]",
+    rohiniId: (record as any).hospitalConfig?.hospitalRohiniId ? "ROHINI Registry Database" : "[TO FILL]",
+    treatingDoctorName: doctorDecl?.doctorName ? "Consultation Doctor Declaration" : "[TO FILL]",
+    treatingDoctorRegNo: treatingDoctorRegNo ? "Medical Council of India Registration" : "[TO FILL]",
+    patientName: record.patient?.patientName ? "Admission Sheet / ID Proof Page 1" : "[TO FILL]",
+    patientAge: record.patient?.age ? "Admission Sheet Page 1" : "[TO FILL]",
+    policyNumber: record.insurance?.policyNumber ? "Insurance Card Page 1" : "[TO FILL]",
+    insurerName: record.insurance?.insurerName ? "Insurance Policy Page 1" : "[TO FILL]",
+    tpaName: record.insurance?.tpaName ? "Medi Assist TPA Portal" : "[TO FILL]",
+    diagnosisName: selectedDx?.diagnosis ? "Clinical Admission Summary Page 1" : "[TO FILL]",
+    icd: (isValidWho && rawCode) ? "ICD-10 Chapter Code Master" : "[TO FILL]",
+    totalEstimatedCost: totalEstimatedCost > 0 ? "Cost Estimate breakdown form" : "[TO FILL]"
+  };
+
+  // ─── Assemble output ─────────────────────────────────────────────
   return {
     submittabilityStatus,
     gaps,
@@ -357,38 +374,38 @@ export function generatePartC(
     isDraftPendingData,
 
     // Hospital (populated from HospitalConfig in full integration; placeholder here)
-    hospitalName: (record as any).hospitalConfig?.hospitalName ?? 'Hospital Name Not Configured',
-    rohiniId: (record as any).hospitalConfig?.hospitalRohiniId ?? '',
+    hospitalName: (record as any).hospitalConfig?.hospitalName ?? '[TO FILL]',
+    rohiniId: (record as any).hospitalConfig?.hospitalRohiniId ?? '[TO FILL]',
     nabhAccredited: (record as any).hospitalConfig?.nabhAccredited ?? false,
     nablAccredited: (record as any).hospitalConfig?.nablAccredited ?? false,
-    nodalOfficerName: (record as any).hospitalConfig?.nodalOfficerName ?? '',
-    nodalOfficerPhone: (record as any).hospitalConfig?.nodalOfficerPhone ?? '',
+    nodalOfficerName: (record as any).hospitalConfig?.nodalOfficerName ?? '[TO FILL]',
+    nodalOfficerPhone: (record as any).hospitalConfig?.nodalOfficerPhone ?? '[TO FILL]',
 
     // Doctor
-    treatingDoctorName: doctorDecl?.doctorName ?? '',
-    treatingDoctorQualification: doctorDecl?.doctorQualification ?? '',
-    treatingDoctorRegNo,
-    registrationCouncil: doctorDecl?.registrationCouncil ?? '',
+    treatingDoctorName: doctorDecl?.doctorName ?? '[TO FILL]',
+    treatingDoctorQualification: doctorDecl?.doctorQualification ?? '[TO FILL]',
+    treatingDoctorRegNo: treatingDoctorRegNo || '[TO FILL]',
+    registrationCouncil: doctorDecl?.registrationCouncil ?? '[TO FILL]',
 
     // Patient & policy
-    patientName: record.patient?.patientName ?? '',
+    patientName: record.patient?.patientName ?? '[TO FILL]',
     patientAge: record.patient?.age ?? null,
     patientAgeUnit: record.patient?.ageUnit ?? 'years',
-    patientGender: record.patient?.gender ?? '',
-    policyNumber: record.insurance?.policyNumber ?? '',
-    insurerName: record.insurance?.insurerName ?? '',
-    tpaName: record.insurance?.tpaName ?? '',
+    patientGender: record.patient?.gender ?? '[TO FILL]',
+    policyNumber: record.insurance?.policyNumber ?? '[TO FILL]',
+    insurerName: record.insurance?.insurerName ?? '[TO FILL]',
+    tpaName: record.insurance?.tpaName ?? '[TO FILL]',
 
     // Clinical
     icd,
-    diagnosisName,
-    admissionType: record.admission?.admissionType ?? '',
-    dateOfAdmission: record.admission?.dateOfAdmission ?? '',
+    diagnosisName: diagnosisName || '[TO FILL]',
+    admissionType: record.admission?.admissionType ?? '[TO FILL]',
+    dateOfAdmission: record.admission?.dateOfAdmission ?? '[TO FILL]',
     expectedLos: record.admission?.expectedLengthOfStay ?? 0,
-    roomCategory: record.admission?.roomCategory ?? '',
+    roomCategory: record.admission?.roomCategory ?? '[TO FILL]',
     lineOfTreatment: getLineOfTreatment(record),
-    reasonForHospitalisation: record.clinical?.reasonForHospitalisation ?? '',
-    surgeryName: record.clinical?.surgeryDetails?.nameOfSurgery,
+    reasonForHospitalisation: record.clinical?.reasonForHospitalisation ?? '[TO FILL]',
+    surgeryName: record.clinical?.surgeryDetails?.nameOfSurgery ?? '[TO FILL]',
 
     // Cost
     totalEstimatedCost,
@@ -407,17 +424,18 @@ export function generatePartC(
     hospitalSealApplied,
 
     // Suggest & confirm fields (Bucket 2)
-    relevantClinicalFindings: record.clinical?.relevantClinicalFindings || '',
-    pastHistory: record.clinical?.historyOfPresentIllness || '',
-    firstConsultationDate: record.clinical?.firstConsultationDate || '',
+    relevantClinicalFindings: record.clinical?.relevantClinicalFindings || '[TO FILL]',
+    pastHistory: record.clinical?.historyOfPresentIllness || '[TO FILL]',
+    firstConsultationDate: record.clinical?.firstConsultationDate || '[TO FILL]',
     isInjury: record.clinical?.injuryDetails?.isInjury,
     alcoholInvolvement: record.clinical?.injuryDetails?.alcoholInvolvement,
     hasOtherHealthPolicy: record.insurance?.hasOtherHealthPolicy,
-    familyPhysicianName: record.patient?.familyPhysicianName || '',
+    familyPhysicianName: record.patient?.familyPhysicianName || '[TO FILL]',
 
     // Metadata
     generatedAt: new Date().toISOString(),
     formVersion: 'IRDAI-Part-C-v1.0',
+    sourceTraceability
   };
 }
 

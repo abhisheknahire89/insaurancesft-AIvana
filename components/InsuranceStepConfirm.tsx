@@ -45,34 +45,34 @@ export const InsuranceStepConfirm: React.FC<InsuranceStepConfirmProps> = ({
             )}
 
             <div>
-                <h3 className="text-lg font-semibold text-white border-b border-gray-700 pb-2 mb-4">
+                <h3 className="text-lg font-semibold text-opd-text-primary border-b border-opd-border pb-2 mb-4 font-lora">
                     Medical Necessity Statement
                 </h3>
                 <textarea
                     value={medicalNecessityStatement}
                     onChange={(e) => onMedicalNecessityChange(e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg p-4 text-gray-300 h-48 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition resize-none custom-scrollbar"
+                    className="w-full bg-opd-input-bg border border-opd-border rounded-lg p-4 text-opd-text-primary h-48 focus:border-opd-primary focus:ring-1 focus:ring-opd-primary transition resize-none custom-scrollbar"
                     placeholder="Generating medical necessity statement..."
                 />
-                <p className="text-xs text-gray-500 mt-2 text-right">
+                <p className="text-xs text-opd-text-secondary mt-2 text-right">
                     You can edit this AI-generated statement before submission.
                 </p>
             </div>
 
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mt-8">
+            <div className="bg-white border border-opd-border rounded-lg p-4 mt-8 shadow-sm text-left">
                 <label className="flex items-start gap-3 cursor-pointer">
                     <input
                         type="checkbox"
                         checked={doctorConfirmed}
                         onChange={(e) => onDoctorConfirmChange(e.target.checked)}
-                        className="mt-1 rounded bg-gray-700 border-gray-600 text-purple-600 w-4 h-4"
+                        className="mt-1 rounded border-opd-border accent-opd-primary w-4 h-4"
                     />
-                    <div className="text-sm text-gray-300">
+                    <div className="text-sm text-opd-text-primary">
                         <p>
-                            I, <strong className="text-white">{consultationInfo.doctorName}</strong>
+                            I, <strong className="text-opd-primary">{consultationInfo.doctorName}</strong>
                             {' '}(License: {consultationInfo.doctorLicense}), hereby confirm that:
                         </p>
-                        <ul className="list-disc list-inside mt-3 text-gray-400 space-y-2">
+                        <ul className="list-disc list-inside mt-3 text-opd-text-secondary space-y-2">
                             <li>The clinical findings documented above are accurate to the best of my knowledge</li>
                             <li>The test results mentioned were reported during this consultation</li>
                             <li>The proposed hospitalization is medically necessary</li>

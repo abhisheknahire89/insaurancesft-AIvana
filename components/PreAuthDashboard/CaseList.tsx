@@ -128,56 +128,28 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
     const approvedCount = records.filter(r => r.status === 'approved').length;
 
     return (
-        <div className="relative min-h-screen overflow-hidden">
-            {/* ── Spline background (matches existing dashboard) ── */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
-                <iframe
-                    src="https://my.spline.design/animatedpaperboat-jeJTnCRZkUeZW3jf48yUoDEa/"
-                    frameBorder="0"
-                    width="100%"
-                    height="100%"
-                    style={{ display: 'block', width: '100%', height: '100%' }}
-                    title="Background"
-                />
-            </div>
-            <div className="fixed inset-0 z-10 bg-black/30 pointer-events-none" />
-
-            <div className="relative z-20 min-h-screen flex flex-col">
+        <div className="min-h-screen bg-opd-bg text-opd-text-primary flex flex-col">
+            <div className="relative min-h-screen flex flex-col">
                 {/* ── Header ─────────────────────────────────────────────── */}
-                <header
-                    className="px-6 py-4 flex items-center justify-between gap-4 shrink-0"
-                    style={{
-                        background: 'rgba(0,0,0,0.45)',
-                        backdropFilter: 'blur(20px)',
-                        WebkitBackdropFilter: 'blur(20px)',
-                        borderBottom: '1px solid rgba(255,255,255,0.12)',
-                    }}
-                >
+                <header className="px-6 py-4 flex items-center justify-between gap-4 shrink-0 bg-white border-b border-opd-border shadow-sm">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-                            style={{ background: 'linear-gradient(135deg,#3b82f6,#06b6d4)', boxShadow: '0 0 20px rgba(59,130,246,0.4)' }}>
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl bg-primary-tint text-opd-primary shadow-[0_2px_10px_rgba(24,122,107,0.15)]">
                             🏥
                         </div>
                         <div>
-                            <h1 className="font-bold text-lg text-white leading-tight">Case Queue</h1>
-                            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                            <h1 className="font-bold text-lg text-opd-text-primary font-lora leading-tight">Case Queue</h1>
+                            <p className="text-xs text-opd-text-secondary">
                                 Aivana — {records.length} case{records.length !== 1 ? 's' : ''} · {urgentCount} urgent
                             </p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <button onClick={onSettings} type="button"
-                            className="p-2 rounded-lg transition-all text-white/60 hover:text-white"
-                            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
+                            className="p-2 rounded-lg text-opd-text-secondary bg-opd-input-bg border border-opd-border hover:bg-primary-tint hover:text-opd-primary transition-all"
                             title="Settings">⚙️
                         </button>
                         <button type="button" onClick={onNewPreAuth}
-                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105"
-                            style={{
-                                background: 'linear-gradient(135deg,#2563eb,#0891b2)',
-                                boxShadow: '0 4px 24px rgba(37,99,235,0.45)',
-                                border: '1px solid rgba(255,255,255,0.15)',
-                            }}>
+                            className="btn-primary hover:scale-[1.01]">
                             <span>＋</span> New Pre-Auth
                         </button>
                     </div>
@@ -189,16 +161,15 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                     {/* Summary chips */}
                     <div className="flex flex-wrap gap-3">
                         {[
-                            { label: 'Urgent (Query/Appeal)', value: urgentCount, text: urgentCount > 0 ? 'text-orange-400' : 'text-slate-400', bg: urgentCount > 0 ? 'bg-orange-500/10 border-orange-500/20' : 'bg-white/5 border-white/10' },
-                            { label: 'Denied', value: deniedCount, text: deniedCount > 0 ? 'text-red-400' : 'text-slate-400', bg: deniedCount > 0 ? 'bg-red-500/10 border-red-500/20' : 'bg-white/5 border-white/10' },
-                            { label: 'Approved', value: approvedCount, text: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
-                            { label: 'Total Cases', value: records.length, text: 'text-slate-300', bg: 'bg-white/5 border-white/10' },
+                            { label: 'Urgent (Query/Appeal)', value: urgentCount, text: urgentCount > 0 ? 'text-orange-700' : 'text-opd-text-muted', bg: urgentCount > 0 ? 'bg-orange-50 border-orange-200' : 'bg-white border-opd-border' },
+                            { label: 'Denied', value: deniedCount, text: deniedCount > 0 ? 'text-red-700' : 'text-opd-text-muted', bg: deniedCount > 0 ? 'bg-red-50 border-red-200' : 'bg-white border-opd-border' },
+                            { label: 'Approved', value: approvedCount, text: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
+                            { label: 'Total Cases', value: records.length, text: 'text-opd-text-primary', bg: 'bg-white border-opd-border' },
                         ].map(chip => (
                             <div key={chip.label}
-                                className={`rounded-xl px-4 py-2.5 border flex flex-col gap-0.5 backdrop-blur-sm ${chip.bg}`}
-                                style={{ backdropFilter: 'blur(12px)' }}>
+                                className={`rounded-xl px-4 py-2.5 border flex flex-col gap-0.5 bg-white shadow-sm ${chip.bg}`}>
                                 <span className={`text-xl font-bold tabular-nums ${chip.text}`}>{chip.value}</span>
-                                <span className="text-[10px] text-white/50 font-semibold uppercase tracking-wider">{chip.label}</span>
+                                <span className="text-[10px] text-opd-text-muted font-semibold uppercase tracking-wider">{chip.label}</span>
                             </div>
                         ))}
                     </div>
@@ -207,19 +178,13 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                     <div className="flex flex-col gap-3">
                         {/* Search */}
                         <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40">🔍</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-opd-text-muted">🔍</span>
                             <input
                                 type="text"
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                                 placeholder="Search by patient name, policy no., ref ID, ICD-10 code…"
-                                className="w-full pl-10 pr-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none rounded-xl"
-                                style={{
-                                    background: 'rgba(255,255,255,0.08)',
-                                    backdropFilter: 'blur(16px)',
-                                    WebkitBackdropFilter: 'blur(16px)',
-                                    border: '1px solid rgba(255,255,255,0.15)',
-                                }}
+                                className="w-full pl-10 pr-4 py-2.5 text-sm text-opd-text-primary placeholder-opd-text-muted focus:outline-none rounded-xl border border-opd-border bg-white focus:border-opd-primary focus:ring-1 focus:ring-opd-primary shadow-sm"
                             />
                         </div>
 
@@ -233,20 +198,18 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                         key={opt.value}
                                         type="button"
                                         onClick={() => setStatusFilter(opt.value as any)}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+                                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all shadow-sm"
                                         style={{
-                                            background: isActive ? 'rgba(59,130,246,0.35)' : 'rgba(255,255,255,0.07)',
-                                            backdropFilter: 'blur(12px)',
-                                            WebkitBackdropFilter: 'blur(12px)',
-                                            border: isActive ? '1px solid rgba(99,170,255,0.5)' : '1px solid rgba(255,255,255,0.10)',
-                                            color: isActive ? '#fff' : 'rgba(255,255,255,0.60)',
+                                            background: isActive ? '#187A6B' : '#FFFFFF',
+                                            border: isActive ? '1px solid #187A6B' : '1px solid #E1E7E6',
+                                            color: isActive ? '#FFFFFF' : '#4A5554',
                                         }}
                                     >
                                         <span>{opt.icon}</span>
                                         <span>{opt.label}</span>
                                         {count > 0 && (
                                             <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-bold ${
-                                                isActive ? 'bg-white/20 text-white' : 'bg-white/10 text-white/70'
+                                                isActive ? 'bg-white/20 text-white' : 'bg-opd-input-bg text-opd-text-secondary border border-opd-border'
                                             }`}>{count}</span>
                                         )}
                                     </button>
@@ -256,52 +219,43 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                     </div>
 
                     {/* ── Case table ──────────────────────────────────────────── */}
-                    <div className="rounded-2xl overflow-hidden"
-                        style={{
-                            background: 'rgba(0,0,0,0.38)',
-                            backdropFilter: 'blur(24px)',
-                            WebkitBackdropFilter: 'blur(24px)',
-                            border: '1px solid rgba(255,255,255,0.12)',
-                        }}
-                    >
+                    <div className="rounded-2xl overflow-hidden bg-white border border-opd-border shadow-sm">
                         {loading ? (
-                            <div className="flex items-center justify-center py-20 text-white/40 text-sm gap-2">
-                                <div className="w-3 h-3 rounded-full border-2 border-white/20 border-t-blue-400 animate-spin" />
+                            <div className="flex items-center justify-center py-20 text-opd-text-secondary text-sm gap-2">
+                                <div className="w-3 h-3 rounded-full border-2 border-opd-border border-t-opd-primary animate-spin" />
                                 Loading cases…
                             </div>
                         ) : filtered.length === 0 ? (
                             <div className="p-16 text-center space-y-4">
                                 <div className="text-5xl">📋</div>
-                                <h3 className="text-lg font-semibold text-white">
+                                <h3 className="text-lg font-semibold text-opd-text-primary font-lora">
                                     {records.length === 0 ? 'No cases yet' : 'No matching cases'}
                                 </h3>
-                                <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                                <p className="text-sm text-opd-text-secondary">
                                     {records.length === 0
                                         ? 'Create your first pre-authorization to get started.'
                                         : 'Try adjusting your search or filter.'}
                                 </p>
                                 {records.length === 0 && (
                                     <button type="button" onClick={onNewPreAuth}
-                                        className="px-6 py-2.5 rounded-xl text-sm font-bold text-white mt-2"
-                                        style={{ background: 'linear-gradient(135deg,#2563eb,#0891b2)', boxShadow: '0 4px 24px rgba(37,99,235,0.35)' }}>
+                                        className="btn-primary mt-2">
                                         + New Pre-Authorization
                                     </button>
                                 )}
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="w-full">
+                                <table className="w-full text-left text-sm border-collapse">
                                     <thead>
-                                        <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                                        <tr className="bg-opd-input-bg border-b border-opd-border text-opd-text-secondary font-lora font-semibold">
                                             {['', 'Ref ID', 'Patient', 'Diagnosis / ICD', 'Insurer / TPA', 'Amount', 'Readiness', 'Updated', 'Status', ''].map((h, i) => (
-                                                <th key={i} className="px-4 py-3 text-left text-xs font-semibold"
-                                                    style={{ color: 'rgba(255,255,255,0.40)' }}>
+                                                <th key={i} className="px-4 py-3 text-xs uppercase tracking-wider text-opd-text-secondary">
                                                     {h}
                                                 </th>
                                             ))}
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="divide-y divide-opd-border">
                                         {filtered.map(rec => {
                                             const dx = rec.clinical?.diagnoses?.[rec.clinical.selectedDiagnosisIndex ?? 0];
                                             const cost = rec.costEstimate?.totalEstimatedCost;
@@ -313,75 +267,68 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                             return (
                                                 <tr
                                                     key={rec.id}
-                                                    className="cursor-pointer transition-all"
-                                                    style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
-                                                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.055)')}
-                                                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                                                    className="cursor-pointer transition-colors hover:bg-opd-bg/25"
                                                     onClick={() => onOpenCase(rec)}
                                                 >
                                                     {/* Urgency indicator column */}
-                                                    <td className="pl-3 pr-0 py-3 w-2">
+                                                    <td className="pl-3 pr-0 py-4 w-2">
                                                         {isUrgent && (
                                                             <div
                                                                 title="Urgent — needs action"
-                                                                className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"
+                                                                className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"
                                                             />
                                                         )}
                                                     </td>
 
-                                                    <td className="px-4 py-3">
-                                                        <span className="font-mono text-xs" style={{ color: '#60a5fa' }}>{rec.id}</span>
+                                                    <td className="px-4 py-4">
+                                                        <span className="font-mono text-xs text-opd-primary font-semibold">{rec.id}</span>
                                                     </td>
 
-                                                    <td className="px-4 py-3">
-                                                        <div className="font-medium text-sm text-white">{rec.patient?.patientName ?? '—'}</div>
-                                                        <div className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                                                    <td className="px-4 py-4">
+                                                        <div className="font-medium text-sm text-opd-text-primary">{rec.patient?.patientName ?? '—'}</div>
+                                                        <div className="text-xs text-opd-text-secondary">
                                                             {rec.patient?.age ? `${rec.patient.age}${rec.patient.ageUnit === 'months' ? 'M' : 'Y'}` : ''} {rec.patient?.gender ?? ''}
                                                         </div>
                                                     </td>
 
-                                                    <td className="px-4 py-3">
-                                                        <div className="text-sm text-white">{dx?.diagnosis ?? '—'}</div>
-                                                        <div className="font-mono text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                                                    <td className="px-4 py-4">
+                                                        <div className="text-sm text-opd-text-primary font-medium">{dx?.diagnosis ?? '—'}</div>
+                                                        <div className="font-mono text-xs text-opd-text-muted">
                                                             {dx?.icd10Code ?? ''}
                                                         </div>
                                                     </td>
 
-                                                    <td className="px-4 py-3">
-                                                        <div className="text-sm text-white">{rec.insurance?.insurerName ?? '—'}</div>
-                                                        <div className="text-xs" style={{ color: 'rgba(255,255,255,0.40)' }}>
+                                                    <td className="px-4 py-4">
+                                                        <div className="text-sm text-opd-text-primary">{rec.insurance?.insurerName ?? '—'}</div>
+                                                        <div className="text-xs text-opd-text-secondary">
                                                             {rec.insurance?.tpaName ?? ''}
                                                         </div>
                                                     </td>
 
-                                                    <td className="px-4 py-3 text-sm text-white whitespace-nowrap">
+                                                    <td className="px-4 py-4 text-sm text-opd-text-primary font-semibold whitespace-nowrap">
                                                         {cost ? `₹${cost.toLocaleString('en-IN')}` : '—'}
                                                     </td>
 
-                                                    <td className="px-4 py-3">
+                                                    <td className="px-4 py-4">
                                                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded border inline-block ${colors.bg} ${colors.border} ${colors.text}`}>
                                                             {score}%
                                                         </span>
                                                     </td>
 
-                                                    <td className="px-4 py-3 text-xs whitespace-nowrap"
-                                                        style={{ color: 'rgba(255,255,255,0.45)' }}>
+                                                    <td className="px-4 py-4 text-xs text-opd-text-secondary whitespace-nowrap">
                                                         {formatDateTime(rec.updatedAt)}
                                                     </td>
 
-                                                    <td className="px-4 py-3">
+                                                    <td className="px-4 py-4">
                                                         <StatusBadge status={rec.status} />
                                                     </td>
 
-                                                    <td className="px-4 py-3">
+                                                    <td className="px-4 py-4">
                                                         <div className="flex items-center gap-1">
                                                             {/* Open */}
                                                             <button
                                                                 type="button"
-                                                                className="text-sm p-1.5 rounded transition-all"
-                                                                style={{ color: 'rgba(255,255,255,0.40)' }}
-                                                                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                                                                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.40)'; }}
+                                                                className="text-sm p-1.5 rounded transition-all text-opd-text-secondary hover:text-opd-primary font-bold"
                                                                 onClick={e => { e.stopPropagation(); onOpenCase(rec); }}
                                                                 title="Open workspace"
                                                             >→</button>
@@ -389,15 +336,12 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                                             <button
                                                                 type="button"
                                                                 disabled={isDeleting}
-                                                                className="text-sm p-1.5 rounded transition-all opacity-0 hover:opacity-100 group-hover:opacity-100 disabled:opacity-50"
-                                                                style={{ color: 'rgba(239,68,68,0.6)' }}
-                                                                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f87171'; }}
-                                                                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(239,68,68,0.6)'; }}
+                                                                className="text-sm p-1.5 rounded transition-all text-red-500/60 hover:text-red-700 disabled:opacity-50"
                                                                 onClick={e => handleDelete(e, rec.id)}
                                                                 title="Delete case"
                                                             >
                                                                 {isDeleting ? '…' : '🗑'}
-                                                            </button>
+                                                             </button>
                                                         </div>
                                                     </td>
                                                 </tr>

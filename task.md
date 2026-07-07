@@ -32,3 +32,26 @@
 - [x] Delete root `auth.txt` file
 - [x] Delete `components/cost claculator uses ICD databases` and its twin
 - [x] Delete diverged duplicate suffix-2 files (8 files) after user approval
+
+## Phase 2: Audit Extension & Pipeline Latency Timing
+- [x] Task 1: Resolve duplicate appeal module divergence (untested vs tested modules)
+- [x] Task 2: Specific KPI / metrics assignment for all 9 modules
+- [x] Task 3: Add denialReview, appeal_hub, and partC modules to continuousMultiAudit.ts loop
+- [x] Task 4: Create singleCasePipeline.ts script for latency timing of all 9 stages
+- [x] Run the extended continuous audit loop & analyze results
+- [x] Run the single-case pipeline timing simulation and report wall-clock metrics
+
+## Phase 3: Premium Light-Mode Design System Refactoring
+- [x] Update `index.html` with Google Lora font, Tailwind config, and CSS utilities
+- [x] Remove `bg-black` class wrapper in `App.tsx`
+- [x] Refactor `InsuranceModule.tsx` UI
+- [x] Refactor `PreAuthDashboard/CaseList.tsx` UI (remove Spline and make light mode)
+- [x] Refactor `PreAuthDashboard/CaseWorkspace.tsx` UI
+- [x] Refactor `PreAuthDashboard/StatusBadge.tsx` UI
+- [ ] Refactor `PreAuthWizard` files (`index.tsx`, `PatientInsuranceStep.tsx`, `ClinicalDetailsStep.tsx`, `AdmissionCostStep.tsx`, `ClaimReadinessRail.tsx`, `DocumentsGenerateStep.tsx`)
+- [ ] Refactor TPA Platform views (`PriorAuthCopilot.tsx`, `DenialHub.tsx`, `BillingCoderView.tsx`, `WorkflowOrchestrator.tsx`)
+- [ ] Refactor PostSubmission view (`DenialQueue.tsx`)
+- [ ] Refactor `AuthModal.tsx` login UI
+- [ ] Refactor Scribe and Sidebar layouts (`Sidebar.tsx`, `VedaSessionView.tsx`)
+
+

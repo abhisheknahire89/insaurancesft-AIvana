@@ -45,7 +45,7 @@ const STEPS = [
 ] as const;
 
 export const WizardProgress: React.FC<WizardProgressProps> = ({ currentStep, onStepClick }) => (
-    <div className="flex bg-white/5 border border-white/5 rounded-xl p-1 select-none w-full">
+    <div className="flex bg-opd-input-bg border border-opd-border rounded-xl p-1 select-none w-full shadow-sm text-opd-text-primary">
         {STEPS.map((step) => {
             const done = step.n < currentStep;
             const active = step.n === currentStep;
@@ -56,17 +56,17 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({ currentStep, onS
                     disabled={!done}
                     className={`flex-1 flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all ${
                         active 
-                            ? 'bg-blue-600 text-white shadow-sm' 
+                            ? 'bg-opd-primary text-white shadow-sm font-bold' 
                             : done 
-                            ? 'text-blue-400 hover:bg-white/5 hover:text-blue-300' 
-                            : 'text-gray-500'
+                            ? 'text-opd-primary hover:bg-white/5 hover:text-opd-primary/80' 
+                            : 'text-opd-text-muted'
                     }`}
                     type="button"
                 >
                     {done ? (
-                        <span className="text-xs font-bold text-blue-400">✓</span>
+                        <span className="text-xs font-bold text-opd-primary">✓</span>
                     ) : (
-                        <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-white' : 'bg-gray-700'}`}></span>
+                        <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-white' : 'bg-opd-border'}`}></span>
                     )}
                     <span className="truncate">{step.label}</span>
                 </button>

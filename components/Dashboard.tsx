@@ -40,20 +40,28 @@ export const Dashboard: React.FC<DashboardProps> = ({ doctorProfile, onStartSess
 
     // Launch Modal Component
     const VedaLaunchModal = () => (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm animate-fadeInUp">
-            <div className="bg-[#1E1E2E] w-full max-w-md p-8 rounded-3xl shadow-2xl transform scale-100 transition-all text-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm animate-fadeInUp">
+            <div className="bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl border border-opd-border text-center">
                 <div className="mb-6 flex justify-center">
-                    <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
-                        <Icon name="sparkles" className="w-8 h-8 text-veda-purple" />
+                    <div className="w-16 h-16 bg-primary-tint rounded-full flex items-center justify-center text-opd-primary">
+                        <Icon name="sparkles" className="w-8 h-8 text-opd-primary" />
                     </div>
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-8">Veda Assistant</h2>
-                <button
-                    onClick={() => onStartSession(language)}
-                    className="w-full py-4 bg-veda-purple hover:bg-[#6b4ce6] text-white rounded-xl font-bold text-lg transition-colors shadow-lg active:scale-95"
-                >
-                    Start Session
-                </button>
+                <h2 className="text-2xl font-bold text-opd-text-primary mb-8 font-lora">Veda Assistant</h2>
+                <div className="flex gap-4">
+                    <button
+                        onClick={() => setShowLaunchModal(false)}
+                        className="btn-secondary flex-1 py-3 text-sm"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={() => onStartSession(language)}
+                        className="btn-primary flex-1 py-3 text-sm bg-opd-primary hover:bg-opd-primary-dark text-white font-bold"
+                    >
+                        Start Session
+                    </button>
+                </div>
             </div>
         </div>
     );

@@ -47,8 +47,9 @@ export function computeReadiness(
     const icdCode = selectedDx?.icd10Code ?? '';
     const requiredDocs: DocumentRequirement[] = getRequiredDocuments(selectedDx?.icd10Code ?? selectedDx?.diagnosis ?? '');
 
-    const isLowConfidenceAi = selectedDx?.icd10MatchMethod === 'ai_fallback' || (selectedDx as any).confidence === 'low' || (selectedDx as any).icd10MatchMethod?.includes('low');
-    const hasInvalidICD = !icdCode || icdCode === 'Pending ICD-10' || icdCode === 'Selection required' || !validateCode(icdCode) || isLowConfidenceAi;
+    // "allow for the ai agent everything" -> low confidence does not block resolution/submission
+    const isLowConfidenceAi = false;
+    const hasInvalidICD = !icdCode || icdCode === 'Pending ICD-10' || icdCode === 'Selection required' || !validateCode(icdCode);
     const isSurgical = record.clinical?.proposedLineOfTreatment?.surgical || false;
     const isSurgicalZeroCost = isSurgical &&
         (record.costEstimate?.otCharges ?? 0) === 0 &&

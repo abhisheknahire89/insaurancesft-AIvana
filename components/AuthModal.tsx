@@ -44,35 +44,35 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative border border-opd-border text-opd-text-primary">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                    className="absolute top-4 right-4 text-opd-text-secondary hover:text-opd-primary transition-colors"
                 >
-                    <X className="w-6 h-6" />
+                    <X className="w-5 h-5" />
                 </button>
 
                 <div className="p-8">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                    <h2 className="text-2xl font-bold font-lora text-opd-primary mb-6">
                         {activeTab === 'login' ? 'Welcome Back' : 'Get Started'}
                     </h2>
 
                     <div className="flex gap-2 mb-6">
                         <button
                             onClick={() => setActiveTab('login')}
-                            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${activeTab === 'login'
-                                ? 'bg-primary-600 text-white'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            className={`flex-1 py-2 px-4 rounded-lg font-semibold text-xs transition-colors ${activeTab === 'login'
+                                ? 'bg-opd-primary text-white shadow-sm'
+                                : 'bg-opd-input-bg text-opd-text-secondary border border-opd-border hover:bg-gray-50'
                                 }`}
                         >
                             Login
                         </button>
                         <button
                             onClick={() => setActiveTab('signup')}
-                            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${activeTab === 'signup'
-                                ? 'bg-primary-600 text-white'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            className={`flex-1 py-2 px-4 rounded-lg font-semibold text-xs transition-colors ${activeTab === 'signup'
+                                ? 'bg-opd-primary text-white shadow-sm'
+                                : 'bg-opd-input-bg text-opd-text-secondary border border-opd-border hover:bg-gray-50'
                                 }`}
                         >
                             Sign Up
@@ -80,17 +80,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                     </div>
 
                     {error && (
-                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-xs">
                             {error}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4 text-left">
                         {activeTab === 'signup' && (
                             <>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-xs font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
                                             First Name
                                         </label>
                                         <input
@@ -98,11 +98,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                                             value={firstName}
                                             onChange={(e) => setFirstName(e.target.value)}
                                             required
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                            className="form-input"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-xs font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
                                             Last Name
                                         </label>
                                         <input
@@ -110,7 +110,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                                             value={lastName}
                                             onChange={(e) => setLastName(e.target.value)}
                                             required
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                            className="form-input"
                                         />
                                     </div>
                                 </div>
@@ -118,7 +118,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                         )}
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
                                 Email
                             </label>
                             <input
@@ -126,26 +126,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                className="form-input"
                             />
                         </div>
 
                         {activeTab === 'signup' && (
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-xs font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
                                     Phone (Optional)
                                 </label>
                                 <input
                                     type="tel"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="form-input"
                                 />
                             </div>
                         )}
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
                                 Password
                             </label>
                             <input
@@ -154,24 +154,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                                 minLength={6}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                className="form-input"
                             />
                             {activeTab === 'signup' && (
-                                <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                                <p className="text-[10px] text-opd-text-muted mt-1 font-semibold uppercase tracking-wider">Minimum 6 characters</p>
                             )}
                         </div>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="btn-primary w-full py-3 bg-opd-primary text-white font-bold hover:bg-opd-primary-dark shadow-sm"
                         >
                             {loading ? 'Please wait...' : activeTab === 'login' ? 'Login' : 'Create Account'}
                         </button>
                     </form>
 
                     {activeTab === 'signup' && (
-                        <p className="mt-4 text-xs text-gray-500 text-center">
+                        <p className="mt-4 text-[10px] text-opd-text-muted text-center font-medium leading-relaxed">
                             By signing up, you agree to our Terms of Service and Privacy Policy.
                             You'll get 10 free OPD cases per day.
                         </p>

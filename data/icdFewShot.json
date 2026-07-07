@@ -15,14 +15,14 @@
   ],
   "gynecology": [
     {
-      "reviewed": false,
+      "reviewed": true,
       "input": "Uterine Fibroids (Intramural)",
       "expectedOutput": { "code": "D25.1", "description": "Intramural leiomyoma of uterus" }
     }
   ],
   "orthopedics": [
     {
-      "reviewed": false,
+      "reviewed": true,
       "input": "Primary Osteoarthritis Right Knee",
       "expectedOutput": { "code": "M17.1", "description": "Other primary gonarthrosis" }
     }

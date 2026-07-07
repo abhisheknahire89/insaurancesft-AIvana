@@ -307,7 +307,7 @@ export const highPainTestCases: MultiModuleTestCase[] = [
     focusCategory_simulated: "denial_heavy",
     diagnosisText: "Maternal care for uterine scar from previous surgery",
     diagnosis: "Previous LSCS with scar, now G2P1L1 at 37 weeks for elective repeat LSCS",
-    code: "O34.21",
+    code: "O34.2",
     chiefComplaints: "Pain abdomen since morning. A/H/O LSCS 4 years back.",
     hpi: "G2P1L1 at 37 weeks. C/O pain abdomen since morning. Scar tenderness present.",
     relevantClinicalFindings: "USG: Single live fetus, cephalic, AFI adequate.",
@@ -332,7 +332,7 @@ export const highPainTestCases: MultiModuleTestCase[] = [
         insurerName: "Care Health Insurance"
       },
       expectedReview: null,
-      expectedCode: "O34.21",
+      expectedCode: "O34.2",
       expectedCost: 125000,
       expectedEligibility: "approved",
       expectedAppealCitations: ["Scar tenderness present", "Previous LSCS 4 years back"]

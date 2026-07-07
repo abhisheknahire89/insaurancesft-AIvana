@@ -1,0 +1,30 @@
+{
+  "ophthalmology": [
+    {
+      "reviewed": false,
+      "input": "Senile Immature Cataract, Right Eye",
+      "expectedOutput": { "code": "H25.9", "description": "Senile cataract, unspecified" }
+    }
+  ],
+  "maternity": [
+    {
+      "reviewed": false,
+      "input": "Maternity (Repeat LSCS)",
+      "expectedOutput": { "code": "O82", "description": "Single delivery by caesarean section" }
+    }
+  ],
+  "gynecology": [
+    {
+      "reviewed": false,
+      "input": "Uterine Fibroids (Intramural)",
+      "expectedOutput": { "code": "D25.1", "description": "Intramural leiomyoma of uterus" }
+    }
+  ],
+  "orthopedics": [
+    {
+      "reviewed": false,
+      "input": "Primary Osteoarthritis Right Knee",
+      "expectedOutput": { "code": "M17.1", "description": "Other primary gonarthrosis" }
+    }
+  ]
+}

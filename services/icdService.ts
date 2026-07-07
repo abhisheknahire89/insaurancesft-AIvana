@@ -423,6 +423,18 @@ The code you return MUST be a valid WHO ICD-10 code (3 or 4 characters, with a d
         category = 'gynecology';
       } else if (diagLower.includes('knee') || diagLower.includes('osteoarthritis') || diagLower.includes('tkr')) {
         category = 'orthopedics';
+      } else if (diagLower.includes('dialysis') || diagLower.includes('hemodialysis') || diagLower.includes('ckd') || diagLower.includes('esrd') || diagLower.includes('renal')) {
+        category = 'ckd';
+      } else if (diagLower.includes('dengue') || diagLower.includes('thrombocytopenia') || diagLower.includes('platelet')) {
+        category = 'dengue';
+      } else if (diagLower.includes('typhoid') || diagLower.includes('enteric') || diagLower.includes('widal')) {
+        category = 'typhoid';
+      } else if (diagLower.includes('appendicitis') || diagLower.includes('appendectomy') || diagLower.includes('appendix')) {
+        category = 'appendicitis';
+      } else if (diagLower.includes('gastroenteritis') || diagLower.includes('diarrhea') || diagLower.includes('vomiting') || diagLower.includes('dehydration')) {
+        category = 'gastroenteritis';
+      } else if (diagLower.includes('angina') || diagLower.includes('cad') || diagLower.includes('tvd') || diagLower.includes('cabg') || diagLower.includes('heart') || diagLower.includes('coronary')) {
+        category = 'cardiac';
       }
 
       if (category && store[category]) {

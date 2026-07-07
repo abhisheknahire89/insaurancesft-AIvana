@@ -166,7 +166,25 @@ function applyHeuristicFallbacks(data: any, text: string, file?: any): any {
         }
     }
 
-    if (data.insurance.insurance_company) {
+    // Ensure explicit insurer name in document overrides prefix guesses (e.g. REL -> Care)
+    let explicitInsurer: string | null = null;
+    if (textLower.includes('reliance general') || textLower.includes('reliance general insurance')) {
+        explicitInsurer = 'Reliance General Insurance';
+    } else if (textLower.includes('star health and allied') || textLower.includes('star health & allied')) {
+        explicitInsurer = 'Star Health and Allied Insurance Co Ltd';
+    } else if (textLower.includes('care health insurance') || textLower.includes('care health')) {
+        explicitInsurer = 'Care Health Insurance';
+    } else if (textLower.includes('hdfc ergo') || textLower.includes('hdfc ergo general')) {
+        explicitInsurer = 'HDFC ERGO General Insurance Co Ltd';
+    } else if (textLower.includes('niva bupa') || textLower.includes('max bupa')) {
+        explicitInsurer = 'Niva Bupa Health Insurance';
+    } else if (textLower.includes('cholamandalam ms') || textLower.includes('chola ms')) {
+        explicitInsurer = 'Cholamandalam MS General Insurance Co Ltd';
+    }
+
+    if (explicitInsurer) {
+        data.insurance.insurance_company = explicitInsurer;
+    } else if (data.insurance.insurance_company) {
         data.insurance.insurance_company = normalizeInsurerName(data.insurance.insurance_company);
     } else {
         if (textLower.includes('star health') || textLower.includes('star health & allied')) {

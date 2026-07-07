@@ -2,6 +2,7 @@ import axios from 'axios';
 import { DEMO_FALLBACKS } from '../data/demoFallbacks';
 import { getGoogleGenAIClient } from './apiKeys';
 import { MODEL_TEXT } from '../config/modelConfig';
+import { loadFewShotStore, getCategoryForDiagnosis } from './continuousLearningLoop';
 
 export interface LlmReasoningOutput {
   challengesConsidered: string[];
@@ -29,18 +30,19 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string):
     return mockQueryOverride(prompt, systemInstruction);
   }
 
-  const endpointUrl = (import.meta as any).env?.VITE_MEDGEMMA_ENDPOINT_URL || process.env.VITE_MEDGEMMA_ENDPOINT_URL;
+  const qwenUrl = (import.meta as any).env?.VITE_QWEN_ENDPOINT_URL || process.env.VITE_QWEN_ENDPOINT_URL;
+  const endpointUrl = qwenUrl || (import.meta as any).env?.VITE_MEDGEMMA_ENDPOINT_URL || process.env.VITE_MEDGEMMA_ENDPOINT_URL;
 
   if (endpointUrl) {
-    // Dedicated MedGemma endpoint URL is set (e.g. custom GPU VM, Ollama container, or Vertex AI Model Garden).
-    // Note: Deploying an always-on Vertex AI Model Garden MedGemma endpoint costs ongoing GPU time and is a deliberate upgrade path for production.
-    let attempts = 2;
+    let attempts = 1;
     let lastError: any = null;
+    const modelName = qwenUrl ? 'qwen2.5:7b' : 'medgemma:4b';
+    const logPrefix = qwenUrl ? 'qwen_endpoint' : 'medgemma_endpoint';
 
     while (attempts > 0) {
       try {
         const response = await axios.post(endpointUrl, {
-          model: 'medgemma:4b',
+          model: modelName,
           messages: [
             ...(systemInstruction ? [{ role: 'system', content: systemInstruction }] : []),
             { role: 'user', content: prompt }
@@ -48,21 +50,21 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string):
           temperature: 0.1,
           stream: false
         }, {
-          timeout: 15000 // 15 seconds timeout
+          timeout: 5000 // 5 seconds timeout
         });
 
         if (response.data?.choices?.[0]?.message?.content) {
-          console.log("[llmClient] [PATH: medgemma_endpoint] Query served successfully.");
+          console.log(`[llmClient] [PATH: ${logPrefix}] Query served successfully.`);
           return response.data.choices[0].message.content.trim();
         }
-        throw new Error('Malformed response structure from MedGemma endpoint');
+        throw new Error(`Malformed response structure from ${modelName} endpoint`);
       } catch (error: any) {
         attempts--;
         lastError = error;
-        console.warn(`[llmClient] Custom MedGemma endpoint call failed (attempts remaining: ${attempts}): ${error.message}`);
+        console.warn(`[llmClient] Custom ${modelName} endpoint call failed (attempts remaining: ${attempts}): ${error.message}`);
       }
     }
-    console.warn(`[llmClient] [PATH: gemini_fallback] MedGemma endpoint failed after attempts. Falling back silently to Gemini.`);
+    console.warn(`[llmClient] [PATH: gemini_fallback] ${modelName} endpoint failed after attempts. Falling back silently to Gemini.`);
   }
 
   // Fall back to Gemini reasoning client if no dedicated MedGemma endpoint is active or it failed
@@ -179,6 +181,22 @@ Always include at minimum these three challenges:
 
 Tailor anchors and discriminators specifically to the diagnosis: "${diagnosis}". Keep output compact — target ≤ 5 anchors and ≤ 5 discriminators total.`;
 
+  const category = getCategoryForDiagnosis(diagnosis);
+  let examplesText = '';
+  if (category) {
+    const store = loadFewShotStore();
+    const examples = store[category];
+    if (examples && examples.length > 0) {
+      console.log(`[llmClient] Injecting ${examples.length} few-shot examples for category: ${category}`);
+      examplesText = '\n\n## EXAMPLES\nHere are some examples of perfect outputs for this clinical category to guide your structure:\n';
+      examples.forEach((ex, i) => {
+        examplesText += `\nExample ${i + 1}:\nInput:\n${ex.input}\n\nOutput:\n\`\`\`json\n${JSON.stringify(ex.expectedOutput, null, 2)}\n\`\`\`\n`;
+      });
+    }
+  }
+
+  const finalSystemInstruction = systemInstruction + examplesText;
+
   const prompt = `Provisional Diagnosis: ${diagnosis}
 Admission Decision: ${admissionType}
 Clinical Narrative:
@@ -188,7 +206,7 @@ Apply the five-stage NEXUS protocol internally, then output ONLY the raw JSON. R
 
   let responseText = '';
   try {
-    responseText = await queryMedGemma(prompt, systemInstruction);
+    responseText = await queryMedGemma(prompt, finalSystemInstruction);
   } catch (error: any) {
     if (isDemoMode && demoKey) {
       console.warn(`[llmClient] MedGemma query failed: ${error.message}. Returning pre-captured demo fallback for ${demoKey}.`);

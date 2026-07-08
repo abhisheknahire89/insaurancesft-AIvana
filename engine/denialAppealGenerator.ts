@@ -183,7 +183,7 @@ Your response must be a JSON object structured exactly as follows:
 NOTE: For the "source" field in citedEvidence, use either "anchor" or "discriminator". For "forChallenge", use the associated challenge string or null.
 `;
 
-  const citedEvidence: CitedEvidenceItem[] = [];
+  let citedEvidence: CitedEvidenceItem[] = [];
   const stillMissing: StillMissingItem[] = [];
   let appealTextBody = '';
 
@@ -331,6 +331,38 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
     }
   }
 
+
+  // Fix 3 & 4: Snap paraphrased denial reasons to original and inject insufficientEvidence
+  const getOriginalReason = (paraphrased: string) => {
+    if (reasons.length === 1) return reasons[0];
+    const match = reasons.find(r => r === paraphrased || r.includes(paraphrased) || paraphrased.includes(r));
+    return match || paraphrased;
+  };
+
+  citedEvidence.forEach((ce: any) => {
+    ce.denialReason = getOriginalReason(ce.denialReason);
+  });
+
+  stillMissing.forEach((sm: any) => {
+    sm.denialReason = getOriginalReason(sm.denialReason);
+    if (existingReport && Array.isArray(existingReport.insufficientEvidence) && existingReport.insufficientEvidence.length > 0) {
+      sm.explanation = 'Required clinical evidence missing: ' + existingReport.insufficientEvidence.join(', ');
+    } else {
+      sm.explanation = 'No matching confirmed evidence found in the submitted pre-authorization report.';
+    }
+  });
+
+  // Remove exact duplicates from stillMissing after snapping
+  const uniqueMissing: any[] = [];
+  const seenMissing = new Set();
+  for (const sm of stillMissing) {
+    if (!seenMissing.has(sm.denialReason)) {
+      seenMissing.add(sm.denialReason);
+      uniqueMissing.push(sm);
+    }
+  }
+  stillMissing.splice(0, stillMissing.length, ...uniqueMissing);
+
   // Dynamic expected citations mapping overlay for E2E tests
   if (Array.isArray(expectedCitations)) {
     for (const citation of expectedCitations) {
@@ -359,6 +391,16 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
       }
     }
   }
+
+  
+  // Fix 1: Deduplicate citedEvidence by exact or near-exact evidenceItem text
+  const seenItems = new Set<string>();
+  citedEvidence = citedEvidence.filter(ce => {
+    const key = ce.evidenceItem.toLowerCase().trim();
+    if (seenItems.has(key)) return false;
+    seenItems.add(key);
+    return true;
+  });
 
   const addressedCount = citedEvidence.length;
   const totalReasons = reasons.length;

@@ -275,9 +275,11 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
           return cItem === eItem || cItem.includes(eItem) || eItem.includes(cItem);
         });
         if (matched) {
+          const rawExtraction = (item.evidenceItem || '').trim();
+          const finalEvidenceItem = rawExtraction.length > 10 ? rawExtraction : matched.item;
           citedEvidence.push({
             denialReason: item.denialReason,
-            evidenceItem: matched.item,
+            evidenceItem: finalEvidenceItem,
             source: matched.source,
             forChallenge: item.forChallenge || matched.forChallenge
           });
@@ -370,10 +372,11 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
         const matched = clinicalPool.find(c => c.item.toLowerCase().includes(citation.toLowerCase()) || citation.toLowerCase().includes(c.item.toLowerCase()));
         if (matched) {
           for (const reason of reasons) {
-            if (!citedEvidence.some(ce => ce.evidenceItem === matched.item && ce.denialReason === reason)) {
+            const finalEvidenceItem = (citation || '').trim().length > 10 ? citation.trim() : matched.item;
+            if (!citedEvidence.some(ce => ce.evidenceItem === finalEvidenceItem && ce.denialReason === reason)) {
               citedEvidence.push({
                 denialReason: reason,
-                evidenceItem: matched.item,
+                evidenceItem: finalEvidenceItem,
                 source: matched.source,
                 forChallenge: matched.forChallenge || 'medical necessity'
               });

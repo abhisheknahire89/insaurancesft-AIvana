@@ -1,0 +1,38 @@
+
+--- TESTING: STEP 3 CONTROLLED COMPARISON ---
+[llmClient] [PATH: medgemma_endpoint] Query served successfully.
+citedEvidence:
+[
+  {
+    "denialReason": "Hypertension alone does not justify emergency admission without proof of hemorrhage on CT or a neurologist consultation.",
+    "evidenceItem": "BP 180/110",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "Hypertension alone does not justify emergency admission without proof of hemorrhage on CT or a neurologist consultation.",
+    "evidenceItem": "Severe headache",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "Hypertension alone does not justify emergency admission without proof of hemorrhage on CT or a neurologist consultation.",
+    "evidenceItem": "Patient arrived complaining of severe headache, nausea, and blurry vision for 3 days.",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "Hypertension alone does not justify emergency admission without proof of hemorrhage on CT or a neurologist consultation.",
+    "evidenceItem": "The patient has a known history of hypertension and diabetes. The symptoms started abruptly while at work.",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "Hypertension alone does not justify emergency admission without proof of hemorrhage on CT or a neurologist consultation.",
+    "evidenceItem": "Patient is conscious but disoriented. BP 180/110. Pulse 90. Temperature 98.6F.",
+    "source": "anchor"
+  }
+]
+stillMissing:
+[
+  {
+    "denialReason": "Hypertension alone does not justify emergency admission without proof of hemorrhage on CT or a neurologist consultation.",
+    "explanation": "Required clinical evidence missing: CT Scan showing hemorrhage, Consultation note from neurologist"
+  }
+]

@@ -50,7 +50,7 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string):
           temperature: 0.1,
           stream: false
         }, {
-          timeout: 5000 // 5 seconds timeout
+          timeout: 600000 // 10 mins
         });
 
         if (response.data?.choices?.[0]?.message?.content) {

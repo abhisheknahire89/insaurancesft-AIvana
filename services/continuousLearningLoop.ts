@@ -2,16 +2,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { LlmReasoningOutput } from './llmClient';
 
-import { fileURLToPath } from 'url';
-
+// import { fileURLToPath } from 'url'; // Removed for browser compatibility
 // Handling ES Modules environment correctly
 const getDirname = () => {
     try {
         if (typeof __dirname !== 'undefined') return __dirname;
-        if (typeof import.meta.url !== 'undefined') return path.dirname(fileURLToPath(import.meta.url));
-        return process.cwd();
+        if (typeof process !== 'undefined') return process.cwd();
+        return '';
     } catch {
-        return process.cwd();
+        return '';
     }
 };
 

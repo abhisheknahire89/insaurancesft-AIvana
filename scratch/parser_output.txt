@@ -1,0 +1,236 @@
+
+--- TESTING: Truncated mid-array ---
+citedEvidence length: 0
+stillMissing length: 1
+=> PRODUCED FULLY-EMPTY SIGNATURE WITH KEYWORD FALLBACK!
+
+APPEAL TEXT:
+FORMAL GRIEVANCE APPEAL — Insurance Pre-Authorization Denial
+Date: 08 July 2026
+
+To: the TPA / the insurer
+Re: Policy No. — | Patient: the patient
+Diagnosis: Acute Gastroenteritis (ICD-10: A09.9)
+Pre-Auth Ref: CASE-GASTRO
+
+Dear Grievance Resolution Officer,
+
+We write to formally appeal the denial of the above-referenced cashless authorization. The denial reasons cited in your Explanation of Benefits have been reviewed against the clinical and administrative evidence present in the original pre-authorization documentation.
+
+EVIDENCE-CITED RESPONSE TO DENIAL REASONS
+==========================================
+
+(No denial reasons could be matched to existing clinical evidence — please attach supplementary clinical documentation.)
+
+The following denial reasons could not be addressed with documentation available at the time of initial submission and will require supplementary evidence:
+1. "Claim denied as hospitalization is under 24 hours."
+   → No matching confirmed evidence found in the submitted pre-authorization report.
+
+REGULATORY POSITION
+===================
+Per IRDAI Grievance Redressal Regulations, 2017, and the IRDAI Master Circular on Health Insurance (2024), the insurer is obligated to process appeals within 15 days of receipt. We request a full reversal of the denial decision on the above stated grounds.
+
+We enclose all relevant supporting documentation. Should additional clinical information be required, the treating physician is available for a peer-to-peer consultation.
+
+Sincerely,
+Hospital Insurance Desk
+[Authorized Signatory & Hospital Seal]
+
+
+--- TESTING: Missing closing bracket ---
+citedEvidence length: 0
+stillMissing length: 1
+=> PRODUCED FULLY-EMPTY SIGNATURE WITH KEYWORD FALLBACK!
+
+APPEAL TEXT:
+FORMAL GRIEVANCE APPEAL — Insurance Pre-Authorization Denial
+Date: 08 July 2026
+
+To: the TPA / the insurer
+Re: Policy No. — | Patient: the patient
+Diagnosis: Acute Gastroenteritis (ICD-10: A09.9)
+Pre-Auth Ref: CASE-GASTRO
+
+Dear Grievance Resolution Officer,
+
+We write to formally appeal the denial of the above-referenced cashless authorization. The denial reasons cited in your Explanation of Benefits have been reviewed against the clinical and administrative evidence present in the original pre-authorization documentation.
+
+EVIDENCE-CITED RESPONSE TO DENIAL REASONS
+==========================================
+
+(No denial reasons could be matched to existing clinical evidence — please attach supplementary clinical documentation.)
+
+The following denial reasons could not be addressed with documentation available at the time of initial submission and will require supplementary evidence:
+1. "Claim denied as hospitalization is under 24 hours."
+   → No matching confirmed evidence found in the submitted pre-authorization report.
+
+REGULATORY POSITION
+===================
+Per IRDAI Grievance Redressal Regulations, 2017, and the IRDAI Master Circular on Health Insurance (2024), the insurer is obligated to process appeals within 15 days of receipt. We request a full reversal of the denial decision on the above stated grounds.
+
+We enclose all relevant supporting documentation. Should additional clinical information be required, the treating physician is available for a peer-to-peer consultation.
+
+Sincerely,
+Hospital Insurance Desk
+[Authorized Signatory & Hospital Seal]
+
+
+--- TESTING: Prose before JSON ---
+citedEvidence length: 0
+stillMissing length: 0
+
+--- TESTING: Prose after JSON ---
+citedEvidence length: 0
+stillMissing length: 0
+
+--- TESTING: Unescaped quote in string ---
+citedEvidence length: 0
+stillMissing length: 1
+=> PRODUCED FULLY-EMPTY SIGNATURE WITH KEYWORD FALLBACK!
+
+APPEAL TEXT:
+FORMAL GRIEVANCE APPEAL — Insurance Pre-Authorization Denial
+Date: 08 July 2026
+
+To: the TPA / the insurer
+Re: Policy No. — | Patient: the patient
+Diagnosis: Acute Gastroenteritis (ICD-10: A09.9)
+Pre-Auth Ref: CASE-GASTRO
+
+Dear Grievance Resolution Officer,
+
+We write to formally appeal the denial of the above-referenced cashless authorization. The denial reasons cited in your Explanation of Benefits have been reviewed against the clinical and administrative evidence present in the original pre-authorization documentation.
+
+EVIDENCE-CITED RESPONSE TO DENIAL REASONS
+==========================================
+
+(No denial reasons could be matched to existing clinical evidence — please attach supplementary clinical documentation.)
+
+The following denial reasons could not be addressed with documentation available at the time of initial submission and will require supplementary evidence:
+1. "Claim denied as hospitalization is under 24 hours."
+   → No matching confirmed evidence found in the submitted pre-authorization report.
+
+REGULATORY POSITION
+===================
+Per IRDAI Grievance Redressal Regulations, 2017, and the IRDAI Master Circular on Health Insurance (2024), the insurer is obligated to process appeals within 15 days of receipt. We request a full reversal of the denial decision on the above stated grounds.
+
+We enclose all relevant supporting documentation. Should additional clinical information be required, the treating physician is available for a peer-to-peer consultation.
+
+Sincerely,
+Hospital Insurance Desk
+[Authorized Signatory & Hospital Seal]
+
+
+--- TESTING: Unescaped quote at start of string ---
+citedEvidence length: 0
+stillMissing length: 1
+=> PRODUCED FULLY-EMPTY SIGNATURE WITH KEYWORD FALLBACK!
+
+APPEAL TEXT:
+FORMAL GRIEVANCE APPEAL — Insurance Pre-Authorization Denial
+Date: 08 July 2026
+
+To: the TPA / the insurer
+Re: Policy No. — | Patient: the patient
+Diagnosis: Acute Gastroenteritis (ICD-10: A09.9)
+Pre-Auth Ref: CASE-GASTRO
+
+Dear Grievance Resolution Officer,
+
+We write to formally appeal the denial of the above-referenced cashless authorization. The denial reasons cited in your Explanation of Benefits have been reviewed against the clinical and administrative evidence present in the original pre-authorization documentation.
+
+EVIDENCE-CITED RESPONSE TO DENIAL REASONS
+==========================================
+
+(No denial reasons could be matched to existing clinical evidence — please attach supplementary clinical documentation.)
+
+The following denial reasons could not be addressed with documentation available at the time of initial submission and will require supplementary evidence:
+1. "Claim denied as hospitalization is under 24 hours."
+   → No matching confirmed evidence found in the submitted pre-authorization report.
+
+REGULATORY POSITION
+===================
+Per IRDAI Grievance Redressal Regulations, 2017, and the IRDAI Master Circular on Health Insurance (2024), the insurer is obligated to process appeals within 15 days of receipt. We request a full reversal of the denial decision on the above stated grounds.
+
+We enclose all relevant supporting documentation. Should additional clinical information be required, the treating physician is available for a peer-to-peer consultation.
+
+Sincerely,
+Hospital Insurance Desk
+[Authorized Signatory & Hospital Seal]
+
+
+--- TESTING: Valid citedEvidence, truncated stillMissing ---
+citedEvidence length: 0
+stillMissing length: 1
+=> PRODUCED FULLY-EMPTY SIGNATURE WITH KEYWORD FALLBACK!
+
+APPEAL TEXT:
+FORMAL GRIEVANCE APPEAL — Insurance Pre-Authorization Denial
+Date: 08 July 2026
+
+To: the TPA / the insurer
+Re: Policy No. — | Patient: the patient
+Diagnosis: Acute Gastroenteritis (ICD-10: A09.9)
+Pre-Auth Ref: CASE-GASTRO
+
+Dear Grievance Resolution Officer,
+
+We write to formally appeal the denial of the above-referenced cashless authorization. The denial reasons cited in your Explanation of Benefits have been reviewed against the clinical and administrative evidence present in the original pre-authorization documentation.
+
+EVIDENCE-CITED RESPONSE TO DENIAL REASONS
+==========================================
+
+(No denial reasons could be matched to existing clinical evidence — please attach supplementary clinical documentation.)
+
+The following denial reasons could not be addressed with documentation available at the time of initial submission and will require supplementary evidence:
+1. "Claim denied as hospitalization is under 24 hours."
+   → No matching confirmed evidence found in the submitted pre-authorization report.
+
+REGULATORY POSITION
+===================
+Per IRDAI Grievance Redressal Regulations, 2017, and the IRDAI Master Circular on Health Insurance (2024), the insurer is obligated to process appeals within 15 days of receipt. We request a full reversal of the denial decision on the above stated grounds.
+
+We enclose all relevant supporting documentation. Should additional clinical information be required, the treating physician is available for a peer-to-peer consultation.
+
+Sincerely,
+Hospital Insurance Desk
+[Authorized Signatory & Hospital Seal]
+
+
+--- TESTING: Plain prose (no JSON) ---
+citedEvidence length: 0
+stillMissing length: 1
+=> PRODUCED FULLY-EMPTY SIGNATURE WITH KEYWORD FALLBACK!
+
+APPEAL TEXT:
+FORMAL GRIEVANCE APPEAL — Insurance Pre-Authorization Denial
+Date: 08 July 2026
+
+To: the TPA / the insurer
+Re: Policy No. — | Patient: the patient
+Diagnosis: Acute Gastroenteritis (ICD-10: A09.9)
+Pre-Auth Ref: CASE-GASTRO
+
+Dear Grievance Resolution Officer,
+
+We write to formally appeal the denial of the above-referenced cashless authorization. The denial reasons cited in your Explanation of Benefits have been reviewed against the clinical and administrative evidence present in the original pre-authorization documentation.
+
+EVIDENCE-CITED RESPONSE TO DENIAL REASONS
+==========================================
+
+(No denial reasons could be matched to existing clinical evidence — please attach supplementary clinical documentation.)
+
+The following denial reasons could not be addressed with documentation available at the time of initial submission and will require supplementary evidence:
+1. "Claim denied as hospitalization is under 24 hours."
+   → No matching confirmed evidence found in the submitted pre-authorization report.
+
+REGULATORY POSITION
+===================
+Per IRDAI Grievance Redressal Regulations, 2017, and the IRDAI Master Circular on Health Insurance (2024), the insurer is obligated to process appeals within 15 days of receipt. We request a full reversal of the denial decision on the above stated grounds.
+
+We enclose all relevant supporting documentation. Should additional clinical information be required, the treating physician is available for a peer-to-peer consultation.
+
+Sincerely,
+Hospital Insurance Desk
+[Authorized Signatory & Hospital Seal]
+

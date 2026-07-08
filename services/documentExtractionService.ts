@@ -49,7 +49,7 @@ Hospitals and insurance cards use varying shorthand for insurer/TPA names. You m
 
 Return ONLY valid JSON (no markdown formatting, no \`\`\`json block) in this exact structure:
 {
-  "document_type": "hospital_registration" | "insurance_card" | "policy_document" | "id_card" | "unknown",
+  "document_type": "hospital_registration" | "insurance_card" | "policy_document" | "id_card" | "lab_report" | "prescription" | "discharge_summary" | "investigation_report" | "unknown",
   "patient": {
     "name": "Full name as written",
     "age": "number or null",
@@ -316,6 +316,9 @@ export const extractFromDocument = async (file: File): Promise<ExtractedPatientD
         file.name.toLowerCase().includes('cbc');
 
     const getEnvVal = () => {
+        if (typeof window !== 'undefined' && (window as any).VITE_DEMO_MODE !== undefined) {
+            return (window as any).VITE_DEMO_MODE ? 'true' : 'false';
+        }
         if (typeof process !== 'undefined' && process.env) {
             return process.env.VITE_DEMO_MODE || process.env.DEMO_MODE;
         }
@@ -337,7 +340,7 @@ export const extractFromDocument = async (file: File): Promise<ExtractedPatientD
             insurance: { policy_number: 'POL-123456', insurance_company: 'Star Health and Allied Insurance Co Ltd', sum_insured: 500000 }
         });
         return {
-            document_type: isGluc ? 'policy_document' : 'unknown',
+            document_type: isGluc ? 'policy_document' : 'lab_report',
             patient: { name: 'Abhishek Nahire', age: 28, ageUnit: 'years', gender: 'Male' },
             insurance: { policy_number: 'POL-123456', insurance_company: 'Star Health and Allied Insurance Co Ltd', sum_insured: 500000 },
             confidence: isPoor ? 0.42 : 0.99,
@@ -359,13 +362,16 @@ export const extractFromDocument = async (file: File): Promise<ExtractedPatientD
             textContent = (file as any).content;
         } else {
             const arrBuf = await file.arrayBuffer();
-            textContent = Buffer.from(arrBuf).toString('utf-8');
+            textContent = new TextDecoder('utf-8').decode(new Uint8Array(arrBuf));
         }
     } else {
         const fileToBase64 = async (f: any): Promise<string> => {
             if (typeof FileReader === 'undefined') {
                 const arrBuf = await f.arrayBuffer();
-                return Buffer.from(arrBuf).toString('base64');
+                const bytes = new Uint8Array(arrBuf);
+                let binary = '';
+                for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+                return btoa(binary);
             }
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();

@@ -770,6 +770,7 @@ export const InsuranceModule: React.FC = () => {
                                         </button>
                                     </div>
                                 </div>
+                            ) : (
                                 <PreAuthDashboard
                                     onNewPreAuth={() => {
                                         setPrefilledData(null);

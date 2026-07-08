@@ -1,0 +1,28 @@
+
+--- TESTING: CASE-24936 ---
+[llmClient] [PATH: medgemma_endpoint] Query served successfully.
+citedEvidence:
+[
+  {
+    "denialReason": "Pre-auth denied as conservative management trial documentation is insufficient for a surgical claim.",
+    "evidenceItem": "Patient has had a history of menorrhagia. Failed medical management with Tranexamic acid and Hormonal pills over the last few months. Uterus enlarged to 14 weeks size.",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "Pre-auth denied as conservative management trial documentation is insufficient for a surgical claim.",
+    "evidenceItem": "Heavy menstrual bleeding, severe abdominal pain",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "Pre-auth denied as conservative management trial documentation is insufficient for a surgical claim.",
+    "evidenceItem": "Large intramural fibroid measuring 6x5 cm on USG. Hemoglobin: 8.2 g/dL.",
+    "source": "anchor"
+  }
+]
+stillMissing:
+[
+  {
+    "denialReason": "Pre-auth denied as conservative management trial documentation is insufficient for a surgical claim.",
+    "explanation": "Required clinical evidence missing: Historical ultrasound reports prior to the last 6 months, Pre-operative anesthetic clearance and iron-correction plan, Menstrual flow quantification (e.g., clot passage or pad count)"
+  }
+]

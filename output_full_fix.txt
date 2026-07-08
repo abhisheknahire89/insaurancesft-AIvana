@@ -1,0 +1,9 @@
+[Truncated mid-array] -> Fallback regex citedEvidence length: 0
+[Missing closing bracket] -> Fallback regex citedEvidence length: 0
+[Prose before JSON] -> Primary JSON.parse SUCCEEDED!
+[Prose after JSON] -> Fallback regex citedEvidence length: 1
+[Unescaped quote in string] -> Fallback regex citedEvidence length: 1
+[Unescaped quote at start of string] -> Fallback regex citedEvidence length: 1
+[Valid citedEvidence, truncated stillMissing] -> Fallback regex citedEvidence length: 1
+[Plain prose (no JSON)] -> Fallback regex citedEvidence length: 0
+[Trailing Text (Original task)] -> Fallback regex citedEvidence length: 1

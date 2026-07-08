@@ -191,9 +191,15 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
     const responseText = await queryMedGemma(prompt, systemInstruction);
     let cleanText = responseText.trim();
     const startIdx = cleanText.indexOf('{');
+    if (startIdx !== -1) {
+      cleanText = cleanText.substring(startIdx);
+    }
     const endIdx = cleanText.lastIndexOf('}');
-    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
-      cleanText = cleanText.substring(startIdx, endIdx + 1);
+    if (endIdx !== -1) {
+      const trailing = cleanText.substring(endIdx + 1).trim();
+      if (trailing === '' || /^`{1,3}/.test(trailing)) {
+        cleanText = cleanText.substring(0, endIdx + 1);
+      }
     }
 
     let parsed: any;
@@ -203,7 +209,7 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
       // Robust regex-based fallback parser for unescaped double quotes or raw newlines inside JSON string fields
       const fallbackResult: any = { citedEvidence: [], stillMissing: [], appealTextBody: '' };
       
-      const citedMatch = cleanText.match(/"citedEvidence"\s*:\s*(\[[\s\S]*?\])\s*(?:,|$)/);
+      const citedMatch = cleanText.match(/"citedEvidence"\s*:\s*(\[[\s\S]*?\])(?=\s*(?:,|\]|\}|$))/);
       if (citedMatch) {
         try {
           fallbackResult.citedEvidence = JSON.parse(citedMatch[1]);
@@ -217,7 +223,7 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
         }
       }
 
-      const missingMatch = cleanText.match(/"stillMissing"\s*:\s*(\[[\s\S]*?\])\s*(?:,|$)/);
+      const missingMatch = cleanText.match(/"stillMissing"\s*:\s*(\[[\s\S]*?\])(?=\s*(?:,|\]|\}|$))/);
       if (missingMatch) {
         try {
           fallbackResult.stillMissing = JSON.parse(missingMatch[1]);

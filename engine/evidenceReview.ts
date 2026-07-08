@@ -3,7 +3,7 @@ import { getReasoningFromMedGemma, LlmReasoningOutput } from '../services/llmCli
 import { checkMandatoryGaps } from '../config/mandatoryItems';
 import { validateCode } from '../services/icdService';
 import { CLINICAL_SYNONYMS } from '../config/clinicalSynonyms';
-import { clinicalTextMatch } from '../utils/clinicalTextMatch';
+import { clinicalTextMatch, SemanticContext } from '../utils/clinicalTextMatch';
 
 
 export interface ExplainableGap {
@@ -126,7 +126,7 @@ export const hasWord = (term: string, narrative: string): boolean => {
 /**
  * Checks if a required finding is present in the case narrative or structured fields.
  */
-export const checkClinicalPresence = async (item: string, record: Partial<PreAuthRecord>): Promise<boolean> => {
+export const checkClinicalPresence = async (item: string, record: Partial<PreAuthRecord>, context?: SemanticContext): Promise<boolean> => {
   const itemLower = item.toLowerCase();
   
   // 1. Gather all narrative text
@@ -212,7 +212,7 @@ export const checkClinicalPresence = async (item: string, record: Partial<PreAut
   }
 
   // 5. Shared clinical text match utility
-  const matchResult = await clinicalTextMatch(item, fullNarrative);
+  const matchResult = await clinicalTextMatch(item, fullNarrative, context);
   if (matchResult.matches && !isNegated(item, fullNarrative)) {
     return true;
   }
@@ -635,9 +635,11 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
   const insufficientEvidence: string[] = [];
   const anticipatedQueries: EvidenceReviewReport['anticipatedQueries'] = [];
   
+  const matchContext: SemanticContext = { remainingBudget: 3 };
+
   // Process anchors
   for (const anchor of llmOutput.anchors) {
-    const present = await checkClinicalPresence(anchor, record);
+    const present = await checkClinicalPresence(anchor, record, matchContext);
     requiredEvidence.push({
       item: anchor,
       present,
@@ -662,7 +664,7 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
 
   // Process discriminators
   for (const disc of llmOutput.discriminators) {
-    const present = await checkClinicalPresence(disc.evidence, record);
+    const present = await checkClinicalPresence(disc.evidence, record, matchContext);
     requiredEvidence.push({
       item: disc.evidence,
       present,

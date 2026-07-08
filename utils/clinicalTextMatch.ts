@@ -124,10 +124,14 @@ export function clinicalTextMatchSync(target: string, source: string): { matches
   return { matches, score };
 }
 
+export interface SemanticContext {
+  remainingBudget: number;
+}
+
 /**
  * Asynchronous matching logic with fallback to a single small Gemini call for ambiguous cases.
  */
-export async function clinicalTextMatch(target: string, source: string): Promise<{ matches: boolean; score: number }> {
+export async function clinicalTextMatch(target: string, source: string, context?: SemanticContext): Promise<{ matches: boolean; score: number }> {
   const syncResult = clinicalTextMatchSync(target, source);
   
   // If it's a clear match or clear mismatch, return immediately
@@ -135,7 +139,11 @@ export async function clinicalTextMatch(target: string, source: string): Promise
     return syncResult;
   }
   if (!syncResult.matches && syncResult.score < 0.1) {
-    return syncResult;
+    if (context && context.remainingBudget > 0) {
+      context.remainingBudget--;
+    } else {
+      return syncResult;
+    }
   }
 
   // Ambiguous case: score is between 0.1 and 0.5 (or sync matches but is low-confidence)

@@ -158,7 +158,7 @@ Before finalising: re-read each query you plan to raise. If the note ALREADY ans
 4. NO ICD codes in the output.
 5. NO computed probability numbers — qualitative queries only.
 6. Every discriminator must be tied to one of the challenges in challengesConsidered.
-7. If the note is well-documented and your Metacognitive Loop drops all queries, it is acceptable to return minimal anchors and empty discriminators — do NOT over-flag a sufficient case.
+7. EXPLICIT SUFFICIENCY BAR: If the note contains definitive, clinically-confirmed findings (e.g., imaging/USG confirming the exact diagnosis), do NOT demand extraneous baseline labs (like CBC) or routine vitals unless the note specifically suggests a complication. Do NOT over-flag a sufficient case.
 
 ## JSON SCHEMA (output exactly this structure)
 
@@ -168,7 +168,7 @@ Before finalising: re-read each query you plan to raise. If the note ALREADY ans
   "discriminators": [
     {
       "challenge": "exact challenge string from challengesConsidered",
-      "evidence": "the specific document, measurement, or finding the reviewer would request",
+      "evidence": "the exact clinical finding, value, or symptom required to satisfy the challenge (do NOT use broad categorical names like 'lab reports' or 'imaging')",
       "reason": "why this evidence is needed to address the challenge"
     }
   ]

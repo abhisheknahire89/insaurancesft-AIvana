@@ -1,8 +1,8 @@
 import codesData from '../data/icd10Codes.json';
 import categoriesData from '../data/icd10Categories.json';
 import { ICD_SYNONYM_MAP } from '../data/icdSynonymMap';
-import fs from 'fs';
-import path from 'path';
+// Static import — browser-safe. Replaces fs/path that cannot run in Vite/browser.
+import icdFewShotJson from '../data/icdFewShot.json';
 import { queryMedGemma } from './llmClient';
 import { clinicalTextMatchSync } from '../utils/clinicalTextMatch';
 
@@ -406,45 +406,42 @@ You must respond with a raw JSON object and nothing else (no markdown backticks,
 
 The code you return MUST be a valid WHO ICD-10 code (3 or 4 characters, with a dot if 4 characters). Do not invent codes.`;
 
-  // --- INJECT FEW SHOT ICD EXAMPLES ---
+  // --- INJECT FEW SHOT ICD EXAMPLES (static import — browser-safe) ---
   let examplesText = '';
   try {
-    const dataPath = path.join(process.cwd(), 'data', 'icdFewShot.json');
-    if (fs.existsSync(dataPath)) {
-      const store = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-      
-      const diagLower = diagnosis.toLowerCase();
-      let category: string | null = null;
-      if (diagLower.includes('cataract') || diagLower.includes('eye') || diagLower.includes('phaco')) {
-        category = 'ophthalmology';
-      } else if (diagLower.includes('pregnancy') || diagLower.includes('lscs') || diagLower.includes('delivery')) {
-        category = 'maternity';
-      } else if (diagLower.includes('fibroid') || diagLower.includes('uterus') || diagLower.includes('hysterectomy')) {
-        category = 'gynecology';
-      } else if (diagLower.includes('knee') || diagLower.includes('osteoarthritis') || diagLower.includes('tkr')) {
-        category = 'orthopedics';
-      } else if (diagLower.includes('dialysis') || diagLower.includes('hemodialysis') || diagLower.includes('ckd') || diagLower.includes('esrd') || diagLower.includes('renal')) {
-        category = 'ckd';
-      } else if (diagLower.includes('dengue') || diagLower.includes('thrombocytopenia') || diagLower.includes('platelet')) {
-        category = 'dengue';
-      } else if (diagLower.includes('typhoid') || diagLower.includes('enteric') || diagLower.includes('widal')) {
-        category = 'typhoid';
-      } else if (diagLower.includes('appendicitis') || diagLower.includes('appendectomy') || diagLower.includes('appendix')) {
-        category = 'appendicitis';
-      } else if (diagLower.includes('gastroenteritis') || diagLower.includes('diarrhea') || diagLower.includes('vomiting') || diagLower.includes('dehydration')) {
-        category = 'gastroenteritis';
-      } else if (diagLower.includes('angina') || diagLower.includes('cad') || diagLower.includes('tvd') || diagLower.includes('cabg') || diagLower.includes('heart') || diagLower.includes('coronary')) {
-        category = 'cardiac';
-      }
+    const store = icdFewShotJson as Record<string, any[]>;
 
-      if (category && store[category]) {
-        const approvedExamples = store[category].filter((ex: any) => ex.reviewed === true);
-        if (approvedExamples.length > 0) {
-          examplesText = '\n\n## VERIFIED EXAMPLES\nHere are some examples of perfect outputs for this clinical category to guide your structure:\n';
-          approvedExamples.forEach((ex: any, i: number) => {
-            examplesText += `\nExample ${i + 1}:\nInput:\n${ex.input}\n\nOutput:\n\`\`\`json\n${JSON.stringify(ex.expectedOutput, null, 2)}\n\`\`\`\n`;
-          });
-        }
+    const diagLower = diagnosis.toLowerCase();
+    let category: string | null = null;
+    if (diagLower.includes('cataract') || diagLower.includes('eye') || diagLower.includes('phaco')) {
+      category = 'ophthalmology';
+    } else if (diagLower.includes('pregnancy') || diagLower.includes('lscs') || diagLower.includes('delivery')) {
+      category = 'maternity';
+    } else if (diagLower.includes('fibroid') || diagLower.includes('uterus') || diagLower.includes('hysterectomy')) {
+      category = 'gynecology';
+    } else if (diagLower.includes('knee') || diagLower.includes('osteoarthritis') || diagLower.includes('tkr')) {
+      category = 'orthopedics';
+    } else if (diagLower.includes('dialysis') || diagLower.includes('hemodialysis') || diagLower.includes('ckd') || diagLower.includes('esrd') || diagLower.includes('renal')) {
+      category = 'ckd';
+    } else if (diagLower.includes('dengue') || diagLower.includes('thrombocytopenia') || diagLower.includes('platelet')) {
+      category = 'dengue';
+    } else if (diagLower.includes('typhoid') || diagLower.includes('enteric') || diagLower.includes('widal')) {
+      category = 'typhoid';
+    } else if (diagLower.includes('appendicitis') || diagLower.includes('appendectomy') || diagLower.includes('appendix')) {
+      category = 'appendicitis';
+    } else if (diagLower.includes('gastroenteritis') || diagLower.includes('diarrhea') || diagLower.includes('vomiting') || diagLower.includes('dehydration')) {
+      category = 'gastroenteritis';
+    } else if (diagLower.includes('angina') || diagLower.includes('cad') || diagLower.includes('tvd') || diagLower.includes('cabg') || diagLower.includes('heart') || diagLower.includes('coronary')) {
+      category = 'cardiac';
+    }
+
+    if (category && store[category]) {
+      const approvedExamples = store[category].filter((ex: any) => ex.reviewed === true);
+      if (approvedExamples.length > 0) {
+        examplesText = '\n\n## VERIFIED EXAMPLES\nHere are some examples of perfect outputs for this clinical category to guide your structure:\n';
+        approvedExamples.forEach((ex: any, i: number) => {
+          examplesText += `\nExample ${i + 1}:\nInput:\n${ex.input}\n\nOutput:\n\`\`\`json\n${JSON.stringify(ex.expectedOutput, null, 2)}\n\`\`\`\n`;
+        });
       }
     }
   } catch (e) {

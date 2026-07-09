@@ -289,12 +289,12 @@ export const runBillingCodingWorkflow = async (input: BillingInput): Promise<Bil
     
     // Enforce chapter lock on primary code
     if (codingOutput.primaryICD10) {
-        const lock = enforceICDChapterLocks(input.clinicalNote, codingOutput.primaryICD10.code);
+        const lock = enforceICDChapterLocks(input.clinicalNote, codingOutput.primaryICD10);
         if (!lock.isValid) {
-            additionalWarnings.push(`Primary Chapter Lock Violation: Code ${codingOutput.primaryICD10.code} does not map to expected chapters (${lock.expectedChapters.join(', ')}). Manual review required.`);
-            codingOutput.primaryICD10.code = 'Pending ICD-10';
-            codingOutput.primaryICD10.description = 'Requires Manual Coder Review (Chapter Lock Mismatch)';
-            finalStatus = 'Denied'; // Or Needs Review
+            additionalWarnings.push(`Primary Chapter Lock Violation: Code ${codingOutput.primaryICD10} does not map to expected chapters (${lock.expectedChapters.join(', ')}). Manual review required.`);
+            codingOutput.primaryICD10 = 'Pending ICD-10';
+            codingOutput.primaryDescription = 'Requires Manual Coder Review (Chapter Lock Mismatch)';
+            finalStatus = 'Failed';
         }
     }
 

@@ -160,6 +160,7 @@ export const PriorAuthCopilot: React.FC = () => {
     const runAnalysis = async () => {
         setLoading(true);
         try {
+            console.log('[runAnalysis] Building input...');
             const input: PriorAuthInput = {
                 clinicalNote,
                 uploadedDocuments: attachments,
@@ -185,15 +186,18 @@ export const PriorAuthCopilot: React.FC = () => {
                     signatureConfirmed: sigConfirmed
                 }
             };
+            console.log('[runAnalysis] Calling runPriorAuthWorkflow...');
             const result = await runPriorAuthWorkflow(input);
+            console.log('[runAnalysis] Got result:', JSON.stringify(result).substring(0, 200));
             setAnalysis(result);
-        } catch (e) {
-            console.error(e);
-            alert("Pre-auth analysis failed. Check API key settings.");
+        } catch (e: any) {
+            console.error('[runAnalysis] FAILED:', e?.message || e, e?.stack);
+            alert("Pre-auth analysis failed: " + (e?.message || 'Unknown error'));
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="space-y-6 animate-fadeInUp">

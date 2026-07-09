@@ -1,4 +1,4 @@
-import { PreAuthRecord, WizardDocument } from '../components/PreAuthWizard/types';
+import { PreAuthRecord, WizardDocument, WizardDocCategory } from '../components/PreAuthWizard/types';
 import { INSURANCE_POLICY_RULES, InsurancePolicyRule } from '../config/insurancePolicies';
 import { reviewEvidence, EvidenceReviewReport } from './evidenceReview';
 import { extractFromDocument, ExtractedPatientData } from '../services/documentExtractionService';
@@ -154,9 +154,9 @@ export async function priorAuthOrchestrator(
   const ICD_WARN = 5000;
   const ICD_CRIT = 10000;
 
-  const BILLING_TARGET = 5000;
-  const BILLING_WARN = 5000;
-  const BILLING_CRIT = 10000;
+  const BILLING_TARGET = 15000;
+  const BILLING_WARN = 30000;
+  const BILLING_CRIT = 45000;
 
   // 1. EXTRACTION STAGE
   onProgress?.({ stage: 'extraction', status: 'pending' });
@@ -418,17 +418,48 @@ export async function priorAuthOrchestrator(
  * Legacy workflow orchestrator mapping to PriorAuthCopilot view requirements.
  */
 export async function runPriorAuthWorkflow(input: PriorAuthInput): Promise<PriorAuthAnalysis> {
-  const wizardDocs: WizardDocument[] = input.uploadedDocuments.map((doc, idx) => ({
-    id: `doc-${idx}-${Date.now()}`,
-    fileName: doc.name,
-    fileSize: doc.textContent?.length || 1024,
-    mimeType: doc.type || 'application/pdf',
-    fileType: doc.type?.includes('pdf') ? 'pdf' : 'image',
-    base64Data: doc.base64Data || btoa(doc.textContent || ''),
-    documentCategory: doc.name.toLowerCase().includes('lab') ? 'Lab Report' : 
-                     doc.name.toLowerCase().includes('ultrasound') ? 'USG/Radiology' :
-                     doc.name.toLowerCase().includes('cbc') ? 'Lab Report' : 'Other'
-  }));
+  const wizardDocs: WizardDocument[] = input.uploadedDocuments.map((doc, idx) => {
+    // If the doc has no real binary data (only textContent), treat it as plain text
+    // so the extraction service reads it as text rather than decoding it as a PDF/image.
+    // Also remap application/octet-stream (e.g. .xlsx from demo charts) to text/plain.
+    const hasRealBase64 = !!doc.base64Data;
+    const isUnsupportedBinary =
+      !hasRealBase64 ||
+      doc.type === 'application/octet-stream' ||
+      doc.name.endsWith('.xlsx') ||
+      doc.name.endsWith('.xls') ||
+      doc.name.endsWith('.csv');
+    const effectiveMime: string = isUnsupportedBinary ? 'text/plain' : (doc.type || 'application/pdf');
+    const effectiveBase64 = isUnsupportedBinary
+      ? (() => {
+          // Safe unicode-to-base64: use TextEncoder → Uint8Array → btoa via String.fromCharCode
+          const bytes = new TextEncoder().encode(doc.textContent || doc.name || '');
+          let binary = '';
+          for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+          return btoa(binary);
+        })()
+      : (doc.base64Data!);
+
+    return {
+      id: `doc-${idx}-${Date.now()}`,
+      fileName: isUnsupportedBinary ? doc.name.replace(/\.[^.]+$/, '.txt') : doc.name,
+      fileSize: doc.textContent?.length || 1024,
+      mimeType: effectiveMime,
+      fileType: effectiveMime.includes('pdf') ? 'pdf' : (effectiveMime.startsWith('image/') ? 'image' : 'pdf'),
+      base64Data: effectiveBase64,
+      documentCategory: (
+        doc.name.toLowerCase().includes('cbc') ? 'cbc' :
+        doc.name.toLowerCase().includes('ultrasound') || doc.name.toLowerCase().includes('usg') ? 'ultrasound' :
+        doc.name.toLowerCase().includes('ns1') ? 'ns1_antigen' :
+        doc.name.toLowerCase().includes('dengue') ? 'dengue_igm' :
+        'other'
+      ) as WizardDocCategory,
+      isRequired: false,
+      autoClassified: true,
+      uploadedAt: new Date().toISOString(),
+      fileSizeDisplay: `${Math.round((doc.textContent?.length || 1024) / 1024)}KB`,
+    };
+  });
 
   const noteLower = input.clinicalNote.toLowerCase();
   let mappedDx = 'Unspecified';

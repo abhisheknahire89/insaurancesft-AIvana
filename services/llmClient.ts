@@ -112,7 +112,7 @@ export async function getReasoningFromMedGemma(
     demoKey = 'appendicitis';
   }
 
-  const isDemoMode = (import.meta as any).env?.VITE_DEMO_MODE === 'true' || process.env.VITE_DEMO_MODE === 'true';
+  const isDemoMode = (typeof window !== 'undefined' && (window as any).VITE_DEMO_MODE === true) || (import.meta as any).env?.VITE_DEMO_MODE === 'true' || process.env.VITE_DEMO_MODE === 'true';
 
   // Return canned demo feedback immediately if explicitly in demo mode
   if (isDemoMode && demoKey) {

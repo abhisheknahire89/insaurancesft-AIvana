@@ -14,7 +14,12 @@ const getDirname = () => {
     }
 };
 
-const FEW_SHOT_STORE_PATH = path.join(getDirname(), '..', 'data', 'fewShotStore.json');
+let FEW_SHOT_STORE_PATH = '';
+try {
+    FEW_SHOT_STORE_PATH = path.join(getDirname(), '..', 'data', 'fewShotStore.json');
+} catch (e) {
+    // Ignore in browser
+}
 
 export interface FewShotExample {
   input: string;
@@ -29,10 +34,10 @@ export interface FewShotStore {
  * Loads the few-shot store from the JSON file.
  */
 export function loadFewShotStore(): FewShotStore {
-  if (!fs.existsSync(FEW_SHOT_STORE_PATH)) {
-    return {};
-  }
   try {
+    if (!fs.existsSync(FEW_SHOT_STORE_PATH)) {
+      return {};
+    }
     const data = fs.readFileSync(FEW_SHOT_STORE_PATH, 'utf-8');
     return JSON.parse(data);
   } catch (error) {

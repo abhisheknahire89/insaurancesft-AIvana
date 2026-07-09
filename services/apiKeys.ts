@@ -34,14 +34,14 @@ loadEnv();
 
 export function getActiveApiKey(): string {
     const key = isBrowser
-        ? (import.meta as any).env?.VITE_GEMINI_API_KEY
+        ? ((import.meta as any).env?.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY)
         : process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
     return key || "";
 }
 
 // Startup verification check
 if (isBrowser) {
-    const key = (import.meta as any).env?.VITE_GEMINI_API_KEY;
+    const key = (import.meta as any).env?.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
     if (!key) {
         console.error("CRITICAL STARTUP ERROR: VITE_GEMINI_API_KEY is missing from environment variables.");
         window.addEventListener('DOMContentLoaded', () => {

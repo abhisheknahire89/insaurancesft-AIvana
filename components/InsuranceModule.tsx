@@ -540,7 +540,7 @@ export const ReimbursementModule: React.FC = () => {
 };
 
 export const InsuranceModule: React.FC = () => {
-    const [activeModule, setActiveModule] = useState<'preauth' | 'enhancement' | 'reimbursement' | 'tpa_platform'>('preauth');
+    const [activeModule, setActiveModule] = useState<'preauth' | 'enhancement' | 'reimbursement' | 'tpa_platform'>('tpa_platform');
     const [tpaSubTab, setTpaSubTab] = useState<'prior_auth' | 'denial' | 'coding' | 'orchestrator'>('prior_auth');
     const [preAuthOutput, setPreAuthOutput] = useState<any>(null); // State passing
 
@@ -553,7 +553,12 @@ export const InsuranceModule: React.FC = () => {
     const [showExtractor, setShowExtractor] = useState(false);
 
     // Demo Mode States
-    const [isDemoMode, setIsDemoMode] = useState(false);
+    const [isDemoMode, setIsDemoMode] = useState(() => {
+        if (typeof window !== 'undefined') {
+            (window as any).VITE_DEMO_MODE = false;
+        }
+        return false;
+    });
     const [demoStartStep, setDemoStartStep] = useState<1 | 2 | 3 | 4>(1);
     const [demoDefaultTab, setDemoDefaultTab] = useState<any>(undefined);
 
@@ -600,41 +605,16 @@ export const InsuranceModule: React.FC = () => {
                         <div className="flex items-center bg-white border border-opd-border rounded-full px-3 py-1 gap-2 select-none">
                             <span className="text-xs font-bold text-opd-text-secondary tracking-wider">DEMO MODE</span>
                             <button
-                                onClick={() => setIsDemoMode(!isDemoMode)}
+                                onClick={() => {
+                                    const val = !isDemoMode;
+                                    setIsDemoMode(val);
+                                    (window as any).VITE_DEMO_MODE = val;
+                                }}
                                 className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ${isDemoMode ? 'bg-opd-primary' : 'bg-opd-border'}`}
                             >
                                 <div className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${isDemoMode ? 'translate-x-4' : 'translate-x-0'}`} />
                             </button>
                         </div>
-                    </div>
-                    <div className="flex space-x-2 overflow-x-auto pb-2">
-                        <button
-                            className={`px-4 py-2 rounded-full text-sm font-bold transition whitespace-nowrap ${activeModule === 'preauth' ? 'bg-opd-primary text-white shadow-sm' : 'bg-white text-opd-text-secondary border border-opd-border hover:bg-primary-tint hover:text-opd-primary'}`}
-                            onClick={() => setActiveModule('preauth')}
-                        >
-                            Step 1: Pre-Auth
-                        </button>
-                        <div className="self-center hidden sm:block w-4 h-0.5 bg-opd-border"></div>
-                        <button
-                            className={`px-4 py-2 rounded-full text-sm font-bold transition whitespace-nowrap ${activeModule === 'enhancement' ? 'bg-opd-primary text-white shadow-sm' : 'bg-white text-opd-text-secondary border border-opd-border hover:bg-primary-tint hover:text-opd-primary'}`}
-                            onClick={() => setActiveModule('enhancement')}
-                        >
-                            Step 2: Stay Enhancement
-                        </button>
-                        <div className="self-center hidden sm:block w-4 h-0.5 bg-opd-border"></div>
-                        <button
-                            className={`px-4 py-2 rounded-full text-sm font-bold transition whitespace-nowrap ${activeModule === 'reimbursement' ? 'bg-opd-primary text-white shadow-sm' : 'bg-white text-opd-text-secondary border border-opd-border hover:bg-primary-tint hover:text-opd-primary'}`}
-                            onClick={() => setActiveModule('reimbursement')}
-                        >
-                            Step 3: Final Claim
-                        </button>
-                        <div className="self-center hidden sm:block w-4 h-0.5 bg-opd-border"></div>
-                        <button
-                            className={`px-4 py-2 rounded-full text-sm font-bold transition whitespace-nowrap ${activeModule === 'tpa_platform' ? 'bg-opd-primary text-white shadow-sm' : 'bg-white text-opd-text-secondary border border-opd-border hover:bg-primary-tint hover:text-opd-primary'}`}
-                            onClick={() => setActiveModule('tpa_platform')}
-                        >
-                            ⚡ TPA AI Copilot
-                        </button>
                     </div>
                 </div>
 

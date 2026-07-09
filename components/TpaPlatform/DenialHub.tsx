@@ -65,6 +65,7 @@ export const DenialHub: React.FC = () => {
                 doctorReg
             );
             setAppealPackage(pkg);
+            setShowPreviewModal(true);
             // Update local state to show appeal generated
             setDenials(prev => prev.map(d => d.id === selectedDenial.id ? { ...d, status: 'Appeal Generated' } : d));
         } catch (e) {

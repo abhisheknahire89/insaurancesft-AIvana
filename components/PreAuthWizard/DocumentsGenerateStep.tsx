@@ -12,6 +12,7 @@ import { logEvent } from '../../utils/auditLog';
 import { validateCode } from '../../services/icdService';
 import { computeReadiness } from '../../utils/readinessScore';
 import { logStageTimestamp } from '../../utils/stageLogger';
+import { compressPdf } from '../../services/pdfCompressor';
 
 interface DocGenerateStepProps {
     record: Partial<PreAuthRecord>;
@@ -48,6 +49,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
     const [generating, setGenerating] = useState(false);
     const [generated, setGenerated] = useState(false);
     const [irdaiText, setIrdaiText] = useState('');
+    const [compressingProgress, setCompressingProgress] = useState<string | null>(null);
     const fileRef = useRef<HTMLInputElement>(null);
 
     // Only fetch TPA report internally if not provided externally
@@ -203,7 +205,16 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
         if (!necessity) generateNecessity();
     }, []);
 
-    const handleFileUpload = (file: File) => {
+    const handleFileUpload = async (rawFile: File) => {
+        let file = rawFile;
+        if (file.type === 'application/pdf' && file.size > 8 * 1024 * 1024) {
+            setCompressingProgress("Preparing document...");
+            file = await compressPdf(rawFile, (progressMsg) => {
+                setCompressingProgress(progressMsg);
+            });
+            setCompressingProgress(null);
+        }
+
         const reader = new FileReader();
         reader.onload = (e) => {
             const base64 = (e.target?.result as string) ?? '';
@@ -782,14 +793,22 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                 </div>
                                             )}
 
-                                            <div
-                                                onClick={() => fileRef.current?.click()}
-                                                className="border border-dashed border-white/10 hover:border-blue-500/40 rounded-xl p-6 text-center bg-white/[0.01] hover:bg-blue-500/5 cursor-pointer transition-all duration-200 group"
-                                            >
-                                                <div className="text-xl transition-transform duration-200 group-hover:scale-110">📁</div>
-                                                <div className="text-white font-semibold mt-2 text-xs uppercase tracking-wider">Drop files here or click to upload</div>
-                                                <div className="text-[10px] text-gray-500 mt-1">PDF, JPG, PNG — max 10MB each</div>
-                                            </div>
+                                            {compressingProgress ? (
+                                                <div className="border border-dashed border-emerald-500/30 rounded-xl p-6 text-center bg-emerald-500/[0.02] flex flex-col items-center justify-center gap-2.5 min-h-[110px] select-none">
+                                                    <div className="w-5 h-5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+                                                    <div className="text-emerald-400 font-bold text-xs uppercase tracking-wider">{compressingProgress}</div>
+                                                    <div className="text-[9px] text-gray-500">Optimizing PDF size in browser for Gemini...</div>
+                                                </div>
+                                            ) : (
+                                                <div
+                                                    onClick={() => fileRef.current?.click()}
+                                                    className="border border-dashed border-white/10 hover:border-blue-500/40 rounded-xl p-6 text-center bg-white/[0.01] hover:bg-blue-500/5 cursor-pointer transition-all duration-200 group"
+                                                >
+                                                    <div className="text-xl transition-transform duration-200 group-hover:scale-110">📁</div>
+                                                    <div className="text-white font-semibold mt-2 text-xs uppercase tracking-wider">Drop files here or click to upload</div>
+                                                    <div className="text-[10px] text-gray-500 mt-1">PDF (auto-optimized), JPG, PNG — any file size</div>
+                                                </div>
+                                            )}
                                             <input ref={fileRef} type="file" accept="image/*,.pdf" className="hidden" onChange={e => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
 
                                             <div className="space-y-2">
@@ -844,15 +863,23 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                     </div>
                                 ) : (
                                     <div className="space-y-4">
-                                        <div
-                                            onClick={() => fileRef.current?.click()}
-                                            className="border-2 border-dashed border-white/10 hover:border-blue-500/40 rounded-xl p-12 text-center bg-white/[0.01] hover:bg-blue-500/5 cursor-pointer transition-all duration-200 group"
-                                        >
-                                            <div className="text-3xl transition-transform duration-200 group-hover:scale-110">📁</div>
-                                            <div className="text-white font-semibold mt-3 text-xs uppercase tracking-wider">Drop files here or click to upload</div>
-                                            <div className="text-[10px] text-gray-500 mt-1">PDF, JPG, PNG — max 10MB each</div>
-                                        </div>
-                                        <input ref={fileRef} type="file" accept="image/*,.pdf" className="hidden" onChange={e => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
+                                         {compressingProgress ? (
+                                             <div className="border border-dashed border-emerald-500/30 rounded-xl p-12 text-center bg-emerald-500/[0.02] flex flex-col items-center justify-center gap-3 min-h-[180px] select-none">
+                                                 <div className="w-7 h-7 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+                                                 <div className="text-emerald-400 font-bold text-xs uppercase tracking-wider">{compressingProgress}</div>
+                                                 <div className="text-[10px] text-gray-500 mt-1">Optimizing PDF size in browser for Gemini...</div>
+                                             </div>
+                                         ) : (
+                                             <div
+                                                 onClick={() => fileRef.current?.click()}
+                                                 className="border-2 border-dashed border-white/10 hover:border-blue-500/40 rounded-xl p-12 text-center bg-white/[0.01] hover:bg-blue-500/5 cursor-pointer transition-all duration-200 group"
+                                             >
+                                                 <div className="text-3xl transition-transform duration-200 group-hover:scale-110">📁</div>
+                                                 <div className="text-white font-semibold mt-3 text-xs uppercase tracking-wider">Drop files here or click to upload</div>
+                                                 <div className="text-[10px] text-gray-500 mt-1">PDF (auto-optimized), JPG, PNG — any file size</div>
+                                             </div>
+                                         )}
+                                         <input ref={fileRef} type="file" accept="image/*,.pdf" className="hidden" onChange={e => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
 
                                         {requiredDocs.length > 0 && (
                                             <div className="bg-[#0D121F] border border-white/5 rounded-xl p-5 space-y-3 shadow-sm shadow-black/10">

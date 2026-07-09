@@ -10,6 +10,24 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
+  <script>
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+      document.body.innerHTML += '<div style="color:red; background:white; z-index:9999; position:absolute; top:0; left:0; width:100%; padding:20px;"><h1>Error</h1><p>' + msg + '</p><pre>' + (error ? error.stack : '') + '</pre></div>';
+    };
+    window.addEventListener('unhandledrejection', function(event) {
+      document.body.innerHTML += '<div style="color:red; background:white; z-index:9999; position:absolute; top:0; left:0; width:100%; padding:20px;"><h1>Unhandled Promise Rejection</h1><p>' + event.reason + '</p></div>';
+    });
+  </script>
+  
+  <!-- PDF.js and pdf-lib for client-side PDF downsampling / compression -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.tailwindcss.com/3.4.1?plugins=typography"></script>
   <script>

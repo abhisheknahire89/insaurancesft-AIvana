@@ -276,36 +276,36 @@ export const EnhancementModule: React.FC<{ preAuthData: any }> = ({ preAuthData 
     ];
 
     return (
-        <div className="card-premium space-y-6 text-opd-text-primary">
+        <div className="p-6 bg-gray-900 border border-white/5 text-white rounded-2xl shadow-xl space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold font-lora text-opd-primary">Enhancement / Stay Extension Request</h2>
+                <h2 className="text-lg font-bold tracking-tight">Enhancement / Stay Extension Request</h2>
                 {report && (
                     <span className={`text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full font-bold border ${
                         report.status === 'sufficient'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : 'bg-red-50 text-red-700 border-red-200'
+                            ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/10'
+                            : 'bg-red-500/15 text-red-400 border-red-500/10'
                     }`}>
                         {report.status === 'sufficient' ? 'Complete (Sufficient)' : 'Pending Documents'}
                     </span>
                 )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                    <label className="form-label">Original Approval Reference</label>
-                    <input className="form-input" value={input.originalApprovalRef} onChange={e => setInput({ ...input, originalApprovalRef: e.target.value })} />
+                    <label className="block text-xs text-gray-400 font-semibold mb-1">Original Approval Reference</label>
+                    <input className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.originalApprovalRef} onChange={e => setInput({ ...input, originalApprovalRef: e.target.value })} />
                 </div>
                 <div>
-                    <label className="form-label">Original Approved Amount (₹)</label>
-                    <input type="number" className="form-input" value={input.originalApprovedAmount || ''} onChange={e => setInput({ ...input, originalApprovedAmount: Number(e.target.value) })} />
+                    <label className="block text-xs text-gray-400 font-semibold mb-1">Original Approved Amount (₹)</label>
+                    <input type="number" className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.originalApprovedAmount || ''} onChange={e => setInput({ ...input, originalApprovedAmount: Number(e.target.value) })} />
                 </div>
                 <div>
-                    <label className="form-label">Amount Utilized to Date (₹)</label>
-                    <input type="number" className="form-input" value={input.amountUtilizedToDate || ''} onChange={e => setInput({ ...input, amountUtilizedToDate: Number(e.target.value) })} />
+                    <label className="block text-xs text-gray-400 font-semibold mb-1">Amount Utilized to Date (₹)</label>
+                    <input type="number" className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.amountUtilizedToDate || ''} onChange={e => setInput({ ...input, amountUtilizedToDate: Number(e.target.value) })} />
                 </div>
                 <div>
-                    <label className="form-label">Trigger Type</label>
-                    <select className="form-input" value={input.trigger} onChange={e => setInput({ ...input, trigger: e.target.value as EnhancementTrigger })}>
+                    <label className="block text-xs text-gray-400 font-semibold mb-1">Trigger Type</label>
+                    <select className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.trigger} onChange={e => setInput({ ...input, trigger: e.target.value as EnhancementTrigger })}>
                         <option value="extended_stay">Extended Stay</option>
                         <option value="new_procedure">New Procedure</option>
                         <option value="icu_upgrade">ICU Upgrade</option>
@@ -315,39 +315,39 @@ export const EnhancementModule: React.FC<{ preAuthData: any }> = ({ preAuthData 
 
             {/* Extended Stay Trigger Fields */}
             {input.trigger === 'extended_stay' && (
-                <div className="space-y-4 border-t border-opd-border pt-4">
+                <div className="space-y-4 border-t border-white/5 pt-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="form-label">Original Discharge Date</label>
-                            <input type="date" className="form-input" value={input.originalDischargeDate} onChange={e => setInput({ ...input, originalDischargeDate: e.target.value })} />
+                            <label className="block text-xs text-gray-400 font-semibold mb-1">Original Discharge Date</label>
+                            <input type="date" className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.originalDischargeDate} onChange={e => setInput({ ...input, originalDischargeDate: e.target.value })} />
                         </div>
                         <div>
-                            <label className="form-label">New Expected Discharge Date</label>
-                            <input type="date" className="form-input" value={input.newDischargeDate} onChange={e => setInput({ ...input, newDischargeDate: e.target.value })} />
+                            <label className="block text-xs text-gray-400 font-semibold mb-1">New Expected Discharge Date</label>
+                            <input type="date" className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.newDischargeDate} onChange={e => setInput({ ...input, newDischargeDate: e.target.value })} />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4 text-xs">
                         <div>
-                            <label className="form-label">Pheno Intensity Score (1-10)</label>
-                            <select className="form-input" value={input.currentSeverityScores?.phenoIntensity ?? 1} onChange={e => setInput({ ...input, currentSeverityScores: { phenoIntensity: Number(e.target.value), deteriorationVelocity: input.currentSeverityScores?.deteriorationVelocity ?? 1 } })}>
+                            <label className="block text-xs text-gray-400 font-semibold mb-1">Pheno Intensity Score (1-10)</label>
+                            <select className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.currentSeverityScores?.phenoIntensity ?? 1} onChange={e => setInput({ ...input, currentSeverityScores: { phenoIntensity: Number(e.target.value), deteriorationVelocity: input.currentSeverityScores?.deteriorationVelocity ?? 1 } })}>
                                 {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n}>{n}</option>)}
                             </select>
                         </div>
                         <div>
-                            <label className="form-label">Deterioration Velocity Score (1-10)</label>
-                            <select className="form-input" value={input.currentSeverityScores?.deteriorationVelocity ?? 1} onChange={e => setInput({ ...input, currentSeverityScores: { phenoIntensity: input.currentSeverityScores?.phenoIntensity ?? 1, deteriorationVelocity: Number(e.target.value) } })}>
+                            <label className="block text-xs text-gray-400 font-semibold mb-1">Deterioration Velocity Score (1-10)</label>
+                            <select className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.currentSeverityScores?.deteriorationVelocity ?? 1} onChange={e => setInput({ ...input, currentSeverityScores: { phenoIntensity: input.currentSeverityScores?.phenoIntensity ?? 1, deteriorationVelocity: Number(e.target.value) } })}>
                                 {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n}>{n}</option>)}
                             </select>
                         </div>
                     </div>
 
                     <div>
-                        <label className="form-label mb-2">Discharge Delay Reasons (Select all that apply)</label>
-                        <div className="grid grid-cols-2 gap-2 text-sm bg-opd-input-bg p-3 rounded-xl border border-opd-border">
+                        <label className="block text-xs text-gray-400 font-semibold mb-2">Discharge Delay Reasons (Select all that apply)</label>
+                        <div className="grid grid-cols-2 gap-2 text-sm bg-gray-950/30 p-3 rounded-xl border border-white/5">
                             {DELAY_REASONS.map(reason => (
-                                <label key={reason} className="flex items-start space-x-2.5 cursor-pointer hover:text-opd-primary text-opd-text-secondary py-1">
-                                    <input type="checkbox" className="mt-1 rounded border-opd-border bg-white text-opd-primary focus:ring-opd-primary" checked={input.dischargeDelayReasons?.includes(reason) ?? false} onChange={e => handleDelayReasonChange(reason, e.target.checked)} />
+                                <label key={reason} className="flex items-start space-x-2.5 cursor-pointer hover:text-white text-gray-300 py-1">
+                                    <input type="checkbox" className="mt-0.5 rounded border-white/10 bg-gray-900" checked={input.dischargeDelayReasons?.includes(reason) ?? false} onChange={e => handleDelayReasonChange(reason, e.target.checked)} />
                                     <span>{reason}</span>
                                 </label>
                             ))}
@@ -358,59 +358,59 @@ export const EnhancementModule: React.FC<{ preAuthData: any }> = ({ preAuthData 
 
             {/* New Procedure Trigger Fields */}
             {input.trigger === 'new_procedure' && (
-                <div className="grid grid-cols-2 gap-4 border-t border-opd-border pt-4">
+                <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-4 text-xs">
                     <div>
-                        <label className="form-label">New Procedure Name</label>
-                        <input className="form-input" value={input.newProcedureName} onChange={e => setInput({ ...input, newProcedureName: e.target.value })} />
+                        <label className="block text-xs text-gray-400 font-semibold mb-1">New Procedure Name</label>
+                        <input className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.newProcedureName} onChange={e => setInput({ ...input, newProcedureName: e.target.value })} />
                     </div>
                     <div>
-                        <label className="form-label">New Procedure Code</label>
-                        <input className="form-input" value={input.newProcedureCode} onChange={e => setInput({ ...input, newProcedureCode: e.target.value })} />
+                        <label className="block text-xs text-gray-400 font-semibold mb-1">New Procedure Code</label>
+                        <input className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.newProcedureCode} onChange={e => setInput({ ...input, newProcedureCode: e.target.value })} />
                     </div>
                     <div>
-                        <label className="form-label">New Procedure Date</label>
-                        <input type="date" className="form-input" value={input.newProcedureDate} onChange={e => setInput({ ...input, newProcedureDate: e.target.value })} />
+                        <label className="block text-xs text-gray-400 font-semibold mb-1">New Procedure Date</label>
+                        <input type="date" className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.newProcedureDate} onChange={e => setInput({ ...input, newProcedureDate: e.target.value })} />
                     </div>
                     <div className="flex items-center mt-6">
-                        <label className="flex items-center space-x-2.5 cursor-pointer text-sm text-opd-text-secondary">
-                            <input type="checkbox" className="rounded border-opd-border bg-white text-opd-primary focus:ring-opd-primary" checked={input.newProcedureForeseeable ?? false} onChange={e => setInput({ ...input, newProcedureForeseeable: e.target.checked })} />
+                        <label className="flex items-center space-x-2.5 cursor-pointer text-sm">
+                            <input type="checkbox" className="rounded border-white/10 bg-gray-900" checked={input.newProcedureForeseeable ?? false} onChange={e => setInput({ ...input, newProcedureForeseeable: e.target.checked })} />
                             <span>Was new procedure foreseeable?</span>
                         </label>
                     </div>
                     <div className="col-span-2">
-                        <label className="form-label">Clinical Findings Triggering Procedure</label>
-                        <textarea rows={2} className="form-input" value={input.clinicalFindingTriggeringProcedure} onChange={e => setInput({ ...input, clinicalFindingTriggeringProcedure: e.target.value })} />
+                        <label className="block text-xs text-gray-400 font-semibold mb-1">Clinical Findings Triggering Procedure</label>
+                        <textarea rows={2} className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.clinicalFindingTriggeringProcedure} onChange={e => setInput({ ...input, clinicalFindingTriggeringProcedure: e.target.value })} />
                     </div>
                 </div>
             )}
 
             {/* ICU Upgrade Trigger Fields */}
             {input.trigger === 'icu_upgrade' && (
-                <div className="grid grid-cols-2 gap-4 border-t border-opd-border pt-4">
+                <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-4 text-xs">
                     <div>
-                        <label className="form-label">Deterioration Date & Time</label>
-                        <input type="datetime-local" className="form-input" value={input.deteriorationDateTime} onChange={e => setInput({ ...input, deteriorationDateTime: e.target.value })} />
+                        <label className="block text-xs text-gray-400 font-semibold mb-1">Deterioration Date & Time</label>
+                        <input type="datetime-local" className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.deteriorationDateTime} onChange={e => setInput({ ...input, deteriorationDateTime: e.target.value })} />
                     </div>
                     <div>
-                        <label className="form-label">Deterioration Vitals (e.g., BP, SpO2, HR)</label>
-                        <input className="form-input" value={input.deteriorationVitals} onChange={e => setInput({ ...input, deteriorationVitals: e.target.value })} />
+                        <label className="block text-xs text-gray-400 font-semibold mb-1">Deterioration Vitals (e.g., BP, SpO2, HR)</label>
+                        <input className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.deteriorationVitals} onChange={e => setInput({ ...input, deteriorationVitals: e.target.value })} />
                     </div>
                     <div className="col-span-2">
-                        <label className="form-label">ICU Intervention Required (e.g., Ventilation, Pressor support)</label>
-                        <textarea rows={2} className="form-input" value={input.icuIntervention} onChange={e => setInput({ ...input, icuIntervention: e.target.value })} />
+                        <label className="block text-xs text-gray-400 font-semibold mb-1">ICU Intervention Required (e.g., Ventilation, Pressor support)</label>
+                        <textarea rows={2} className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm" value={input.icuIntervention} onChange={e => setInput({ ...input, icuIntervention: e.target.value })} />
                     </div>
                 </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4 border-t border-opd-border pt-4">
+            <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-4">
                 <div>
-                    <label className="form-label text-opd-error">Additional Amount Requested (₹)</label>
-                    <input type="number" className="form-input font-semibold text-opd-error" value={input.additionalAmountRequested || ''} onChange={e => setInput({ ...input, additionalAmountRequested: Number(e.target.value) })} />
+                    <label className="block text-xs text-red-400 font-semibold mb-1">Additional Amount Requested (₹)</label>
+                    <input type="number" className="w-full p-2.5 bg-gray-800 rounded border border-white/10 text-sm font-semibold text-red-200" value={input.additionalAmountRequested || ''} onChange={e => setInput({ ...input, additionalAmountRequested: Number(e.target.value) })} />
                 </div>
             </div>
 
             <div className="flex items-center space-x-3">
-                <button onClick={handleGenerate} disabled={reviewLoading} className="btn-primary shadow-sm flex items-center space-x-2">
+                <button onClick={handleGenerate} disabled={reviewLoading} className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white rounded-xl text-sm font-bold transition shadow-lg active:scale-95 flex items-center space-x-2">
                     {reviewLoading ? (
                         <>
                             <span className="animate-spin inline-block w-4 h-4 border-2 border-t-transparent border-white rounded-full"></span>
@@ -425,41 +425,41 @@ export const EnhancementModule: React.FC<{ preAuthData: any }> = ({ preAuthData 
             {/* Reviewed Outputs Gaps & Queries Panel */}
             {report && (
                 <div className="grid grid-cols-2 gap-4 mt-4 text-xs">
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-xl space-y-2">
-                        <h4 className="font-bold text-red-800 uppercase tracking-wider text-[10px]">Verification Gaps ({report.gaps.length})</h4>
+                    <div className="p-4 bg-red-950/20 border border-red-500/10 rounded-2xl space-y-2">
+                        <h4 className="font-bold text-red-400 uppercase tracking-wider text-[10px]">Verification Gaps ({report.gaps.length})</h4>
                         {report.gaps.length > 0 ? (
-                            <ul className="list-disc pl-4 space-y-1.5 text-red-700">
+                            <ul className="list-disc pl-4 space-y-1.5 text-gray-300">
                                 {report.gaps.map((g, idx) => <li key={idx}>{g}</li>)}
                             </ul>
                         ) : (
-                            <p className="text-emerald-700 font-medium">✓ No blocking gaps detected.</p>
+                            <p className="text-emerald-400 font-medium">✓ No blocking gaps detected.</p>
                         )}
                     </div>
 
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
-                        <h4 className="font-bold text-blue-800 uppercase tracking-wider text-[10px]">Anticipated TPA Queries ({report.anticipatedQueries.length})</h4>
+                    <div className="p-4 bg-blue-950/20 border border-blue-500/10 rounded-2xl space-y-2">
+                        <h4 className="font-bold text-blue-400 uppercase tracking-wider text-[10px]">Anticipated TPA Queries ({report.anticipatedQueries.length})</h4>
                         {report.anticipatedQueries.length > 0 ? (
                             <div className="space-y-2.5 max-h-48 overflow-y-auto">
                                 {report.anticipatedQueries.map((q, idx) => (
-                                    <div key={idx} className="border-b border-blue-100 pb-2 last:border-b-0 last:pb-0">
-                                        <p className="font-semibold text-blue-900">Q: {q.query}</p>
-                                        <p className="text-blue-700 mt-0.5">Reason: {q.reason}</p>
+                                    <div key={idx} className="border-b border-white/5 pb-2 last:border-b-0 last:pb-0">
+                                        <p className="font-semibold text-gray-200">Q: {q.query}</p>
+                                        <p className="text-gray-400 mt-0.5">Reason: {q.reason}</p>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-emerald-700 font-medium">✓ No queries expected from TPA medical reviewers.</p>
+                            <p className="text-emerald-400 font-medium">✓ No queries expected from TPA medical reviewers.</p>
                         )}
                     </div>
                 </div>
             )}
 
             {doc && (
-                <div className="mt-4 p-4 bg-opd-input-bg rounded-xl border border-opd-border">
-                    <div className="flex items-center justify-between border-b border-opd-border pb-2 mb-3">
-                        <h3 className="text-xs font-bold text-opd-text-secondary uppercase tracking-wider">Preview Generated Enhancement Document</h3>
+                <div className="mt-4 p-4 bg-gray-950/60 rounded-2xl border border-white/10">
+                    <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-3">
+                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Preview Generated Enhancement Document</h3>
                     </div>
-                    <pre className="whitespace-pre-wrap text-xs text-opd-text-secondary font-mono leading-relaxed">{doc}</pre>
+                    <pre className="whitespace-pre-wrap text-xs text-gray-300 font-mono leading-relaxed">{doc}</pre>
                 </div>
             )}
         </div>

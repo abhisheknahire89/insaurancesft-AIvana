@@ -1,25 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
+// Static import — browser-safe. Node fs/path cannot run in Vite/browser context.
+import fewShotStoreJson from '../data/fewShotStore.json';
 import { LlmReasoningOutput } from './llmClient';
-
-// import { fileURLToPath } from 'url'; // Removed for browser compatibility
-// Handling ES Modules environment correctly
-const getDirname = () => {
-    try {
-        if (typeof __dirname !== 'undefined') return __dirname;
-        if (typeof process !== 'undefined') return process.cwd();
-        return '';
-    } catch {
-        return '';
-    }
-};
-
-let FEW_SHOT_STORE_PATH = '';
-try {
-    FEW_SHOT_STORE_PATH = path.join(getDirname(), '..', 'data', 'fewShotStore.json');
-} catch (e) {
-    // Ignore in browser
-}
 
 export interface FewShotExample {
   input: string;
@@ -30,31 +11,34 @@ export interface FewShotStore {
   [category: string]: FewShotExample[];
 }
 
+// In-memory mutable copy seeded from the static JSON import.
+// Changes made at runtime (promoteToFewShot) persist for the session only.
+let _inMemoryStore: FewShotStore | null = null;
+
 /**
- * Loads the few-shot store from the JSON file.
+ * Loads the few-shot store. Returns the statically-imported JSON on first call,
+ * then returns the in-memory copy for subsequent calls (so runtime promotions
+ * are reflected without needing a file write).
  */
 export function loadFewShotStore(): FewShotStore {
-  try {
-    if (!fs.existsSync(FEW_SHOT_STORE_PATH)) {
-      return {};
-    }
-    const data = fs.readFileSync(FEW_SHOT_STORE_PATH, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error(`[ContinuousLearningLoop] Failed to load fewShotStore:`, error);
-    return {};
+  if (_inMemoryStore === null) {
+    // Deep-clone so mutations don't corrupt the module-level import cache.
+    _inMemoryStore = JSON.parse(JSON.stringify(fewShotStoreJson)) as FewShotStore;
   }
+  return _inMemoryStore;
 }
 
 /**
- * Saves the few-shot store back to the JSON file.
+ * Persists the few-shot store.
+ * In browser environments (Vite) file writes are impossible — this is a no-op
+ * that keeps the in-memory cache consistent for the current session.
  */
 function saveFewShotStore(store: FewShotStore) {
-  try {
-    fs.writeFileSync(FEW_SHOT_STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
-  } catch (error) {
-    console.error(`[ContinuousLearningLoop] Failed to save fewShotStore:`, error);
-  }
+  // Update in-memory state so the session benefits from the promotion.
+  _inMemoryStore = store;
+  // NOTE: File persistence is not possible in the browser.
+  // To persist across sessions, send this to a backend API endpoint instead.
+  console.log('[ContinuousLearningLoop] saveFewShotStore: in-memory store updated (browser — no file write).');
 }
 
 /**

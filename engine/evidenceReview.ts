@@ -695,7 +695,8 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
 
   // Merge extra items ensuring no duplicate strings (case-insensitively)
   for (const anchor of extraAnchors) {
-    // FAIRWAY PRE-CHECK GATE (Phase 1 Logging Only):
+    // FAIRWAY PRE-CHECK GATE (Phase 1 Logging-Only):
+    // Gated: log what WOULD be suppressed, do not actually filter/suppress it until explicit go-ahead for Phase 2.
     const isLabAnchor = /\b(cbc|wbc|rbc|creatinine|urea|egfr|lft|sgot|sgpt|bilirubin|hba1c|electrolyte|sodium|potassium|haemoglobin|hemoglobin|platelet|tlc|leukocyte|neutrophil|esr|crp|d-dimer|procalcitonin|inr|hb|chloride|electrolytes|bun|amylase|lipase|uric\s+acid)\b/i.test(anchor);
     if (isLabAnchor && !preCheck.labsRequired) {
       trace.push(`[NEXUS Pre-Check Log-Only] Lab anchor "${anchor}" would be suppressed — imaging confirms dx with no complications.`);

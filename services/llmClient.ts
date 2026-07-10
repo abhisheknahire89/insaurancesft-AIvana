@@ -304,6 +304,11 @@ Apply the five-stage NEXUS protocol internally, then output ONLY the raw JSON. R
       Array.isArray(parsed.anchors) &&
       Array.isArray(parsed.discriminators)
     ) {
+      parsed.challengesConsidered = parsed.challengesConsidered.filter((x: any) => typeof x === 'string' && x.trim() !== '');
+      parsed.anchors = parsed.anchors.filter((x: any) => typeof x === 'string' && x.trim() !== '');
+      parsed.discriminators = parsed.discriminators.filter((x: any) => 
+        x && typeof x.challenge === 'string' && typeof x.evidence === 'string' && typeof x.reason === 'string'
+      );
       return parsed as LlmReasoningOutput;
     }
     throw new Error("Parsed JSON structure does not match expected schema");

@@ -127,6 +127,9 @@ export const hasWord = (term: string, narrative: string): boolean => {
  * Checks if a required finding is present in the case narrative or structured fields.
  */
 export const checkClinicalPresence = async (item: string, record: Partial<PreAuthRecord>, context?: SemanticContext): Promise<boolean> => {
+  if (!item || typeof item !== 'string') {
+    return false;
+  }
   const itemLower = item.toLowerCase();
   
   // 1. Gather all narrative text

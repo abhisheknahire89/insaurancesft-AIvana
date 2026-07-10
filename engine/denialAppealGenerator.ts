@@ -13,7 +13,7 @@
 
 import { PreAuthRecord } from '../components/PreAuthWizard/types';
 import { EvidenceReviewReport } from './evidenceReview';
-import { queryMedGemma } from '../services/llmClient';
+import { queryMedGemma, aegisAppealSchema } from '../services/llmClient';
 import { clinicalTextMatch } from '../utils/clinicalTextMatch';
 import { isPMJAYBeneficiary } from '../services/pmjayService';
 import { reportError } from '../services/errorLogger';
@@ -234,7 +234,7 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
   let appealTextBody = '';
 
   try {
-    const responseText = await queryMedGemma(prompt, systemInstruction);
+    const responseText = await queryMedGemma(prompt, systemInstruction, aegisAppealSchema);
     let cleanText = responseText.trim();
     const startIdx = cleanText.indexOf('{');
     if (startIdx !== -1) {
@@ -251,7 +251,8 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
     let parsed: any;
     try {
       parsed = JSON.parse(cleanText);
-    } catch (parseErr) {
+    } catch (parseErr: any) {
+      console.log(`⚠️ [FALLBACK_TRIGGERED] Hitting regex fallback parser: ${parseErr.message}`);
       // Robust regex-based fallback parser for unescaped double quotes or raw newlines inside JSON string fields
       const fallbackResult: any = { citedEvidence: [], stillMissing: [], appealTextBody: '' };
       

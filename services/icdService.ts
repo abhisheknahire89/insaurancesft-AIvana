@@ -3,7 +3,7 @@ import categoriesData from '../data/icd10Categories.json';
 import { ICD_SYNONYM_MAP } from '../data/icdSynonymMap';
 // Static import — browser-safe. Replaces fs/path that cannot run in Vite/browser.
 import icdFewShotJson from '../data/icdFewShot.json';
-import { queryMedGemma } from './llmClient';
+import { queryMedGemma, taigaIcdSchema } from './llmClient';
 import { clinicalTextMatchSync } from '../utils/clinicalTextMatch';
 import { reportError } from './errorLogger';
 
@@ -471,7 +471,7 @@ Identify the closest valid WHO ICD-10 code.`;
   ];
 
   try {
-    const responseText = await queryMedGemma(prompt, finalSystemInstruction);
+    const responseText = await queryMedGemma(prompt, finalSystemInstruction, taigaIcdSchema);
     
     let cleanText = responseText.trim();
     // Robustly extract the JSON object block matching the first { ... } structure

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Type } from '@google/genai';
 import { DEMO_FALLBACKS } from '../data/demoFallbacks';
 import { getGoogleGenAIClient } from './apiKeys';
 import { MODEL_TEXT } from '../config/modelConfig';
@@ -14,6 +15,74 @@ export interface LlmReasoningOutput {
   }>;
 }
 
+export const fairwaySchema = {
+  type: Type.OBJECT,
+  properties: {
+    challengesConsidered: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING }
+    },
+    anchors: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING }
+    },
+    discriminators: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          challenge: { type: Type.STRING },
+          evidence: { type: Type.STRING },
+          reason: { type: Type.STRING }
+        },
+        required: ['challenge', 'evidence', 'reason']
+      }
+    }
+  },
+  required: ['challengesConsidered', 'anchors', 'discriminators']
+};
+
+export const taigaIcdSchema = {
+  type: Type.OBJECT,
+  properties: {
+    code: { type: Type.STRING },
+    description: { type: Type.STRING }
+  },
+  required: ['code', 'description']
+};
+
+export const aegisAppealSchema = {
+  type: Type.OBJECT,
+  properties: {
+    citedEvidence: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          denialReason: { type: Type.STRING },
+          evidenceItem: { type: Type.STRING },
+          source: { type: Type.STRING },
+          forChallenge: { type: Type.STRING }
+        },
+        required: ['denialReason', 'evidenceItem', 'source']
+      }
+    },
+    stillMissing: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          denialReason: { type: Type.STRING },
+          explanation: { type: Type.STRING }
+        },
+        required: ['denialReason', 'explanation']
+      }
+    },
+    appealTextBody: { type: Type.STRING }
+  },
+  required: ['citedEvidence', 'stillMissing', 'appealTextBody']
+};
+
 let mockQueryOverride: ((prompt: string, systemInstruction?: string) => Promise<string>) | null = null;
 
 export function setMockQuery(fn: typeof mockQueryOverride) {
@@ -25,7 +94,7 @@ export function setMockQuery(fn: typeof mockQueryOverride) {
  * If VITE_MEDGEMMA_ENDPOINT_URL is set, queries the specified custom endpoint (e.g. Vertex AI or Ollama).
  * Otherwise, falls back to the main Gemini model (MODEL_TEXT) from config.
  */
-export async function queryMedGemma(prompt: string, systemInstruction?: string): Promise<string> {
+export async function queryMedGemma(prompt: string, systemInstruction?: string, schema?: any): Promise<string> {
   if (mockQueryOverride) {
     return mockQueryOverride(prompt, systemInstruction);
   }
@@ -70,13 +139,14 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string):
   // Fall back to Gemini reasoning client if no dedicated MedGemma endpoint is active or it failed
   try {
     const ai = getGoogleGenAIClient();
-    const isJson = (systemInstruction?.toLowerCase().includes('json') || prompt.toLowerCase().includes('json'));
+    const isJson = (systemInstruction?.toLowerCase().includes('json') || prompt.toLowerCase().includes('json') || schema);
     const response = await ai.models.generateContent({
       model: MODEL_TEXT,
       contents: prompt,
       config: {
         systemInstruction,
-        ...(isJson && { responseMimeType: 'application/json' })
+        ...(isJson && { responseMimeType: 'application/json' }),
+        ...(schema && { responseSchema: schema })
       }
     });
     console.log(`[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback${endpointUrl ? ' after endpoint timeout.' : '.'}`);
@@ -206,7 +276,7 @@ Apply the five-stage NEXUS protocol internally, then output ONLY the raw JSON. R
 
   let responseText = '';
   try {
-    responseText = await queryMedGemma(prompt, finalSystemInstruction);
+    responseText = await queryMedGemma(prompt, finalSystemInstruction, fairwaySchema);
   } catch (error: any) {
     if (isDemoMode && demoKey) {
       console.warn(`[llmClient] MedGemma query failed: ${error.message}. Returning pre-captured demo fallback for ${demoKey}.`);

@@ -16,6 +16,52 @@ import { EvidenceReviewReport } from './evidenceReview';
 import { queryMedGemma } from '../services/llmClient';
 import { clinicalTextMatch } from '../utils/clinicalTextMatch';
 import { isPMJAYBeneficiary } from '../services/pmjayService';
+import { reportError } from '../services/errorLogger';
+
+/**
+ * AEGIS CITATION GATE
+ *
+ * A cited evidenceItem from the model passes this gate only if:
+ * 1. The evidence item is non-trivial (min 15 chars) OR in the short-term acronym allowlist.
+ * 2. It has a high substring overlap or token-based overlap of at least 40%.
+ */
+export function isEvidenceCitationPlausible(
+  citedText: string,
+  poolItemText: string,
+  minTokenOverlap = 0.4
+): boolean {
+  const cited = citedText.toLowerCase().trim();
+  const pool = poolItemText.toLowerCase().trim();
+
+  // Gate 1: minimum length or acronym allowlist
+  const shortTermAllowlist = [
+    'hba1c', 'spo2', 'ecg', 'ct', 'mri', 'egfr', 'pvr', 'psa',
+    'cbc', 'wbc', 'lft', 'rft', 'esr', 'crp', 'inr', 'hb',
+    'bp', 'temp', 'u/s', 'usg', 'cxr', 'aki', 'dka', 'tlc'
+  ];
+
+  if (cited.length < 15 && !shortTermAllowlist.includes(cited)) {
+    return false;
+  }
+
+  // Gate 2: exact substring matches
+  if (pool.includes(cited) || cited.includes(pool)) {
+    return true;
+  }
+
+  // Gate 3: token overlap of major words
+  const citedTokens = new Set(cited.split(/\s+/).filter(t => t.length > 3));
+  const poolTokens = new Set(pool.split(/\s+/).filter(t => t.length > 3));
+  if (citedTokens.size === 0) return false;
+
+  let overlap = 0;
+  for (const token of citedTokens) {
+    if (poolTokens.has(token)) overlap++;
+  }
+
+  const overlapRatio = overlap / citedTokens.size;
+  return overlapRatio >= minTokenOverlap;
+}
 
 // ─── Output Types ───────────────────────────────────────────────────────────
 
@@ -269,19 +315,29 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
     // Deterministic Verification Post-Processor (zero tolerance enforcement with fuzzy/substring support)
     if (parsed && Array.isArray(parsed.citedEvidence)) {
       parsed.citedEvidence.forEach((item: any) => {
-        const matched = clinicalPool.find(c => {
+        const matchedLoose = clinicalPool.find(c => {
           const cItem = c.item.toLowerCase().trim();
           const eItem = (item.evidenceItem || '').toLowerCase().trim();
           return cItem === eItem || cItem.includes(eItem) || eItem.includes(cItem);
         });
-        if (matched) {
+
+        const matchedGate = clinicalPool.find(c => {
+          const cItem = c.item.toLowerCase().trim();
+          const eItem = (item.evidenceItem || '').toLowerCase().trim();
+          return isEvidenceCitationPlausible(eItem, cItem);
+        });
+
+        if (matchedLoose) {
+          if (!matchedGate) {
+            console.warn(`[Aegis Gate Log-Only] Gate would have REJECTED cited evidence item: "${item.evidenceItem}" which was accepted by loose includes.`);
+          }
           const rawExtraction = (item.evidenceItem || '').trim();
-          const finalEvidenceItem = rawExtraction.length > 10 ? rawExtraction : matched.item;
+          const finalEvidenceItem = rawExtraction.length > 10 ? rawExtraction : matchedLoose.item;
           citedEvidence.push({
             denialReason: item.denialReason,
             evidenceItem: finalEvidenceItem,
-            source: matched.source,
-            forChallenge: item.forChallenge || matched.forChallenge
+            source: matchedLoose.source,
+            forChallenge: item.forChallenge || matchedLoose.forChallenge
           });
         } else {
           stillMissing.push({
@@ -303,7 +359,7 @@ NOTE: For the "source" field in citedEvidence, use either "anchor" or "discrimin
       });
     }
   } catch (error) {
-    console.error('[denialAppealGenerator] Gemini appeal generation failed, using keyword fallback:', error);
+    reportError('denialAppealGenerator', 'Gemini appeal generation failed, using keyword fallback', error);
     // Deterministic fallback matching
     for (let i = 0; i < reasons.length; i++) {
       const reason = reasons[i];
@@ -470,7 +526,7 @@ Hospital Insurance Desk
         `Output ONLY the Hindi translation, no explanations.`;
       hindiTranslation = await queryMedGemma(appealText, hindiSystemInstruction);
     } catch (err) {
-      console.error('[denialAppealGenerator] Hindi translation failed:', err);
+      reportError('denialAppealGenerator', 'Hindi translation failed', err);
     }
   }
 

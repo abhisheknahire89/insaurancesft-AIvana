@@ -355,6 +355,74 @@ export const getFallbackReasoning = (diagnosisName: string): LlmReasoningOutput 
   };
 };
 
+interface PreCheckResult {
+  imagingConfirmsDx: boolean;      // CT/MRI/USG result is present AND confirms dx
+  hasComplications: boolean;       // sepsis / DKA / AKI / fluid imbalance in narrative
+  labsRequired: boolean;           // derived: labs mandatory when complications present
+  emergencyAdmission: boolean;     // bypass PAC and conservative-management queries
+  hasConservativeHistory: boolean; // physiotherapy / medication / injection mentioned
+  knownGaps: string[];             // items already known to be absent before AI call
+}
+
+function runFairwayPreCheck(record: Partial<PreAuthRecord>, fullNarrative: string): PreCheckResult {
+  const lower = fullNarrative.toLowerCase();
+
+  // 1. Imaging presence + confirmation signal with Proximity Check (max 80 chars)
+  const imagingTerms = ['ct ', 'mri', 'usg', 'ultrasound', 'x-ray', 'xray', 'scan'];
+  const confirmationTerms = ['confirmed', 'shows', 'reveals', 'demonstrates', 'consistent with', 'suggestive of', 'report', 'findings'];
+  let imagingConfirmsDx = false;
+
+  for (const imgTerm of imagingTerms) {
+    let index = lower.indexOf(imgTerm);
+    while (index !== -1) {
+      const windowStart = Math.max(0, index - 80);
+      const windowEnd = Math.min(lower.length, index + imgTerm.length + 80);
+      const searchWindow = lower.substring(windowStart, windowEnd);
+      if (confirmationTerms.some(cTerm => searchWindow.includes(cTerm))) {
+        imagingConfirmsDx = true;
+        break;
+      }
+      index = lower.indexOf(imgTerm, index + 1);
+    }
+    if (imagingConfirmsDx) break;
+  }
+
+  // 2. Complication markers — if present, labs REMAIN mandatory regardless of imaging
+  const complicationTerms = [
+    'sepsis', 'septic', 'dka', 'diabetic ketoacidosis', 'aki', 'acute kidney injury',
+    'electrolyte', 'dehydration', 'fluid imbalance', 'acidosis', 'hypotension',
+    'hemodynamic', 'coagulopathy', 'multi-organ', 'warning signs', 'complications'
+  ];
+  const hasComplications = complicationTerms.some(t => lower.includes(t));
+
+  // 3. Labs policy gate (the CASE-001 open question — codified)
+  //    IF imaging confirms AND no complications → labs are optional, not mandatory anchors
+  const labsRequired = !imagingConfirmsDx || hasComplications;
+
+  // 4. Emergency bypass
+  const emergencyAdmission = record.admission?.admissionType === 'Emergency' || lower.includes('emergency');
+
+  // 5. Conservative management (already exists as narrativeText check — centralise here)
+  const hasConservativeHistory =
+    lower.includes('conservative') || lower.includes('physio') ||
+    lower.includes('analgesic') || lower.includes('nsaid') ||
+    lower.includes('injection') || lower.includes('steroid') ||
+    lower.includes('tablet') || lower.includes('medication');
+
+  // 6. Known gaps deterministically (no model needed for these)
+  const knownGaps: string[] = [];
+  const vitals = record.clinical?.vitals;
+  if (!vitals?.bp || vitals.bp.trim() === '')  knownGaps.push('Blood Pressure on admission');
+  if (!vitals?.pulse || vitals.pulse.trim() === '') knownGaps.push('Pulse rate on admission');
+  if (!vitals?.temp || vitals.temp.trim() === '') knownGaps.push('Temperature on admission');
+  const duration = record.clinical?.durationOfPresentAilment;
+  if (!duration || /^(n\/a|na|none|nil|pending)$/i.test(duration.trim())) {
+    knownGaps.push('Duration of present ailment');
+  }
+
+  return { imagingConfirmsDx, hasComplications, labsRequired, emergencyAdmission, hasConservativeHistory, knownGaps };
+}
+
 /**
  * Reviews a pre-auth case to evaluate if the documented evidence is sufficient.
  */
@@ -379,6 +447,13 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
   
   trace.push(`[NEXUS TPA Engine] Stated Diagnosis: "${diagnosis}". Admission Decision: "${admissionType}".`);
   
+  // ─── DETERMINISTIC PRE-CHECK (runs before AI) ───────────────────────
+  const preCheck = runFairwayPreCheck(record, fullNarrative);
+  trace.push(`[NEXUS Pre-Check] imaging_confirms_dx=${preCheck.imagingConfirmsDx}, has_complications=${preCheck.hasComplications}, labs_required=${preCheck.labsRequired}, emergency=${preCheck.emergencyAdmission}`);
+
+  // STAGE 1 / Phase 1: canSkipAI is hardcoded to false (logging only)
+  const canSkipAI = false;
+
   let llmOutput: LlmReasoningOutput;
   try {
     trace.push('[NEXUS TPA Engine] Querying local MedGemma 4B LLM for reasoning steps (a)-(c).');
@@ -620,6 +695,11 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
 
   // Merge extra items ensuring no duplicate strings (case-insensitively)
   for (const anchor of extraAnchors) {
+    // FAIRWAY PRE-CHECK GATE (Phase 1 Logging Only):
+    const isLabAnchor = /\b(cbc|wbc|rbc|creatinine|urea|egfr|lft|sgot|sgpt|bilirubin|hba1c|electrolyte|sodium|potassium|haemoglobin|hemoglobin|platelet|tlc|leukocyte|neutrophil|esr|crp|d-dimer|procalcitonin|inr|hb|chloride|electrolytes|bun|amylase|lipase|uric\s+acid)\b/i.test(anchor);
+    if (isLabAnchor && !preCheck.labsRequired) {
+      trace.push(`[NEXUS Pre-Check Log-Only] Lab anchor "${anchor}" would be suppressed — imaging confirms dx with no complications.`);
+    }
     if (!llmOutput.anchors.some(a => a.toLowerCase() === anchor.toLowerCase())) {
       llmOutput.anchors.push(anchor);
     }
@@ -1164,7 +1244,7 @@ export const reviewEvidence = async (record: Partial<PreAuthRecord>): Promise<Ev
     );
   }
 
-  const finalStatus: EvidenceReviewReport['status'] = finalInsufficient.length === 0 ? 'sufficient' : 'insufficient';
+  const finalStatus: EvidenceReviewReport['status'] = (finalInsufficient.length === 0 && mandatoryGaps.length === 0) ? 'sufficient' : 'insufficient';
 
   return {
     status: finalStatus,

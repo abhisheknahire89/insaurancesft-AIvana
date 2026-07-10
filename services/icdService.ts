@@ -5,6 +5,7 @@ import { ICD_SYNONYM_MAP } from '../data/icdSynonymMap';
 import icdFewShotJson from '../data/icdFewShot.json';
 import { queryMedGemma } from './llmClient';
 import { clinicalTextMatchSync } from '../utils/clinicalTextMatch';
+import { reportError } from './errorLogger';
 
 export interface IcdCandidate {
   code: string;
@@ -25,6 +26,10 @@ export function normalizeTerm(input: string): string {
 export function validateCode(code: string): boolean {
   if (!code) return false;
   const target = code.trim().toUpperCase();
+  // Standard WHO ICD-10 codes never exceed 4 alpha-numeric characters (excluding the dot, e.g. A00.0 or M17.1)
+  if (target.replace('.', '').length > 4) {
+    return false;
+  }
   const inCodes = codesData.codes.some(c => c.code.toUpperCase() === target);
   if (inCodes) return true;
   const inCategories = categoriesData.categories.some(c => c.categoryCode.toUpperCase() === target);
@@ -445,7 +450,7 @@ The code you return MUST be a valid WHO ICD-10 code (3 or 4 characters, with a d
       }
     }
   } catch (e) {
-    console.error('[icdService] Error loading few-shot store:', e);
+    reportError('icdService', 'Error loading few-shot store', e);
   }
   const finalSystemInstruction = systemInstruction + examplesText;
 
@@ -514,7 +519,7 @@ Identify the closest valid WHO ICD-10 code.`;
       }
     }
   } catch (error) {
-    console.error('[icdService] AI fallback coding failed:', error);
+    reportError('icdService', 'AI fallback coding failed', error);
   }
 
   return getManualFallback();

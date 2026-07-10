@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:battery": "tsx scripts/testBattery.ts",
+    "test:billing-math": "tsx scripts/testBillingMath.ts",
     "test:audit": "tsx scripts/continuousAudit.ts",
     "test:audit:short": "AUDIT_BATCH=50 AUDIT_DURATION_MINS=30 tsx scripts/continuousAudit.ts",
     "test:planted": "tsx scripts/plantedErrorCheck.ts",

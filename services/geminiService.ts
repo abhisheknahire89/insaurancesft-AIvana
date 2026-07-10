@@ -751,6 +751,11 @@ export interface BillingCodingOutput {
     roomRentDeduction?: number;
 }
 
+let mockBillingCodesFn: any = null;
+export function setMockExtractBillingCodes(fn: any) {
+    mockBillingCodesFn = fn;
+}
+
 export const extractBillingCodesAI = async (
     clinicalNote: string,
     insurerName: string,
@@ -759,6 +764,9 @@ export const extractBillingCodesAI = async (
     requestedAmount: number,
     resolvedICD10?: string
 ): Promise<BillingCodingOutput> => {
+    if (mockBillingCodesFn) {
+        return mockBillingCodesFn(clinicalNote, insurerName, sumInsured, wardType, requestedAmount, resolvedICD10);
+    }
     const systemInstruction = `You are an expert Medical Coder and Claim Auditor specializing in India-adapted ICD-10 and procedure coding (CPT/PM-JAY package codes).
     Analyze the clinical note and generate:
     1. Primary ICD-10 code and description.

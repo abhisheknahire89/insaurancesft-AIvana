@@ -1302,8 +1302,8 @@ export function sanitizeQueryText(text: string): string {
     cleaned = cleaned.replace(regex, replacement);
   }
 
-  // 2. Strip explicit dosage patterns (e.g. 500mg, 10 mg, 5 ml, 2 units)
-  cleaned = cleaned.replace(/\b\d+\s*(?:mg|g|mcg|ml|units|tab|tablet|cap|capsule)\b/gi, 'measurement');
+  // 2. Strip explicit dosage patterns (e.g. 500mg, 10 mg, 5 ml, 2 units), but not lab values with ratios (e.g. 2 mg/dL)
+  cleaned = cleaned.replace(/\b\d+\s*(?:mg|g|mcg|ml|units|tab|tablet|cap|capsule)\b(?!\s*\/)/gi, 'measurement');
 
   // 3. Strip computed probability values (e.g. 85%, 90% probability)
   cleaned = cleaned.replace(/\b\d+(?:\.\d+)?%\s*(?:probability|chance|risk)?/gi, 'elevated risk');

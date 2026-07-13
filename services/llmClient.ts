@@ -83,6 +83,27 @@ export const aegisAppealSchema = {
   required: ['citedEvidence', 'stillMissing', 'appealTextBody']
 };
 
+export const tpaQuerySchema = {
+  type: Type.OBJECT,
+  properties: {
+    predictedQueries: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          category: { type: Type.STRING },
+          queryText: { type: Type.STRING },
+          reason: { type: Type.STRING },
+          severity: { type: Type.STRING },
+          mitigation: { type: Type.STRING }
+        },
+        required: ['category', 'queryText', 'reason', 'severity', 'mitigation']
+      }
+    }
+  },
+  required: ['predictedQueries']
+};
+
 let mockQueryOverride: ((prompt: string, systemInstruction?: string) => Promise<string>) | null = null;
 
 export function setMockQuery(fn: typeof mockQueryOverride) {

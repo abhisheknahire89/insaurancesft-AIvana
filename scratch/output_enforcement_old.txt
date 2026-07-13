@@ -1,0 +1,221 @@
+
+======================================================
+🧪 RUNNING 9 MALFORMED-INPUT PARSER TESTS (MOCKED)
+======================================================
+
+--- Test Case: "Truncated mid-array" ---
+⚠️ [FALLBACK_TRIGGERED] Hitting regex fallback parser: Expected ',' or '}' after property value in JSON at position 122 (line 6 column 25)
+[Aivana Telemetry] [denialAppealGenerator] Gemini appeal generation failed, using keyword fallback SyntaxError: Expected ',' or '}' after property value in JSON at position 122 (line 6 column 25)
+    at JSON.parse (<anonymous>)
+    at generateDenialAppeal (/Users/abhishekpravinnahire/V1 tpa insaurance/engine/denialAppealGenerator.ts:253:21)
+    at async testMockParsers (/Users/abhishekpravinnahire/V1 tpa insaurance/scratch/test_schema_enforcement.ts:128:22)
+    at async runAll (/Users/abhishekpravinnahire/V1 tpa insaurance/scratch/test_schema_enforcement.ts:189:3)
+Result: SUCCESS (cited: 0, missing: 0)
+
+--- Test Case: "Missing closing bracket" ---
+⚠️ [FALLBACK_TRIGGERED] Hitting regex fallback parser: Expected ',' or '}' after property value in JSON at position 45 (line 3 column 21)
+[Aivana Telemetry] [denialAppealGenerator] Gemini appeal generation failed, using keyword fallback SyntaxError: Expected ',' or '}' after property value in JSON at position 45 (line 3 column 21)
+    at JSON.parse (<anonymous>)
+    at generateDenialAppeal (/Users/abhishekpravinnahire/V1 tpa insaurance/engine/denialAppealGenerator.ts:253:21)
+    at async testMockParsers (/Users/abhishekpravinnahire/V1 tpa insaurance/scratch/test_schema_enforcement.ts:128:22)
+    at async runAll (/Users/abhishekpravinnahire/V1 tpa insaurance/scratch/test_schema_enforcement.ts:189:3)
+Result: SUCCESS (cited: 0, missing: 0)
+
+--- Test Case: "Prose before JSON" ---
+[Aegis Gate Log-Only] Gate would have REJECTED cited evidence item: "Shock" which was accepted by loose includes.
+Result: SUCCESS (cited: 1, missing: 0)
+
+--- Test Case: "Prose after JSON" ---
+⚠️ [FALLBACK_TRIGGERED] Hitting regex fallback parser: Unexpected non-whitespace character after JSON at position 185 (line 6 column 1)
+[Aegis Gate Log-Only] Gate would have REJECTED cited evidence item: "Shock" which was accepted by loose includes.
+Result: SUCCESS (cited: 1, missing: 0)
+
+--- Test Case: "Unescaped quote in string" ---
+[Aegis Gate Log-Only] Gate would have REJECTED cited evidence item: "Shock" which was accepted by loose includes.
+Result: SUCCESS (cited: 1, missing: 0)
+
+--- Test Case: "Unescaped quote at start of string" ---
+[Aegis Gate Log-Only] Gate would have REJECTED cited evidence item: "Shock" which was accepted by loose includes.
+Result: SUCCESS (cited: 1, missing: 0)
+
+--- Test Case: "Valid citedEvidence, truncated stillMissing" ---
+⚠️ [FALLBACK_TRIGGERED] Hitting regex fallback parser: Expected property name or '}' in JSON at position 144 (line 3 column 21)
+[Aegis Gate Log-Only] Gate would have REJECTED cited evidence item: "Shock" which was accepted by loose includes.
+Result: SUCCESS (cited: 1, missing: 0)
+
+--- Test Case: "Plain prose (no JSON)" ---
+⚠️ [FALLBACK_TRIGGERED] Hitting regex fallback parser: Unexpected token 'T', "The patien"... is not valid JSON
+[Aivana Telemetry] [denialAppealGenerator] Gemini appeal generation failed, using keyword fallback SyntaxError: Unexpected token 'T', "The patien"... is not valid JSON
+    at JSON.parse (<anonymous>)
+    at generateDenialAppeal (/Users/abhishekpravinnahire/V1 tpa insaurance/engine/denialAppealGenerator.ts:253:21)
+    at async testMockParsers (/Users/abhishekpravinnahire/V1 tpa insaurance/scratch/test_schema_enforcement.ts:128:22)
+    at async runAll (/Users/abhishekpravinnahire/V1 tpa insaurance/scratch/test_schema_enforcement.ts:189:3)
+Result: SUCCESS (cited: 0, missing: 0)
+
+--- Test Case: "Trailing Text (Original task)" ---
+⚠️ [FALLBACK_TRIGGERED] Hitting regex fallback parser: Unexpected non-whitespace character after JSON at position 184 (line 6 column 1)
+[Aegis Gate Log-Only] Gate would have REJECTED cited evidence item: "Shock" which was accepted by loose includes.
+Result: SUCCESS (cited: 1, missing: 0)
+
+======================================================
+🚀 RUNNING LIVE COMPLEX CASES ON LIVE GEMINI FALLBACK
+======================================================
+
+--- Running Case 24936 (Stroke / PED) ---
+[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Latency: 22.35s
+Cited Evidence: [
+  {
+    "denialReason": "Denied as Pre-Existing Disease (PED)",
+    "evidenceItem": "No history of previous strokes or TIAs explicitly documented",
+    "source": "anchor",
+    "forChallenge": "null"
+  },
+  {
+    "denialReason": "The patient's history states \"hypertension for 5 years\" which is a risk factor for the current condition",
+    "evidenceItem": "Symptoms started 2 hours prior to arrival. No history of \"previous strokes or TIAs\". Known case of HTN on amlodipine.",
+    "source": "anchor",
+    "forChallenge": "null"
+  },
+  {
+    "denialReason": "Therefore, this claim for ischemic stroke is repudiated under clause 4.1.",
+    "evidenceItem": "MRI Brain confirming acute infarct in right MCA territory",
+    "source": "anchor",
+    "forChallenge": "null"
+  },
+  {
+    "denialReason": "Therefore, this claim for ischemic stroke is repudiated under clause 4.1.",
+    "evidenceItem": "Neurological deficit with NIHSS score of 12",
+    "source": "discriminator",
+    "forChallenge": "Severity of stroke requiring inpatient care"
+  }
+]
+Still Missing: [
+  {
+    "denialReason": "Since the policy is in its second year, PED waiting period of 36 months applies",
+    "explanation": "No matching confirmed evidence found in the submitted pre-authorization report."
+  }
+]
+Appeal Letter Body Length: 2758 characters
+
+--- Running Case 20984 (Gastroenteritis / Resuscitation) ---
+[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Latency: 9.00s
+Cited Evidence: [
+  {
+    "denialReason": "Claim is denied due to lack of medical necessity for acute inpatient admission",
+    "evidenceItem": "Tachycardia (HR 120), Hypotension (BP 90/60). Labs reveal AKI with creatinine 2.1.",
+    "source": "anchor",
+    "forChallenge": "null"
+  },
+  {
+    "denialReason": "The submitted clinical documentation, including the emergency department records, does not substantiate the need for hospital level of care",
+    "evidenceItem": "Patient presented with severe \"watery diarrhea\" for 3 days and recurrent vomiting. States \"I cannot keep any fluids down\" since yesterday.",
+    "source": "anchor",
+    "forChallenge": "null"
+  },
+  {
+    "denialReason": "Specifically, the patient presented with \"mild abdominal pain\" and \"nausea\" which could have been managed in an observation or outpatient setting",
+    "evidenceItem": "Multiple episodes of non-bloody diarrhea. Patient appears visibly lethargic. Skin turgor is decreased and mucous membranes are dry.",
+    "source": "anchor",
+    "forChallenge": "null"
+  },
+  {
+    "denialReason": "Additionally, the submitted labs do not show significant derangement.",
+    "evidenceItem": "Creatinine of 2.1 indicating Acute Kidney Injury",
+    "source": "discriminator",
+    "forChallenge": "Is inpatient admission necessary for fluid resuscitation?"
+  }
+]
+Still Missing: []
+Appeal Letter Body Length: 2735 characters
+
+======================================================
+🚀 RUNNING LIVE COMPLEX CASES ON LOCAL MEDGEMMA
+======================================================
+
+--- Running Case 24936 (Stroke / PED) ---
+[llmClient] [PATH: medgemma_endpoint] Query served successfully.
+[Aegis Gate Log-Only] Gate would have REJECTED cited evidence item: "null" which was accepted by loose includes.
+[Aegis Gate Log-Only] Gate would have REJECTED cited evidence item: "null" which was accepted by loose includes.
+Latency: 46.84s
+Cited Evidence: [
+  {
+    "denialReason": "Denied as Pre-Existing Disease (PED)",
+    "evidenceItem": "MRI Brain confirming acute infarct in right MCA territory",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "The patient's history states \"hypertension for 5 years\" which is a risk factor for the current condition",
+    "evidenceItem": "Known case of HTN on amlodipine.",
+    "source": "anchor"
+  }
+]
+Still Missing: [
+  {
+    "denialReason": "The patient's history states \"hypertension for 5 years\" which is a risk factor for the current condition",
+    "explanation": "No matching confirmed evidence found in the submitted pre-authorization report."
+  },
+  {
+    "denialReason": "Since the policy is in its second year, PED waiting period of 36 months applies",
+    "explanation": "No matching confirmed evidence found in the submitted pre-authorization report."
+  },
+  {
+    "denialReason": "Therefore, this claim for ischemic stroke is repudiated under clause 4.1.",
+    "explanation": "No matching confirmed evidence found in the submitted pre-authorization report."
+  }
+]
+Appeal Letter Body Length: 2285 characters
+
+--- Running Case 20984 (Gastroenteritis / Resuscitation) ---
+[llmClient] [PATH: medgemma_endpoint] Query served successfully.
+Latency: 58.64s
+Cited Evidence: [
+  {
+    "denialReason": "Claim is denied due to lack of medical necessity for acute inpatient admission",
+    "evidenceItem": "Heart rate of 120 and Blood Pressure of 90/60 documented in vital signs",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "The submitted clinical documentation, including the emergency department records, does not substantiate the need for hospital level of care",
+    "evidenceItem": "Creatinine of 2.1 indicating Acute Kidney Injury",
+    "source": "discriminator",
+    "forChallenge": "Is inpatient admission necessary for fluid resuscitation?"
+  },
+  {
+    "denialReason": "The submitted clinical documentation, including the emergency department records, does not substantiate the need for hospital level of care",
+    "evidenceItem": "Decreased skin turgor and dry mucous membranes documented in physical exam",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "The submitted clinical documentation, including the emergency department records, does not substantiate the need for hospital level of care",
+    "evidenceItem": "Patient statement \"I cannot keep any fluids down\"",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "The submitted clinical documentation, including the emergency department records, does not substantiate the need for hospital level of care",
+    "evidenceItem": "Patient presented with severe \"watery diarrhea\" for 3 days and recurrent vomiting. States \"I cannot keep any fluids down\" since yesterday.",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "The submitted clinical documentation, including the emergency department records, does not substantiate the need for hospital level of care",
+    "evidenceItem": "Multiple episodes of non-bloody diarrhea. Patient appears visibly lethargic. Skin turgor is decreased and mucous membranes are dry.",
+    "source": "anchor"
+  },
+  {
+    "denialReason": "The submitted clinical documentation, including the emergency department records, does not substantiate the need for hospital level of care",
+    "evidenceItem": "Tachycardia (HR 120), Hypotension (BP 90/60). Labs reveal AKI with creatinine 2.1.",
+    "source": "anchor"
+  }
+]
+Still Missing: [
+  {
+    "denialReason": "Specifically, the patient presented with \"mild abdominal pain\" and \"nausea\" which could have been managed in an observation or outpatient setting",
+    "explanation": "No matching confirmed evidence found in the submitted pre-authorization report."
+  },
+  {
+    "denialReason": "Additionally, the submitted labs do not show significant derangement.",
+    "explanation": "No matching confirmed evidence found in the submitted pre-authorization report."
+  }
+]
+Appeal Letter Body Length: 4121 characters

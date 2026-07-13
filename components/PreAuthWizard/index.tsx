@@ -11,7 +11,7 @@ import { DocumentsGenerateStep } from './DocumentsGenerateStep';
 import { VoiceDictationMode } from './VoiceDictationMode';
 import { ClaimReadinessRail } from './ClaimReadinessRail';
 import { VoiceExtractedData } from '../../services/voiceDictationService';
-import { savePreAuth, savePatient, generatePreAuthId, generatePatientId } from '../../services/storageService';
+import { savePreAuth, savePatient, generatePreAuthId, generatePatientId } from '../../services/masterPatientRecord';
 import { calculateTotals } from '../../utils/costCalculator';
 import { calculateCost, findConditionByICD } from '../../services/costEstimationService';
 import { classifyCaseComplexity } from '../../utils/complexityClassifier';

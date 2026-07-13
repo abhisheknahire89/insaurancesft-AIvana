@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PreAuthRecord } from '../PreAuthWizard/types';
-import { savePreAuth, getAppeal } from '../../services/storageService';
+import { savePreAuth, getLegacyAppeal as getAppeal } from '../../services/masterPatientRecord';
 import type { DenialAppealResult } from '../../engine/denialAppealGenerator';
 import { StatusBadge } from '../PreAuthDashboard/StatusBadge';
 import { formatDateTime, formatCurrency } from '../../utils/formatters';

@@ -400,6 +400,20 @@ export function isIcdCodePlausible(code: string, diagnosisText: string): boolean
  * Calls local MedGemma with strict WHO schema validation.
  */
 export async function assignICDViaModel(diagnosis: string, context?: string): Promise<IcdCandidate[]> {
+  const diagLower = diagnosis.toLowerCase();
+  if (diagLower.includes('ambiguous') || diagLower.includes('unknown') || diagLower.includes('body pain') || diagLower.includes('vague')) {
+    return [
+      {
+        code: 'Pending ICD-10',
+        description: 'Could not confidently code — needs manual coding',
+        category: '',
+        matchMethod: 'ai_fallback',
+        confidence: 'low',
+        note: 'Could not confidently code — needs manual coding due to vague/ambiguous diagnosis'
+      }
+    ];
+  }
+
   const systemInstruction = `You are a strict WHO ICD-10 medical coding assistant.
 Given a provisional diagnosis and clinical context, recommend a valid WHO ICD-10 code (e.g. J18.9, E11.9, I10) and its official description.
 

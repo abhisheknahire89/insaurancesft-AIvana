@@ -17,7 +17,7 @@ import {
 import { PreAuthRecord } from '../PreAuthWizard/types';
 import { EvidenceReviewReport } from '../../engine/evidenceReview';
 import { DenialAppealResult, generateDenialAppeal } from '../../engine/denialAppealGenerator';
-import { getAllPreAuths, getAppeal, saveAppeal, updateAppealStatus } from '../../services/storageService';
+import { getAllPreAuths, getLegacyAppeal as getAppeal, saveLegacyAppeal as saveAppeal, updateLegacyAppealStatus as updateAppealStatus } from '../../services/masterPatientRecord';
 import { formatCurrency, formatDateTime } from '../../utils/formatters';
 import { submitPreAuthToTPA } from '../../services/tpaPortalService';
 import { logStageTimestamp } from '../../utils/stageLogger';

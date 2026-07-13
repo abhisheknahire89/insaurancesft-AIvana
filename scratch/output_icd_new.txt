@@ -1,0 +1,164 @@
+Extracting and analyzing genuinely wrong cases from logs/failure_intelligence.jsonl...
+Found 87 covered coding cases for live evaluation.
+[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 1/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 2/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 3/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 4/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 5/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 6/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 7/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 8/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 9/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 10/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 11/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 12/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 13/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 14/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 15/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 16/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 17/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 18/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 19/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 20/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 21/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 22/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 23/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 24/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 25/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 26/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 27/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 28/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 29/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 30/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 31/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 32/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 33/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 34/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 35/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 36/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 37/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 38/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 39/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 40/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 41/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 42/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 43/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 44/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 45/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 46/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 47/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 48/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 49/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 50/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 51/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 52/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 53/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 54/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 55/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 56/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 57/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 58/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 59/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 60/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 61/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+[icdService] Direct code suggestion "K52.9" was invalid or implausible. Ignoring and re-deriving from description: "Noninfective gastroenteritis and colitis, unspecified"
+Evaluated 62/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 63/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 64/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 65/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 66/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 67/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 68/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 69/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 70/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 71/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 72/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 73/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 74/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 75/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 76/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 77/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 78/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 79/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 80/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 81/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 82/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 83/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 84/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 85/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 86/87 cases...[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback.
+Evaluated 87/87 cases...
+
+========================================
+   EVALUATION RESULTS GROUPED BY CATEGORY
+========================================
+OPHTHALMOLOGY:
+  Total Cases: 6
+  Passed:      6
+  Failed:      0
+  Pass Rate:   100.0%
+----------------------------------------
+MATERNITY:
+  Total Cases: 21
+  Passed:      21
+  Failed:      0
+  Pass Rate:   100.0%
+----------------------------------------
+GYNECOLOGY:
+  Total Cases: 5
+  Passed:      5
+  Failed:      0
+  Pass Rate:   100.0%
+----------------------------------------
+ORTHOPEDICS:
+  Total Cases: 6
+  Passed:      6
+  Failed:      0
+  Pass Rate:   100.0%
+----------------------------------------
+CKD:
+  Total Cases: 13
+  Passed:      13
+  Failed:      0
+  Pass Rate:   100.0%
+----------------------------------------
+DENGUE:
+  Total Cases: 14
+  Passed:      14
+  Failed:      0
+  Pass Rate:   100.0%
+----------------------------------------
+TYPHOID:
+  Total Cases: 1
+  Passed:      1
+  Failed:      0
+  Pass Rate:   100.0%
+----------------------------------------
+APPENDICITIS:
+  Total Cases: 11
+  Passed:      11
+  Failed:      0
+  Pass Rate:   100.0%
+----------------------------------------
+GASTROENTERITIS:
+  Total Cases: 4
+  Passed:      3
+  Failed:      1
+  Pass Rate:   75.0%
+  Sample Failures:
+[
+  {
+    "diagnosis": "Noninfective gastroenteritis and colitis, unspecified",
+    "narrative": "",
+    "actualCode": "Pending ICD-10",
+    "actualDescription": "Could not confidently code — needs manual coding"
+  }
+]
+----------------------------------------
+CARDIAC:
+  Total Cases: 6
+  Passed:      6
+  Failed:      0
+  Pass Rate:   100.0%
+----------------------------------------

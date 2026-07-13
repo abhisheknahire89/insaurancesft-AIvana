@@ -19,7 +19,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { PreAuthRecord, PreAuthStatus } from '../PreAuthWizard/types';
-import { getAllPreAuths, deletePreAuth } from '../../services/storageService';
+import { getAllPreAuths, deletePreAuth } from '../../services/masterPatientRecord';
 import { StatusBadge } from './StatusBadge';
 import { computeReadiness, scoreColorClass } from '../../utils/readinessScore';
 import { formatDateTime } from '../../utils/formatters';

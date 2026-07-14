@@ -1,0 +1,138 @@
+{
+  "id": 21594,
+  "testCase": {
+    "id": 21594,
+    "category": "D",
+    "difficulty": "extreme",
+    "focusCategory": "denial_heavy",
+    "diagnosis": "Acute Transmural Myocardial Infarction of Anterior Wall",
+    "code": "I21.0",
+    "chiefComplaints": "Severe retrosternal crushing chest pain radiating to left arm for 3 hours, associated with profuse sweating, breathlessness (NYHA Class IV), and mild nausea.",
+    "hpi": "A 54-year-old male presented to the emergency department with acute onset of severe, crushing substernal chest pain of 3 hours duration. The pain started while at rest and was radiating to his left shoulder and arm. It was accompanied by cold diaphoresis, dyspnea, and choking sensation. No prior history of similar episodes. Known history of hypertension for 2 years on Tab. Amlodipine 5mg OD. No history of diabetes, asthma, or previous cardiac interventions.",
+    "relevantClinicalFindings": "ECG revealed ST-segment elevation of 3mm in leads V1 to V4 with reciprocal ST depression in inferior leads (II, III, aVF). Cardiac Troponin I was highly elevated at 1.45 ng/mL (Normal < 0.04 ng/mL). CPK-MB was 45 U/L. Bedside Echocardiogram showed hypokinesia of the anterior wall and apex, Left Ventricular Ejection Fraction (LVEF) of 40%. Emergency coronary angiogram was performed via right radial route, revealing 95% thrombotic occlusion of the proximal Left Anterior Descending (LAD) coronary artery.",
+    "additionalClinicalNotes": "The patient underwent emergency primary Percutaneous Transluminal Coronary Angioplasty (PTCA) with a drug-eluting stent (DES) to the proximal LAD to restore TIMI 3 flow. Post-procedure, the patient was shifted to the Coronary Care Unit (CCU) for continuous monitoring and dual antiplatelet therapy (DAPT).",
+    "duration": "3 hours acute presentation prior to admission; total planned stay 4 days.",
+    "treatmentTakenSoFar": "Dispersible Aspirin 325 mg stat, Clopidogrel 300 mg stat, Atorvastatin 80 mg stat, IV Heparin 5000 IU bolus in ER. Emergency PTCA with DES to LAD under local anesthesia.",
+    "reasonForHospitalisation": "Life-threatening acute coronary syndrome (Anteroseptal ST-elevation Myocardial Infarction) requiring immediate emergency revascularization (Primary PTCA) to prevent cardiogenic shock and mortality.",
+    "uploadedDocuments": [
+      "er_physician_notes",
+      "ecg_strip_admission",
+      "troponin_report",
+      "coronary_angiography_report",
+      "ptca_procedure_note",
+      "discharge_summary"
+    ],
+    "patientName": "Mr. Arvind Deshmukh",
+    "patient": {
+      "patientName": "Mr. Arvind Deshmukh",
+      "age": 54,
+      "gender": "Male",
+      "mobileNumber": "9876543210"
+    },
+    "insurance": {
+      "policyNumber": "POL-8837482-2023",
+      "insurerName": "HDFC ERGO General Insurance Co. Ltd.",
+      "tpaName": "Medi Assist Insurance TPA Pvt. Ltd.",
+      "sumInsured": 500000,
+      "balanceSumInsured": 500000,
+      "tpaIdCardNumber": "MA-903847-IND"
+    },
+    "vitals": {
+      "bp": "100/60 mmHg",
+      "pulse": "110 bpm",
+      "temp": "98.4 F",
+      "spo2": "91% on room air",
+      "rr": "24 breaths/min"
+    },
+    "expected": {
+      "mustFlag": [
+        "acute myocardial infarction",
+        "ST-elevation V1-V4",
+        "Troponin-I positive",
+        "emergency PTCA",
+        "LAD occlusion"
+      ],
+      "mustNotFlag": [
+        "elective CABG",
+        "chronic ischemic heart disease",
+        "stable angina"
+      ],
+      "shouldGenerate": true
+    },
+    "notes": "This case tests the TPA appeal processing for emergency cardiac care where the insurer denied claims alleging non-disclosure of hypertension as a pre-existing condition causing CAD, ignoring the acute emergency exception under IRDAI guidelines.",
+    "realGap": "TPA denied cash-less hospitalization citing non-disclosure of pre-existing hypertension at the time of policy inception (2 years ago), invoking the 4-year waiting period / non-disclosure clause, failing to distinguish between chronic pre-existing risk factors and a life-threatening acute emergency (STEMI) that requires immediate intervention under IRDAI Master Circular guidelines.",
+    "sourceReasoning": "According to IRDAI (Insurance Regulatory and Development Authority of India) guidelines on standardization of exclusions, life-saving emergency treatments for acute conditions like acute myocardial infarction cannot be denied or delayed under pre-existing waiting period clauses if the condition is life-threatening and requires immediate admission. Moreover, controlled hypertension alone does not automatically validate a denial for an acute plaque rupture event (STEMI) without proof of direct causation established by medical evidence.",
+    "rawDocumentText": "CARE CARDIAC CENTRE & MULTISPECIALTY HOSPITAL\nSector 15, Vashi, Navi Mumbai, MH - 400703\nEMERGENCY DEPARTMENT ADMISSION RECORD & DISCHARGE SUMMARY\n\nPatient Name: Mr. Arvind Deshmukh | Age: 54 Years | Gender: Male\nUHID: CCC-2023-89472 | Date of Admission: 14/10/2023 14:15 | Date of Discharge: 18/10/2023 11:30\nInsurer: HDFC ERGO General Insurance Co. Ltd. | Policy No: POL-8837482-2023 | TPA: Medi Assist TPA\nTPA Card ID: MA-903847-IND | Ward/Bed: CCU Bed 3\n\nCHIEF COMPLAINTS:\n- Sudden onset crushing retrosternal chest pain radiating to left upper limb for 3 hours.\n- Profuse diaphoresis, acute breathlessness (NYHA Class IV), and severe anxiety.\n\nHISTORY OF PRESENT ILLNESS:\nMr. Arvind Deshmukh, a 54-year-old gentleman, presented to our Emergency Department with complaints of severe, agonizing substernal chest pain of 3 hours duration. The pain started suddenly while the patient was sitting at his desk, characterized as a heavy crushing sensation radiating to the left shoulder and arm. The episode was associated with cold sweating, shortness of breath, and a choking sensation. There is no prior history of angina, dyspnea on exertion, or prior ischemic events. Patient is a known case of systemic Hypertension for 2 years, well-controlled on Tab. Amlodipine 5mg OD. No history of Diabetes Mellitus, Asthma, CKD, or previous cardiac interventions. Non-smoker, non-alcoholic.\n\nCLINICAL EXAMINATION & VITALS:\n- Conscious, oriented, extremely anxious and diaphoretic.\n- BP: 100/60 mmHg (Right upper limb, supine)\n- Pulse: 110 bpm (tachycardia, regular)\n- Temp: 98.4 F | Respiratory Rate: 24/min\n- SpO2: 91% on room air, improved to 96% on 4L nasal cannula oxygen.\n- CVS: S1, S2 heard, no murmurs, gallop present.\n- Chest: Bilateral basal crepitations present in lower zones.\n- Abdomen: Soft, non-tender, no organomegaly.\n\nDIAGNOSTIC INVESTIGATIONS:\n- ECG (at 14:20): Revealed acute hyperacute T waves and ST-segment elevation of 3.5 mm in precordial leads V1-V4, with reciprocal ST-segment depression in inferior leads (II, III, aVF) indicating Acute Anterior Wall ST-Elevation Myocardial Infarction (AWMI).\n- Cardiac Markers: Troponin I was highly positive at 1.45 ng/mL (Reference < 0.04 ng/mL). CPK-MB elevated at 45 U/L.\n- Bedside Echocardiogram: Regional wall motion abnormalities (RWMA) noted - Hypokinesia of the anterior wall, septum, and apex. Left Ventricular Ejection Fraction (LVEF) of 40%. No clot or effusion.\n- Routine Labs: Hb: 14.2 g/dL, WBC: 11,200/cumm, Platelets: 2.1 lakhs/cumm, Serum Creatinine: 0.9 mg/dL, Blood Sugar (Random): 134 mg/dL.\n\nCOURSE IN HOSPITAL & EMERGENCY TREATMENT MANAGEMENT:\nIn view of Acute Anterior Wall STEMI, the patient was immediately loaded with oral DAPT: Tab. Aspirin 325 mg (stat), Tab. Clopidogrel 300 mg (stat), and Tab. Atorvastatin 80 mg (stat). Oxygen support initiated. IV Access was secured and Heparin 5000 IU IV Bolus was administered. Emergency Primary Percutaneous Transluminal Coronary Angioplasty (Primary PTCA) was planned after obtaining high-risk consent.\n\nCORONARY ANGIOGRAPHY REPORT (14/10/2023 - 15:00):\nAccess: Right Radial Route.\n- Left Main: Normal.\n- LAD: Proximal segment shows 95% thrombotic stenosis with TIMI 1 distal flow.\n- LCx: Luminal irregularities, 30% stenosis.\n- RCA: Dominant, mild disease (20%).\nDecision: Emergency Primary PTCA to LAD.\n\nPTCA PROCEDURE DETAILS:\nUnder local anesthesia, the LAD lesion was crossed with a 0.014\" Balance Middle Weight wire. Pre-dilatation done with a 2.5 x 12mm semi-compliant balloon at 12 atm. A Drug-Eluting Stent (DES) size 3.0 x 24mm (Everolimus-eluting) was deployed across the proximal LAD lesion and post-dilated up to 16 atm. Post-procedural angiogram showed residual stenosis <10% with TIMI 3 distal flow achieved. No dissection or slow-flow phenomenon. Hemostasis achieved at the radial puncture site using a radial band. \n\nPOST-PROCEDURAL COURSE:\nPatient shifted to CCU for continuous hemodynamic monitoring. Started on Tab. Clopidogrel 75mg OD, Tab. Aspirin 150mg OD, Tab. Atorvastatin 40mg OD, Tab. Metoprolol Succinate 12.5mg OD, and Tab. Ramipril 2.5mg OD. Over the next 3 days, the patient remained stable, chest pain subsided, vitals stabilized (BP 115/70 mmHg, HR 76/min), and chest became clear. Follow-up ECG showed resolving ST segments with T-wave inversions. Patient is being discharged in a hemodynamically stable condition on cardiac medications.\n\nTreating Interventional Cardiologist:\nDr. Suresh R. Mehta, MD, DM (Cardiology)\nCare Cardiac Centre, Navi Mumbai",
+    "simulatedDenialReason": "Pre-authorization for cashless treatment is denied under Clause 4.1 (Non-disclosure of pre-existing disease). As per submitted past history, the patient is a known case of Hypertension for 2 years, which is a direct predisposing factor for Coronary Artery Disease. Since the policy inception is only 18 months old, this falls under Pre-Existing Disease (PED) wait-period exclusions. Hence, cashless facility cannot be extended for this admission.",
+    "expectedAnswer": {
+      "expectedExtraction": {
+        "patientName": "Mr. Arvind Deshmukh",
+        "age": 54,
+        "gender": "Male",
+        "policyNumber": "POL-8837482-2023",
+        "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+      },
+      "expectedReview": {
+        "mustFlag": [
+          "acute myocardial infarction",
+          "ST-elevation V1-V4",
+          "Troponin-I positive",
+          "emergency PTCA",
+          "LAD occlusion"
+        ],
+        "mustNotFlag": [
+          "elective CABG",
+          "chronic ischemic heart disease",
+          "stable angina"
+        ],
+        "shouldGenerate": true
+      },
+      "expectedCode": "I21.0",
+      "expectedCost": 275000,
+      "expectedEligibility": "approved",
+      "expectedAppealCitations": [
+        "Emergency primary PTCA performed to LAD within 3 hours of acute chest pain",
+        "Cardiac Troponin I elevated at 1.45 ng/mL confirming acute myocardial necrosis",
+        "ECG showing acute ST-elevation of 3mm in V1-V4 indicative of Anterior Wall MI",
+        "IRDAI guidelines state that life-saving emergency procedures for acute life-threatening events cannot be summarily denied under waiting period clauses for stable pre-existing risk factors like hypertension"
+      ]
+    }
+  },
+  "expected": {
+    "expectedExtraction": {
+      "patientName": "Mr. Arvind Deshmukh",
+      "age": 54,
+      "gender": "Male",
+      "policyNumber": "POL-8837482-2023",
+      "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "acute myocardial infarction",
+        "ST-elevation V1-V4",
+        "Troponin-I positive",
+        "emergency PTCA",
+        "LAD occlusion"
+      ],
+      "mustNotFlag": [
+        "elective CABG",
+        "chronic ischemic heart disease",
+        "stable angina"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "I21.0",
+    "expectedCost": 275000,
+    "expectedEligibility": "approved",
+    "expectedAppealCitations": [
+      "Emergency primary PTCA performed to LAD within 3 hours of acute chest pain",
+      "Cardiac Troponin I elevated at 1.45 ng/mL confirming acute myocardial necrosis",
+      "ECG showing acute ST-elevation of 3mm in V1-V4 indicative of Anterior Wall MI",
+      "IRDAI guidelines state that life-saving emergency procedures for acute life-threatening events cannot be summarily denied under waiting period clauses for stable pre-existing risk factors like hypertension"
+    ]
+  },
+  "failedModules": [
+    "3. Patient Info Extraction",
+    "10. Final Claim Packet"
+  ]
+}

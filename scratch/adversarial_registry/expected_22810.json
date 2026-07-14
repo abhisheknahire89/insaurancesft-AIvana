@@ -1,0 +1,32 @@
+{
+  "expectedExtraction": {
+    "patientName": "Meenakshi Iyer",
+    "age": 46,
+    "gender": "Female",
+    "policyNumber": "HH/2023/8912450",
+    "insurerName": "Star Health and Allied Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "Severe anemia Hb 6.8 g/dL",
+      "PRBC transfusion of 2 units",
+      "Leiomyoma of uterus D25.9",
+      "Pressure symptoms on bladder"
+    ],
+    "mustNotFlag": [
+      "Maternity O-codes",
+      "Ophthalmic H-codes",
+      "D25.91"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.9",
+  "expectedCost": 165000,
+  "expectedEligibility": "denied",
+  "expectedAppealCitations": [
+    "Severe symptomatic anemia with admission Hemoglobin of 6.8 g/dL",
+    "Immediate clinical necessity of transfusing 2 units of Packed Red Blood Cells (PRBC)",
+    "Bulky uterus (14-week size) causing direct mechanical compression of the urinary bladder",
+    "Active life-threatening hemorrhage unresponsive to IV/Oral antifibrinolytic therapy (Tranexamic Acid)"
+  ]
+}

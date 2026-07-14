@@ -1,0 +1,89 @@
+{
+  "id": 17206,
+  "category": "B",
+  "difficulty": "high",
+  "focusCategory": "specialty_caps",
+  "diagnosis": "Maternal care due to uterine scar from previous surgery (Planned Repeat LSCS)",
+  "code": "O34.2",
+  "chiefComplaints": "Full-term pregnancy at 38 weeks + 2 days gestation, history of previous lower segment cesarean section (LSCS), scheduled for planned elective repeat cesarean section.",
+  "hpi": "A 29-year-old female (G2P1L1) presented at 38 weeks and 2 days of gestation with a history of a previous lower segment cesarean section performed 3 years ago due to non-progression of labor. The patient is currently experiencing mild lower abdominal stretching but no active uterine contractions, no leaking or bleeding per vaginam, and has good fetal movements. Given her clinical history, gestational hypertension managed on Labetalol, and maternal request to avoid the risks of a trial of labor after cesarean (TOLAC), she is scheduled for an elective repeat LSCS.",
+  "relevantClinicalFindings": "Abdomen: Gravid uterus, term size, relaxed. Fetal heart rate (FHR) stable at 142 bpm, regular. Scar from previous surgery healthy, no clinical scar tenderness elicited on palpation. Vaginal examination: Cervix closed, posterior, uneffaced. Pelvis adequate. Ultrasound scan confirms a single live fetus in cephalic presentation, placenta anterior high up, and adequate amniotic fluid index (AFI) of 11 cm.",
+  "additionalClinicalNotes": "History of mild gestational hypertension diagnosed at 28 weeks. Controlled with Tab. Labetalol 100 mg BD. Current blood pressure is stable. Pre-operative laboratory parameters, including complete blood count, coagulation profile, and viral markers, are within normal limits. Type and screen for blood group B positive complete.",
+  "duration": "38 weeks 2 days gestation",
+  "treatmentTakenSoFar": "Antenatal supplements (Iron, Calcium, Folic Acid), Tab. Labetalol 100 mg BD for mild gestational hypertension.",
+  "reasonForHospitalisation": "Elective repeat lower segment cesarean section (LSCS) under spinal anesthesia.",
+  "uploadedDocuments": [
+    "doctor_notes",
+    "obstetric_ultrasound_report",
+    "routine_blood_investigations",
+    "consent_form"
+  ],
+  "patientName": "Priya Sharma",
+  "patient": {
+    "patientName": "Priya Sharma",
+    "age": 29,
+    "gender": "Female",
+    "mobileNumber": "+919876543210"
+  },
+  "insurance": {
+    "policyNumber": "POL-MAT-2023-8891",
+    "insurerName": "Star Health and Allied Insurance",
+    "tpaName": "In-house",
+    "sumInsured": 500000,
+    "balanceSumInsured": 450000,
+    "tpaIdCardNumber": "SH-8891-A2"
+  },
+  "vitals": {
+    "bp": "130/80 mmHg",
+    "pulse": "82 bpm",
+    "temp": "98.4 F",
+    "spo2": "99%",
+    "rr": "18"
+  },
+  "expected": {
+    "mustFlag": [
+      "O34.2",
+      "Maternity limit exhaustion check",
+      "Gestational hypertension monitoring"
+    ],
+    "mustNotFlag": [
+      "O34.21",
+      "O34.2XX0",
+      "H25.1",
+      "M17.1"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "Tests the system's ability to lock the diagnosis strictly within ICD-10 Chapter XV (O-codes) and ensure the system maps the diagnosis to 'O34.2' (Maternal care due to uterine scar from previous surgery) instead of the US-CM code 'O34.21' which features lateralization/clinical modifications invalid under Indian WHO-ICD-10 standards. Also triggers sub-limit verification for maternity packages under the Star Health policy.",
+  "realGap": "TPA adjudication systems often erroneously accept or auto-suggest US-specific ICD-10-CM codes (such as O34.21) because of standard cross-walk libraries. In India, IRDAI mandates strictly WHO-compliant ICD-10 codes (3 or 4 characters, e.g. O34.2). Furthermore, maternity claims require tight chapter-lock validations to prevent misclassification and to ensure policy sub-limits for maternity are applied accurately.",
+  "sourceReasoning": "IRDAI Guidelines on Standardization of Health Insurance (Revised 2020) mandate the exclusive use of WHO-compliant ICD-10 classification (3 or 4-digit codes) in all pre-authorization and discharge summaries. US-specific clinical modifications are technically invalid for Indian health claim submissions and lead to systematic rejection or audit failures.",
+  "rawDocumentText": "MATRIKA MOTHER & CHILD HOSPITAL\nSector 56, Gurgaon, Haryana\nPRE-AUTHORIZATION & ADMISSION SUMMARY\n\nPatient Name: Priya Sharma\nAge: 29 Years  |  Gender: Female\nIPD Reg No: MMCH-2023-98442\nDate of Admission: 24/10/2023\nConsultant: Dr. Sunita Vasudev, MD, DGO (Consultant Obstetrician & Gynecologist)\nInsurer: Star Health and Allied Insurance\nPolicy Number: POL-MAT-2023-8891\nTPA ID Card: SH-8891-A2\n\nDIAGNOSIS:\nGravida 2 Para 1 Living 1 with 38 Weeks 2 Days Gestation with previous LSCS scar with controlled Gestational Hypertension.\nPlanned Elective Repeat LSCS (Lower Segment Cesarean Section).\n\nCHIEF COMPLAINTS:\n- Admitted for elective repeat cesarean delivery at term.\n- Gestational history of previous cesarean section 3 years ago (indicated by prolonged labor, non-progression).\n- Mild gestational hypertension controlled on Tablet Labetalol 100 mg BD.\n\nHISTORY OF PRESENT ILLNESS:\nMrs. Priya Sharma, a 29-year-old G2P1L1 with 38 weeks and 2 days of pregnancy, presented to our outpatient department for planned admission. She had her first delivery via emergency LSCS 3 years prior due to failure of labor to progress. She has been under regular antenatal checkups. At 28 weeks, she was diagnosed with gestational hypertension, which has been well controlled with Tab. Labetalol 100 mg twice daily. Patient reports good fetal movements, no active contractions, no PV bleeding, and no leaking per vaginam. Due to the previous scar and associated risk of uterine rupture with TOLAC, she and her family requested an elective repeat cesarean section.\n\nPHYSICAL & OBSTETRIC EXAMINATION:\n- Vitals: BP: 130/80 mmHg, Pulse: 82/min, Temp: 98.4 F, RR: 18/min, SpO2: 99% on room air.\n- CV/RS: Normal.\n- Abdominal Exam: Uterus term size, relaxed, cephalic presentation, FHR regular at 142 bpm. Previous scar healthy, no scar tenderness on deep palpation.\n- Pelvic Exam: Cervix closed, posterior, uneffaced.\n\nINVESTIGATIONS:\n- Hb: 11.2 g/dL, Platelets: 2.1 Lakhs/cumm, WBC: 8,400/cumm\n- PT/INR: Normal (1.02)\n- Blood Group: B Positive\n- Viral Markers: HIV, HBsAg, HCV - Non-Reactive\n- Obstetric USG (dated 22/10/2023): Single live intrauterine fetus in cephalic presentation, gestational age corresponding to 38 weeks. Placenta anterior, Grade II maturity, no previa. AFI: 11 cm. Estimated fetal weight: 3.1 kg.\n\nTREATMENT PLAN:\n- Admit to Maternity Ward.\n- Keep NPO from midnight.\n- Planned Repeat Elective Lower Segment Cesarean Section under Spinal Anesthesia on 25/10/2023.\n- Prophylactic antibiotics and post-op care as per protocol.\n- Est. Cost: INR 75,000/- (Maternity Package, Semi-Private Room)\n\nDr. Sunita Vasudev\nReg No: DMC/65432",
+  "simulatedDenialReason": "Pre-authorization request queried/denied: Please clarify the medical necessity of performing an elective repeat cesarean section over a trial of vaginal birth after cesarean (TOLAC). Standard insurance guidelines require explicit documentation of obstetric contraindications to vaginal delivery for full maternity package approval.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Priya Sharma",
+      "age": 29,
+      "gender": "Female",
+      "policyNumber": "POL-MAT-2023-8891",
+      "insurerName": "Star Health and Allied Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "O34.2",
+        "Maternity package ceiling check"
+      ],
+      "mustNotFlag": [
+        "O34.21"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "O34.2",
+    "expectedCost": 75000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "History of previous LSCS 3 years ago due to non-progression of labor",
+      "Co-existing Gestational Hypertension managed with Tab. Labetalol 100 mg BD",
+      "Maternal request and medical recommendation to avoid risks of uterine scar rupture associated with trial of labor after cesarean (TOLAC)"
+    ]
+  }
+}

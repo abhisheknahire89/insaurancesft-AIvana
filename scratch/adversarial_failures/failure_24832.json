@@ -1,0 +1,120 @@
+{
+  "id": 24832,
+  "testCase": {
+    "id": 24832,
+    "category": "C",
+    "difficulty": "high",
+    "focusCategory": "specialty_caps",
+    "diagnosis": "Maternal care due to uterine scar from previous surgery",
+    "code": "O34.2",
+    "chiefComplaints": "G2P1L1 with 38 weeks of gestation admitted for elective repeat Lower Segment Cesarean Section (LSCS).",
+    "hpi": "A 31-year-old female, G2P1L1, with previous LSCS 3 years ago presented at 38 weeks of gestation. She is scheduled for an elective repeat LSCS. There is no history of leaking or bleeding P/V, no decreased fetal movements. Her pregnancy has been otherwise uneventful with regular antenatal checkups.",
+    "relevantClinicalFindings": "On examination: Pulse 84 bpm, BP 110/70 mmHg, Afebrile. Abdomen: Gravid uterus, term size, relaxed, head floating, scar tenderness absent. FHR: 140/min, regular. Per-vaginal examination: Cervix closed, posterior, uneffaced.",
+    "additionalClinicalNotes": "Patient has a history of primary LSCS done 3 years ago for breech presentation. Opted for elective repeat LSCS after counseling regarding the risks of VBAC (Vaginal Birth After Cesarean) including uterine rupture.",
+    "duration": "3 days",
+    "treatmentTakenSoFar": "Antenatal supplements (Iron, Calcium, Folic acid). Routine antenatal care.",
+    "reasonForHospitalisation": "Elective repeat LSCS due to previous uterine scar and patient preference to avoid trial of labor.",
+    "uploadedDocuments": [
+      "obstetric_ultrasound_report",
+      "antenatal_card",
+      "cbc_lft_kft_reports",
+      "previous_discharge_summary",
+      "pre_anesthetic_checkup_sheet"
+    ],
+    "patientName": "Srilatha Venkat",
+    "patient": {
+      "patientName": "Srilatha Venkat",
+      "age": 31,
+      "gender": "Female",
+      "mobileNumber": "9848022310"
+    },
+    "insurance": {
+      "policyNumber": "CHI/2020/897213/02",
+      "insurerName": "Care Health Insurance",
+      "tpaName": "Medi Assist TPA",
+      "sumInsured": 500000,
+      "balanceSumInsured": 450000,
+      "tpaIdCardNumber": "MA-90821-CS"
+    },
+    "vitals": {
+      "bp": "110/70",
+      "pulse": "84",
+      "temp": "98.4 F",
+      "spo2": "99%",
+      "rr": "18"
+    },
+    "expected": {
+      "mustFlag": [
+        "Maternity Waiting Period Verification",
+        "ICD-10 Chapter XV Chapter Lock (O-codes)"
+      ],
+      "mustNotFlag": [
+        "US-CM code format O34.21"
+      ],
+      "shouldGenerate": true
+    },
+    "notes": "Ensure that the primary diagnosis is mapped to WHO ICD-10 code O34.2 (Maternal care due to uterine scar from previous surgery). Do not use the US-specific CM code O34.21 or O34.219.",
+    "realGap": "TPAs frequently query elective LSCS cases to delay approval by demanding the historical delivery discharge summary from several years prior to verify the exact indication of the primary cesarean, even when the current policy inception date predates the maternity waiting period of 24-36 months.",
+    "sourceReasoning": "Under IRDAI (Standardization of Exclusion in Health Insurance Contracts) Guidelines 2019, once the maternity waiting period specified in the policy wordings (typically 24 to 48 months) is served from the inception of the continuous coverage, maternity claims are admissible. Demanding historical summaries from previous insurers or hospitals for an event that occurred 3 years ago when the current continuous policy has been active for over 4 years is an administrative barrier.",
+    "rawDocumentText": "APOLLO CRADLE & CHILDREN'S HOSPITAL\nJubilee Hills, Hyderabad, Telangana\nDISCHARGE SUMMARY\n\nPATIENT NAME: Srilatha Venkat\nAGE: 31 Years  |  GENDER: Female\nIP NO: IP-90821-2024  |  OP NO: OP-112344\nADMISSION DATE: 12-Oct-2024\nDISCHARGE DATE: 15-Oct-2024\nCONSULTANT: Dr. Kavitha Prasad, MS, DGO (Sr. Obstetrician & Gynecologist)\n\nDIAGNOSIS:\nGravid II, Para 1, Living 1 with 38 Weeks of Gestation with Previous Lower Segment Cesarean Section (LSCS) in active labor phase.\nUnderwent Elective Repeat LSCS under Spinal Anesthesia on 12-Oct-2024.\nWHO ICD-10 Code: O34.2 (Maternal care due to uterine scar from previous surgery)\n\nCLINICAL HISTORY & FINDINGS:\nThis 31-year-old female, G2P1L1 with a previous history of LSCS done 3 years ago (2021) at another facility for breech presentation, was admitted with complaints of mild, intermittent lower abdominal pain. Antenatal period was uneventful. No history of pre-eclampsia, gestational diabetes, or antepartum hemorrhage. On examination: Afebrile, Pulse: 84 bpm, BP: 110/70 mmHg. Abdomen: Gravid uterus term size, scar tenderness absent. FHR: 140/min regular. Pelvic exam: Cervix 1.5 cm dilated, uneffaced.\n\nCOURSE IN HOSPITAL & OPERATIVE DETAILS:\nAfter obtaining informed high-risk consent, the patient was taken up for repeat elective LSCS on 12-Oct-2024. Under Spinal Anesthesia, abdomen was opened by previous Pfannenstiel incision. A healthy male infant was delivered at 10:14 AM on 12-Oct-2024, weighing 3.1 kg, with an APGAR score of 8/10 and 9/10. Placenta and membranes expelled completely. Uterine incision closed in double layers. Hemostasis secured. Post-operative period was uneventful. Mother and baby are healthy and being discharged on stable vitals.\n\nINSURANCE & POLICY DETAILS:\nInsurer: Care Health Insurance\nPolicy Number: CHI/2020/897213/02 (Inception Date: 15-May-2020)\nTPA: Medi Assist TPA Pvt. Ltd.\nTotal Estimated Package Bill: INR 1,25,000",
+    "simulatedDenialReason": "Pre-auth queried: Please provide the original discharge summary and surgical notes of the first LSCS delivery (from 2021) to rule out any pre-existing uterine anomalies or complications, and to verify the maternity waiting period applicability as per policy terms.",
+    "expectedAnswer": {
+      "expectedExtraction": {
+        "patientName": "Srilatha Venkat",
+        "age": 31,
+        "gender": "Female",
+        "policyNumber": "CHI/2020/897213/02",
+        "insurerName": "Care Health Insurance"
+      },
+      "expectedReview": {
+        "mustFlag": [
+          "Maternity Waiting Period Verification",
+          "ICD-10 Chapter XV Chapter Lock (O-codes)"
+        ],
+        "mustNotFlag": [
+          "US-CM code format O34.21"
+        ],
+        "shouldGenerate": true
+      },
+      "expectedCode": "O34.2",
+      "expectedCost": 125000,
+      "expectedEligibility": "approved",
+      "expectedAppealCitations": [
+        "Policy Inception Date: 15-May-2020, establishing over 4 years of continuous coverage.",
+        "Maternity waiting period of 24/36 months has been fully served.",
+        "The current admission is for Elective Repeat LSCS (ICD-10 O34.2) with no relation to any undisclosed pre-existing anomalies."
+      ]
+    }
+  },
+  "expected": {
+    "expectedExtraction": {
+      "patientName": "Srilatha Venkat",
+      "age": 31,
+      "gender": "Female",
+      "policyNumber": "CHI/2020/897213/02",
+      "insurerName": "Care Health Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "Maternity Waiting Period Verification",
+        "ICD-10 Chapter XV Chapter Lock (O-codes)"
+      ],
+      "mustNotFlag": [
+        "US-CM code format O34.21"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "O34.2",
+    "expectedCost": 125000,
+    "expectedEligibility": "approved",
+    "expectedAppealCitations": [
+      "Policy Inception Date: 15-May-2020, establishing over 4 years of continuous coverage.",
+      "Maternity waiting period of 24/36 months has been fully served.",
+      "The current admission is for Elective Repeat LSCS (ICD-10 O34.2) with no relation to any undisclosed pre-existing anomalies."
+    ]
+  },
+  "failedModules": [
+    "3. Patient Info Extraction",
+    "10. Final Claim Packet"
+  ]
+}

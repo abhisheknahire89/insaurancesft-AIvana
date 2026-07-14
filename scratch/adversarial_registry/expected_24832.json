@@ -1,0 +1,27 @@
+{
+  "expectedExtraction": {
+    "patientName": "Srilatha Venkat",
+    "age": 31,
+    "gender": "Female",
+    "policyNumber": "CHI/2020/897213/02",
+    "insurerName": "Care Health Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "Maternity Waiting Period Verification",
+      "ICD-10 Chapter XV Chapter Lock (O-codes)"
+    ],
+    "mustNotFlag": [
+      "US-CM code format O34.21"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "O34.2",
+  "expectedCost": 125000,
+  "expectedEligibility": "approved",
+  "expectedAppealCitations": [
+    "Policy Inception Date: 15-May-2020, establishing over 4 years of continuous coverage.",
+    "Maternity waiting period of 24/36 months has been fully served.",
+    "The current admission is for Elective Repeat LSCS (ICD-10 O34.2) with no relation to any undisclosed pre-existing anomalies."
+  ]
+}

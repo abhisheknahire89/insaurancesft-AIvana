@@ -1,0 +1,27 @@
+{
+  "expectedExtraction": {
+    "patientName": "Ramesh Chandra Joshi",
+    "age": 62,
+    "gender": "Male",
+    "policyNumber": "HDF-2023-883921-01",
+    "insurerName": "HDFC ERGO General Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "proportional_deduction_applied_to_pharmacy",
+      "room_rent_exceeded_cap"
+    ],
+    "mustNotFlag": [
+      "maternity_clause_triggered"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "J18.9",
+  "expectedCost": 185000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "IRDAI Guidelines on Standardization of General Terms and Clauses in Health Insurance Policies (Ref: IRDAI/HLT/REG/CIR/195/09/2020) strictly state that non-associated expenses like pharmacy, medical devices, and consumables cannot be subjected to proportionate room rent deductions.",
+    "The pharmacy and consumables amount of Rs. 65,000 must be reimbursed in full without applying the 57.14% room rent deduction.",
+    "The standard room rent cap of 1% (Rs. 3,000) was exceeded due to medical emergency and non-availability of standard rooms on the date of ICU de-escalation."
+  ]
+}

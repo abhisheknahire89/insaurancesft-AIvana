@@ -1,0 +1,31 @@
+{
+  "expectedExtraction": {
+    "patientName": "Rajesh Kumar",
+    "age": 56,
+    "gender": "Male",
+    "policyNumber": "HDF-908234-A",
+    "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "Troponin-I elevation",
+      "ECG changes",
+      "Contrast-Induced Nephropathy Risk",
+      "ICU monitoring necessity"
+    ],
+    "mustNotFlag": [
+      "Elective diagnostic admission",
+      "Stable Angina"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "I21.4",
+  "expectedCost": 285000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Cardiac Troponin-I was significantly elevated at 0.85 ng/mL (normal < 0.04), confirming acute myocardial necrosis (NSTEMI).",
+    "ECG showed acute ischemic changes with ST depressions (>1.5mm) in leads V4-V6.",
+    "Patient has Stage 3 Chronic Kidney Disease (Creatinine 1.8 mg/dL, eGFR 42 ml/min) which mandated intensive saline hydration and nephrologist clearance prior to contrast administration to prevent Contrast-Induced Nephropathy.",
+    "Retrosternal chest pain of crushing nature radiating to left arm accompanied by profuse diaphoresis constitutes an emergency cardiac presentation."
+  ]
+}

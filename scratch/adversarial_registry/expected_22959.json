@@ -1,0 +1,17 @@
+{
+  "expectedExtraction": {
+    "patientName": "Ramesh Sharma",
+    "age": 68,
+    "gender": "Male",
+    "policyNumber": "STAR-987654",
+    "insurerName": "Star Health and Allied Insurance Co Ltd"
+  },
+  "expectedReview": null,
+  "expectedCode": "H25.1",
+  "expectedCost": 250000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "DM 12 years",
+    "Nuclear sclerosis grade III"
+  ]
+}

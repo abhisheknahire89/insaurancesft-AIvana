@@ -1,0 +1,28 @@
+{
+  "expectedExtraction": {
+    "patientName": "Ramesh Chandra Verma",
+    "age": 62,
+    "gender": "Male",
+    "policyNumber": "CHI/2022/9984102",
+    "insurerName": "Care Health Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "PROPORTIONAL_DEDUCTION_APPLIED",
+      "ROOM_RENT_CAPPING_EXCEEDED",
+      "ICU_STEP_DOWN_AUDIT_REQUIRED"
+    ],
+    "mustNotFlag": [
+      "MATERNITY_LIMIT_EXCEEDED"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "J18.9",
+  "expectedCost": 185000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "Insurers are prohibited from applying proportional deductions to the cost of pharmacy, medicines, and consumables as per IRDAI Guidelines on Standardization of General Clauses in Health Insurance Contracts (Ref: IRDAI/HLT/REG/CIR/193/07/2020).",
+    "The pharmacy bill of Rs. 50,000 must be paid in full without any proportional cuts (37.5% or 50% deduction), subject to overall sum insured limits.",
+    "The clinical stepped-down transition from ICU to ward on 15-Oct-2023 was medically justified based on clinical recovery (SpO2 96% on room air, afebrile status)."
+  ]
+}

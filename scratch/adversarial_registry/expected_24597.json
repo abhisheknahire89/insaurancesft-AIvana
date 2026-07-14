@@ -1,0 +1,31 @@
+{
+  "expectedExtraction": {
+    "patientName": "Ramesh Kumar Sharma",
+    "age": 63,
+    "gender": "Male",
+    "policyNumber": "AD/1102/894321",
+    "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "CKD Stage III",
+      "Creatinine 2.3",
+      "Syntax Score 36",
+      "Prior PTCA"
+    ],
+    "mustNotFlag": [
+      "acute myocardial infarction",
+      "PCI indicated"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "I25.1",
+  "expectedCost": 450000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Syntax Score: 36 (indicating complex CAD where CABG has clear mortality benefit over PCI in diabetic patients)",
+    "Nephrology consultation clearance obtained with baseline creatinine 2.3 mg/dL",
+    "Known diabetic for 12 years with multi-vessel disease (LAD 90%, LCx 85%, RCA 95%)",
+    "History of PTCA to LAD 2 years ago"
+  ]
+}

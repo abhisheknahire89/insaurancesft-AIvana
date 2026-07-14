@@ -1,0 +1,92 @@
+{
+  "id": 19839,
+  "category": "D",
+  "difficulty": "extreme",
+  "focusCategory": "preauth_heavy",
+  "diagnosis": "Bilateral Primary Osteoarthritis of Knee",
+  "code": "M17.1",
+  "chiefComplaints": "Severe bilateral knee pain (right worse than left) for over 4 years, progressively worsening, severely limiting walking distance to less than 50 meters, and failure of all conservative management modalities.",
+  "hpi": "Mrs. Rukmini Venkatraman, a 68-year-old female, presented with chronic, debilitating bilateral knee pain for the past 4 years. The pain has become excruciating over the last 6 months, significantly interfering with activities of daily living and disrupting sleep despite taking maximum doses of analgesics. She has tried structured physiotherapy for 12 months, multiple cycles of NSAIDs, and a right knee intra-articular corticosteroid injection approximately 8 months ago, with no sustained relief. She is now scheduled for an elective Right Total Knee Replacement (TKR). She has multiple complex systemic comorbidities including Type 2 Diabetes Mellitus, Stage 3 Chronic Kidney Disease (baseline creatinine 1.8 mg/dL), Hypertension, and Ischemic Heart Disease with a history of Percutaneous Coronary Intervention (PCI with DES to LAD) in August 2021, currently on dual antiplatelet therapy (DAPT).",
+  "relevantClinicalFindings": "On physical examination: Right knee shows a marked varus deformity, moderate joint effusion, flexion deformity of 10 degrees, and further flexion limited to 90 degrees due to pain. Severe patellofemoral and tibiofemoral crepitus noted. Left knee shows mild varus deformity, flexion up to 110 degrees, and moderate crepitus. Radiograph Right Knee (weight-bearing AP and Lateral views) shows: Severe joint space narrowing of the medial compartment (near bone-on-bone contact), extensive subchondral sclerosis, osteophyte formation, and lateral subluxation of tibia - corresponding to Kellgren-Lawrence Grade IV Osteoarthritis. Labs: Serum Creatinine: 1.85 mg/dL, eGFR: 32 mL/min/1.73m2 (Stage 3 CKD), HbA1c: 7.9%, BP: 160/95 mmHg. ECG shows Q waves in V1-V3 (old anterior wall MI). Echocardiogram: LVEF 48%, regional wall motion abnormalities (hypokinesia in LAD territory).",
+  "additionalClinicalNotes": "Due to the patient's advanced CKD Stage 3, NSAIDs have been permanently discontinued to prevent further renal decline. Her history of coronary stenting requires a bridge protocol for antiplatelets (stopping Clopidogrel 5 days pre-op while continuing Aspirin, and coordinating with Cardiology). Nephrology clearance has been requested for perioperative fluid management and monitoring for acute kidney injury (AKI) risks.",
+  "duration": "4 years",
+  "treatmentTakenSoFar": "Physiotherapy for 12 months, Tab. Ultracet (Tramadol/Acetaminophen) SOS, Tab. Etoshine 90mg (discontinued due to renal issues), Intra-articular steroid injection in the right knee 8 months ago.",
+  "reasonForHospitalisation": "Elective Right Total Knee Arthroplasty (TKR) under spinal epidural anesthesia to restore mobility and relieve chronic severe pain.",
+  "uploadedDocuments": [
+    "doctor_notes",
+    "knee_x_ray_report",
+    "blood_test_reports",
+    "cardiac_echo_report",
+    "nephrology_consult_note"
+  ],
+  "patient": {
+    "patientName": "Rukmini Venkatraman",
+    "age": 68,
+    "gender": "Female",
+    "mobileNumber": "9840123456"
+  },
+  "insurance": {
+    "policyNumber": "CHI/2023/8892019/A",
+    "insurerName": "Care Health Insurance Co. Ltd.",
+    "tpaName": "Self-Administered (Care Health TPA)",
+    "sumInsured": 600000,
+    "balanceSumInsured": 550000,
+    "tpaIdCardNumber": "CR-8892019-01"
+  },
+  "vitals": {
+    "bp": "160/95 mmHg",
+    "pulse": "74 bpm",
+    "temp": "98.4 F",
+    "spo2": "97%",
+    "rr": "18/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "CKD_STAGE_3_NEPHROLOGY_CLEARANCE",
+      "CARDIAC_CLEARANCE_STENT_HISTORY",
+      "CONSERVATIVE_TREATMENT_TRIAL_DOCUMENTATION",
+      "KELLGREN_LAWRENCE_GRADE_IV"
+    ],
+    "mustNotFlag": [
+      "ACUTE_ARTHRITIS_EMERGENCY"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This case tests the 'preauth_heavy' module by presenting a patient scheduled for an elective major joint replacement (TKR) with multiple critical systemic comorbidities. Under Indian TPA guidelines, elective joint replacements are heavily audited to ensure they meet clinical necessity criteria (e.g., Kellgren-Lawrence Grade III/IV, failed conservative management > 6 months) and that high-risk comorbidities (Stage 3 CKD, recent cardiac stenting, uncontrolled HTN) have documented specialist clearance before approval.",
+  "realGap": "TPAs frequently query or deny TKR pre-authorizations by questioning conservative management duration, lack of documented specialist clearances (cardiology/nephrology) for high-risk comorbidities, and objective radiographic criteria (KL Grade III/IV) to rule out premature surgical intervention.",
+  "sourceReasoning": "As per IRDAI Guidelines and Care Health Policy Terms, elective joint replacements require documented proof of conservative treatment failure for at least 6 months, radiographic confirmation of advanced disease (KL Grade III/IV), and complete pre-operative stabilization/clearance for major comorbidities (CKD, IHD) to establish medical necessity and safety.",
+  "simulatedDenialReason": "Pre-authorization Query: 1. Please provide documentary evidence of conservative management trials (physiotherapy reports and prescriptions) for the past 6 months. 2. Provide Cardiologist and Nephrologist fitness clearance certificates given the history of PCI (2021) and Stage 3 CKD. 3. Provide recent weight-bearing X-ray films/reports showing Kellgren-Lawrence grading.",
+  "rawDocumentText": "APOLLO HOSPITALS, CHENNAI\nDEPT OF ORTHOPEDICS & JOINT REPLACEMENT\n\nPatient Name: Mrs. Rukmini Venkatraman\nAge/Sex: 68 Y / Female\nIP No: IP-99201A\nPolicy No: CHI/2023/8892019/A\nInsurer: Care Health Insurance Co. Ltd.\nConsultant: Dr. Anil Malhotra, MS (Ortho), Senior Joint Replacement Specialist\n\nDIAGNOSIS: Bilateral Primary Osteoarthritis of Knee (Right Knee Kellgren-Lawrence Grade IV, Left Knee Grade II)\nComorbidities:\n- Ischemic Heart Disease (IHD), Status Post PCI with DES to LAD in August 2021 (On Aspirin 75mg + Clopidogrel 75mg)\n- Chronic Kidney Disease (Stage 3) - Baseline Creatinine 1.8 mg/dL\n- Type 2 Diabetes Mellitus (HbA1c 7.9% on Tab Glycomet GP2)\n- Essential Hypertension (Poorly controlled, BP 160/95 mmHg, on Tab Cilacar 10mg BD)\n\nCHIEF COMPLAINTS:\n- Severe right knee pain, swelling, and deformity for 4 years, limiting walking to < 50 meters.\n- Inability to perform daily activities, climb stairs, or stand for more than 5 minutes.\n\nHPI:\nPatient has been suffering from bilateral knee osteoarthritis for 4 years. Managed conservatively with physical therapy for 1 year, off-and-on oral NSAIDs, and an intra-articular steroid injection in the right knee 8 months ago. Pain has progressively worsened over the last 6 months, now refractory to tramadol/acetaminophen. She has severe mechanical pain, nocturnal pain, and a progressive varus deformity of the right knee. NSAIDs are now strictly contraindicated due to Stage 3 CKD.\n\nCLINICAL EXAMINATION:\n- Right Knee: Varus deformity (+), flexion deformity 10 deg, further flexion restricted to 90 deg. Extreme crepitus, severe medial compartment joint line tenderness.\n- Left Knee: Mild varus, flexion 110 deg, moderate crepitus.\n\nINVESTIGATIONS:\n- X-ray Right Knee (Weight-bearing): Severe joint space obliteration in the medial tibiofemoral compartment, subchondral bone sclerosis, subchondral cysts, and prominent osteophyte formation. Kellgren-Lawrence Grade IV changes.\n- Sr. Creatinine: 1.85 mg/dL; eGFR: 32 mL/min/1.73m2 (Stage 3 CKD)\n- Echocardiogram: EF 48%, hypokinesia in LAD territory, normal valves.\n- HbA1c: 7.9%\n\nPLAN OF TREATMENT:\nScheduled for Right Total Knee Replacement (TKR) under spinal epidural anesthesia with cruciate-retaining implant on 24-Oct-2023.\n- Cardiology clearance sought for DAPT bridging: To stop Clopidogrel 5 days prior to surgery, continue Aspirin 75mg throughout, and resume Clopidogrel 48 hours post-op.\n- Nephrology clearance obtained: Maintain hydration, avoid NSAIDs post-operatively, monitor urine output, and serial serum creatinine to avoid perioperative AKI.\n- Patient is fit for surgery from a mechanical and absolute indication perspective as conservative treatment has completely failed.\n\nESTIMATED COST: INR 2,85,000/- (GIPSA Package includes implants, room rent, and surgeon fees).\n\nDr. Anil Malhotra, MS (Ortho)\nReg No: 54321-TMC",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Rukmini Venkatraman",
+      "age": 68,
+      "gender": "Female",
+      "policyNumber": "CHI/2023/8892019/A",
+      "insurerName": "Care Health Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "CKD_STAGE_3_NEPHROLOGY_CLEARANCE",
+        "CARDIAC_CLEARANCE_STENT_HISTORY",
+        "CONSERVATIVE_TREATMENT_TRIAL_DOCUMENTATION",
+        "KELLGREN_LAWRENCE_GRADE_IV"
+      ],
+      "mustNotFlag": [
+        "ACUTE_ARTHRITIS_EMERGENCY"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "M17.1",
+    "expectedCost": 285000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Kellgren-Lawrence Grade IV",
+      "intra-articular steroid injection in the right knee 8 months ago",
+      "Stage 3 CKD",
+      "PCI with DES to LAD in August 2021",
+      "Nephrology clearance obtained",
+      "Cardiology clearance sought for DAPT bridging"
+    ]
+  }
+}

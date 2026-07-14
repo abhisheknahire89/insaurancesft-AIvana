@@ -1,0 +1,89 @@
+{
+  "id": 22519,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "billing_complex",
+  "diagnosis": "Intramural leiomyoma of uterus and Cholelithiasis",
+  "code": "D25.1",
+  "chiefComplaints": "Heavy menstrual bleeding (menorrhagia) lasting 10-12 days per cycle for the past 6 months, severe lower abdominal pain during menses, and intermittent right upper quadrant abdominal pain radiating to the back associated with post-prandial nausea.",
+  "hpi": "Mrs. Sunita Sharma, a 46-year-old female, presented with a history of progressive menorrhagia over the last 6 months, leading to profound fatigue and microcytic hypochromic anemia (Hb: 8.2 g/dL). Ultrasound of the pelvis revealed multiple intramural uterine fibroids, the largest measuring 6.5 cm in the anterior myometrium. She also complains of recurrent, episodic right upper quadrant (RUQ) pain triggered by fatty meals. An abdominal ultrasound confirmed cholelithiasis with multiple small stones in the gallbladder, wall thickness 2.8 mm, without signs of acute cholecystitis. In consultation with the Gynaecologist and General Surgeon, she was advised to undergo combined elective surgery: Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-Oophorectomy (BSO) and Laparoscopic Cholecystectomy during the same anesthesia session.",
+  "relevantClinicalFindings": "Abdomen: Soft, mild tenderness in the right hypochondrium and hypogastrium. No guarding or rigidity. Murphy's sign negative. Pelvic exam: Uterus enlarged to 12 weeks size, mobile, non-tender. Pelvic USG: Multiple fibroids, largest intramural anterior wall 6.5 x 5.2 cm. Gallbladder USG: Multiple calculi, largest 12 mm, gallbladder wall thickness normal (2.8 mm), CBD normal calibre (4 mm). Pre-op Labs: Hb: 8.2 g/dL, WBC: 6,800/mm3, Platelets: 2.1 Lakhs/mL, Bilirubin: 0.7 mg/dL, SGOT: 28 U/L, SGPT: 32 U/L, Alkaline Phosphatase: 85 U/L. Renal profile normal. ECG: Normal Sinus Rhythm.",
+  "additionalClinicalNotes": "Patient has a history of Essential Hypertension for 4 years, well-controlled on Tab. Telmisartan 40 mg OD. She opted for a Single Deluxe Room (rented at INR 9,000 per day) at the time of admission. Total hospital stay planned for 4 days.",
+  "duration": "6 months",
+  "treatmentTakenSoFar": "Antifibrinolytics (Tranexamic acid) during cycles, Oral Iron supplements for anemia, and Proton Pump Inhibitors (Pantoprazole) with antacids for RUQ dyspepsia.",
+  "reasonForHospitalisation": "Surgical management of symptomatic uterine fibroids and concurrent symptomatic cholelithiasis via combined TLH + BSO and Laparoscopic Cholecystectomy.",
+  "uploadedDocuments": [
+    "admission_note",
+    "usg_abdomen_pelvis",
+    "complete_blood_count",
+    "surgical_clearance_cardiac",
+    "hospital_bill_breakdown",
+    "discharge_summary"
+  ],
+  "patient": {
+    "patientName": "Mrs. Sunita Sharma",
+    "age": 46,
+    "gender": "Female",
+    "mobileNumber": "9810245678"
+  },
+  "insurance": {
+    "policyNumber": "1-2093-8472-00",
+    "insurerName": "Star Health and Allied Insurance",
+    "tpaName": "In-house TPA (Star Health)",
+    "sumInsured": 500000,
+    "balanceSumInsured": 485000,
+    "tpaIdCardNumber": "SH1029384"
+  },
+  "vitals": {
+    "bp": "130/80 mmHg",
+    "pulse": "78 bpm",
+    "temp": "98.4 F",
+    "spo2": "99%",
+    "rr": "16/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "PROPORTIONAL_DEDUCTION_APPLICABLE",
+      "MULTI_PROCEDURE_DISCOUNT_MISSING",
+      "ROOM_RENT_CAPPING_EXCEEDED"
+    ],
+    "mustNotFlag": [
+      "PRE_EXISTING_DISEASE_EXCLUSION_APPLIED"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This case tests complex Indian TPA billing rules. The primary issue is twofold: 1) The patient chose a room category costing INR 9,000/day, while her Star Health policy caps room rent at 1% of Sum Insured (INR 5,000/day). Consequently, the TPA will apply proportional deductions on all 'associate charges' (surgeon fees, OT charges, anesthesia, nursing) based on the ratio of eligible room rent to actual room rent (5000/9000 = 55.5% payout). 2) The hospital billed full individual package rates for both TLH (INR 1,50,000) and Laparoscopic Cholecystectomy (INR 80,000). Under standard GIPSA/TPA guidelines, when two major surgeries are performed under the same anesthesia session, the secondary surgery must be billed at a 50% discount (i.e., INR 40,000 instead of INR 80,000).",
+  "realGap": "The hospital failed to apply the mandatory 50% discount on the secondary major procedure (Laparoscopic Cholecystectomy) and did not notify the patient of the substantial proportional deduction liability on associate medical bills arising from selecting a Deluxe Room that exceeded her 1% Sum Insured capping limit.",
+  "sourceReasoning": "As per IRDAI (Insurance Regulatory and Development Authority of India) guidelines on standardization of billing, if the insured occupies a room category higher than the eligible limit, associate charges (excluding cost of pharmacy, implants, and medical devices) shall be deducted in proportion to the room rent limit. Additionally, GIPSA (General Insurers' Public Sector Association) and major private insurer TPA guidelines mandate that for multiple surgeries performed during the same operative session under the same anesthesia, the second procedure's package rate/surgeon fee is capped at 50%.",
+  "rawDocumentText": "AROGYA MULTISPECIALITY HOSPITAL\nSector 15, Gurugram, Haryana - 122001\nDISCHARGE SUMMARY & BILLING LEDGER\n\nPATIENT DETAILS:\nPatient Name: Mrs. Sunita Sharma\nAge / Gender: 46 Years / Female\nUHID: AMH-982034\nIP No: IP-2023-8849\nDate of Admission: 12-Oct-2023\nDate of Discharge: 16-Oct-2023 (4 Days Stay)\nConsultant: Dr. Neeta Rao (MS, OBGYN) & Dr. Rajesh Goel (MS, General Surgery)\n\nDIAGNOSIS:\n1. Symptomatic Uterine Leiomyoma (Intramural) - D25.1\n2. Cholelithiasis (Gallbladder Stones) - K80.2\n3. Essential Hypertension (On treatment) - I10\n\nPROCEDURES PERFORMED (13-Oct-2023):\n1. Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-Oophorectomy (BSO) under GA\n2. Laparoscopic Cholecystectomy under GA\n\nCLINICAL STATUS & COURSE IN HOSPITAL:\nPatient was admitted with complaints of severe menorrhagia and recurring RUQ pain. Evaluated and planned for combined surgical intervention. Post-operative period was uneventful. Mobilized on Day 2. Patient tolerated oral feeds. Vitals stable. Wound healthy. Discharged on oral medications.\n\nHOSPITAL BILL BREAKDOWN:\n1. Room Rent (Single Deluxe Room): INR 9,000 x 4 days = INR 36,000\n2. TLH Surgery Package (including Surgeon, Asst, OT, Anesthesia): INR 1,50,000\n3. Laparoscopic Cholecystectomy Package: INR 80,000\n4. Nursing and Service Charges: INR 12,000\n5. Diagnostics and Investigations: INR 15,000\n6. Medicines and Consumables: INR 42,000\nTOTAL AMOUNT BILLED: INR 2,85,000\n\nINSURANCE DETAILS:\nPolicy Number: 1-2093-8472-00\nInsurer: Star Health and Allied Insurance\nSum Insured: INR 5,00,000\nRoom Rent Limit: 1% of SI per day (i.e. INR 5,000/day)",
+  "simulatedDenialReason": "The pre-authorization request is partially approved for INR 1,59,000 against the total estimate of INR 2,85,000. Please clarify: 1) Why the secondary procedure (Laparoscopic Cholecystectomy) has been billed at 100% of the individual package rate of INR 80,000 instead of the mandatory 50% multi-procedure discount (INR 40,000) under standard TPA guidelines. 2) Note that the patient has opted for a Single Deluxe room costing INR 9,000/day, which exceeds her eligible policy limit of 1% of Sum Insured (INR 5,000/day). Consequently, proportional deductions of 44.4% have been applied to all associate medical bills (Surgeon fees, OT, Anesthesia, Nursing, and Service Charges). Disallowed charges are to be collected from the patient as patient share.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Mrs. Sunita Sharma",
+      "age": 46,
+      "gender": "Female",
+      "policyNumber": "1-2093-8472-00",
+      "insurerName": "Star Health and Allied Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "PROPORTIONAL_DEDUCTION_APPLICABLE",
+        "MULTI_PROCEDURE_DISCOUNT_MISSING",
+        "ROOM_RENT_CAPPING_EXCEEDED"
+      ],
+      "mustNotFlag": [
+        "PRE_EXISTING_DISEASE_EXCLUSION_APPLIED"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.1",
+    "expectedCost": 285000,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "Single Deluxe Room (rented at INR 9,000 per day) at the time of admission",
+      "Laparoscopic Cholecystectomy Package: INR 80,000",
+      "Room Rent Limit: 1% of SI per day (i.e. INR 5,000/day)",
+      "TLH Surgery Package (including Surgeon, Asst, OT, Anesthesia): INR 1,50,000"
+    ]
+  }
+}

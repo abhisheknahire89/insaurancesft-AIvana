@@ -1,0 +1,93 @@
+{
+  "id": 16923,
+  "category": "C",
+  "difficulty": "extreme",
+  "focusCategory": "preauth_heavy",
+  "diagnosis": "Triple Vessel Coronary Artery Disease (TVD)",
+  "code": "I25.1",
+  "chiefComplaints": "Exertional angina (NYHA Class III) for the past 3 months, worsening over the last 2 weeks; progressive shortness of breath on mild exertion.",
+  "hpi": "The patient is a 62-year-old male with a known history of Ischemic Heart Disease (IHD), post-PTCA to LAD in 2021. He presented with recurrent chest pain radiating to the left arm, exacerbated by minimal walking, relieved by sublingual nitrates. He has a history of long-standing systemic hypertension and Chronic Kidney Disease (CKD Stage III) with baseline serum creatinine of 2.1 mg/dL. Coronary Angiography (CAG) performed on 12/10/2024 revealed severe Triple Vessel Disease (TVD).",
+  "relevantClinicalFindings": "Echocardiogram shows regional wall motion abnormalities (RWMA) in LAD territory, LVEF of 45%. CAG: LM 30%, LAD 90% osteo-proximal, LCx 80% mid-segment, RCA 85% diffuse disease. Serum Creatinine: 2.1 mg/dL, eGFR: 38 mL/min/1.73m2. Hb: 10.8 g/dL. Potassium: 4.8 mEq/L. Urine routine: 1+ albuminuria. ECG shows Q waves in V1-V3, ST depression in V5-V6.",
+  "additionalClinicalNotes": "Nephrology consultation obtained: Dr. S. Menon recommended perioperative hydration protocol, avoidance of nephrotoxic drugs, and keeping post-operative hemodialysis standby. High-risk consent obtained for CABG under Cardiopulmonary Bypass (CPB) due to renal impairment.",
+  "duration": "Pre-op admission: 2 days, Planned ICU stay post-op: 4 days, Ward stay: 4 days.",
+  "treatmentTakenSoFar": "Tab. Aspirin 75mg OD, Tab. Clopidogrel 75mg OD (held for 5 days pre-op), Tab. Atorvastatin 40mg OD, Tab. Metoprolol XL 50mg OD, Tab. Cilnidipine 10mg BD, Tab. Torsemide 10mg OD.",
+  "reasonForHospitalisation": "Surgical revascularization (Coronary Artery Bypass Grafting - CABG x 3 grafts) for Triple Vessel Disease in a patient with multiple high-risk comorbidities.",
+  "uploadedDocuments": [
+    "angiography_report",
+    "nephrology_clearance",
+    "echocardiogram",
+    "pre_auth_form",
+    "prior_discharge_summary_2021"
+  ],
+  "patientName": "Ramesh Chandran",
+  "patient": {
+    "patientName": "Ramesh Chandran",
+    "age": 62,
+    "gender": "Male",
+    "mobileNumber": "9845012345"
+  },
+  "insurance": {
+    "policyNumber": "10120034291880",
+    "insurerName": "Star Health & Allied Insurance Co Ltd",
+    "tpaName": "In-House TPA",
+    "sumInsured": 1000000,
+    "balanceSumInsured": 950000,
+    "tpaIdCardNumber": "SH9188092"
+  },
+  "vitals": {
+    "bp": "170/100 mmHg",
+    "pulse": "84 bpm",
+    "temp": "98.4 F",
+    "spo2": "95% on room air",
+    "rr": "18 breaths/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "comorbid_ckd_stage_iii",
+      "prior_ptca_history",
+      "nephrology_clearance_required",
+      "icd_code_i25_1"
+    ],
+    "mustNotFlag": [
+      "maternity_exclusion",
+      "acute_mi_acute_onset_under_24h"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "High-complexity CABG case requiring active clinical justification for prolonged ICU stay and high-risk anesthetic clearance due to CKD Stage III and prior stent history.",
+  "realGap": "TPAs frequently raise queries or deny/delay pre-auth for CABG in patients with CKD due to high-risk postoperative mortality and potential for emergency dialysis, requiring explicit documentation of nephrology clearance and dedicated ICU standby plans to justify the high-risk surgical package.",
+  "sourceReasoning": "Under IRDAI Health Insurance Standardization Guidelines, insurers must not arbitrarily reject pre-authorization for planned major surgeries like CABG based on comorbidities if the patient has crossed the PED waiting period (here, 3 years vs 4 years policy age) and clear nephrology optimization/standby dialysis protocols are documented to mitigate surgical risk.",
+  "rawDocumentText": "METRO CARDIAC CARE & SUPER SPECIALITY HOSPITAL, KOCHI\nPRE-AUTHORIZATION REQUEST & CLINICAL SUMMARY\n\nPatient Name: Mr. Ramesh Chandran | Age: 62 Years | Gender: Male\nIP No: IP/2024/99182 | UHID: MCC-448102\nAdmitting Consultant: Dr. K. Radhakrishnan, MD, DM (Cardiology)\nSurgical Consultant: Dr. Mathew Paul, MS, MCh (CTVS)\nInsurer: Star Health & Allied Insurance Co Ltd | Policy No: 10120034291880\nTPA Card No: SH9188092\n\nDIAGNOSIS:\n1. Triple Vessel Disease (TVD) - Atherosclerotic Heart Disease (ICD-10: I25.1)\n2. Long-standing Systemic Hypertension (uncontrolled on presentation)\n3. Chronic Kidney Disease (CKD) Stage III\n4. Status Post PTCA (DES) to LAD in 2021\n\nCHIEF COMPLAINTS:\nPatient presented with recurrent episodes of exertional chest pain and retrosternal burning sensation (NYHA Class III angina) for the last 3 months, worsening significantly over the last 15 days. Associated with dyspnea on minimal exertion.\n\nCLINICAL HISTORY & PHYSICAL EXAMINATION:\nPatient is a known hypertensive for 12 years and has a history of CAD, post-PTCA to LAD in 2021 at our center. The current insurance policy is active since 2020. \nOn Examination:\nPulse: 84/min, BP: 170/100 mmHg, SpO2: 95% on room air, RR: 18/min. Chest: Bilateral clear. CVS: S1 S2 heard, no murmurs.\n\nINVESTIGATIONS:\n- ECG: Q waves in V1-V3, ST segment depressions in V5-V6, I, aVL.\n- Echocardiogram: Regional wall motion abnormalities in LAD territory, LVEF: 45%, mild MR.\n- Coronary Angiogram (12/10/2024): Left Main (LM) 30% plaque, LAD 90% osteo-proximal stenosis, LCx 80% mid-segment stenosis, RCA 85% diffuse disease. Severe Triple Vessel Disease (TVD).\n- Renal Function: Blood Urea: 58 mg/dL, Serum Creatinine: 2.1 mg/dL, eGFR: 38 mL/min/1.73m2 (CKD Stage III).\n- Potassium: 4.8 mEq/L, Sodium: 139 mEq/L. Hb: 10.8 g/dL.\n\nSPECIALIST CONSULTATIONS:\n1. Nephrology Consultation (Dr. S. Menon, MD, DM): Reviewed patient. Creatinine elevated at 2.1 mg/dL. Advised strict perioperative fluid balance monitoring, avoidance of nephrotoxic agents, low-dose contrast during any necessary procedures, and to keep backup Hemodialysis / CRRT standby post-operatively in the CTVS ICU. Cleared for high-risk CABG.\n2. Anesthetic Pre-op Assessment: Graded as ASA Class III due to severe TVD and Stage III CKD. Cleared with high-risk consent.\n\nPROPOSED PROCEDURE:\nPlanned for Coronary Artery Bypass Grafting (CABG x 3 Grafts: LIMA to LAD, SVG to OM, SVG to RCA) under General Anesthesia on Cardiopulmonary Bypass (CPB).\nEstimated Stay: 10 Days (including 4 days in CTVS ICU for invasive monitoring, renal perfusion monitoring, and cardiac stabilization).\nEstimated Cost: INR 3,85,000/-",
+  "simulatedDenialReason": "Pre-authorization request for CABG is kept on query. Please provide: 1. Complete medical records/discharge summary of previous PTCA (2021) to verify PED disclosure. 2. Justification from the treating Cardiothoracic Surgeon for planned 4-day ICU stay. 3. Detailed Nephrology clearance with eGFR monitoring protocol and Dialysis standby plan, as baseline creatinine is elevated at 2.1 mg/dL.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Ramesh Chandran",
+      "age": 62,
+      "gender": "Male",
+      "policyNumber": "10120034291880",
+      "insurerName": "Star Health & Allied Insurance Co Ltd"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "comorbid_ckd_stage_iii",
+        "prior_ptca_history",
+        "nephrology_clearance_required",
+        "icd_code_i25_1"
+      ],
+      "mustNotFlag": [
+        "maternity_exclusion",
+        "acute_mi_acute_onset_under_24h"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "I25.1",
+    "expectedCost": 385000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Known case of IHD post-PTCA to LAD (2021), with current policy inception in 2020, covering the 3-year PED waiting period.",
+      "Nephrology consultation by Dr. S. Menon advising perioperative hydration protocol and standby hemodialysis.",
+      "Severe Triple Vessel Disease (LAD 90%, LCx 80%, RCA 85%) establishing absolute medical necessity for CABG over medical management.",
+      "Anesthetic risk graded as ASA Class III due to combined cardiovascular and renal impairment (baseline creatinine 2.1 mg/dL, eGFR 38 mL/min/1.73m2)."
+    ]
+  }
+}

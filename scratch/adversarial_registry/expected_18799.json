@@ -1,0 +1,27 @@
+{
+  "expectedExtraction": {
+    "patientName": "Ramesh Chandra Verma",
+    "age": 64,
+    "gender": "Male",
+    "policyNumber": "HA/2023/8892102",
+    "insurerName": "Care Health Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "ROOM_RENT_CAPPING_EXCEEDED",
+      "PROPORTIONAL_DEDUCTION_APPLICABLE"
+    ],
+    "mustNotFlag": [
+      "INVESTIGATION_ONLY_ADMISSION"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "J18.9",
+  "expectedCost": 102000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "Proportional deduction of 40% cannot be applied to ICU Bed Charges as the ICU limit is 2% of SI (Rs. 6,000/day) and hospital ICU charges were Rs. 5,500/day.",
+    "As per standard IRDAI guidelines, proportional deductions are not applicable to the cost of pharmacy, medicines, and diagnostic investigations.",
+    "The room rent capping deduction should strictly be applied only to room-rent-associated charges (Single Private Room rent, and proportional associate nursing/doctor fees during those 4 days of ward stay)."
+  ]
+}

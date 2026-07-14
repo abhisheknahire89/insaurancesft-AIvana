@@ -1,0 +1,84 @@
+{
+  "id": 24546,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "billing_complex",
+  "diagnosis": "Intramural Leiomyoma of Uterus",
+  "code": "D25.1",
+  "chiefComplaints": "Severe menorrhagia with passage of large clots for over 8 months, progressively worsening spasmodic dysmenorrhea, pelvic pressure, and increased urinary frequency.",
+  "hpi": "A 46-year-old female, G2P2L2, with a known history of uterine fibroids diagnosed 1 year ago, presented with a history of heavy menstrual bleeding lasting 10-12 days per cycle, requiring 6-8 fully soaked sanitary pads per day. She reported severe dysmenorrhea poorly responsive to over-the-counter NSAIDs. Over the last 4 months, she developed significant urinary frequency and pelvic heaviness. She underwent a trial of medical management with Tab. Deviry (Medroxyprogesterone acetate) 10mg daily for 6 months and cyclical Tab. Pause (Tranexamic acid) 500mg TID, which failed to control the bleeding. Her hemoglobin levels dropped to 7.8 g/dL, requiring intravenous Iron Sucrose infusions (two doses of Inj. Orofer S 100mg) last month.",
+  "relevantClinicalFindings": "Abdominal Examination: Soft, non-tender, no palpable organomegaly. Pelvic Examination: Bulky uterus, corresponding to 14 weeks gestational size, firm, mobile, non-tender. Cervix appeared healthy on speculum examination. Pelvic Ultrasonography (USG): Bulky uterus (11.8 x 7.6 x 6.4 cm) with a large, well-defined intramural leiomyoma in the anterior myometrium measuring 7.2 cm x 6.5 cm, causing marked compression on the endometrial cavity and compressing the urinary bladder. Laboratory investigations: Hemoglobin: 8.2 g/dL (post-iron sucrose), Microcytic Hypochromic Anemia. Renal and Liver Function tests were within normal limits.",
+  "additionalClinicalNotes": "Patient is scheduled for elective Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-oophorectomy (BSO). Cardiologist clearance obtained (low risk for non-cardiac surgery).",
+  "duration": "8 months",
+  "treatmentTakenSoFar": "Tab. Deviry (Medroxyprogesterone acetate) 10mg daily for 6 months, Tab. Pause (Tranexamic acid) 500mg TID, and Inj. Orofer S (Iron Sucrose) 100mg IV x 2 doses.",
+  "reasonForHospitalisation": "Surgical management (Total Laparoscopic Hysterectomy with Bilateral Salpingo-oophorectomy) due to failed conservative management of symptomatic uterine fibroid with severe anemia and pressure symptoms.",
+  "uploadedDocuments": [
+    "doctor_admission_notes",
+    "pelvic_usg_report",
+    "complete_blood_count",
+    "cardiology_clearance_letter",
+    "previous_prescriptions_medical_management"
+  ],
+  "patient": {
+    "patientName": "Sunita Sharma",
+    "age": 46,
+    "gender": "Female",
+    "mobileNumber": "+919810452312"
+  },
+  "insurance": {
+    "policyNumber": "2312-4589-9021-001",
+    "insurerName": "Care Health Insurance Co. Ltd.",
+    "tpaName": "Medi Assist TPA",
+    "sumInsured": 500000,
+    "balanceSumInsured": 485000,
+    "tpaIdCardNumber": "MA-90823412"
+  },
+  "vitals": {
+    "bp": "110/70 mmHg",
+    "pulse": "84 bpm",
+    "temp": "98.4 F",
+    "spo2": "98%",
+    "rr": "18 breaths/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "D25.1"
+    ],
+    "mustNotFlag": [
+      "D25.11",
+      "N80.0"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "Tests the ICD-10 Chapter Lock for Gynecology/Neoplasms to ensure that strictly WHO-compliant ICD-10 code D25.1 is assigned instead of US-specific CM codes like D25.11. Also tests the appeal extraction mechanism to overcome clinical utility queries/denials for hysterectomy in patients under 50 years.",
+  "realGap": "TPAs frequently query or deny hysterectomies in women under 50 years of age, alleging a lack of medical necessity or failure to attempt conservative medical lines of management. Documenting the duration of failed hormonal therapy (progesterones) and symptomatic indicators like mass effect/severe anemia is critical to securing approval.",
+  "sourceReasoning": "As per IRDAI Guidelines and standard Indian clinical governance protocols, elective hysterectomies for benign indications require documented evidence of failed medical/conservative management (unless contraindicated) and objective clinical indications (e.g., severe anemia refractory to therapy or pressure symptoms caused by a large fibroid > 5 cm) to establish medical necessity.",
+  "rawDocumentText": "MAX SUPERSPECIALITY HOSPITAL, SAKET, NEW DELHI\nDEPARTMENT OF OBSTETRICS AND GYNAECOLOGY\nADMISSION NOTES & CLINICAL SUMMARY\n\nPatient Name: Mrs. Sunita Sharma  |  Age: 46 Years  |  Gender: Female  |  Reg No: MAX-2023-88741\nDate of Admission: 15-Oct-2023  |  Consultant: Dr. Shalini Malhotra, MD (Obs & Gyn)\nInsurer: Care Health Insurance Co. Ltd.  |  Policy No: 2312-4589-9021-001  |  TPA: Medi Assist TPA\n\nDIAGNOSIS:\nIntramural Leiomyoma of Uterus (D25.1)\nSevere Menorrhagia with Microcytic Hypochromic Anemia (Hb: 8.2 gm% post-iron sucrose)\n\nCHIEF COMPLAINTS:\n- Heavy bleeding PV during menses associated with huge clots for 8 months.\n- Severe spasmodic dysmenorrhea requiring injectable analgesics occasionally.\n- Urinary frequency and sense of pelvic heaviness for 4 months.\n\nHISTORY OF PRESENT ILLNESS:\nMrs. Sunita Sharma, G2P2L2, with both children delivered via LSCS, presented with worsening menstrual complaints. Menstrual cycles are highly irregular, lasting 10-12 days with heavy flow (using 6-8 fully soaked pads/day) and passage of massive clots. Patient complains of severe spasmodic lower abdominal pain during cycles.\n\nPAST MEDICAL HISTORY & CONSERVATIVE TRIAL:\n- Diagnosed with uterine fibroid 1 year ago via USG Pelvis.\n- Attempted trial of medical management under local gynaecologist with Tab. Deviry (Medroxyprogesterone acetate) 10mg OD for 6 months (Jan 2023 to June 2023) along with Tab. Pause (Tranexamic acid) 500mg TDS during cycles. Bleeding was not controlled.\n- Documented hemoglobin drop to 7.8 gm% in Sept 2023. Treated with 2 doses of IV Iron Sucrose (Inj. Orofer S 100mg in 100ml NS) on 12-Sept and 15-Sept. Post-infusion Hb is 8.2 gm%.\n- Patient also complains of increased frequency of micturition due to pressure from bulky uterus.\n\nCLINICAL FINDINGS:\n- P/A: Soft, bulky uterus palpable equivalent to 14 weeks size.\n- P/V: Uterus enlarged, firm, mobile, cervix healthy, no active discharge/bleeding at present.\n- USG Pelvis (10-Oct-2023): Bulky uterus measuring 11.8 x 7.6 x 6.4 cm. Evidence of a well-defined anterior wall intramural fibroid measuring 7.2 cm x 6.5 cm, causing mass effect on the bladder and indenting the endometrial stripe.\n\nPROPOSED PLAN OF TREATMENT:\nScheduled for Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-oophorectomy (BSO) under General Anesthesia on 16-Oct-2023.\nPre-anaesthetic checkup (PAC) done and cleared. Cardiologist clearance obtained. High-risk consent taken for surgery.",
+  "simulatedDenialReason": "Pre-auth query/denial: The patient is 46 years old (under 50 years). As per policy guidelines, please provide clinical justification for choosing surgical intervention (TLH) over conservative medical management. Kindly submit evidence of failed conservative medical line of treatment with prescription and medical records of at least 3 months.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Sunita Sharma",
+      "age": 46,
+      "gender": "Female",
+      "policyNumber": "2312-4589-9021-001",
+      "insurerName": "Care Health Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "D25.1"
+      ],
+      "mustNotFlag": [
+        "D25.11"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.1",
+    "expectedCost": 165000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Attempted trial of medical management under local gynaecologist with Tab. Deviry (Medroxyprogesterone acetate) 10mg OD for 6 months (Jan 2023 to June 2023)",
+      "Documented hemoglobin drop to 7.8 gm% in Sept 2023. Treated with 2 doses of IV Iron Sucrose (Inj. Orofer S 100mg in 100ml NS)",
+      "USG Pelvis (10-Oct-2023): Bulky uterus measuring 11.8 x 7.6 x 6.4 cm. Evidence of a well-defined anterior wall intramural fibroid measuring 7.2 cm x 6.5 cm, causing mass effect on the bladder"
+    ]
+  }
+}

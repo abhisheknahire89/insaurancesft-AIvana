@@ -1,0 +1,89 @@
+{
+  "id": 16427,
+  "category": "C",
+  "difficulty": "extreme",
+  "focusCategory": "hospital_rent",
+  "diagnosis": "Community-acquired Pneumonia",
+  "code": "J18.9",
+  "chiefComplaints": "Severe difficulty in breathing, high-grade fever with chills, productive cough with thick rust-colored sputum, and extreme general weakness for 4 days.",
+  "hpi": "Mr. Rajesh Kumar, a 58-year-old male with known comorbidities of Type 2 Diabetes Mellitus and Essential Hypertension, presented to our Emergency Department on 12/10/2023 with a 4-day history of high-grade fever peaking at 103°F, accompanied by rigors, progressive dyspnea (NYHA Class IV), and a persistent productive cough yielding thick, rust-colored sputum. In the ER, the patient was found to be in acute respiratory distress, utilizing accessory muscles of respiration and unable to complete sentences. He had been self-medicating with Tab Paracetamol 650 mg SOS at home with no relief.",
+  "relevantClinicalFindings": "On clinical evaluation in ER: Temperature: 102.8°F, Pulse Rate: 112 bpm (tachycardia), Blood Pressure: 98/60 mmHg (borderline hypotension), SpO2: 84% on room air, Respiratory Rate: 32/min. Chest auscultation revealed decreased breath sounds and bronchial breathing with coarse crepitations in the right middle and lower lung zones. ABG on room air revealed acute respiratory acidosis: pH 7.31, pCO2 52 mmHg, pO2 55 mmHg, HCO3 24 mEq/L. Chest X-Ray (AP View) demonstrated dense lobar consolidation in the right mid and lower zones with mild ipsilateral pleural effusion. Lab investigations revealed WBC: 16,800/mm³ with 88% neutrophils, CRP: 124 mg/L, and Procalcitonin: 4.5 ng/mL.",
+  "additionalClinicalNotes": "The patient was immediately shifted to the Medical ICU (MICU) on 12/10/2023. He was put on Non-Invasive Ventilation (NIV) support (IPAP 14, EPAP 6, FiO2 50%) to combat Type 1 Respiratory Failure. Broad-spectrum IV antibiotics (Inj Ceftriaxone 2g IV OD + Inj Linezolid 600mg IV BD + Tab Azithromycin 500mg OD) were initiated along with aggressive IV hydration, bronchodilator nebulization, and low-molecular-weight heparin (Inj Clexane 0.4ml SC OD) for DVT prophylaxis. Over the next 48 hours, his respiratory effort gradually decreased, and he was weaned from NIV to High-Flow Nasal Cannula (HFNC) on 14/10/2023, and subsequently to nasal prongs at 2 L/min on 15/10/2023. He remained hemodynamically stable without inotropic support, although his blood pressures fluctuated. He was shifted to a Twin-Sharing Ward on 15/10/2023 (after 72 hours of ICU stay) for continued therapy. He was discharged in a stable condition on 19/10/2023.",
+  "duration": "7 days (12/10/2023 to 19/10/2023)",
+  "treatmentTakenSoFar": "Self-medicated with over-the-counter antipyretics (Tab Paracetamol 650mg) and cough syrups for 4 days prior to admission.",
+  "reasonForHospitalisation": "Severe Community-acquired Pneumonia with Type 1 Respiratory Failure, severe sepsis, and respiratory acidosis requiring urgent ICU monitoring, non-invasive ventilation (NIV), and intravenous broad-spectrum antibiotic therapy.",
+  "uploadedDocuments": [
+    "emergency_admission_notes",
+    "icu_case_sheets",
+    "nursing_vitals_flowsheet",
+    "abg_reports_day1_to_day3",
+    "chest_xray_report",
+    "lab_investigation_reports_cbc_crp",
+    "final_hospital_bill",
+    "discharge_summary"
+  ],
+  "patient": {
+    "patientName": "Rajesh Kumar",
+    "age": 58,
+    "gender": "Male",
+    "mobileNumber": "9811223344"
+  },
+  "insurance": {
+    "policyNumber": "CARE-IND-9981273",
+    "insurerName": "Care Health Insurance",
+    "tpaName": "Care Health TPA",
+    "sumInsured": 500000,
+    "balanceSumInsured": 480000
+  },
+  "vitals": {
+    "bp": "98/60",
+    "pulse": "112",
+    "temp": "102.8",
+    "spo2": "84",
+    "rr": "32"
+  },
+  "expected": {
+    "mustFlag": [
+      "proportional_deductions_applied",
+      "icu_stay_downgrade",
+      "room_rent_capping_breach"
+    ],
+    "mustNotFlag": [
+      "pre_existing_exclusion_applied"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "The TPA retrospectively downgraded the ICU stay from 3 days to 1 day, arguing that the patient's vitals stabilized by Day 2 (13/10/2023) with normal BP and pulse, ignoring that the patient was actively on NIV/HFNC support for respiratory failure. This downgrade triggered massive proportional deductions on all associated ICU charges, including doctor visits, monitoring, and nursing fees. The hospital charged ₹12,000/day for ICU (Policy limit: ₹10,000/day or 2% of SI) and ₹6,000/day for Twin Sharing (Policy limit: ₹5,000/day or 1% of SI).",
+  "realGap": "TPAs frequently execute retrospective clinical downgrades of ICU stays by looking exclusively at stable hemodynamics (blood pressure and heart rate) on Day 2/3 charts, completely disregarding active advanced respiratory support (NIV, HFNC) or severe sepsis risk as valid criteria for ICU care. This clinical oversight triggers artificial room rent breaches and catastrophic proportional deductions for the patient.",
+  "sourceReasoning": "Per IRDAI Guidelines on Standardization in Health Insurance (2019) and subsequent circulars, room rent capping clauses may apply, but any clinical downgrade of ICU stay must be backed by objective evidence of inappropriate care. Retrospective rejection of ICU days when a patient is documented to be on Non-Invasive Ventilation (NIV) or High-Flow Nasal Cannula (HFNC) for Type 1 Respiratory Failure violates standard critical care admission and discharge guidelines (such as SCCM or ISCCM criteria).",
+  "simulatedDenialReason": "Pre-authorization / Claim partial approval. Upon review of the ICU daily monitoring charts, the patient's blood pressure was stable (120/80 mmHg) and pulse rate was 80-90 bpm starting from 13/10/2023 (Day 2) morning. There was no hemodynamic instability or requirement for inotropes. Therefore, ICU stay is medically justified for 1 day only (12/10/2023). ICU room rent for 13/10/2023 and 14/10/2023 is downgraded to Twin Sharing Ward charges (₹5,000/day). Additionally, since the actual Twin Sharing Ward charges (₹6,000/day) exceeded the policy room rent cap of 1% of Sum Insured (₹5,000/day), proportional deductions of 16.67% have been applied to all associated charges (including consultations, nursing, and diagnostics) incurred during the ward stay.",
+  "rawDocumentText": "AAROGYAM MULTI-SPECIALTY HOSPITAL & CRITICAL CARE CENTRE\nSector 11, Dwarka, New Delhi - 110075\nDISCHARGE SUMMARY\n\nPATIENT NAME: Mr. Rajesh Kumar\nAGE / GENDER: 58 Years / Male\nUHID: AMH-2023-89472\nIP NO: IP-993821\nADMISSION DATE: 12/10/2023 (11:30 AM)\nDISCHARGE DATE: 19/10/2023 (02:00 PM)\nATTENDING CONSULTANT: Dr. Arvind Chawla, MD, FNB (Pulmonology & Critical Care)\nINSURED VIA: Care Health Insurance | Policy No: CARE-IND-9981273\nTPA: Care Health TPA | SI: Rs. 5,00,000/-\n\nDIAGNOSIS:\n- Severe Community-Acquired Lobar Pneumonia (Right Mid and Lower Zones)\n- Type 1 Respiratory Failure (Acute Acidotic Respiratory Sepsis)\n- Type 2 Diabetes Mellitus (Controlled on oral hypoglycemics)\n- Essential Hypertension (Controlled on ARBs)\n\nCHIEF COMPLAINTS AT ADMISSION:\n- High-grade fever with chills and rigors x 4 days\n- Productive cough with thick rust-colored sputum x 4 days\n- Severe breathlessness even at rest (NYHA Class IV) x 2 days\n- Extreme exhaustion and low oral intake\n\nCLINICAL PRESENTATION & ER COURSE:\nPatient presented in emergency in respiratory distress. Vitals: BP: 98/60 mmHg, PR: 112/min, RR: 32/min, Temp: 102.8 F, SpO2: 84% on room air. Chest auscultation revealed dullness to percussion on the right lower hemithorax, with coarse crepitations and bronchial breathing. Immediate arterial blood gas (ABG) analysis showed pH 7.31, pCO2 52 mmHg, pO2 55 mmHg, HCO3 24 mEq/L, confirming Acute Respiratory Acidosis with severe hypoxemia. Chest X-Ray showed dense right mid and lower zone consolidation. WBC count was 16,800/mm3. Patient was shifted immediately to Medical ICU for ventilator support.\n\nHOSPITAL COURSE (ICU & WARD):\n- 12/10/2023 to 15/10/2023 (ICU, Bed No. 5):\nPatient admitted to MICU. Started on Non-Invasive Ventilation (NIV) support with IPAP 14 cmH2O, EPAP 6 cmH2O, FiO2 50% to maintain target SpO2 >92%. Initiated on intensive empirical IV antibiotic therapy: Inj Ceftriaxone 2gm IV OD + Inj Linezolid 600mg IV BD + Tab Azithromycin 500mg OD. Given IV fluid challenges for borderline pressures, maintaining MAP > 65 mmHg without vasopressors. Strict glycemic control was maintained via sliding scale insulin.\nOn 13/10/2023 (Day 2), respiratory distress persisted but was controlled on NIV. Vitals stabilized hemodynamically (BP: 118/76 mmHg, PR: 88 bpm). However, target SpO2 was dependent on continuous NIV. Weaning attempted but deferred due to tachypnea (RR 26/min) upon brief NIV removal.\nOn 14/10/2023 (Day 3), patient's condition improved. Successfully weaned from NIV to High-Flow Nasal Cannula (HFNC) at 30 L/min, FiO2 40%. Vitals remained stable.\nOn 15/10/2023 (Day 4), patient was shifted to nasal prongs at 2 L/min with SpO2 maintaining at 95-96%. Deemed fit for ICU discharge. Shifted to Twin-Sharing Room.\n\n- 15/10/2023 to 19/10/2023 (Twin Sharing Ward, Bed No. 202-A):\nPatient was monitored closely. Intravenous antibiotics were continued till 17/10/2023, then stepped down to oral medications. Chest physiotherapies and nebulizations were administered. On 18/10/2023, patient was maintaining saturation on room air (SpO2 96%), and repeat chest X-ray showed clearing of infiltrates. Discharged on 19/10/2023 with stable parameters.\n\nBILL BREAKUP SUMMARY:\n- ICU Bed Charges (12/10 to 15/10 - 3 Nights @ Rs. 12,000/day): Rs. 36,000\n- Twin Sharing Ward Charges (15/10 to 19/10 - 4 Nights @ Rs. 6,000/day): Rs. 24,000\n- ICU Nursing & Monitoring Charges (3 days @ Rs. 3,500/day): Rs. 10,500\n- Ward Nursing Charges (4 days @ Rs. 1,500/day): Rs. 6,000\n- Doctor ICU Visit Charges (Dr. Arvind Chawla - 3 days @ Rs. 4,000/day): Rs. 12,000\n- Doctor Ward Visit Charges (4 days @ Rs. 2,000/day): Rs. 8,000\n- NIV / Ventilation Machine Charges (48 hours @ Rs. 2,500/12 hours): Rs. 10,000\n- Diagnostics & Investigations (including repeat ABGs, Blood culture, Sputum culture, CXR, Labs): Rs. 22,500\n- Pharmacy & Consumables: Rs. 32,400\nTOTAL BILL AMOUNT: Rs. 1,61,400/-",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Rajesh Kumar",
+      "age": 58,
+      "gender": "Male",
+      "policyNumber": "CARE-IND-9981273",
+      "insurerName": "Care Health Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "proportional_deductions_applied",
+        "icu_stay_downgrade",
+        "room_rent_capping_breach"
+      ],
+      "mustNotFlag": [
+        "pre_existing_exclusion_applied"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "J18.9",
+    "expectedCost": 161400,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "Patient was put on Non-Invasive Ventilation (NIV) support (IPAP 14, EPAP 6, FiO2 50%) to combat Type 1 Respiratory Failure.",
+      "On 13/10/2023 (Day 2), respiratory distress persisted but was controlled on NIV. Vitals stabilized hemodynamically (BP: 118/76 mmHg, PR: 88 bpm). However, target SpO2 was dependent on continuous NIV.",
+      "On 14/10/2023 (Day 3), patient's condition improved. Successfully weaned from NIV to High-Flow Nasal Cannula (HFNC) at 30 L/min, FiO2 40%."
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "expectedExtraction": {
+    "patientName": "Rajendra Prasad Sharma",
+    "age": 64,
+    "gender": "Male",
+    "policyNumber": "231400/31/2024/004562",
+    "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "STAGE_IV_CKD_HIGH_RISK",
+      "IN_STENT_RESTENOSIS",
+      "RENAL_PROTECTION_PROTOCOL"
+    ],
+    "mustNotFlag": [
+      "ACUTE_INFARCTION_ST_ELEVATION",
+      "ACTIVE_DIALYSIS_DEPENDENT"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "I25.1",
+  "expectedCost": 385000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "CAG dated 12/10/24 showing severe Triple Vessel Disease with 90% severe In-Stent Restenosis (ISR) in the LAD",
+    "Serum Creatinine 2.8 mg/dL and eGFR 21.8 mL/min/1.73 m² (Stage IV CKD)",
+    "Pre-operative consultation and renal-protective clearance by Nephrologist Dr. Amit Verma"
+  ]
+}

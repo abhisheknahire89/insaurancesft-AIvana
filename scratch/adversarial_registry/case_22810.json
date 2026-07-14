@@ -1,0 +1,96 @@
+{
+  "id": 22810,
+  "category": "D",
+  "difficulty": "high",
+  "focusCategory": "denial_heavy",
+  "diagnosis": "Uterine Fibroids (Multiple Leiomyomas of Uterus)",
+  "code": "D25.9",
+  "chiefComplaints": "Severe heavy menstrual bleeding (menorrhagia) lasting for 12 days, passage of large clots, severe lower abdominal pain, extreme generalized weakness and dizziness.",
+  "hpi": "A 46-year-old female, known case of Hypertension and Type 2 Diabetes Mellitus, presented to the emergency department with a history of worsening heavy menstrual bleeding over the past 6 months. During the current cycle, bleeding has been continuous for 12 days with large clots. She reports severe dysmenorrhea unresponsive to oral NSAIDs, accompanied by progressive fatigue, palpitations on mild exertion, and a feeling of heaviness/pressure in her lower abdomen.",
+  "relevantClinicalFindings": "On examination, patient was severely pale. Abdomen was soft, but a firm, irregular mass corresponding to a 14-week pregnant uterus size was palpable in the hypogastric region. Speculum examination revealed active moderate bleeding through the cervical os. Bimanual examination confirmed an enlarged, nodular, non-tender uterus. Hemoglobin on admission was critically low at 6.8 g/dL. USG Pelvis revealed a bulky uterus measuring 13.8 x 8.4 x 9.1 cm with multiple uterine leiomyomas, the largest being an intramural fibroid in the anterior myometrium measuring 6.5 cm, compressing the urinary bladder, and another subserosal fibroid measuring 4.2 cm.",
+  "additionalClinicalNotes": "Due to symptomatic severe anemia (Hb 6.8 g/dL), the patient was immediately admitted and transfused with 2 units of Packed Red Blood Cells (PRBC) under close monitoring. Post-transfusion Hemoglobin rose to 9.1 g/dL. Medical management with antifibrinolytics (Tranexamic Acid) failed to control the active hemorrhage effectively. Given the failure of medical management, size of the fibroids (14-week uterus volume effect), bladder compression symptoms, and recurrent life-threatening hemorrhage, she was scheduled for a Total Laparoscopic Hysterectomy with Bilateral Salpingectomy.",
+  "duration": "6 months of progressive worsening; acute exacerbation for 12 days",
+  "treatmentTakenSoFar": "Tab Tranexamic Acid 500mg TID, Tab Mefenamic Acid 500mg TID, oral iron supplements, none of which controlled the severe menorrhagia.",
+  "reasonForHospitalisation": "Emergency management of severe symptomatic anemia secondary to acute-on-chronic abnormal uterine bleeding (AUB-L), requiring PRBC transfusion and definitive surgical intervention (Hysterectomy) due to volume-related mass effects and failure of conservative management.",
+  "uploadedDocuments": [
+    "emergency_admission_sheet",
+    "complete_blood_count_report",
+    "pelvic_ultrasound_report",
+    "blood_transfusion_consent_and_chart",
+    "pre_operative_fitness_certificate",
+    "gynaecologist_consultation_notes"
+  ],
+  "patientName": "Smt. Meenakshi Iyer",
+  "patient": {
+    "patientName": "Smt. Meenakshi Iyer",
+    "age": 46,
+    "gender": "Female",
+    "mobileNumber": "9845012345"
+  },
+  "insurance": {
+    "policyNumber": "HH/2023/8912450",
+    "insurerName": "Star Health and Allied Insurance",
+    "tpaName": "In-house TPA",
+    "sumInsured": 500000,
+    "balanceSumInsured": 480000,
+    "tpaIdCardNumber": "SH-9012441"
+  },
+  "vitals": {
+    "bp": "110/70 mmHg",
+    "pulse": "98 bpm",
+    "temp": "98.6 F",
+    "spo2": "97%",
+    "rr": "18 rpm"
+  },
+  "expected": {
+    "mustFlag": [
+      "Severe anemia Hb 6.8 g/dL",
+      "PRBC transfusion of 2 units",
+      "Leiomyoma of uterus D25.9",
+      "Pressure symptoms on bladder"
+    ],
+    "mustNotFlag": [
+      "Maternity O-codes",
+      "Ophthalmic H-codes",
+      "D25.91"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "Ensure that the ICD-10 code is strictly locked to the D-N-Z gynecology range (specifically D25.9 for uterine leiomyoma) and does not default to any obstetric 'O' codes or US-specific lateralized/modified codes. The appeal must strongly leverage the life-threatening clinical status (Hb 6.8 g/dL) and transfusion history to refute the insurer's denial based on 'lack of conservative trials'.",
+  "realGap": "The TPA denied pre-authorization claiming a lack of document proof for failed conservative medical management trials, ignoring the clinical reality that the patient presented with life-threatening acute hemorrhage (Hemoglobin 6.8 g/dL) and mass effect (bladder compression), which are absolute indications for prompt surgical intervention and make conservative trials clinically contraindicated and dangerous.",
+  "sourceReasoning": "As per standard clinical practice guidelines from the Federation of Obstetric and Gynaecological Societies of India (FOGSI) and IRDAI Standardized Guidelines, while medical management is preferred for stable fibroids, immediate active intervention (including transfusion and surgery) is medically necessary and mandated in cases of uterine leiomyoma presenting with severe acute-on-chronic hemorrhage, profound anemia (Hb < 7 g/dL), and severe pressure symptoms.",
+  "rawDocumentText": "SHREE BALAJI MULTI-SPECIALITY HOSPITAL, CHENNAI\nCLINICAL SUMMARY & PRE-AUTH REQUEST\nPATIENT NAME: Smt. Meenakshi Iyer | AGE: 46 Years | GENDER: Female\nIP NO: IP-990124 / 2023 | WARD: Semi-Private Room 204\nSPONSOR: Star Health and Allied Insurance | POLICY NO: HH/2023/8912450\n\nDIAGNOSIS:\n1. Bulky Uterus with Multiple Leiomyomas (Uterine Fibroids) - Expected ICD: D25.9\n2. Severe Symptomatic Anemia (Secondary to menorrhagia; Admission Hb: 6.8 g/dL)\n3. Essential Hypertension (On Tab. Amlong 5mg OD)\n4. Type 2 Diabetes Mellitus (On Tab. Metformin 500mg BD)\n\nCHIEF COMPLAINTS:\n- Menorrhagia with severe dysmenorrhea since last 12 days.\n- Passage of large blood clots and acute pelvic pain.\n- Severe breathlessness on minimal exertion, extreme fatigue, and dizziness.\n\nCLINICAL HISTORY & FINDINGS:\nPatient has a 6-month history of worsening menorrhagia and lower abdominal heaviness. Presenting cycle started 12 days ago with unmanageable bleeding and clots. General examination revealed severe pallor, dry skin, and tachycardia (98 bpm). BP: 110/70 mmHg. Abdominal exam showed an irregular firm mass palpable in hypogastrium (~14 weeks gestation size). \n\nINVESTIGATIONS:\n- Hb: 6.8 g/dL (Critically low, severe anemia), WBC: 8,200/cumm, PLT: 2.1 Lacs.\n- USG Pelvis: Uterus enlarged (13.8 x 8.4 x 9.1 cm). Large intramural fibroid of 6.5 cm in the anterior wall causing compression on the urinary bladder. Subserosal fibroid of 4.2 cm. Bilateral adnexa normal.\n- Renal & Liver parameters within normal limits. HbA1c: 6.9%.\n\nCOURSE IN HOSPITAL & TREATMENT PLAN:\nGiven the severe symptomatic anemia, patient was transfused with 2 units of Packed Red Blood Cells (PRBC) on 14th and 15th October under cover of diuretics. Post-transfusion Hb improved to 9.1 g/dL. Medical management with Tranexamic Acid did not arrest the active PV bleeding. Since there is a massive uterine volume with bladder compression (causing frequent micturition) and failed conservative management of hemorrhage, the gynecologist has advised Total Laparoscopic Hysterectomy with Bilateral Salpingectomy (TLH + BS) under General Anesthesia.\nPre-anesthesia checkup (PAC) cleared. High-risk consent obtained for anesthesia, major surgery, and further blood transfusion if required.\nPROPOSED PROCEDURE: Total Laparoscopic Hysterectomy\nESTIMATED TARIFF: Rs. 1,65,000/-\nDr. Renu Madhavan, MS, DGO (Reg No. 44120)\nSenior Consultant Gynecologist",
+  "simulatedDenialReason": "Pre-authorization request for Total Laparoscopic Hysterectomy is denied. As per policy terms and standard management guidelines, hysterectomy for uterine fibroids requires documented proof of a minimum of 3 to 6 months of failed medical/hormonal management (e.g., GnRH agonists, oral contraceptives, or progesterone-releasing IUDs). In the absence of documented trial and failure of conservative therapies, surgical management is deemed premature and not covered under the current policy.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Meenakshi Iyer",
+      "age": 46,
+      "gender": "Female",
+      "policyNumber": "HH/2023/8912450",
+      "insurerName": "Star Health and Allied Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "Severe anemia Hb 6.8 g/dL",
+        "PRBC transfusion of 2 units",
+        "Leiomyoma of uterus D25.9",
+        "Pressure symptoms on bladder"
+      ],
+      "mustNotFlag": [
+        "Maternity O-codes",
+        "Ophthalmic H-codes",
+        "D25.91"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.9",
+    "expectedCost": 165000,
+    "expectedEligibility": "denied",
+    "expectedAppealCitations": [
+      "Severe symptomatic anemia with admission Hemoglobin of 6.8 g/dL",
+      "Immediate clinical necessity of transfusing 2 units of Packed Red Blood Cells (PRBC)",
+      "Bulky uterus (14-week size) causing direct mechanical compression of the urinary bladder",
+      "Active life-threatening hemorrhage unresponsive to IV/Oral antifibrinolytic therapy (Tranexamic Acid)"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "expectedExtraction": {
+    "patientName": "Sunita Sharma",
+    "age": 46,
+    "gender": "Female",
+    "policyNumber": "SH/2024/1002938",
+    "insurerName": "Star Health and Allied Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "UNBUNDLED_PROCEDURES",
+      "ROOM_RENT_CAPPING_EXCEEDED",
+      "PROPORTIONAL_DEDUCTION_APPLICABLE"
+    ],
+    "mustNotFlag": [
+      "CO-PAYMENT_EXEMPT"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.9",
+  "expectedCost": 135000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "Deluxe Suite room (INR 6,000/day)",
+    "Single Private A/C room (INR 3,000/day)",
+    "Bilateral Salpingo-Oophorectomy (INR 45,000)",
+    "Adhesiolysis (INR 30,000)"
+  ]
+}

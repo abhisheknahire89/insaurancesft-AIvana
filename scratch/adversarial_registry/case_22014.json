@@ -1,0 +1,89 @@
+{
+  "id": 22014,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "billing_complex",
+  "diagnosis": "Uterine Fibroids",
+  "code": "D25.9",
+  "chiefComplaints": "Heavy menstrual bleeding (menorrhagia) with large blood clots for the past 6 months, severe lower abdominal pain radiating to the lower back, and increased frequency of urination.",
+  "hpi": "Mrs. Sunita Sharma, a 48-year-old female, presented with a history of progressive, painful menorrhagia for 6 months. She reports soaking 5-6 pads daily during her cycles, accompanied by severe dysmenorrhea. Over the past 2 months, she has developed pelvic pressure and urinary frequency. She has been on oral medroxyprogesterone and hematinics prescribed by a local gynaecologist, which failed to control her bleeding. Her baseline haemoglobin was found to be low (8.2 g/dL), which was corrected with 1 unit of Packed Red Blood Cells (PRBC) pre-operatively. Pelvic ultrasonography (USG) revealed a multi-fibroid uterus, with the largest intramural fibroid measuring 6.5 cm in the anterior myometrium, and another subserosal fibroid of 4.2 cm. Due to persistent symptoms and failure of medical management, she was advised to undergo an elective Total Abdominal Hysterectomy with Bilateral Salpingo-Oophorectomy (TAH + BSO).",
+  "relevantClinicalFindings": "Abdomen: Uterus palpable at 14 weeks size, firm, mobile, non-tender. Vaginal examination (PV): Uterus enlarged, irregular surface, cervix healthy. Speculum examination: No active bleeding or cervical lesions. Haemoglobin: 10.2 g/dL (post-transfusion), Platelets: 2.1 Lakhs/cumm, Coagulation profile: Normal. Pelvic USG: Multiple uterine fibroids (largest 6.5 cm), endometrial thickness: 9mm, normal bilateral adnexa.",
+  "additionalClinicalNotes": "Patient has a known history of Essential Hypertension for 4 years, well-controlled on Telmisartan 40mg once daily. Anesthesia cleared her as ASA Grade II. Intra-operatively, dense pelvic adhesions were noted between the posterior uterine wall and the sigmoid colon, requiring careful adhesiolysis.",
+  "duration": "6 months",
+  "treatmentTakenSoFar": "Oral progestins (Medroxyprogesterone acetate 10mg) for 3 cycles, oral iron supplements, and 1 unit PRBC transfusion.",
+  "reasonForHospitalisation": "Elective surgical management of symptomatic uterine fibroids via Total Abdominal Hysterectomy with Bilateral Salpingo-Oophorectomy (TAH + BSO).",
+  "uploadedDocuments": [
+    "discharge_summary",
+    "final_hospital_bill",
+    "usg_pelvis_report",
+    "cbc_reports",
+    "pre_op_fitness_certificate"
+  ],
+  "patient": {
+    "patientName": "Sunita Sharma",
+    "age": 48,
+    "gender": "Female",
+    "mobileNumber": "9845012345"
+  },
+  "insurance": {
+    "policyNumber": "POL-8839201-02",
+    "insurerName": "Star Health and Allied Insurance",
+    "tpaName": "In-house TPA",
+    "sumInsured": 300000,
+    "balanceSumInsured": 300000,
+    "tpaIdCardNumber": "SH-TPA-993021"
+  },
+  "vitals": {
+    "bp": "130/80 mmHg",
+    "pulse": "78 bpm",
+    "temp": "98.6 F",
+    "spo2": "99% on room air",
+    "rr": "16/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "UNBUNDLED_PROCEDURAL_CHARGES",
+      "ROOM_RENT_CAPPING_EXCESS",
+      "PROPORTIONAL_DEDUCTION_APPLIED"
+    ],
+    "mustNotFlag": [
+      "DENY_HYSTERECTOMY_MEDICAL_NECESSITY",
+      "INVALID_ICD_CODE"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "The hospital attempted to unbundle the standard hysterectomy procedure by billing separately for Salpingo-Oophorectomy and Adhesiolysis. Additionally, the patient stayed in a Deluxe room costing ₹8,000/day, exceeding her policy room rent limit of 1% of Sum Insured (₹3,000/day). Proportional deductions must be calculated and applied to all associated medical expenses.",
+  "realGap": "The hospital billed ₹25,000 for Bilateral Salpingo-Oophorectomy and ₹15,000 for Adhesiolysis as separate line items distinct from the main Total Abdominal Hysterectomy package (₹85,000). Furthermore, the patient occupied a Deluxe Room priced at ₹8,000/day, whereas her Star Health policy caps room rent at 1% of the Sum Insured (₹3,000/day). The TPA correctly applied proportional deductions of 62.5% (calculated as [8000-3000]/8000) on all associated non-fixed medical charges (OT charges, surgeon fees, and anesthesia), which the hospital is now trying to dispute and pass onto the patient.",
+  "sourceReasoning": "As per IRDAI Guidelines on Standardization of General Insurance Terms, if a patient opts for a room category higher than their eligible limit, the insurer is entitled to apply proportional deductions on all 'associated medical expenses' (fees charged by surgeons, anesthetists, OT charges, etc.) in proportion to the difference in room rent. Furthermore, according to GIPSA Preferred Provider Network (PPN) guidelines, a Total Abdominal Hysterectomy package is inclusive of Salpingo-Oophorectomy and incidental adhesiolysis; billing them separately constitutes non-compliant procedural unbundling.",
+  "rawDocumentText": "APOLLO SPECTRA HOSPITALS, CHENNAI\nDISCHARGE SUMMARY\n\nPatient Name: Mrs. Sunita Sharma | Age: 48 Yrs | Gender: Female\nIP No: IP-2023-88392 | DOA: 12/10/2023 | DOD: 16/10/2023 (4 Days)\nConsultant: Dr. Meenakshi Iyer, MD, DGO (Senior Gynecologist)\nPolicy No: POL-8839201-02 | Insurer: Star Health & Allied Insurance\nRoom Category: Single Deluxe Room (Room Tariffs: Rs. 8,000 per day)\n\nDIAGNOSIS:\nMultiple Uterine Fibroids (ICD-10: D25.9)\nEssential Hypertension (ICD-10: I10)\n\nPROCEDURE PERFORMED:\nTotal Abdominal Hysterectomy with Bilateral Salpingo-Oophorectomy (TAH + BSO) under General Anesthesia on 13/10/2023.\n\nCLINICAL SUMMARY:\nPatient presented with severe menorrhagia, dysmenorrhea, and pelvic pressure symptoms of 6 months' duration. Pelvic USG demonstrated multiple uterine leiomyomas, the largest being 6.5 cm intramural in the anterior myometrium. Endometrial thickness was 9mm. Patient had pre-op Hb of 8.2 g/dL, corrected with 1 unit of PRBC transfusion pre-operatively. Chronically hypertensive, controlled on Tab Telmisartan 40mg OD. \n\nINTRA-OPERATIVE FINDINGS:\n- Uterus enlarged to 14 weeks size with multiple fibroids.\n- Bilateral ovaries appeared normal, but given her age (48 years), bilateral salpingo-oophorectomy was performed.\n- Dense pelvic adhesions noted between the posterior uterine wall and the sigmoid colon. Meticulous adhesiolysis done to free the uterus.\n- Estimated blood loss: 250 ml.\n\nPOST-OPERATIVE COURSE:\nPost-operative period was uneventful. Patient was mobilized on post-op day 1. Wound check on post-op day 3 showed healthy healing. Patient tolerating normal diet and passing flatus. Discharged in stable clinical condition.\n\nFINAL HOSPITAL BILL BREAKDOWN (TOTAL BILLED: INR 2,35,700):\n1. Total Abdominal Hysterectomy Package (Fixed Component): Rs. 85,000\n2. Bilateral Salpingo-Oophorectomy (BSO Charge): Rs. 25,000\n3. Adhesiolysis Charges: Rs. 15,000\n4. Deluxe Room Rent (4 Days @ Rs. 8,000/day): Rs. 32,000\n5. Professional Fees - Surgeon (Dr. Meenakshi Iyer): Rs. 35,000\n6. Professional Fees - Anesthetist: Rs. 12,000\n7. Operation Theatre (OT) Consumables & Gas Charges: Rs. 18,000\n8. Pre-op Diagnostics/Labs: Rs. 7,500\n9. Post-op Pharmacy/Medicines: Rs. 11,200\nTotal Bill Amount: Rs. 2,35,700\n\nPrepared By: Medical Billing Dept, Apollo Spectra",
+  "simulatedDenialReason": "Pre-authorization / Final claim approved partially for Rs. 1,10,000. Balance claim amount of Rs. 1,25,700 is disallowed due to: (1) Procedural Unbundling: Separate charges for Bilateral Salpingo-Oophorectomy (Rs. 25,000) and Adhesiolysis (Rs. 15,000) are disallowed as they are integral components of the primary Total Abdominal Hysterectomy package under standard GIPSA guidelines. (2) Room Rent Capping & Proportional Deduction: The patient's policy eligibility is restricted to a Normal Single Room capped at 1% of the Sum Insured (Rs. 3,000/day based on a Sum Insured of Rs. 3,00,000). Since the patient occupied a Deluxe Room costing Rs. 8,000/day, a proportional deduction of 62.5% has been applied to all associated variable medical expenses, including Surgeon Fees, Anesthesia Fees, and OT Consumables.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Sunita Sharma",
+      "age": 48,
+      "gender": "Female",
+      "policyNumber": "POL-8839201-02",
+      "insurerName": "Star Health and Allied Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "UNBUNDLED_PROCEDURAL_CHARGES",
+        "ROOM_RENT_CAPPING_EXCESS",
+        "PROPORTIONAL_DEDUCTION_APPLIED"
+      ],
+      "mustNotFlag": [
+        "DENY_HYSTERECTOMY_MEDICAL_NECESSITY",
+        "INVALID_ICD_CODE"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.9",
+    "expectedCost": 110000,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "The separate billing of Salpingo-Oophorectomy (Rs. 25,000) is non-compliant as it is standard practice to bundle adnexal clearance with a hysterectomy for a 48-year-old patient.",
+      "Proportional deduction was correctly applied under standard IRDAI guidelines in the ratio of 3,000 (eligible room rent) to 8,000 (actual room rent charged), yielding a 37.5% recovery rate on associated variable costs.",
+      "The dense pelvic adhesions requiring meticulous adhesiolysis were documented, but do not justify unbundling as standard surgical access includes management of basic adhesions unless a complex pelvic distorting pathology like stage IV endometriosis is established."
+    ]
+  }
+}

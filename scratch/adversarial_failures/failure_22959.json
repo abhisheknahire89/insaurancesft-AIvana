@@ -1,0 +1,86 @@
+{
+  "id": 22959,
+  "testCase": {
+    "id": 22959,
+    "category": "A",
+    "difficulty": "high",
+    "focusCategory": "preauth_heavy",
+    "diagnosisText": "Senile Nuclear Cataract right eye",
+    "diagnosis": "Senile Nuclear Cataract right eye with visual acuity 6/60",
+    "code": "Z00.0",
+    "chiefComplaints": "C/O gradual diminution of vision RE for 8 months.",
+    "hpi": "C/O gradual diminution of vision RE for 8 months. A/H/O DM 12 years on OHA.",
+    "relevantClinicalFindings": "O/E VA RE 6/60, LE 6/18. Slit lamp: Nuclear sclerosis grade III. Fundus: hazy view.",
+    "additionalClinicalNotes": "Advised Phaco + IOL under LA. Pre-op ECG and sugar control required.",
+    "uploadedDocuments": [
+      "doctor_notes",
+      "blood_test_reports"
+    ],
+    "patientName": "Ramesh Sharma",
+    "patient": {
+      "patientName": "Ramesh Sharma",
+      "age": 68,
+      "gender": "Male"
+    },
+    "insurance": {
+      "policyNumber": "STAR-987654",
+      "insurerName": "Star Health and Allied Insurance Co Ltd",
+      "tpaName": "Medi Assist",
+      "sumInsured": 500000
+    },
+    "simulatedDenialReason": "Pre-authorization denied due to missing pre-operative blood sugar control documentation and ECG report.",
+    "rawDocumentText": "",
+    "cost": {
+      "totalEstimatedCost": 450000,
+      "wardType": "General"
+    },
+    "expected": {
+      "mustFlag": [
+        "Sugar Control"
+      ],
+      "mustNotFlag": [],
+      "shouldGenerate": true
+    },
+    "notes": "Cataract pre-op checks required",
+    "realGap": "Missing blood sugar control documentation",
+    "sourceReasoning": "Standard ophthalmic pre-op checklist rules",
+    "expectedAnswer": {
+      "expectedExtraction": {
+        "patientName": "Ramesh Sharma",
+        "age": 68,
+        "gender": "Male",
+        "policyNumber": "STAR-987654",
+        "insurerName": "Star Health and Allied Insurance Co Ltd"
+      },
+      "expectedReview": null,
+      "expectedCode": "H25.1",
+      "expectedCost": 250000,
+      "expectedEligibility": "query",
+      "expectedAppealCitations": [
+        "DM 12 years",
+        "Nuclear sclerosis grade III"
+      ]
+    }
+  },
+  "expected": {
+    "expectedExtraction": {
+      "patientName": "Ramesh Sharma",
+      "age": 68,
+      "gender": "Male",
+      "policyNumber": "STAR-987654",
+      "insurerName": "Star Health and Allied Insurance Co Ltd"
+    },
+    "expectedReview": null,
+    "expectedCode": "H25.1",
+    "expectedCost": 250000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "DM 12 years",
+      "Nuclear sclerosis grade III"
+    ]
+  },
+  "failedModules": [
+    "1. Ingestion Gateway",
+    "3. Patient Info Extraction"
+  ]
+}

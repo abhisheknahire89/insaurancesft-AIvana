@@ -1,0 +1,33 @@
+{
+  "expectedExtraction": {
+    "patientName": "Mr. Arvind Deshmukh",
+    "age": 54,
+    "gender": "Male",
+    "policyNumber": "POL-8837482-2023",
+    "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "acute myocardial infarction",
+      "ST-elevation V1-V4",
+      "Troponin-I positive",
+      "emergency PTCA",
+      "LAD occlusion"
+    ],
+    "mustNotFlag": [
+      "elective CABG",
+      "chronic ischemic heart disease",
+      "stable angina"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "I21.0",
+  "expectedCost": 275000,
+  "expectedEligibility": "approved",
+  "expectedAppealCitations": [
+    "Emergency primary PTCA performed to LAD within 3 hours of acute chest pain",
+    "Cardiac Troponin I elevated at 1.45 ng/mL confirming acute myocardial necrosis",
+    "ECG showing acute ST-elevation of 3mm in V1-V4 indicative of Anterior Wall MI",
+    "IRDAI guidelines state that life-saving emergency procedures for acute life-threatening events cannot be summarily denied under waiting period clauses for stable pre-existing risk factors like hypertension"
+  ]
+}

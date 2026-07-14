@@ -57,6 +57,95 @@ export const extractInsurancePreAuthData = async (
   }
 };
 
+/**
+ * extractInsuranceCardData — Gemini Vision scan of a health insurance card (photo or PDF).
+ * Accepts a browser File object (image/png, image/jpeg, image/webp, application/pdf).
+ * Returns structured insurance card fields. Any field not found is returned as null.
+ */
+export interface InsuranceCardExtracted {
+  insurerName: string | null;
+  tpaName: string | null;
+  policyNumber: string | null;
+  memberIdCard: string | null;
+  cardHolderName: string | null;
+  sumInsured: number | null;
+  validFrom: string | null;
+  validTo: string | null;
+  contactNumber: string | null;
+  planType: string | null;
+  confidence: number;
+  rawText?: string;
+}
+
+export const extractInsuranceCardData = async (file: File): Promise<InsuranceCardExtracted> => {
+  const FALLBACK: InsuranceCardExtracted = {
+    insurerName: null, tpaName: null, policyNumber: null, memberIdCard: null,
+    cardHolderName: null, sumInsured: null, validFrom: null, validTo: null,
+    contactNumber: null, planType: null, confidence: 0
+  };
+
+  try {
+    // Convert file to base64
+    const base64Data = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve((reader.result as string).split(',')[1]);
+      reader.onerror = reject;
+    });
+
+    const prompt = `You are analyzing a health insurance card image from India.
+
+Extract the following fields exactly as printed on the card:
+- insurerName: Insurance company name (e.g. "Star Health", "ICICI Lombard", "New India Assurance")
+- tpaName: Third Party Administrator name if shown (e.g. "MD India TPA", "Vipul MedCorp")
+- policyNumber: Policy / Certificate number
+- memberIdCard: Member ID or Card number
+- cardHolderName: Name of the insured person on the card
+- sumInsured: Sum insured as a number in INR (just the number, e.g. 500000). Null if not shown.
+- validFrom: Start date in YYYY-MM-DD format. Null if not found.
+- validTo: Expiry date in YYYY-MM-DD format. Null if not found.
+- contactNumber: TPA or insurer helpline number shown on card.
+- planType: Plan name or product name if shown (e.g. "Family Floater", "Individual Mediclaim")
+- confidence: Your confidence 0–100 in the extraction quality.
+
+Return ONLY a valid JSON object with these exact keys. No markdown, no explanation.
+If a field is not visible or not applicable, use null.`;
+
+    const response = await ai.models.generateContent({
+      model: MODEL_TEXT,
+      contents: [
+        { role: 'user', parts: [
+          { text: prompt },
+          { inlineData: { data: base64Data, mimeType: file.type || 'image/jpeg' } }
+        ]}
+      ]
+    });
+
+    let raw = response.text?.trim() || '';
+    if (raw.startsWith('```json')) raw = raw.replace(/^```json/, '').replace(/```$/, '').trim();
+    else if (raw.startsWith('```')) raw = raw.replace(/^```/, '').replace(/```$/, '').trim();
+
+    const parsed = JSON.parse(raw);
+    return {
+      insurerName: parsed.insurerName ?? null,
+      tpaName: parsed.tpaName ?? null,
+      policyNumber: parsed.policyNumber ?? null,
+      memberIdCard: parsed.memberIdCard ?? null,
+      cardHolderName: parsed.cardHolderName ?? null,
+      sumInsured: parsed.sumInsured ? +parsed.sumInsured : null,
+      validFrom: parsed.validFrom ?? null,
+      validTo: parsed.validTo ?? null,
+      contactNumber: parsed.contactNumber ?? null,
+      planType: parsed.planType ?? null,
+      confidence: Math.min(100, Math.max(0, +(parsed.confidence ?? 70))),
+      rawText: raw,
+    };
+  } catch (err) {
+    console.error('[extractInsuranceCardData] Failed:', err);
+    return FALLBACK;
+  }
+};
+
 export const extractTestResultsFromTranscript = async (
   transcript: string,
   language: string

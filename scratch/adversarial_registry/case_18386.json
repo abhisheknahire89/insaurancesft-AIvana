@@ -1,0 +1,89 @@
+{
+  "id": 18386,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "specialty_caps",
+  "diagnosis": "Intramural leiomyoma of uterus (Uterine Fibroids)",
+  "code": "D25.1",
+  "chiefComplaints": "Severe menorrhagia with passage of large blood clots during cycles lasting 10-12 days, progressive lower abdominal pain, and urinary frequency for the past 6 months.",
+  "hpi": "Saritha Krishnan, a 44-year-old female, G2P2L2 with a history of previous LSCS, presented with worsening menorrhagia and dysmenorrhea. She has been on medical management with oral progesterone (Tab. Norethisterone 5mg) and antifibrinolytics (Tab. Tranexamic acid + Mefenamic acid) for the last 3 months prescribed by a local GP, with no significant relief. Her symptoms have worsened, resulting in profound weakness and fatigue. Her baseline Hemoglobin has dropped to 8.2 g/dL. A pelvic ultrasound was performed, which revealed a single large anterior wall intramural fibroid measuring 7.8 x 6.5 cm, causing mass effect on the urinary bladder.",
+  "relevantClinicalFindings": "Abdomen: Soft, Pfannenstiel scar present from previous LSCS, no guarding or rigidity. Vaginal Examination: Uterus enlarged to approximately 12-14 weeks size, firm, anteverted, restricted in mobility due to the large fibroid. No adnexal tenderness or masses felt. Pelvic Ultrasound: Shows a large intramural fibroid of 7.8 x 6.5 cm in the anterior myometrium, compressing the bladder. Endometrial thickness: 9mm. Pap smear: Negative for intraepithelial lesion or malignancy. Hb: 8.2 g/dL, showing moderate microcytic hypochromic anemia. Pre-operative cardiac clearance obtained (history of Hypertension managed on Tab. Amlodipine 5mg OD).",
+  "additionalClinicalNotes": "The patient is scheduled for a planned Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-oophorectomy (BSO) under General Anesthesia. Surgical intervention is indicated due to failure of conservative medical management, worsening anemia (Hb 8.2 g/dL), and severe pressure symptoms.",
+  "duration": "6 months",
+  "treatmentTakenSoFar": "Tab. Norethisterone 5mg OD for 21 days per cycle, Tab. Tranexa-M during menses, Tab. Autrin (iron supplement) OD.",
+  "reasonForHospitalisation": "Surgical management of symptomatic large intramural uterine fibroid via Total Laparoscopic Hysterectomy.",
+  "uploadedDocuments": [
+    "gynecologist_consultation_notes",
+    "pelvic_ultrasound_report",
+    "cbc_blood_report",
+    "cardiology_clearance_letter",
+    "pre_anesthetic_checkup_sheet"
+  ],
+  "patientName": "Saritha Krishnan",
+  "patient": {
+    "patientName": "Saritha Krishnan",
+    "age": 44,
+    "gender": "Female",
+    "mobileNumber": "9845012345"
+  },
+  "insurance": {
+    "policyNumber": "101200312345678",
+    "insurerName": "Star Health and Allied Insurance",
+    "tpaName": "In-house TPA - Star Health",
+    "sumInsured": 500000,
+    "balanceSumInsured": 480000,
+    "tpaIdCardNumber": "SH10293847"
+  },
+  "vitals": {
+    "bp": "130/80 mmHg",
+    "pulse": "78 bpm",
+    "temp": "98.4 F",
+    "spo2": "99%",
+    "rr": "18/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "D25.1",
+      "Total Laparoscopic Hysterectomy Package Validation",
+      "Pre-existing Hypertension Disclosure"
+    ],
+    "mustNotFlag": [
+      "O82",
+      "N80"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "Gynecological specialty case testing Chapter II Neoplasm ICD-10 lock (D25.1 for intramural leiomyoma). Must avoid obstetric (O-codes) or inflammatory genitourinary codes (N-codes) to prevent wrong-exclusion denials by automated TPA engines.",
+  "realGap": "TPA engines often misclassify benign uterine fibroids (D25) as non-specific genitourinary disorders (N-codes), or they trigger a query demanding 3-4 years of historical logs to check for a pre-existing condition, even when the patient's policy has cleared the standard 2-year waiting period. In addition, unbundling surgeon charges from GIPSA-capped TLH packages is a major billing risk.",
+  "sourceReasoning": "IRDAI Guidelines on Standardization of Exclusions (2020) mandate that benign neoplasms like Leiomyoma of the Uterus (D25) must be categorized strictly under Chapter II (Neoplasms) and are subject only to standard 2-year waiting periods (unless pre-existing at inception). TPAs cannot apply generic 4-year exclusions for chronic pelvic inflammatory conditions (N-series) to fibroids.",
+  "rawDocumentText": "MATRIKA WOMEN'S CLINIC & GYNAECOLOGY HOSPITAL\nOuter Ring Road, Bellandur, Bengaluru - 560103\nCLINICAL ADMISSION NOTE & PRE-AUTH JUSTIFICATION\n\nPatient Name: Saritha Krishnan | Age: 44 Years | Gender: Female\nUHID: MWC-2023-8902 | Admitting Consultant: Dr. Ananya Rao, MD, DGO\nPolicy No: 101200312345678 | Insurer: Star Health and Allied Insurance\n\nCHIEF COMPLAINTS:\n- Menorrhagia with passage of large clots, lasting 10-12 days per menstrual cycle for the last 6 months.\n- Dull, aching pelvic pain radiating to the lower back, progressive in intensity.\n- Increased frequency of micturition, especially noticeable during the last 3 months.\n\nHISTORY OF PRESENT ILLNESS:\nMrs. Saritha Krishnan, G2P2L2, with a surgical history of one previous LSCS (done 12 years ago), presented with complaints of heavy menstrual bleeding and severe dysmenorrhea. She was evaluated at an outpatient clinic 3 months ago and started on Tab. Norethisterone 5mg OD for 21 days along with Tab. Tranexa-M during her cycles. Despite regular medical management, her bleeding has remained uncontrolled, causing severe physical fatigue and clinical anemia. She has no history of diabetes or asthma. She has a known history of Essential Hypertension for the past 2 years, well-controlled on Tab. Amlodipine 5mg OD.\n\nCLINICAL EXAMINATION:\n- Abdomen: Pfannenstiel scar healthy. Soft, non-tender, no organomegaly.\n- Per-Vaginal Exam: Uterus enlarged to 12-14 weeks size, firm, anteverted, restricted mobility. Bilateral fornices free, non-tender.\n\nINVESTIGATIONS & IMAGING:\n- Pelvic Ultrasound (Dated 14/10/2023): Reveals a large, well-defined hypoechoic mass in the anterior myometrium measuring 7.8 x 6.5 cm, consistent with a large intramural uterine fibroid (leiomyoma). The mass is seen indenting and compressing the postero-superior wall of the urinary bladder. Endometrial thickness is 9 mm. Both ovaries are normal.\n- Pap Smear: Negative for intraepithelial lesion or malignancy.\n- Complete Blood Count: Hb: 8.2 g/dL (Microcytic hypochromic anemia), WBC: 6,800/mm3, Platelets: 2.4 Lakhs/mm3.\n- Renal & Liver Function: Normal limits. ECG: Normal Sinus Rhythm.\n- Cardiac Clearance: Cleared for surgery under GA with high-risk consent for mild hypertension.\n\nTREATMENT PLAN:\nThe patient is scheduled for a Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-oophorectomy (BSO) under General Anesthesia on 28/10/2023. Indication: Symptomatic large anterior wall intramural fibroid (D25.1) with secondary pressure symptoms and failure of conservative medical management. Estimated stay: 3 days in Private Ward. Estimated cost: INR 1,45,000.\n\nDr. Ananya Rao, MD, DGO\nReg No: KMC-56789\nSenior Consultant Gynecologist",
+  "simulatedDenialReason": "Pre-authorization query raised: Please provide past 3 years of clinical history, consulting physician's first prescription, and ultrasound reports to rule out pre-existing uterine fibroids. Clarify why medical management was discontinued. Provide breakdown of surgeon charges as per GIPSA package caps.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Saritha Krishnan",
+      "age": 44,
+      "gender": "Female",
+      "policyNumber": "101200312345678",
+      "insurerName": "Star Health and Allied Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "Prior USG reports from past 3 years",
+        "GIPSA Package validation for TLH",
+        "Hypertension history documented since 2 years"
+      ],
+      "mustNotFlag": [
+        "Maternity exclusions"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.1",
+    "expectedCost": 145000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Ultrasound pelvis dated 14/10/2023 showing 7.8 x 6.5 cm intramural fibroid",
+      "Failed medical therapy with Norethisterone and Antifibrinolytics",
+      "Hb 8.2 g/dL representing symptomatic chronic anemia secondary to menorrhagia"
+    ]
+  }
+}

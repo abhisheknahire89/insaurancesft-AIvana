@@ -1,0 +1,26 @@
+{
+  "expectedExtraction": {
+    "patientName": "Sunita Sharma",
+    "age": 46,
+    "gender": "Female",
+    "policyNumber": "2312-4589-9021-001",
+    "insurerName": "Care Health Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "D25.1"
+    ],
+    "mustNotFlag": [
+      "D25.11"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.1",
+  "expectedCost": 165000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Attempted trial of medical management under local gynaecologist with Tab. Deviry (Medroxyprogesterone acetate) 10mg OD for 6 months (Jan 2023 to June 2023)",
+    "Documented hemoglobin drop to 7.8 gm% in Sept 2023. Treated with 2 doses of IV Iron Sucrose (Inj. Orofer S 100mg in 100ml NS)",
+    "USG Pelvis (10-Oct-2023): Bulky uterus measuring 11.8 x 7.6 x 6.4 cm. Evidence of a well-defined anterior wall intramural fibroid measuring 7.2 cm x 6.5 cm, causing mass effect on the bladder"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "expectedExtraction": {
+    "patientName": "Sunita Sharma",
+    "age": 44,
+    "gender": "Female",
+    "policyNumber": "1-2039-4482-01",
+    "insurerName": "Care Health Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "FAILED_CONSERVATIVE_TRIAL",
+      "SECONDARY_ANEMIA_DOCUMENTED"
+    ],
+    "mustNotFlag": [
+      "PREGNANCY_COMPLICATION_LOCK",
+      "MALIGNANT_NEOPLASM"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.9",
+  "expectedCost": 125000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Patient was on conservative hormonal therapy (Tab. Primolut-N 5mg TID for 21 days per cycle) along with Tab. Texakind 500mg TID during cycles for 6 consecutive cycles under Dr. Anjali Deshmukh, which failed to control the menorrhagia.",
+    "Patient has developed severe secondary microcytic hypochromic anemia with Hemoglobin level of 8.1 g/dL due to chronic heavy bleeding.",
+    "USG Pelvis dated 12/10/2023 shows a large posterior wall intramural fibroid of 6.8 x 5.9 cm, causing endometrial compression and urinary frequency pressure symptoms."
+  ]
+}

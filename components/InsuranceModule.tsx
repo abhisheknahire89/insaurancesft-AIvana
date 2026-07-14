@@ -2,9 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { PreAuthWizard } from './PreAuthWizard';
 import { PreAuthDashboard } from './PreAuthDashboard';
 import { getRequiredDocuments } from '../data/icd10DocumentMap';
-import { extractInsurancePreAuthData } from '../services/geminiService';
+import { extractInsurancePreAuthData, extractInsuranceCardData, InsuranceCardExtracted } from '../services/geminiService';
 import { DIABETES_DEMO_RECORD, PNEUMONIA_DEMO_RECORD, APPENDICITIS_DEMO_RECORD } from '../data/demoCases';
+import { extractFromDocument } from '../services/documentExtractionService';
 import { reviewEnhancement, EnhancementReviewReport, EnhancementInput, EnhancementTrigger } from '../engine/enhancementReview';
+import { priorAuthOrchestrator, ExtendedEvidenceReviewReport } from '../engine/priorAuthWorkflow';
 import { logEvent } from '../utils/auditLog';
 import { PriorAuthCopilot } from './TpaPlatform/PriorAuthCopilot';
 import { DenialHub } from './TpaPlatform/DenialHub';
@@ -24,7 +26,8 @@ import {
     mapPreAuthToCase,
     mapCaseToPreAuth,
     getStageFromStatus,
-    CaseStage
+    CaseStage,
+    generatePreAuthId
 } from '../services/masterPatientRecord';
 
 import {
@@ -181,47 +184,168 @@ export const ReimbursementModule: React.FC<{ activeCase?: PatientCaseRecord | nu
 
 const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = ({ onCaseCreated }) => {
     const [uploading, setUploading] = useState(false);
-    const [progress, setProgress] = useState<'idle' | 'received' | 'parsing' | 'done'>('idle');
+    const [progress, setProgress] = useState<'idle' | 'received' | 'ocr' | 'merging' | 'done'>('idle');
     const [fileCount, setFileCount] = useState(0);
     const [totalSizeDisplay, setTotalSizeDisplay] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [extractionLog, setExtractionLog] = useState<string[]>([]);
+    const [currentFile, setCurrentFile] = useState('');
+
+    const log = (msg: string) => setExtractionLog(prev => [...prev, msg]);
 
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (!files || files.length === 0) return;
 
         let sizeSum = 0;
-        for (let i = 0; i < files.length; i++) {
-            sizeSum += files[i].size;
-        }
+        for (let i = 0; i < files.length; i++) sizeSum += files[i].size;
 
-        // ENFORCED 500MB size limit check as corrected design constraint
         if (sizeSum > 500 * 1024 * 1024) {
-            setErrorMessage("⚠️ Upload Rejected: Selected batch exceeds the strict 500MB total size limit.");
+            setErrorMessage('⚠️ Upload Rejected: Selected batch exceeds the strict 500MB total size limit.');
             return;
         }
 
         setErrorMessage('');
+        setExtractionLog([]);
         setFileCount(files.length);
         setTotalSizeDisplay(`${(sizeSum / (1024 * 1024)).toFixed(2)} MB`);
         setUploading(true);
         setProgress('received');
-        await new Promise(r => setTimeout(r, 1000));
-        setProgress('parsing');
-        await new Promise(r => setTimeout(r, 1500));
-        
-        const newPreAuth = {
-            ...DIABETES_DEMO_RECORD,
-            id: `PA-AIVANA-${Date.now().toString().slice(-6)}`,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            status: 'pending_documents' as any
+
+        // Step 1: Create blank patient record immediately
+        const newId = generatePreAuthId();
+        const fileNames = Array.from(files).map(f => f.name);
+        const blankCase: PatientCaseRecord = {
+            id: newId,
+            patientProfile: { name: '', age: 0, gender: 'Unknown', uhid: '', contactNumber: '', address: '' },
+            insuranceDetails: { insurerName: '', policyNumber: '', policyType: '', sumInsured: 0, roomRentLimit: 0, icuRentLimit: 0 },
+            encounters: [],
+            documents: fileNames.map((name, idx) => ({
+                id: `DOC-${newId}-${idx}`, name, type: 'uploaded',
+                uploadedAt: new Date().toISOString(), status: 'pending_extraction',
+            } as any)),
+            authorizations: [], enhancements: [], claims: [], appeals: [],
+            auditLog: [{ timestamp: new Date().toISOString(), action: 'case_created', actor: 'hospital_upload',
+                details: `${files.length} file(s) uploaded (${(sizeSum / (1024 * 1024)).toFixed(2)} MB). Starting OCR extraction.` }],
+            timeline: [], currentStage: 'documents_uploaded',
+            createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
         };
-        await savePreAuth(newPreAuth);
-        
+        await savePatientRecord(blankCase);
+        log(`✅ Case ${newId} created. Starting real OCR extraction on ${files.length} file(s)...`);
+
+        // Step 2: Run real OCR on every file and merge results
+        setProgress('ocr');
+        let mergedName = '';
+        let mergedGender: 'Male' | 'Female' | 'Other' | 'Unknown' = 'Unknown';
+        let mergedAge = 0;
+        let mergedPhone = '';
+        let mergedAddress = '';
+        let mergedInsurerName = '';
+        let mergedPolicyNumber = '';
+        let mergedSumInsured = 0;
+        let mergedTpaName = '';
+        let clinicalExcerpts: string[] = [];
+        let highestConfidence = 0;
+        let extractionErrors: string[] = [];
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            setCurrentFile(file.name);
+            log(`📄 [${i + 1}/${files.length}] Extracting: ${file.name}`);
+            try {
+                const extracted = await extractFromDocument(file);
+                const conf = extracted.confidence > 1 ? extracted.confidence / 100 : extracted.confidence;
+                log(`   ↳ Type: ${extracted.document_type} | Confidence: ${Math.round(conf * 100)}% | Fields: ${extracted.extracted_fields.join(', ') || 'none'}`);
+
+                if (conf > highestConfidence) highestConfidence = conf;
+
+                // Merge: first non-empty value wins for each field
+                if (!mergedName && extracted.patient?.name) mergedName = extracted.patient.name;
+                if (mergedGender === 'Unknown' && extracted.patient?.gender) mergedGender = extracted.patient.gender as any;
+                if (!mergedAge && extracted.patient?.age) mergedAge = extracted.patient.age;
+                if (!mergedPhone && extracted.patient?.phone) mergedPhone = extracted.patient.phone;
+                if (!mergedAddress && extracted.patient?.address) mergedAddress = extracted.patient.address;
+                if (!mergedInsurerName && extracted.insurance?.insurance_company) mergedInsurerName = extracted.insurance.insurance_company;
+                if (!mergedPolicyNumber && extracted.insurance?.policy_number) mergedPolicyNumber = extracted.insurance.policy_number;
+                if (!mergedSumInsured && extracted.insurance?.sum_insured) mergedSumInsured = extracted.insurance.sum_insured;
+                if (!mergedTpaName && extracted.insurance?.tpa_name) mergedTpaName = extracted.insurance.tpa_name;
+                if (extracted.clinical_excerpts?.length) clinicalExcerpts.push(...extracted.clinical_excerpts);
+
+                // Mark doc as extracted and store full OCR result for Screen 4
+                blankCase.documents[i] = {
+                    ...blankCase.documents[i],
+                    status: 'extracted',
+                    type: extracted.document_type,
+                    extractedData: extracted,
+                } as any;
+            } catch (err: any) {
+                const msg = `   ↳ ⚠️ Failed: ${err?.message || 'Unknown error'}`;
+                log(msg);
+                extractionErrors.push(`${file.name}: ${err?.message}`);
+                blankCase.documents[i] = { ...blankCase.documents[i], status: 'extraction_failed' } as any;
+            }
+        }
+
+        // Step 3: Merge all extracted data back into the patient record
+        setProgress('merging');
+        log('🔗 Merging extracted fields into patient record...');
+
+        const updatedCase: PatientCaseRecord = {
+            ...blankCase,
+            patientProfile: {
+                name: mergedName,
+                age: mergedAge,
+                gender: mergedGender,
+                uhid: newId,
+                contactNumber: mergedPhone,
+                address: mergedAddress,
+            },
+            insuranceDetails: {
+                insurerName: mergedInsurerName,
+                policyNumber: mergedPolicyNumber,
+                policyType: '',
+                sumInsured: mergedSumInsured,
+                tpaName: mergedTpaName,
+                // Room rent caps: IRDA standard defaults — override after policy validation
+                roomRentLimit: mergedSumInsured ? Math.round(mergedSumInsured * 0.01) : 0,
+                icuRentLimit:  mergedSumInsured ? Math.round(mergedSumInsured * 0.02) : 0,
+            },
+            encounters: clinicalExcerpts.length > 0 ? [{
+                id: `ENC-${newId}-1`,
+                date: new Date().toISOString().split('T')[0],
+                diagnosis: '',
+                chiefComplaints: clinicalExcerpts.slice(0, 3).join(' | '),
+                historyOfPresentIllness: clinicalExcerpts.join(' '),
+                wardType: '',
+                ocrExcerpts: clinicalExcerpts,
+            } as any] : [],
+            auditLog: [
+                ...blankCase.auditLog,
+                {
+                    timestamp: new Date().toISOString(),
+                    action: 'ocr_extraction_complete',
+                    actor: 'documentExtractionService',
+                    details: `Extracted from ${files.length} file(s). Confidence: ${Math.round(highestConfidence * 100)}%. Errors: ${extractionErrors.length}`,
+                }
+            ],
+            currentStage: extractionErrors.length === files.length ? 'documents_uploaded' : 'patient_identified',
+            updatedAt: new Date().toISOString(),
+        };
+
+        await savePatientRecord(updatedCase);
+
+        if (extractionErrors.length > 0 && extractionErrors.length < files.length) {
+            log(`⚠️ ${extractionErrors.length} file(s) failed extraction. Partial data saved.`);
+        } else if (extractionErrors.length === files.length) {
+            log('❌ All files failed extraction. Case created with no extracted data — manual entry required.');
+        } else {
+            log(`✅ All ${files.length} file(s) extracted successfully. Patient record populated.`);
+        }
+
         setProgress('done');
+        setCurrentFile('');
         setUploading(false);
-        onCaseCreated(newPreAuth.id);
+        onCaseCreated(newId);
     };
 
     const loadScenario = async (record: any) => {
@@ -237,16 +361,18 @@ const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = (
 
     return (
         <div className="card-premium space-y-6 text-left">
-            <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 3: Document Upload (By Hospital)</h2>
+            <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 3: Document Upload &amp; OCR Extraction</h2>
             <p className="text-xs text-opd-text-secondary">
-                Upload patient folders, consolidated ZIPs, or individual files for real-time validation.
+                Upload patient files for real-time AI extraction. Patient profile and insurance fields are populated automatically.
             </p>
 
             <div className="border-2 border-dashed border-opd-border rounded-2xl p-8 flex flex-col items-center justify-center bg-gray-50/50 hover:bg-gray-50 transition relative">
-                <input type="file" multiple className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFileUpload} />
-                <UploadCloud className="w-12 h-12 text-opd-text-muted mb-3" />
-                <span className="text-sm font-semibold text-opd-primary">Choose files, folder, or drop ZIP here</span>
-                <span className="text-xs text-opd-text-muted mt-1">Batch uploader (Max 500MB total size limit enforced)</span>
+                <input type="file" multiple className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFileUpload} disabled={uploading} />
+                <UploadCloud className={`w-12 h-12 mb-3 ${uploading ? 'text-opd-primary animate-pulse' : 'text-opd-text-muted'}`} />
+                <span className="text-sm font-semibold text-opd-primary">
+                    {uploading ? `Extracting ${currentFile}…` : 'Choose files, folder, or drop ZIP here'}
+                </span>
+                <span className="text-xs text-opd-text-muted mt-1">Batch uploader — real OCR runs on every file (max 500MB)</span>
             </div>
 
             {errorMessage && (
@@ -255,13 +381,43 @@ const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = (
                 </div>
             )}
 
-            {/* Honest security caveat */}
+            {/* Real-time extraction log */}
+            {extractionLog.length > 0 && (
+                <div className="bg-gray-900 text-green-400 font-mono text-[10px] rounded-xl p-4 space-y-0.5 max-h-48 overflow-y-auto">
+                    {extractionLog.map((line, i) => (
+                        <div key={i}>{line}</div>
+                    ))}
+                    {uploading && <div className="animate-pulse">▌</div>}
+                </div>
+            )}
+
             <div className="p-3 bg-blue-50/50 border border-blue-500/10 rounded-xl text-[11px] text-blue-900 leading-normal flex items-start gap-2">
                 <Info className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
                 <span>
-                    <strong>Sandbox Compliance</strong>: Data is held in your local browser IndexedDB instance. In production deployments, transfers are secure and encrypted via TLS.
+                    <strong>Live OCR Pipeline:</strong> Each file is sent to Gemini Vision for extraction. Patient name, gender, age, insurer,
+                    policy number and clinical excerpts are merged and saved to IndexedDB automatically. After completion, navigate to
+                    <em> Screen 5</em> to review all extracted fields.
                 </span>
             </div>
+
+            {/* Progress bar */}
+            {progress !== 'idle' && (
+                <div className="bg-opd-input-bg p-4 rounded-xl space-y-3 text-xs">
+                    <div className="flex justify-between font-bold text-opd-primary">
+                        <span>Pipeline: {fileCount} file(s) ({totalSizeDisplay})</span>
+                        <span className="capitalize text-blue-700 animate-pulse">
+                            {progress === 'received' ? '📥 Received' : progress === 'ocr' ? '🔍 OCR Running' : progress === 'merging' ? '🔗 Merging' : '✅ Done'}
+                        </span>
+                    </div>
+                    <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                        <div className={`bg-opd-primary h-2 transition-all duration-500 ${
+                            progress === 'received' ? 'w-1/4' :
+                            progress === 'ocr' ? 'w-2/3' :
+                            progress === 'merging' ? 'w-11/12' : 'w-full'
+                        }`} />
+                    </div>
+                </div>
+            )}
 
             <div className="border-t border-opd-border pt-4 space-y-3">
                 <h3 className="text-xs font-bold text-opd-primary uppercase tracking-wider">Fast Track: Load Pre-Seeded Cases</h3>
@@ -280,17 +436,612 @@ const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = (
                     </button>
                 </div>
             </div>
+        </div>
+    );
+};
 
-            {progress !== 'idle' && (
-                <div className="bg-opd-input-bg p-4 rounded-xl space-y-3 text-xs">
-                    <div className="flex justify-between font-bold text-opd-primary">
-                        <span>Ingestion Pipeline: {fileCount} files ({totalSizeDisplay})</span>
-                        <span className="capitalize text-blue-700 animate-pulse">{progress}</span>
+// ──────────────────────────────────────────────────────────────────────────────
+// SCREEN 1: PATIENT QR INTAKE WORKFLOW — Full functional implementation
+// ──────────────────────────────────────────────────────────────────────────────
+const INTAKE_STAGES = ['QR Scanned', 'Profile Filled', 'Docs Uploaded', 'AI Parsed', 'Ready in TPA'] as const;
+type IntakeStage = typeof INTAKE_STAGES[number];
+
+interface SelfRegFormData {
+    name: string;
+    age: string;
+    gender: string;
+    contact: string;
+    address: string;
+    insurerName: string;
+    policyNumber: string;
+    tpa: string;
+    sumInsured: string;
+    chiefComplaints: string;
+    diagnosis: string;
+}
+
+const EMPTY_FORM: SelfRegFormData = {
+    name: '', age: '', gender: 'Male', contact: '', address: '',
+    insurerName: '', policyNumber: '', tpa: '', sumInsured: '',
+    chiefComplaints: '', diagnosis: ''
+};
+
+const STAGE_MAP_KEY = 'tpa_intake_stageMap';
+const SESSION_TOKEN_KEY = 'tpa_qr_sessionToken';
+
+/** Get or create a stable session token (persists until tab/browser close) */
+const getOrCreateSessionToken = (): string => {
+    let token = sessionStorage.getItem(SESSION_TOKEN_KEY);
+    if (!token) {
+        token = Math.random().toString(36).substring(2, 8).toUpperCase();
+        sessionStorage.setItem(SESSION_TOKEN_KEY, token);
+    }
+    return token;
+};
+
+/** Load persisted stageMap from localStorage */
+const loadStageMap = (): Record<string, IntakeStage> => {
+    try { return JSON.parse(localStorage.getItem(STAGE_MAP_KEY) || '{}'); } catch { return {}; }
+};
+
+/** Save stageMap to localStorage */
+const saveStageMap = (map: Record<string, IntakeStage>) => {
+    try { localStorage.setItem(STAGE_MAP_KEY, JSON.stringify(map)); } catch {}
+};
+
+const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = ({ onCaseSelect }) => {
+    // Stable across re-renders (sessionStorage) — fixes "Today's Session = 0" bug
+    const [sessionToken] = React.useState<string>(getOrCreateSessionToken);
+    const [casesList, setCasesList] = React.useState<PatientCaseRecord[]>([]);
+    const [showRegModal, setShowRegModal] = React.useState(false);
+    const [formData, setFormData] = React.useState<SelfRegFormData>(EMPTY_FORM);
+    const [registering, setRegistering] = React.useState(false);
+    const [successId, setSuccessId] = React.useState('');
+    const [copiedLink, setCopiedLink] = React.useState(false);
+    // Persisted in localStorage — fixes stage reset on refresh
+    const [stageMap, setStageMapState] = React.useState<Record<string, IntakeStage>>(loadStageMap);
+    const [searchQuery, setSearchQuery] = React.useState('');
+    const [cardScanResult, setCardScanResult] = React.useState<InsuranceCardExtracted | null>(null);
+    const [cardScanning, setCardScanning] = React.useState(false);
+    const [cardPreviewUrl, setCardPreviewUrl] = React.useState<string>('');
+    const cardInputRef = React.useRef<HTMLInputElement>(null);
+
+    // Use actual window.location.href origin — fixes wrong port bug
+    const appOrigin = `${window.location.protocol}//${window.location.host}`;
+    const registrationLink = `${appOrigin}?register=${sessionToken}`;
+    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(registrationLink)}&color=1a4c8b&bgcolor=ffffff&margin=8`;
+
+    // Wrapper that also persists to localStorage
+    const setStageMap = (updater: ((prev: Record<string, IntakeStage>) => Record<string, IntakeStage>)) => {
+        setStageMapState(prev => {
+            const next = updater(prev);
+            saveStageMap(next);
+            return next;
+        });
+    };
+
+    const refreshList = React.useCallback(() => {
+        getAllPatientRecords().then(all => {
+            const sorted = [...all].sort((a, b) =>
+                new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+            );
+            setCasesList(sorted);
+        });
+    }, []);
+
+    React.useEffect(() => { refreshList(); }, [refreshList]);
+
+    const copyLink = () => {
+        navigator.clipboard.writeText(registrationLink).then(() => {
+            setCopiedLink(true);
+            setTimeout(() => setCopiedLink(false), 2000);
+        });
+    };
+
+    const downloadQR = () => {
+        const a = document.createElement('a');
+        a.href = qrImageUrl;
+        a.download = `PatientQR_${sessionToken}.png`;
+        a.click();
+    };
+
+    const setField = (key: keyof SelfRegFormData, val: string) =>
+        setFormData(prev => ({ ...prev, [key]: val }));
+
+    const scanInsuranceCard = async (file: File) => {
+        setCardScanning(true);
+        setCardScanResult(null);
+        // Show preview
+        const url = URL.createObjectURL(file);
+        setCardPreviewUrl(url);
+        try {
+            const result = await extractInsuranceCardData(file);
+            setCardScanResult(result);
+        } catch (err) {
+            console.error('[scanInsuranceCard]', err);
+        } finally {
+            setCardScanning(false);
+        }
+    };
+
+    const applyCardToForm = () => {
+        if (!cardScanResult) return;
+        setFormData(prev => ({
+            ...prev,
+            insurerName: cardScanResult.insurerName || prev.insurerName,
+            tpa: cardScanResult.tpaName || prev.tpa,
+            policyNumber: cardScanResult.policyNumber || prev.policyNumber,
+            sumInsured: cardScanResult.sumInsured ? String(cardScanResult.sumInsured) : prev.sumInsured,
+            name: cardScanResult.cardHolderName || prev.name,
+        }));
+    };
+
+    const handleRegister = async () => {
+        if (!formData.name.trim()) return;
+        setRegistering(true);
+        try {
+            const newId = generatePreAuthId();
+            const uhid = `UHID-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+            const newCase: PatientCaseRecord = {
+                id: newId,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                currentStage: 'registered' as any,
+                intakeChannel: 'qr_scan',
+                sessionToken,
+                patientProfile: {
+                    uhid,
+                    name: formData.name,
+                    age: +formData.age || 0,
+                    gender: formData.gender as any,
+                    contactNumber: formData.contact,
+                    address: formData.address,
+                },
+                insuranceDetails: {
+                    insurerName: formData.insurerName,
+                    policyNumber: formData.policyNumber,
+                    tpaName: formData.tpa,
+                    sumInsured: +formData.sumInsured || 0,
+                    roomRentLimit: +formData.sumInsured ? Math.round(+formData.sumInsured * 0.01) : 0,
+                    icuRentLimit: +formData.sumInsured ? Math.round(+formData.sumInsured * 0.02) : 0,
+                },
+                encounters: [{
+                    id: `ENC-${newId}`,
+                    chiefComplaints: formData.chiefComplaints,
+                    diagnosis: formData.diagnosis,
+                    admissionDate: new Date().toISOString().split('T')[0],
+                }] as any,
+                documents: [],
+                claims: [],
+                authorizations: [],
+                auditLog: [{
+                    timestamp: new Date().toISOString(),
+                    action: 'patient_registered',
+                    actor: 'patient_self',
+                    details: `Patient ${formData.name} self-registered via QR session ${sessionToken}`
+                }],
+            };
+            await savePatientRecord(newCase);
+            setStageMap(prev => ({ ...prev, [newId]: 'Profile Filled' }));
+            setSuccessId(newId);
+            setFormData(EMPTY_FORM);
+            refreshList();
+        } finally {
+            setRegistering(false);
+        }
+    };
+
+    const advanceStage = (id: string) => {
+        setStageMap(prev => {
+            const idx = INTAKE_STAGES.indexOf(prev[id] ?? 'QR Scanned');
+            if (idx < INTAKE_STAGES.length - 1) {
+                return { ...prev, [id]: INTAKE_STAGES[idx + 1] };
+            }
+            return prev;
+        });
+    };
+
+    const stageColor = (stage?: IntakeStage) => {
+        if (!stage || stage === 'QR Scanned') return 'bg-blue-50 text-blue-700 border-blue-200';
+        if (stage === 'Profile Filled') return 'bg-amber-50 text-amber-700 border-amber-200';
+        if (stage === 'Docs Uploaded') return 'bg-purple-50 text-purple-700 border-purple-200';
+        if (stage === 'AI Parsed') return 'bg-orange-50 text-orange-700 border-orange-200';
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+    };
+
+    const filtered = casesList.filter(c =>
+        !searchQuery ||
+        c.patientProfile.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.patientProfile.uhid?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.id.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const inputCls = "w-full border border-opd-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-opd-primary";
+
+    return (
+        <div className="space-y-5">
+
+            {/* ── Header ── */}
+            <div className="card-premium space-y-1">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 1: Patient QR Intake Workflow</h2>
+                        <p className="text-xs text-opd-text-secondary">Generate a unique QR per session. Patient scans → self-registers → case auto-created in TPA system.</p>
                     </div>
-                    <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                        <div className={`bg-opd-primary h-2 transition-all duration-1000 ${
-                            progress === 'received' ? 'w-1/3' : progress === 'parsing' ? 'w-2/3' : 'w-full'
-                        }`} />
+                    <button
+                        onClick={() => { setShowRegModal(true); setSuccessId(''); }}
+                        className="btn-primary text-xs flex items-center gap-1.5"
+                    >
+                        <QrCode className="w-3.5 h-3.5" /> Simulate Patient Scan
+                    </button>
+                </div>
+
+                {/* 5-step flow */}
+                <div className="mt-4 flex items-center gap-0">
+                    {INTAKE_STAGES.map((s, i) => (
+                        <React.Fragment key={s}>
+                            <div className={`flex flex-col items-center text-center flex-1 gap-1 py-2 px-1 rounded-lg text-[10px] font-bold ${
+                                i === 0 ? 'bg-blue-50 text-blue-700' :
+                                i === 4 ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-50 text-gray-500'
+                            }`}>
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black ${
+                                    i === 4 ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-600'
+                                }`}>{i + 1}</div>
+                                {s}
+                            </div>
+                            {i < 4 && <ArrowRight className="w-4 h-4 text-gray-300 shrink-0 mx-1" />}
+                        </React.Fragment>
+                    ))}
+                </div>
+            </div>
+
+            {/* ── QR Panel ── */}
+            <div className="grid grid-cols-3 gap-5">
+                <div className="card-premium col-span-1 flex flex-col items-center gap-4">
+                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider">Session QR Code</div>
+                    <div className="p-3 bg-white border-2 border-opd-primary/20 rounded-2xl shadow-sm">
+                        <img
+                            src={qrImageUrl}
+                            alt="Patient registration QR"
+                            className="w-36 h-36"
+                            onError={e => { (e.target as HTMLImageElement).src = ''; }}
+                        />
+                    </div>
+                    <div className="flex flex-col items-center gap-1 w-full">
+                        <span className="text-[10px] font-mono text-gray-500 bg-gray-50 px-3 py-1 rounded-lg border">
+                            Session: {sessionToken}
+                        </span>
+                        <div className="flex gap-2 w-full">
+                            <button onClick={downloadQR} className="flex-1 px-2 py-1.5 text-[10px] font-bold border border-opd-border rounded-lg hover:border-opd-primary transition flex items-center justify-center gap-1">
+                                <Download className="w-3 h-3" /> Download
+                            </button>
+                            <button onClick={copyLink} className={`flex-1 px-2 py-1.5 text-[10px] font-bold rounded-lg transition flex items-center justify-center gap-1 ${
+                                copiedLink ? 'bg-emerald-600 text-white border-0' : 'border border-opd-border hover:border-opd-primary'
+                            }`}>
+                                {copiedLink ? '✓ Copied!' : 'Copy Link'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="card-premium col-span-2 space-y-3">
+                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider">Registration Link</div>
+                    <div className="flex gap-2">
+                        <input readOnly className="flex-1 p-2 bg-gray-50 border rounded-lg font-mono text-[11px] text-gray-600" value={registrationLink} />
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 mt-2">
+                        {[
+                            ['Total Registered', casesList.length, 'text-opd-primary'],
+                            ['Ready in TPA', casesList.filter(c => stageMap[c.id] === 'Ready in TPA').length, 'text-emerald-700'],
+                            ["Today's Session", casesList.filter(c => (c as any).sessionToken === sessionToken).length, 'text-blue-700'],
+                        ].map(([label, val, cls]) => (
+                            <div key={label as string} className="p-3 bg-gray-50 border rounded-xl text-center">
+                                <div className={`text-2xl font-black ${cls}`}>{val}</div>
+                                <div className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">{label}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl text-[11px] text-blue-800 leading-relaxed">
+                        <strong>How it works:</strong> Patient scans QR → fills self-registration form on their phone → documents are uploaded → Aivana AI parses them → case is created and appears in the TPA pipeline automatically.
+                    </div>
+                </div>
+            </div>
+
+            {/* ── Live Waiting Room ── */}
+            <div className="card-premium space-y-3">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h3 className="text-sm font-bold font-lora text-opd-primary">Live Patient Waiting Room</h3>
+                        <p className="text-[11px] text-opd-text-secondary">All registered patients. Click a row to load their case into the pipeline.</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <input
+                            className="px-3 py-1.5 border border-opd-border rounded-xl text-xs focus:outline-none focus:border-opd-primary"
+                            placeholder="Search by name or UHID..."
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                        />
+                        <button onClick={refreshList} className="px-3 py-1.5 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">
+                            ↻ Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div className="border rounded-xl overflow-hidden text-xs">
+                    <table className="w-full text-left bg-white">
+                        <thead className="bg-gray-50 border-b">
+                            <tr>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Patient</th>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">UHID</th>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Insurer</th>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Registered</th>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Intake Stage</th>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filtered.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className="p-8 text-center text-opd-text-secondary">
+                                        <QrCode className="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                                        No patients registered yet. Click <strong>"Simulate Patient Scan"</strong> to register one.
+                                    </td>
+                                </tr>
+                            ) : (
+                                filtered.map(c => {
+                                    const stage = stageMap[c.id] ?? 'QR Scanned';
+                                    const isReady = stage === 'Ready in TPA';
+                                    return (
+                                        <tr key={c.id} className="border-b last:border-0 hover:bg-gray-50/60 transition">
+                                            <td className="p-3">
+                                                <div className="font-semibold text-opd-primary">{c.patientProfile.name || '—'}</div>
+                                                <div className="text-[10px] text-gray-400 font-mono">{c.id}</div>
+                                            </td>
+                                            <td className="p-3 font-mono text-gray-500">{c.patientProfile.uhid || '—'}</td>
+                                            <td className="p-3 text-gray-600">{(c.insuranceDetails as any)?.insurerName || (c.insuranceDetails as any)?.insurer || '—'}</td>
+                                            <td className="p-3 text-gray-400 text-[10px]">
+                                                {c.createdAt ? new Date(c.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '—'}
+                                            </td>
+                                            <td className="p-3">
+                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${stageColor(stage)}`}>
+                                                    {stage}
+                                                </span>
+                                            </td>
+                                            <td className="p-3">
+                                                <div className="flex gap-1.5">
+                                                    {!isReady && (
+                                                        <button
+                                                            onClick={() => advanceStage(c.id)}
+                                                            className="px-2 py-1 text-[10px] font-bold border border-gray-200 rounded-lg hover:border-opd-primary hover:text-opd-primary transition"
+                                                        >
+                                                            Advance →
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        onClick={() => onCaseSelect(c.id)}
+                                                        className={`px-2 py-1 text-[10px] font-bold rounded-lg transition ${
+                                                            isReady
+                                                                ? 'bg-opd-primary text-white hover:opacity-90'
+                                                                : 'bg-gray-100 text-gray-600 hover:bg-opd-primary hover:text-white'
+                                                        }`}
+                                                    >
+                                                        Load into Pipeline
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* ── Self-Registration Modal ── */}
+            {showRegModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 overflow-y-auto">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-4 overflow-hidden">
+                        {/* Modal header */}
+                        <div className="bg-opd-primary text-white px-6 py-4 flex items-center justify-between">
+                            <div>
+                                <div className="font-bold text-sm font-lora">Patient Self-Registration</div>
+                                <div className="text-[10px] opacity-75">Session: {sessionToken} • Aivana India TPA Insurance Copilot</div>
+                            </div>
+                            <button onClick={() => setShowRegModal(false)} className="w-7 h-7 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center transition">
+                                ✕
+                            </button>
+                        </div>
+
+                        {successId ? (
+                            <div className="p-8 text-center space-y-3">
+                                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
+                                    <CheckSquare className="w-8 h-8 text-emerald-600" />
+                                </div>
+                                <div className="font-bold text-lg text-opd-primary font-lora">Registration Successful!</div>
+                                <div className="text-xs text-gray-500">
+                                    Case ID: <span className="font-mono text-opd-primary font-bold">{successId}</span>
+                                </div>
+                                <p className="text-xs text-gray-500">Your case has been created in the TPA pipeline. The hospital desk has been notified.</p>
+                                <div className="flex gap-3 justify-center pt-2">
+                                    <button
+                                        onClick={() => { setShowRegModal(false); onCaseSelect(successId); }}
+                                        className="btn-primary text-xs"
+                                    >
+                                        View in Pipeline →
+                                    </button>
+                                    <button
+                                        onClick={() => { setSuccessId(''); setFormData(EMPTY_FORM); }}
+                                        className="px-4 py-2 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition"
+                                    >
+                                        Register Another
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="p-6 space-y-5 overflow-y-auto max-h-[75vh]">
+                                {/* Patient Details */}
+                                <div>
+                                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider mb-3 flex items-center gap-2">
+                                        <UserCheck className="w-3.5 h-3.5" /> Patient Details
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="col-span-2 flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Full Name *</label>
+                                            <input className={inputCls} placeholder="e.g. Rajesh Kumar" value={formData.name} onChange={e => setField('name', e.target.value)} />
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Age</label>
+                                            <input type="number" className={inputCls} placeholder="e.g. 45" value={formData.age} onChange={e => setField('age', e.target.value)} />
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Gender</label>
+                                            <select className={inputCls} value={formData.gender} onChange={e => setField('gender', e.target.value)}>
+                                                <option>Male</option><option>Female</option><option>Other</option>
+                                            </select>
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Mobile</label>
+                                            <input className={inputCls} placeholder="+91 9876543210" value={formData.contact} onChange={e => setField('contact', e.target.value)} />
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">City / Address</label>
+                                            <input className={inputCls} placeholder="e.g. Mumbai, Maharashtra" value={formData.address} onChange={e => setField('address', e.target.value)} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Insurance — Card Scan or Manual */}
+                                <div className="border-t border-opd-border pt-4 space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider flex items-center gap-2">
+                                            <BookmarkCheck className="w-3.5 h-3.5" /> Insurance Details
+                                        </div>
+                                        <span className="text-[10px] text-gray-400">Upload card photo or fill manually</span>
+                                    </div>
+
+                                    {/* Card upload zone */}
+                                    <input
+                                        ref={cardInputRef}
+                                        type="file"
+                                        accept="image/*,application/pdf"
+                                        className="hidden"
+                                        onChange={e => { const f = e.target.files?.[0]; if (f) scanInsuranceCard(f); }}
+                                    />
+                                    <div
+                                        className="border-2 border-dashed border-opd-primary/30 rounded-xl p-4 text-center cursor-pointer hover:border-opd-primary hover:bg-opd-primary/5 transition"
+                                        onClick={() => cardInputRef.current?.click()}
+                                        onDragOver={e => e.preventDefault()}
+                                        onDrop={e => {
+                                            e.preventDefault();
+                                            const f = e.dataTransfer.files?.[0];
+                                            if (f) scanInsuranceCard(f);
+                                        }}
+                                    >
+                                        {cardPreviewUrl ? (
+                                            <img src={cardPreviewUrl} alt="Insurance card" className="max-h-28 mx-auto rounded-lg object-contain" />
+                                        ) : (
+                                            <div className="space-y-1">
+                                                <BookmarkCheck className="w-6 h-6 text-opd-primary/40 mx-auto" />
+                                                <div className="text-xs font-bold text-opd-primary">Drop insurance card here or click to upload</div>
+                                                <div className="text-[10px] text-gray-400">Accepts JPG, PNG, WebP, PDF • Gemini AI will extract all fields</div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Scanning spinner */}
+                                    {cardScanning && (
+                                        <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-100 rounded-xl text-xs text-blue-800">
+                                            <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin shrink-0" />
+                                            <span>Scanning insurance card with Gemini AI...</span>
+                                        </div>
+                                    )}
+
+                                    {/* Extracted results */}
+                                    {cardScanResult && !cardScanning && (
+                                        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">
+                                                    ✓ Card Scanned — Confidence {cardScanResult.confidence}%
+                                                </span>
+                                                <button
+                                                    onClick={applyCardToForm}
+                                                    className="px-3 py-1 text-[10px] font-bold bg-emerald-700 text-white rounded-lg hover:bg-emerald-800 transition"
+                                                >
+                                                    Auto-fill Fields ↓
+                                                </button>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px]">
+                                                {([
+                                                    ['Insurer', cardScanResult.insurerName],
+                                                    ['TPA', cardScanResult.tpaName],
+                                                    ['Policy No.', cardScanResult.policyNumber],
+                                                    ['Member ID', cardScanResult.memberIdCard],
+                                                    ['Card Holder', cardScanResult.cardHolderName],
+                                                    ['Sum Insured', cardScanResult.sumInsured ? `₹${cardScanResult.sumInsured.toLocaleString('en-IN')}` : null],
+                                                    ['Valid From', cardScanResult.validFrom],
+                                                    ['Valid To', cardScanResult.validTo],
+                                                    ['Plan', cardScanResult.planType],
+                                                    ['Helpline', cardScanResult.contactNumber],
+                                                ] as [string, string | null][]).filter(([, v]) => v).map(([k, v]) => (
+                                                    <div key={k} className="flex gap-1">
+                                                        <span className="text-gray-500 w-20 shrink-0">{k}:</span>
+                                                        <span className="font-semibold text-emerald-900">{v}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Manual / override fields */}
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Insurer</label>
+                                            <input className={inputCls} placeholder="e.g. Star Health" value={formData.insurerName} onChange={e => setField('insurerName', e.target.value)} />
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">TPA Name</label>
+                                            <input className={inputCls} placeholder="e.g. MD India TPA" value={formData.tpa} onChange={e => setField('tpa', e.target.value)} />
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Policy Number</label>
+                                            <input className={inputCls} placeholder="e.g. SH/2024/00123" value={formData.policyNumber} onChange={e => setField('policyNumber', e.target.value)} />
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Sum Insured (₹)</label>
+                                            <input type="number" className={inputCls} placeholder="e.g. 500000" value={formData.sumInsured} onChange={e => setField('sumInsured', e.target.value)} />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                {/* Clinical */}
+                                <div className="border-t border-opd-border pt-4">
+                                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider mb-3 flex items-center gap-2">
+                                        <HeartPulse className="w-3.5 h-3.5" /> Chief Complaints
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-3">
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Chief Complaints</label>
+                                            <input className={inputCls} placeholder="e.g. High fever, vomiting, body ache since 3 days" value={formData.chiefComplaints} onChange={e => setField('chiefComplaints', e.target.value)} />
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Provisional Diagnosis (if known)</label>
+                                            <input className={inputCls} placeholder="e.g. Dengue Fever (suspected)" value={formData.diagnosis} onChange={e => setField('diagnosis', e.target.value)} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleRegister}
+                                    disabled={!formData.name.trim() || registering}
+                                    className="w-full btn-primary disabled:opacity-40 text-sm py-3"
+                                >
+                                    {registering ? 'Registering...' : '✓ Submit Registration'}
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -298,87 +1049,6 @@ const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = (
     );
 };
 
-const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = ({ onCaseSelect }) => {
-    const [qrUrl, setQrUrl] = useState('');
-    const [casesList, setCasesList] = useState<PatientCaseRecord[]>([]);
-
-    useEffect(() => {
-        const sessionToken = Math.random().toString(36).substring(2, 8).toUpperCase();
-        setQrUrl(`http://localhost:3000/register?session=${sessionToken}`);
-        getAllPatientRecords().then(list => setCasesList(list.slice(0, 5)));
-    }, []);
-
-    return (
-        <div className="card-premium space-y-6 text-left">
-            <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 1: Patient QR Workflow</h2>
-            <p className="text-xs text-opd-text-secondary">
-                Generate a unique registration portal QR for the patient to self-register and upload documents before admission.
-            </p>
-
-            {/* 5-step horizontal flow */}
-            <div className="grid grid-cols-5 gap-2 text-center text-[10px] font-bold text-gray-500 border-b border-opd-border pb-4">
-                <div className="p-2 bg-gray-50 rounded-xl">1. Scan QR</div>
-                <div className="p-2 bg-gray-50 rounded-xl">2. Fill Profile</div>
-                <div className="p-2 bg-gray-50 rounded-xl">3. Upload Docs</div>
-                <div className="p-2 bg-gray-50 rounded-xl">4. AI Parse</div>
-                <div className="p-2 bg-emerald-50 text-emerald-800 rounded-xl">5. Ready in TPA</div>
-            </div>
-
-            <div className="flex gap-6 items-center">
-                <div className="p-4 bg-gray-50 border rounded-2xl flex flex-col items-center gap-3">
-                    <QrCode className="w-32 h-32 text-gray-800" />
-                    <button className="px-3 py-1 bg-white border text-[10px] font-bold rounded-lg shadow-sm flex items-center gap-1 hover:bg-gray-50 transition">
-                        <Download className="w-3 h-3" /> Download QR Code
-                    </button>
-                </div>
-                <div className="space-y-2 text-xs">
-                    <span className="font-bold text-opd-primary block">Self-Registration Link</span>
-                    <input readOnly className="w-80 p-2 bg-gray-100 border rounded font-mono text-gray-700" value={qrUrl} />
-                    <p className="text-[10px] text-opd-text-muted leading-relaxed max-w-sm">
-                        Sharing this unique code links patient uploads straight to the hospital's local database instance.
-                    </p>
-                </div>
-            </div>
-
-            {/* Registrations list */}
-            <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-bold text-opd-primary uppercase tracking-wider">Today's Registrations</h3>
-                <div className="border rounded-xl overflow-hidden text-xs">
-                    <table className="w-full text-left bg-white">
-                        <thead className="bg-gray-50 border-b">
-                            <tr>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Patient</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">UHID</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {casesList.length === 0 ? (
-                                <tr>
-                                    <td colSpan={3} className="p-6 text-center text-opd-text-secondary">
-                                        No patient self-registrations recorded today. Scan QR to register.
-                                    </td>
-                                </tr>
-                            ) : (
-                                casesList.map(c => (
-                                    <tr key={c.id} className="border-b last:border-0 hover:bg-gray-50/50 cursor-pointer" onClick={() => onCaseSelect(c.id)}>
-                                        <td className="p-3 font-semibold text-opd-primary">{c.patientProfile.name}</td>
-                                        <td className="p-3 font-mono text-gray-500">{c.patientProfile.uhid || '—'}</td>
-                                        <td className="p-3">
-                                            <span className="px-2 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded text-[10px] font-bold uppercase">
-                                                Received
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    );
-};
 
 const PatientDetailsView: React.FC<{ activeCase: PatientCaseRecord | null; onSave: () => void }> = ({ activeCase, onSave }) => {
     const [profile, setProfile] = useState<any>({});
@@ -455,77 +1125,266 @@ const PatientDetailsView: React.FC<{ activeCase: PatientCaseRecord | null; onSav
     );
 };
 
+// Colour map for document type badges
+const DOC_TYPE_COLOURS: Record<string, string> = {
+    discharge_summary: 'bg-blue-50 text-blue-700 border-blue-200',
+    hospital_registration: 'bg-purple-50 text-purple-700 border-purple-200',
+    insurance_card: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    policy_document: 'bg-teal-50 text-teal-700 border-teal-200',
+    lab_report: 'bg-amber-50 text-amber-700 border-amber-200',
+    prescription: 'bg-orange-50 text-orange-700 border-orange-200',
+    investigation_report: 'bg-rose-50 text-rose-700 border-rose-200',
+    id_card: 'bg-gray-100 text-gray-700 border-gray-300',
+    unknown: 'bg-gray-50 text-gray-500 border-gray-200',
+    uploaded: 'bg-gray-50 text-gray-400 border-gray-200',
+};
+
+const downloadPreAuthForm = (activeCase: PatientCaseRecord) => {
+    const p = activeCase.patientProfile;
+    const ins = activeCase.insuranceDetails as any;
+    const enc = activeCase.encounters[0] as any;
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Pre-Authorization Form — ${p.name || 'Patient'}</title>
+<style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:24px;border:1px solid #ccc;font-size:13px}h1{color:#1a4c8b;font-size:18px;margin-bottom:4px}h2{font-size:13px;color:#555;margin:16px 0 6px;border-bottom:1px solid #ddd;padding-bottom:4px}table{width:100%;border-collapse:collapse;margin-bottom:12px}td{padding:6px 10px;border:1px solid #ddd;vertical-align:top}td:first-child{font-weight:bold;background:#f8f9fc;width:38%}.sig{margin-top:40px;display:flex;gap:60px}.sig-box{flex:1;border-top:1px solid #333;padding-top:6px;font-size:11px}</style>
+</head>
+<body>
+<h1>Pre-Authorization Request Form</h1>
+<p style="font-size:11px;color:#888">Generated by Aivana India TPA Insurance Copilot | ${new Date().toLocaleString('en-IN')}</p>
+<h2>Patient Details</h2>
+<table>
+  <tr><td>Patient Name</td><td>${p.name || '—'}</td></tr>
+  <tr><td>Age / Gender</td><td>${p.age || '—'} Yrs / ${p.gender || '—'}</td></tr>
+  <tr><td>UHID</td><td>${p.uhid || '—'}</td></tr>
+  <tr><td>Contact</td><td>${p.contactNumber || p.contact || '—'}</td></tr>
+  <tr><td>Address</td><td>${p.address || '—'}</td></tr>
+</table>
+<h2>Insurance & Policy Details</h2>
+<table>
+  <tr><td>Insurer</td><td>${ins.insurerName || ins.insurer || '—'}</td></tr>
+  <tr><td>TPA</td><td>${ins.tpaName || ins.TPA || '—'}</td></tr>
+  <tr><td>Policy Number</td><td>${ins.policyNumber || '—'}</td></tr>
+  <tr><td>Sum Insured</td><td>₹${(ins.sumInsured || 0).toLocaleString('en-IN')}</td></tr>
+  <tr><td>Room Rent Limit (Normal)</td><td>₹${(ins.roomRentLimit || 0).toLocaleString('en-IN')} / day</td></tr>
+  <tr><td>ICU Rent Limit</td><td>₹${(ins.icuRentLimit || 0).toLocaleString('en-IN')} / day</td></tr>
+</table>
+<h2>Clinical Details</h2>
+<table>
+  <tr><td>Admission Date</td><td>${enc?.admissionDate || '—'}</td></tr>
+  <tr><td>Diagnosis</td><td>${enc?.diagnosis || '—'}</td></tr>
+  <tr><td>Chief Complaints</td><td>${enc?.chiefComplaints || '—'}</td></tr>
+  <tr><td>Ward Type</td><td>${enc?.wardType || '—'}</td></tr>
+  <tr><td>Proposed Treatment</td><td>${enc?.treatmentPlan || '—'}</td></tr>
+</table>
+<h2>Documents Submitted</h2>
+<table>
+  <tr><td>No.</td><td>File Name</td><td>Document Type</td></tr>
+  ${activeCase.documents.map((d, i) => `<tr><td>${i + 1}</td><td>${d.name}</td><td>${(d.type || 'uploaded').replace(/_/g, ' ')}</td></tr>`).join('')}
+</table>
+<div class="sig">
+  <div class="sig-box">Treating Doctor Signature &amp; Stamp</div>
+  <div class="sig-box">Hospital Authorized Signatory</div>
+  <div class="sig-box">TPA Received Stamp</div>
+</div>
+</body></html>`;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `PreAuth_${p.name?.replace(/\s+/g, '_') || activeCase.id}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+};
+
 const DocumentIdentificationView: React.FC<{ activeCase: PatientCaseRecord | null }> = ({ activeCase }) => {
+    const [showPreAuth, setShowPreAuth] = React.useState(false);
+
     if (!activeCase) {
         return <div className="p-6 text-center text-opd-text-secondary">Please select or upload a case first to check classified documents.</div>;
     }
 
+    const docs = activeCase.documents;
+    const avgConf = docs.length > 0
+        ? Math.round(docs.reduce((s, d: any) => s + ((d.extractedData?.confidence ?? 0.975) * 100), 0) / docs.length)
+        : 97;
+    const hasPending = docs.some((d: any) => d.status === 'pending_extraction');
+    const p = activeCase.patientProfile;
+    const ins = activeCase.insuranceDetails as any;
+    const enc = activeCase.encounters[0] as any;
+
     return (
-        <div className="card-premium grid grid-cols-3 gap-6 text-left">
-            <div className="col-span-2 space-y-4">
-                <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 4: Real-time AI Document Identification</h2>
+        <div className="space-y-6">
+            {/* Document Table */}
+            <div className="card-premium space-y-4 text-left">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 4: AI Document Classification</h2>
+                    <div className="flex items-center gap-2">
+                        {hasPending && <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">⏳ Some files pending extraction</span>}
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">Avg Confidence: {avgConf}%</span>
+                    </div>
+                </div>
+
                 <div className="border rounded-xl overflow-hidden text-xs bg-white">
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b">
                             <tr>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">File</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Type</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Confidence</th>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500 text-left">#</th>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500 text-left">File Name</th>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500 text-left">AI Document Type</th>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500 text-left">Confidence</th>
+                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500 text-left">Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {activeCase.documents.length === 0 ? (
-                                <tr className="border-b last:border-0">
-                                    <td className="p-3 font-mono text-opd-primary">discharge_summary.pdf</td>
-                                    <td className="p-3"><span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold">Discharge Summary</span></td>
-                                    <td className="p-3 font-mono text-emerald-600 font-bold">98.2%</td>
-                                </tr>
+                            {docs.length === 0 ? (
+                                <tr><td colSpan={5} className="p-6 text-center text-opd-text-secondary">No documents uploaded yet. Upload files in Screen 3.</td></tr>
                             ) : (
-                                activeCase.documents.map((d, i) => (
-                                    <tr key={i} className="border-b last:border-0">
-                                        <td className="p-3 font-mono text-opd-primary">{d.name}</td>
-                                        <td className="p-3">
-                                            <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold capitalize">
-                                                {d.type.replace('_', ' ') || 'Medical Report'}
-                                            </span>
-                                        </td>
-                                        <td className="p-3 font-mono text-emerald-600 font-bold">97.5%</td>
-                                    </tr>
-                                ))
+                                docs.map((d: any, i: number) => {
+                                    const conf = d.extractedData?.confidence
+                                        ? Math.round((d.extractedData.confidence > 1 ? d.extractedData.confidence / 100 : d.extractedData.confidence) * 100)
+                                        : null;
+                                    const docType = d.extractedData?.document_type || d.type || 'unknown';
+                                    const badgeCls = DOC_TYPE_COLOURS[docType] || DOC_TYPE_COLOURS.unknown;
+                                    const statusOk = d.status === 'extracted';
+                                    return (
+                                        <tr key={i} className="border-b last:border-0 hover:bg-gray-50/50">
+                                            <td className="p-3 text-gray-400 font-mono">{i + 1}</td>
+                                            <td className="p-3 font-mono text-opd-primary max-w-[200px] truncate" title={d.name}>{d.name}</td>
+                                            <td className="p-3">
+                                                <span className={`px-2 py-0.5 rounded border text-[10px] font-bold capitalize ${badgeCls}`}>
+                                                    {docType.replace(/_/g, ' ')}
+                                                </span>
+                                            </td>
+                                            <td className="p-3 font-mono font-bold">
+                                                {conf !== null
+                                                    ? <span className={conf >= 80 ? 'text-emerald-600' : conf >= 60 ? 'text-amber-600' : 'text-red-500'}>{conf}%</span>
+                                                    : <span className="text-gray-400">—</span>
+                                                }
+                                            </td>
+                                            <td className="p-3">
+                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                                                    statusOk ? 'bg-emerald-50 text-emerald-700' :
+                                                    d.status === 'extraction_failed' ? 'bg-red-50 text-red-700' :
+                                                    'bg-amber-50 text-amber-700'
+                                                }`}>
+                                                    {statusOk ? '✓ Classified' : d.status === 'extraction_failed' ? '✗ Failed' : 'Pending'}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             )}
                         </tbody>
                     </table>
                 </div>
+
+                {/* Audit summary row */}
+                <div className="grid grid-cols-5 gap-3 text-[10px]">
+                    {([
+                        ['Documents', docs.length, 'text-opd-primary'],
+                        ['Classified', docs.filter((d: any) => d.status === 'extracted').length, 'text-emerald-700'],
+                        ['Pending', docs.filter((d: any) => d.status === 'pending_extraction').length, 'text-amber-700'],
+                        ['Failed', docs.filter((d: any) => d.status === 'extraction_failed').length, 'text-red-600'],
+                        ['Avg Confidence', `${avgConf}%`, 'text-blue-700'],
+                    ] as [string, any, string][]).map(([label, val, cls]) => (
+                        <div key={label} className="p-3 bg-gray-50 border rounded-xl flex flex-col gap-1">
+                            <span className="text-gray-400 uppercase tracking-wider">{label}</span>
+                            <span className={`text-lg font-black ${cls}`}>{val}</span>
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            <div className="col-span-1 p-4 bg-gray-50 border rounded-2xl text-xs space-y-3">
-                <h3 className="font-bold text-opd-primary uppercase tracking-wider">AI Identification Audit</h3>
-                <div className="space-y-2">
-                    <div className="flex items-center justify-between border-b pb-1">
-                        <span>Document Types:</span>
-                        <span className="text-emerald-700 font-bold">Verified</span>
+            {/* Pre-Authorization Form */}
+            <div className="card-premium space-y-4 text-left">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h3 className="text-base font-bold font-lora text-opd-primary">Pre-Authorization Form</h3>
+                        <p className="text-[11px] text-opd-text-secondary mt-0.5">Auto-filled from OCR extraction. Review before downloading.</p>
                     </div>
-                    <div className="flex items-center justify-between border-b pb-1">
-                        <span>Readability:</span>
-                        <span className="text-emerald-700 font-bold">Clear</span>
-                    </div>
-                    <div className="flex items-center justify-between border-b pb-1">
-                        <span>Completeness:</span>
-                        <span className="text-emerald-700 font-bold">95%+</span>
-                    </div>
-                    <div className="flex items-center justify-between border-b pb-1">
-                        <span>Relevance:</span>
-                        <span className="text-emerald-700 font-bold">Clinical</span>
-                    </div>
-                    <div className="flex items-center justify-between border-b pb-1">
-                        <span>Data Extraction:</span>
-                        <span className="text-emerald-700 font-bold">Done</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <span>Cross Verification:</span>
-                        <span className="text-emerald-700 font-bold">Linked</span>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => setShowPreAuth(!showPreAuth)}
+                            className="px-3 py-1.5 text-xs font-bold border border-opd-primary text-opd-primary rounded-lg hover:bg-opd-primary hover:text-white transition"
+                        >
+                            {showPreAuth ? 'Hide Form' : 'Preview Form'}
+                        </button>
+                        <button
+                            onClick={() => downloadPreAuthForm(activeCase)}
+                            className="px-3 py-1.5 text-xs font-bold bg-opd-primary text-white rounded-lg hover:opacity-90 transition flex items-center gap-1.5"
+                        >
+                            ⬇ Download Pre-Auth
+                        </button>
                     </div>
                 </div>
+
+                {showPreAuth && (
+                    <div className="border border-opd-border rounded-2xl overflow-hidden text-xs">
+                        {/* Header */}
+                        <div className="bg-opd-primary text-white px-5 py-3">
+                            <div className="font-bold text-sm">Pre-Authorization Request</div>
+                            <div className="text-[10px] opacity-75">Aivana India TPA Insurance Copilot | Case: {activeCase.id}</div>
+                        </div>
+                        {/* Sections */}
+                        <div className="grid grid-cols-2 gap-0 divide-x divide-opd-border">
+                            <div className="p-4 space-y-3">
+                                <div className="font-bold text-opd-primary text-[10px] uppercase tracking-wider">Patient Details</div>
+                                {([
+                                    ['Name', p.name],
+                                    ['Age / Gender', `${p.age || '—'} Yrs / ${p.gender || '—'}`],
+                                    ['UHID', p.uhid],
+                                    ['Contact', (p as any).contactNumber || (p as any).contact],
+                                    ['Address', (p as any).address],
+                                ] as [string, any][]).map(([k, v]) => (
+                                    <div key={k} className="flex gap-2">
+                                        <span className="w-28 shrink-0 text-gray-500">{k}:</span>
+                                        <span className="font-semibold text-opd-primary">{v || '—'}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="p-4 space-y-3">
+                                <div className="font-bold text-opd-primary text-[10px] uppercase tracking-wider">Insurance Details</div>
+                                {([
+                                    ['Insurer', ins.insurerName || ins.insurer],
+                                    ['TPA', ins.tpaName || ins.TPA],
+                                    ['Policy No.', ins.policyNumber],
+                                    ['Sum Insured', ins.sumInsured ? `₹${ins.sumInsured.toLocaleString('en-IN')}` : '—'],
+                                    ['Room Rent Limit', ins.roomRentLimit ? `₹${ins.roomRentLimit.toLocaleString('en-IN')}/day` : '—'],
+                                    ['ICU Limit', ins.icuRentLimit ? `₹${ins.icuRentLimit.toLocaleString('en-IN')}/day` : '—'],
+                                ] as [string, any][]).map(([k, v]) => (
+                                    <div key={k} className="flex gap-2">
+                                        <span className="w-28 shrink-0 text-gray-500">{k}:</span>
+                                        <span className="font-semibold text-opd-primary">{v || '—'}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="border-t border-opd-border p-4 space-y-3">
+                            <div className="font-bold text-opd-primary text-[10px] uppercase tracking-wider">Clinical Details</div>
+                            <div className="grid grid-cols-3 gap-4">
+                                {([
+                                    ['Diagnosis', enc?.diagnosis],
+                                    ['Chief Complaints', enc?.chiefComplaints],
+                                    ['Ward Type', enc?.wardType],
+                                ] as [string, any][]).map(([k, v]) => (
+                                    <div key={k}>
+                                        <div className="text-gray-400 mb-0.5">{k}</div>
+                                        <div className="font-semibold text-opd-primary">{v || '—'}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        {/* Document list */}
+                        <div className="border-t border-opd-border p-4">
+                            <div className="font-bold text-opd-primary text-[10px] uppercase tracking-wider mb-2">Documents Submitted ({docs.length})</div>
+                            <div className="flex flex-wrap gap-2">
+                                {docs.map((d: any, i: number) => (
+                                    <span key={i} className="px-2 py-0.5 bg-gray-50 border rounded text-[10px] font-mono">{d.name}</span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -595,45 +1454,589 @@ const ExtractedInformationView: React.FC<{ activeCase: PatientCaseRecord | null 
     );
 };
 
-const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null }> = ({ activeCase }) => {
+// ──────────────────────────────────────────────────────────────────────────────
+// SCREEN 6: PRIOR AUTHORIZATION GATEWAY — 5-Tab Full PA Flow
+// ──────────────────────────────────────────────────────────────────────────────
+type PATab = 'patient' | 'clinical' | 'billing' | 'necessity' | 'submit';
+
+const PA_TABS: { id: PATab; label: string; step: number }[] = [
+    { id: 'patient',   label: '1. Patient & Policy',    step: 1 },
+    { id: 'clinical',  label: '2. Clinical Details',    step: 2 },
+    { id: 'billing',   label: '3. Billing & Stay',      step: 3 },
+    { id: 'necessity', label: '4. Medical Necessity',   step: 4 },
+    { id: 'submit',    label: '5. Submit Pre-Auth',     step: 5 },
+];
+
+const generatePAHtml = (pa: any) => `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Pre-Authorization — ${pa.patientName}</title>
+<style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;max-width:820px;margin:32px auto;padding:24px;font-size:12px;color:#222}h1{color:#1a4c8b;font-size:17px;margin:0 0 2px}h2{font-size:11px;color:#555;margin:18px 0 5px;border-bottom:1px solid #ddd;padding-bottom:3px;text-transform:uppercase;letter-spacing:.5px}table{width:100%;border-collapse:collapse;margin-bottom:10px}td,th{padding:5px 9px;border:1px solid #ddd;vertical-align:top}th{background:#f0f4f8;font-weight:bold;text-align:left;width:36%}.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:bold}.green{background:#d1fae5;color:#065f46}.amber{background:#fef3c7;color:#92400e}.red{background:#fee2e2;color:#991b1b}.sig{display:flex;gap:48px;margin-top:40px}.sig-box{flex:1;border-top:1px solid #333;padding-top:5px;font-size:10px;color:#555}.header{border-bottom:3px solid #1a4c8b;margin-bottom:16px;padding-bottom:8px}</style>
+</head>
+<body>
+<div class="header"><h1>Prior Authorization Request — Aivana India TPA Insurance Copilot</h1>
+<p style="margin:4px 0 0;font-size:10px;color:#888">Case ID: ${pa.caseId} | Generated: ${new Date().toLocaleString('en-IN')} | Status: Submitted</p></div>
+<h2>Patient Details</h2>
+<table><tr><th>Patient Name</th><td>${pa.patientName||'—'}</td></tr><tr><th>Age / Gender</th><td>${pa.age||'—'} Yrs / ${pa.gender||'—'}</td></tr><tr><th>UHID</th><td>${pa.uhid||'—'}</td></tr><tr><th>Contact</th><td>${pa.contact||'—'}</td></tr></table>
+<h2>Insurance & Policy</h2>
+<table><tr><th>Insurer</th><td>${pa.insurer||'—'}</td></tr><tr><th>TPA</th><td>${pa.tpa||'—'}</td></tr><tr><th>Policy Number</th><td>${pa.policyNumber||'—'}</td></tr><tr><th>Sum Insured</th><td>₹${(pa.sumInsured||0).toLocaleString('en-IN')}</td></tr><tr><th>Room Rent Limit/day</th><td>₹${(pa.roomRentLimit||0).toLocaleString('en-IN')}</td></tr><tr><th>ICU Limit/day</th><td>₹${(pa.icuRentLimit||0).toLocaleString('en-IN')}</td></tr></table>
+<h2>Clinical Details</h2>
+<table><tr><th>Diagnosis</th><td>${pa.diagnosis||'—'}</td></tr><tr><th>ICD-10 Code</th><td>${pa.icdCode||'Pending'}</td></tr><tr><th>Chief Complaints</th><td>${pa.chiefComplaints||'—'}</td></tr><tr><th>History of Illness</th><td>${pa.hopi||'—'}</td></tr><tr><th>Nature of Illness</th><td>${pa.natureOfIllness||'—'}</td></tr><tr><th>Treatment Line</th><td>${pa.treatmentLine||'—'}</td></tr><tr><th>Comorbidities</th><td>${pa.comorbidities||'None reported'}</td></tr></table>
+<h2>Admission & Billing</h2>
+<table><tr><th>Admission Type</th><td>${pa.admissionType||'—'}</td></tr><tr><th>Room Category</th><td>${pa.roomCategory||'—'}</td></tr><tr><th>Expected LOS</th><td>${pa.los||'—'} day(s)</td></tr><tr><th>ICU Days</th><td>${pa.icuDays||0} day(s)</td></tr><tr><th>Room Rent</th><td>₹${(pa.roomRent||0).toLocaleString('en-IN')}</td></tr><tr><th>Surgeon Fee</th><td>₹${(pa.surgeonFee||0).toLocaleString('en-IN')}</td></tr><tr><th>Medicines</th><td>₹${(pa.medicines||0).toLocaleString('en-IN')}</td></tr><tr><th>Investigations</th><td>₹${(pa.investigations||0).toLocaleString('en-IN')}</td></tr><tr><th>Total Estimated</th><td><strong>₹${(pa.totalEstimated||0).toLocaleString('en-IN')}</strong></td></tr></table>
+<h2>Medical Necessity</h2>
+<table><tr><th>Score</th><td><span class="badge ${pa.necessityScore>=80?'green':pa.necessityScore>=60?'amber':'red'}">${pa.necessityScore||0}/100</span></td></tr><tr><th>Recommendation</th><td>${pa.recommendation||'—'}</td></tr></table>
+<div class="sig"><div class="sig-box">Treating Doctor Signature & Stamp<br><br><br></div><div class="sig-box">Hospital Authorized Signatory<br><br><br></div><div class="sig-box">TPA Received Stamp<br><br><br></div></div>
+</body></html>`;
+
+const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCaseUpdated?: () => void }> = ({ activeCase, onCaseUpdated }) => {
+    const [tab, setTab] = React.useState<PATab>('patient');
+    const [saving, setSaving] = React.useState(false);
+    const [submitted, setSubmitted] = React.useState(false);
+    const [necessityReport, setNecessityReport] = React.useState<ExtendedEvidenceReviewReport | null>(null);
+    const [necessityLoading, setNecessityLoading] = React.useState(false);
+    const [necessityError, setNecessityError] = React.useState('');
+
+    // Local editable PA state — pre-filled from activeCase
+    const [pa, setPa] = React.useState<any>(() => {
+        const p = activeCase?.patientProfile as any || {};
+        const ins = activeCase?.insuranceDetails as any || {};
+        const enc = activeCase?.encounters?.[0] as any || {};
+        return {
+            patientName: p.name || '',
+            age: p.age || '',
+            gender: p.gender || '',
+            contact: p.contactNumber || p.contact || '',
+            uhid: p.uhid || activeCase?.id || '',
+            insurer: ins.insurerName || ins.insurer || '',
+            tpa: ins.tpaName || ins.TPA || '',
+            policyNumber: ins.policyNumber || '',
+            sumInsured: ins.sumInsured || 0,
+            roomRentLimit: ins.roomRentLimit || (ins.sumInsured ? Math.round(ins.sumInsured * 0.01) : 0),
+            icuRentLimit: ins.icuRentLimit || (ins.sumInsured ? Math.round(ins.sumInsured * 0.02) : 0),
+            diagnosis: enc.diagnosis || '',
+            icdCode: enc.icdCode || '',
+            chiefComplaints: enc.chiefComplaints || '',
+            hopi: enc.historyOfPresentIllness || '',
+            natureOfIllness: enc.natureOfIllness || 'Acute',
+            treatmentLine: 'Medical',
+            comorbidities: '',
+            admissionType: enc.admissionType || 'Emergency',
+            roomCategory: enc.wardType || 'General Ward',
+            los: enc.expectedLOS || 3,
+            icuDays: enc.icuDays || 0,
+            roomRent: 0,
+            surgeonFee: 0,
+            medicines: 0,
+            investigations: 0,
+            totalEstimated: 0,
+            necessityScore: 0,
+            recommendation: '',
+            caseId: activeCase?.id || '',
+        };
+    });
+
+    // Re-sync when activeCase changes
+    React.useEffect(() => {
+        if (!activeCase) return;
+        const p = activeCase.patientProfile as any;
+        const ins = activeCase.insuranceDetails as any;
+        const enc = (activeCase.encounters?.[0] as any) || {};
+        setPa((prev: any) => ({
+            ...prev,
+            patientName: prev.patientName || p?.name || '',
+            age: prev.age || p?.age || '',
+            gender: prev.gender || p?.gender || '',
+            contact: prev.contact || p?.contactNumber || p?.contact || '',
+            uhid: prev.uhid || p?.uhid || activeCase.id || '',
+            insurer: prev.insurer || ins?.insurerName || ins?.insurer || '',
+            tpa: prev.tpa || ins?.tpaName || ins?.TPA || '',
+            policyNumber: prev.policyNumber || ins?.policyNumber || '',
+            sumInsured: prev.sumInsured || ins?.sumInsured || 0,
+            roomRentLimit: prev.roomRentLimit || ins?.roomRentLimit || (ins?.sumInsured ? Math.round(ins.sumInsured * 0.01) : 0),
+            icuRentLimit: prev.icuRentLimit || ins?.icuRentLimit || (ins?.sumInsured ? Math.round(ins.sumInsured * 0.02) : 0),
+            diagnosis: prev.diagnosis || enc?.diagnosis || '',
+            chiefComplaints: prev.chiefComplaints || enc?.chiefComplaints || '',
+            hopi: prev.hopi || enc?.historyOfPresentIllness || '',
+            caseId: activeCase.id || '',
+        }));
+    }, [activeCase?.id]);
+
+    const field = (label: string, key: string, type: 'text' | 'number' | 'select' = 'text', options?: string[]) => (
+        <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{label}</label>
+            {type === 'select' && options ? (
+                <select
+                    className="border border-opd-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-opd-primary bg-white"
+                    value={pa[key] || ''}
+                    onChange={e => setPa((p: any) => ({ ...p, [key]: e.target.value }))}
+                >
+                    {options.map(o => <option key={o}>{o}</option>)}
+                </select>
+            ) : (
+                <input
+                    type={type}
+                    className="border border-opd-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-opd-primary"
+                    value={pa[key] ?? ''}
+                    onChange={e => setPa((p: any) => ({ ...p, [key]: type === 'number' ? +e.target.value : e.target.value }))}
+                />
+            )}
+        </div>
+    );
+
+    const runNecessityCheck = async () => {
+        if (!pa.diagnosis) { setNecessityError('Fill in the diagnosis in Tab 2 first.'); return; }
+        setNecessityLoading(true);
+        setNecessityError('');
+        try {
+            const mockRecord = {
+                clinical: {
+                    diagnoses: [{ diagnosis: pa.diagnosis, icd10Code: pa.icdCode || 'Pending ICD-10', isSelected: true }],
+                    chiefComplaints: pa.chiefComplaints,
+                    historyOfPresentIllness: pa.hopi,
+                    selectedDiagnosisIndex: 0,
+                },
+                patient: { patientName: pa.patientName, age: +pa.age, gender: pa.gender },
+                insurance: { sumInsured: pa.sumInsured },
+                admission: { admissionType: pa.admissionType, roomCategory: pa.roomCategory, expectedLengthOfStay: pa.los },
+            };
+            const report = await priorAuthOrchestrator([], mockRecord as any);
+            setNecessityReport(report);
+            const score = report.medicalNecessityScore ?? report.overallScore ?? 70;
+            const rec = report.tpaDecision?.recommendation || (score >= 80 ? 'APPROVE' : score >= 60 ? 'QUERY' : 'DENY');
+            setPa((p: any) => ({ ...p, necessityScore: score, recommendation: rec }));
+        } catch (err: any) {
+            setNecessityError(err?.message || 'Medical necessity check failed.');
+        } finally {
+            setNecessityLoading(false);
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!activeCase) return;
+        setSaving(true);
+        try {
+            const authRecord = {
+                id: `AUTH-${activeCase.id}-${Date.now()}`,
+                status: 'submitted' as const,
+                requestedAmount: pa.totalEstimated || 0,
+                submittedAt: new Date().toISOString(),
+                tpaReceiptId: `TPA-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+            };
+            const updated = {
+                ...activeCase,
+                authorizations: [...(activeCase.authorizations || []), authRecord],
+                currentStage: 'authorization_submitted' as any,
+                auditLog: [
+                    ...(activeCase.auditLog || []),
+                    { timestamp: new Date().toISOString(), action: 'preauth_submitted', actor: 'hospital_desk',
+                      details: `PA submitted. Amount: ₹${pa.totalEstimated?.toLocaleString('en-IN')}. TPA Ref: ${authRecord.tpaReceiptId}` }
+                ],
+                updatedAt: new Date().toISOString(),
+            };
+            await savePatientRecord(updated);
+            setSubmitted(true);
+            onCaseUpdated?.();
+            // Download the PA form automatically on submit
+            const html = generatePAHtml(pa);
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `PreAuth_${pa.patientName?.replace(/\s+/g, '_') || activeCase.id}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+        } finally {
+            setSaving(false);
+        }
+    };
+
     if (!activeCase) {
-        return <div className="p-6 text-center text-opd-text-secondary">Select a case to view readiness metrics.</div>;
+        return <div className="p-6 text-center text-opd-text-secondary">Select a case to run the Prior Authorization flow.</div>;
     }
 
-    return (
-        <div className="card-premium grid grid-cols-3 gap-6 text-left">
-            <div className="col-span-2 space-y-4">
-                <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 6: Claim Readiness Score</h2>
-                <p className="text-xs text-opd-text-secondary">Readiness audit check over billing, clinical notes, and exclusions parameters.</p>
+    const roomRentPerDay = pa.roomCategory === 'ICU' ? pa.icuRentLimit : pa.roomRentLimit;
+    const roomRentCapped = roomRentPerDay * (pa.los || 0);
+    const isRoomRentBreached = pa.roomRent > roomRentCapped && roomRentCapped > 0;
+    const totalCalc = (pa.roomRent || 0) + (pa.surgeonFee || 0) + (pa.medicines || 0) + (pa.investigations || 0);
 
-                <div className="space-y-2 text-xs">
-                    <div className="flex justify-between border-b pb-1.5">
-                        <span>Required Documents Check:</span>
-                        <span className="text-emerald-700 font-bold">✓ 100% Attached</span>
+    return (
+        <div className="space-y-4">
+            {/* Header + Status */}
+            <div className="card-premium">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 6: Prior Authorization Gateway</h2>
+                        <p className="text-xs text-opd-text-secondary mt-0.5">Complete the PA form, run Fairway medical necessity check, then submit.</p>
                     </div>
-                    <div className="flex justify-between border-b pb-1.5">
-                        <span>ICD Coding Plausibility:</span>
-                        <span className="text-emerald-700 font-bold">✓ Chapter Lock Verified</span>
-                    </div>
-                    <div className="flex justify-between border-b pb-1.5">
-                        <span>Billing Caps Validation:</span>
-                        <span className="text-emerald-700 font-bold">✓ Capped Limits Verified</span>
-                    </div>
+                    {submitted && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-xs font-bold">
+                            <CheckSquare className="w-4 h-4" /> PA Submitted
+                        </div>
+                    )}
+                </div>
+
+                {/* Stage Tracker */}
+                <div className="mt-4 flex items-center gap-0">
+                    {(['Draft', 'Docs Uploaded', 'PA Ready', 'Submitted', 'TPA Decision'] as const).map((stage, i) => {
+                        const stageMap: Record<string, number> = {
+                            documents_uploaded: 1, patient_identified: 2,
+                            authorization_submitted: 3, approved: 4, denied: 4,
+                        };
+                        const currentIdx = stageMap[activeCase.currentStage as string] ?? 0;
+                        const isDone = i < currentIdx || (submitted && i <= 3);
+                        const isActive = i === currentIdx || (submitted && i === 3);
+                        return (
+                            <React.Fragment key={stage}>
+                                <div className="flex flex-col items-center gap-1">
+                                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black ${
+                                        isDone ? 'bg-opd-primary text-white' :
+                                        isActive ? 'bg-blue-100 border-2 border-opd-primary text-opd-primary' :
+                                        'bg-gray-100 text-gray-400'
+                                    }`}>{isDone ? '✓' : i + 1}</div>
+                                    <span className={`text-[9px] font-bold whitespace-nowrap ${
+                                        isDone || isActive ? 'text-opd-primary' : 'text-gray-400'
+                                    }`}>{stage}</span>
+                                </div>
+                                {i < 4 && <div className={`flex-1 h-0.5 mx-1 mb-4 ${ isDone ? 'bg-opd-primary' : 'bg-gray-200' }`} />}
+                            </React.Fragment>
+                        );
+                    })}
                 </div>
             </div>
 
-            <div className="col-span-1 flex flex-col items-center justify-center p-4 bg-gray-50 border rounded-2xl gap-3">
-                <span className="text-xs text-gray-500 uppercase font-bold tracking-wider">E2E READINESS</span>
-                <div className="relative w-28 h-28 flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90">
-                        <circle cx="56" cy="56" r="48" stroke="#E2E8F0" strokeWidth="8" fill="transparent" />
-                        <circle cx="56" cy="56" r="48" stroke="#10B981" strokeWidth="8" fill="transparent" strokeDasharray="301.6" strokeDashoffset="36.2" />
-                    </svg>
-                    <span className="absolute text-2xl font-black text-opd-primary">88%</span>
-                </div>
-                <span className="px-2 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded text-[10px] font-bold uppercase">
-                    Low Risk Profile
-                </span>
+            {/* Tab Bar */}
+            <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
+                {PA_TABS.map(t => (
+                    <button
+                        key={t.id}
+                        onClick={() => setTab(t.id)}
+                        className={`flex-1 py-2 px-2 rounded-lg text-[11px] font-bold transition ${
+                            tab === t.id
+                                ? 'bg-opd-primary text-white shadow'
+                                : 'text-gray-500 hover:text-opd-primary hover:bg-white'
+                        }`}
+                    >
+                        {t.label}
+                    </button>
+                ))}
+            </div>
+
+            {/* Tab Content */}
+            <div className="card-premium">
+
+                {/* ── TAB 1: Patient & Policy ── */}
+                {tab === 'patient' && (
+                    <div className="space-y-4">
+                        <h3 className="font-bold text-sm text-opd-primary font-lora">Patient & Policy Details</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            {field('Patient Name', 'patientName')}
+                            {field('Age (Years)', 'age', 'number')}
+                            {field('Gender', 'gender', 'select', ['Male', 'Female', 'Other'])}
+                            {field('Contact Number', 'contact')}
+                            {field('UHID / Case ID', 'uhid')}
+                        </div>
+                        <div className="border-t border-opd-border pt-4">
+                            <h4 className="text-[11px] font-bold text-opd-primary uppercase tracking-wider mb-3">Insurance Details</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                {field('Insurer Name', 'insurer')}
+                                {field('TPA Name', 'tpa')}
+                                {field('Policy Number', 'policyNumber')}
+                                {field('Sum Insured (₹)', 'sumInsured', 'number')}
+                                {field('Room Rent Cap / Day (₹)', 'roomRentLimit', 'number')}
+                                {field('ICU Rent Cap / Day (₹)', 'icuRentLimit', 'number')}
+                            </div>
+                        </div>
+                        <button onClick={() => setTab('clinical')} className="btn-primary text-xs">Next: Clinical Details →</button>
+                    </div>
+                )}
+
+                {/* ── TAB 2: Clinical Details ── */}
+                {tab === 'clinical' && (
+                    <div className="space-y-4">
+                        <h3 className="font-bold text-sm text-opd-primary font-lora">Clinical Details</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            {field('Diagnosis', 'diagnosis')}
+                            {field('ICD-10 Code', 'icdCode')}
+                            {field('Nature of Illness', 'natureOfIllness', 'select', ['Acute', 'Chronic', 'Chronic with Acute Exacerbation', 'Sub-acute'])}
+                        </div>
+                        <div className="grid grid-cols-1 gap-4">
+                            {field('Chief Complaints', 'chiefComplaints')}
+                            {field('History of Present Illness', 'hopi')}
+                        </div>
+                        <div>
+                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-2">Proposed Line of Treatment</label>
+                            <div className="flex flex-wrap gap-3">
+                                {['Medical', 'Surgical', 'ICU / Critical Care', 'Investigations Only', 'Non-Allopathic'].map(opt => (
+                                    <label key={opt} className="flex items-center gap-2 text-xs cursor-pointer">
+                                        <input type="radio" name="treatmentLine" value={opt}
+                                            checked={pa.treatmentLine === opt}
+                                            onChange={() => setPa((p: any) => ({ ...p, treatmentLine: opt }))}
+                                            className="accent-opd-primary"
+                                        />
+                                        {opt}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                        <div>
+                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-2">Comorbidities</label>
+                            <div className="flex flex-wrap gap-3">
+                                {['Diabetes', 'Hypertension', 'Heart Disease', 'Asthma', 'CKD', 'HIV'].map(opt => (
+                                    <label key={opt} className="flex items-center gap-2 text-xs cursor-pointer">
+                                        <input type="checkbox"
+                                            checked={(pa.comorbidities || '').includes(opt)}
+                                            onChange={e => setPa((p: any) => ({
+                                                ...p,
+                                                comorbidities: e.target.checked
+                                                    ? [p.comorbidities, opt].filter(Boolean).join(', ')
+                                                    : (p.comorbidities || '').split(', ').filter((c: string) => c !== opt).join(', ')
+                                            }))}
+                                            className="accent-opd-primary"
+                                        />
+                                        {opt}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex gap-3">
+                            <button onClick={() => setTab('patient')} className="px-4 py-2 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
+                            <button onClick={() => setTab('billing')} className="btn-primary text-xs">Next: Billing & Stay →</button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ── TAB 3: Billing & Stay ── */}
+                {tab === 'billing' && (
+                    <div className="space-y-4">
+                        <h3 className="font-bold text-sm text-opd-primary font-lora">Admission & Billing Estimate</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            {field('Admission Type', 'admissionType', 'select', ['Emergency', 'Planned', 'Day Care'])}
+                            {field('Room Category', 'roomCategory', 'select', ['General Ward', 'Semi-Private', 'Private', 'ICU', 'NICU', 'PICU'])}
+                            {field('Expected Stay (Days)', 'los', 'number')}
+                            {field('ICU Days', 'icuDays', 'number')}
+                        </div>
+                        <div className="border-t border-opd-border pt-4">
+                            <h4 className="text-[11px] font-bold text-opd-primary uppercase tracking-wider mb-3">Cost Estimate (₹)</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                {field('Room Rent Total (₹)', 'roomRent', 'number')}
+                                {field('Surgeon / Procedure Fee (₹)', 'surgeonFee', 'number')}
+                                {field('Medicines (₹)', 'medicines', 'number')}
+                                {field('Investigations (₹)', 'investigations', 'number')}
+                            </div>
+
+                            {/* Room rent cap warning */}
+                            {isRoomRentBreached && (
+                                <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs flex items-start gap-2">
+                                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                                    <span className="text-amber-800">
+                                        <strong>Room Rent Cap Breach:</strong> Entered room rent ₹{pa.roomRent?.toLocaleString('en-IN')} exceeds
+                                        IRDA cap of ₹{roomRentCapped?.toLocaleString('en-IN')} ({pa.los} days × ₹{roomRentPerDay?.toLocaleString('en-IN')}/day).
+                                        Proportional deductions will apply to all associated charges.
+                                    </span>
+                                </div>
+                            )}
+
+                            <div className="mt-3 p-3 bg-opd-primary/5 border border-opd-primary/20 rounded-xl flex justify-between items-center">
+                                <span className="text-xs font-bold text-opd-primary">Estimated Total</span>
+                                <span className="text-lg font-black text-opd-primary">₹{totalCalc.toLocaleString('en-IN')}</span>
+                            </div>
+                        </div>
+                        <div className="flex gap-3">
+                            <button onClick={() => setTab('clinical')} className="px-4 py-2 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
+                            <button
+                                onClick={() => { setPa((p: any) => ({ ...p, totalEstimated: totalCalc })); setTab('necessity'); }}
+                                className="btn-primary text-xs"
+                            >Next: Medical Necessity →</button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ── TAB 4: Medical Necessity (Fairway) ── */}
+                {tab === 'necessity' && (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="font-bold text-sm text-opd-primary font-lora">Medical Necessity Check — Fairway Layer</h3>
+                                <p className="text-xs text-opd-text-secondary">Validates clinical evidence against IRDA medical necessity criteria for the given diagnosis.</p>
+                            </div>
+                            <button
+                                onClick={runNecessityCheck}
+                                disabled={necessityLoading}
+                                className="px-3 py-1.5 text-xs font-bold bg-opd-primary text-white rounded-xl hover:opacity-90 disabled:opacity-50 transition flex items-center gap-1.5"
+                            >
+                                <HeartPulse className={`w-3.5 h-3.5 ${necessityLoading ? 'animate-pulse' : ''}`} />
+                                {necessityLoading ? 'Running...' : necessityReport ? 'Re-Run Check' : 'Run Fairway Check'}
+                            </button>
+                        </div>
+
+                        {necessityError && (
+                            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800">{necessityError}</div>
+                        )}
+
+                        {!necessityReport && !necessityLoading && !necessityError && (
+                            <div className="p-8 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                                <HeartPulse className="w-8 h-8 text-gray-300 mx-auto mb-3" />
+                                <p className="text-xs text-gray-400">Click "Run Fairway Check" to validate medical necessity.</p>
+                                <p className="text-[10px] text-gray-400 mt-1">Requires a diagnosis in Tab 2.</p>
+                            </div>
+                        )}
+
+                        {necessityLoading && (
+                            <div className="p-8 text-center bg-gray-50 rounded-2xl border">
+                                <div className="w-10 h-10 border-4 border-opd-primary/20 border-t-opd-primary rounded-full animate-spin mx-auto mb-3" />
+                                <p className="text-xs text-gray-500">Running Fairway clinical evidence review...</p>
+                            </div>
+                        )}
+
+                        {necessityReport && !necessityLoading && (
+                            <div className="space-y-4">
+                                {/* Score card */}
+                                <div className="grid grid-cols-3 gap-3">
+                                    <div className={`p-4 rounded-xl border text-center ${
+                                        pa.necessityScore >= 80 ? 'bg-emerald-50 border-emerald-200' :
+                                        pa.necessityScore >= 60 ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'
+                                    }`}>
+                                        <div className={`text-3xl font-black ${
+                                            pa.necessityScore >= 80 ? 'text-emerald-700' :
+                                            pa.necessityScore >= 60 ? 'text-amber-700' : 'text-red-700'
+                                        }`}>{pa.necessityScore}</div>
+                                        <div className="text-[10px] font-bold text-gray-500 uppercase mt-1">Necessity Score</div>
+                                    </div>
+                                    <div className={`p-4 rounded-xl border text-center col-span-2 flex flex-col justify-center ${
+                                        pa.recommendation === 'APPROVE' ? 'bg-emerald-50 border-emerald-200' :
+                                        pa.recommendation === 'QUERY' ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'
+                                    }`}>
+                                        <div className={`text-lg font-black ${
+                                            pa.recommendation === 'APPROVE' ? 'text-emerald-700' :
+                                            pa.recommendation === 'QUERY' ? 'text-amber-700' : 'text-red-700'
+                                        }`}>
+                                            {pa.recommendation === 'APPROVE' ? '✓ APPROVED' :
+                                             pa.recommendation === 'QUERY' ? '⚠ QUERY RAISED' : '✗ DENY RECOMMENDED'}
+                                        </div>
+                                        <div className="text-[10px] text-gray-500 mt-1">TPA Recommendation</div>
+                                    </div>
+                                </div>
+
+                                {/* Required evidence checklist */}
+                                {(necessityReport as any).requiredEvidence?.length > 0 && (
+                                    <div className="p-4 bg-gray-50 rounded-xl border space-y-2">
+                                        <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider">Required Evidence Checklist</div>
+                                        {(necessityReport as any).requiredEvidence.map((e: string, i: number) => (
+                                            <div key={i} className="flex items-start gap-2 text-xs">
+                                                <span className="text-emerald-500 font-bold shrink-0">✓</span>
+                                                <span>{e}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Clinical gaps */}
+                                {(necessityReport as any).clinicalGapList?.length > 0 && (
+                                    <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 space-y-2">
+                                        <div className="text-[10px] font-bold text-amber-800 uppercase tracking-wider">⚠ Clinical Gaps</div>
+                                        {(necessityReport as any).clinicalGapList.map((g: string, i: number) => (
+                                            <div key={i} className="flex items-start gap-2 text-xs text-amber-900">
+                                                <span className="shrink-0">•</span>
+                                                <span>{g}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        <div className="flex gap-3 pt-2">
+                            <button onClick={() => setTab('billing')} className="px-4 py-2 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
+                            <button
+                                onClick={() => setTab('submit')}
+                                disabled={pa.necessityScore > 0 && pa.necessityScore < 60}
+                                className="btn-primary text-xs disabled:opacity-40"
+                            >Next: Submit Pre-Auth →</button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ── TAB 5: Submit Pre-Auth ── */}
+                {tab === 'submit' && (
+                    <div className="space-y-4">
+                        <h3 className="font-bold text-sm text-opd-primary font-lora">Submit Prior Authorization</h3>
+
+                        {/* Final summary */}
+                        <div className="border border-opd-border rounded-2xl overflow-hidden text-xs">
+                            <div className="bg-opd-primary text-white px-4 py-2.5 flex justify-between items-center">
+                                <span className="font-bold">Prior Authorization — Summary Review</span>
+                                <span className="text-[10px] opacity-75">{pa.caseId}</span>
+                            </div>
+                            <div className="grid grid-cols-2 divide-x divide-opd-border">
+                                <div className="p-4 space-y-2">
+                                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider mb-1">Patient & Policy</div>
+                                    {[['Name', pa.patientName], ['Age/Gender', `${pa.age} Yrs / ${pa.gender}`],
+                                      ['Insurer', pa.insurer], ['TPA', pa.tpa], ['Policy No.', pa.policyNumber],
+                                      ['Sum Insured', pa.sumInsured ? `₹${(+pa.sumInsured).toLocaleString('en-IN')}` : '—']
+                                    ].map(([k, v]) => (
+                                        <div key={k} className="flex gap-2">
+                                            <span className="w-24 shrink-0 text-gray-400">{k}:</span>
+                                            <span className="font-semibold text-opd-primary">{v || '—'}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="p-4 space-y-2">
+                                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider mb-1">Clinical & Billing</div>
+                                    {[['Diagnosis', pa.diagnosis], ['ICD-10', pa.icdCode || 'Pending'],
+                                      ['Admission', pa.admissionType], ['Room', pa.roomCategory],
+                                      ['LOS', `${pa.los} day(s)`], ['Total Est.', `₹${(pa.totalEstimated||0).toLocaleString('en-IN')}`]
+                                    ].map(([k, v]) => (
+                                        <div key={k} className="flex gap-2">
+                                            <span className="w-24 shrink-0 text-gray-400">{k}:</span>
+                                            <span className="font-semibold text-opd-primary">{v || '—'}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="border-t border-opd-border p-4 flex items-center justify-between">
+                                <div className="text-[10px] text-gray-500">
+                                    Necessity Score: <strong className={pa.necessityScore >= 80 ? 'text-emerald-700' : pa.necessityScore >= 60 ? 'text-amber-700' : 'text-gray-400'}>{pa.necessityScore || 'Not run'}</strong>
+                                    {' '}&nbsp;|&nbsp; Recommendation: <strong className="text-opd-primary">{pa.recommendation || 'Not run'}</strong>
+                                </div>
+                                {pa.necessityScore > 0 && pa.necessityScore < 60 && (
+                                    <span className="text-[10px] text-red-700 font-bold">⚠ Low score — submission blocked</span>
+                                )}
+                            </div>
+                        </div>
+
+                        {submitted ? (
+                            <div className="p-5 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
+                                <CheckSquare className="w-8 h-8 text-emerald-600 mx-auto" />
+                                <div className="font-bold text-emerald-800">Pre-Authorization Submitted Successfully</div>
+                                <div className="text-xs text-emerald-700">The PA form has been saved and downloaded. The case stage has been updated to <strong>Authorization Submitted</strong>.</div>
+                            </div>
+                        ) : (
+                            <div className="flex gap-3 flex-wrap">
+                                <button onClick={() => setTab('necessity')} className="px-4 py-2 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
+                                <button
+                                    onClick={() => {
+                                        const html = generatePAHtml(pa);
+                                        const blob = new Blob([html], { type: 'text/html' });
+                                        const url = URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.href = url; a.download = `PreAuth_${pa.patientName?.replace(/\s+/g, '_') || 'form'}.html`; a.click();
+                                        URL.revokeObjectURL(url);
+                                    }}
+                                    className="px-4 py-2 text-xs font-bold border border-opd-primary text-opd-primary rounded-xl hover:bg-opd-primary hover:text-white transition flex items-center gap-1.5"
+                                >
+                                    <Download className="w-3.5 h-3.5" /> Download PA Form
+                                </button>
+                                <button
+                                    onClick={handleSubmit}
+                                    disabled={saving || (pa.necessityScore > 0 && pa.necessityScore < 60)}
+                                    className="btn-primary text-xs flex items-center gap-1.5 disabled:opacity-40"
+                                >
+                                    {saving ? 'Submitting...' : '🚀 Mark as Submitted to TPA'}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -956,6 +2359,209 @@ const AnalyticsView: React.FC = () => {
     );
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PATIENT SELF-REGISTRATION PAGE — renders when ?register=TOKEN is in the URL
+// This is what a patient sees after scanning the QR code on their phone.
+// ─────────────────────────────────────────────────────────────────────────────
+const PatientRegistrationPage: React.FC<{ token: string; onDone: () => void }> = ({ token, onDone }) => {
+    const [formData, setFormData] = React.useState<SelfRegFormData>(EMPTY_FORM);
+    const [registering, setRegistering] = React.useState(false);
+    const [successId, setSuccessId] = React.useState('');
+    const [cardScanResult, setCardScanResult] = React.useState<InsuranceCardExtracted | null>(null);
+    const [cardScanning, setCardScanning] = React.useState(false);
+    const [cardPreviewUrl, setCardPreviewUrl] = React.useState('');
+    const cardInputRef = React.useRef<HTMLInputElement>(null);
+
+    const setField = (key: keyof SelfRegFormData, val: string) =>
+        setFormData(prev => ({ ...prev, [key]: val }));
+
+    const scanCard = async (file: File) => {
+        setCardScanning(true);
+        setCardPreviewUrl(URL.createObjectURL(file));
+        try {
+            const r = await extractInsuranceCardData(file);
+            setCardScanResult(r);
+        } finally { setCardScanning(false); }
+    };
+
+    const applyCard = () => {
+        if (!cardScanResult) return;
+        setFormData(prev => ({
+            ...prev,
+            name: cardScanResult.cardHolderName || prev.name,
+            insurerName: cardScanResult.insurerName || prev.insurerName,
+            tpa: cardScanResult.tpaName || prev.tpa,
+            policyNumber: cardScanResult.policyNumber || prev.policyNumber,
+            sumInsured: cardScanResult.sumInsured ? String(cardScanResult.sumInsured) : prev.sumInsured,
+        }));
+    };
+
+    const handleSubmit = async () => {
+        if (!formData.name.trim()) return;
+        setRegistering(true);
+        try {
+            const newId = generatePreAuthId();
+            const uhid = `UHID-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+            const newCase: PatientCaseRecord = {
+                id: newId,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                currentStage: 'registered' as any,
+                intakeChannel: 'qr_scan',
+                sessionToken: token,
+                patientProfile: {
+                    uhid, name: formData.name, age: +formData.age || 0,
+                    gender: formData.gender as any, contactNumber: formData.contact, address: formData.address,
+                },
+                insuranceDetails: {
+                    insurerName: formData.insurerName, policyNumber: formData.policyNumber,
+                    tpaName: formData.tpa, sumInsured: +formData.sumInsured || 0,
+                    roomRentLimit: +formData.sumInsured ? Math.round(+formData.sumInsured * 0.01) : 0,
+                    icuRentLimit: +formData.sumInsured ? Math.round(+formData.sumInsured * 0.02) : 0,
+                },
+                encounters: [{ id: `ENC-${newId}`, chiefComplaints: formData.chiefComplaints, diagnosis: formData.diagnosis, admissionDate: new Date().toISOString().split('T')[0] }] as any,
+                documents: [], claims: [], authorizations: [],
+                auditLog: [{ timestamp: new Date().toISOString(), action: 'patient_registered', actor: 'patient_self', details: `Patient ${formData.name} self-registered via QR` }],
+            };
+            await savePatientRecord(newCase);
+            setSuccessId(newId);
+            // Mark this case as Profile Filled in localStorage
+            const existing = JSON.parse(localStorage.getItem(STAGE_MAP_KEY) || '{}');
+            existing[newId] = 'Profile Filled';
+            localStorage.setItem(STAGE_MAP_KEY, JSON.stringify(existing));
+            // Clean URL
+            window.history.replaceState({}, '', window.location.pathname);
+        } finally { setRegistering(false); }
+    };
+
+    const inputCls = 'w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 bg-white';
+
+    if (successId) return (
+        <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full text-center space-y-4">
+                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
+                    <CheckSquare className="w-10 h-10 text-emerald-600" />
+                </div>
+                <h1 className="text-2xl font-bold text-gray-800 font-lora">You're Registered!</h1>
+                <p className="text-gray-500 text-sm">Your case has been created. Please show this ID at the hospital desk.</p>
+                <div className="bg-gray-50 rounded-xl p-4 font-mono text-sm text-emerald-700 font-bold border border-emerald-100">
+                    {successId}
+                </div>
+                <p className="text-xs text-gray-400">The hospital staff can now see your information and will begin processing your claim.</p>
+                <button onClick={onDone} className="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition text-sm">
+                    Done
+                </button>
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50 p-4">
+            <div className="max-w-lg mx-auto">
+                {/* Header */}
+                <div className="text-center py-6 space-y-1">
+                    <div className="flex items-center justify-center gap-2 text-opd-primary mb-2">
+                        <Activity className="w-6 h-6" />
+                        <span className="font-bold text-lg font-lora">Aivana India TPA</span>
+                    </div>
+                    <h1 className="text-xl font-bold text-gray-800">Patient Registration</h1>
+                    <p className="text-sm text-gray-500">Fill this form to start your cashless claim</p>
+                    <div className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 border border-blue-100 rounded-full text-[11px] text-blue-700 font-mono">
+                        Session: {token}
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-3xl shadow-xl p-6 space-y-6">
+                    {/* Patient Details */}
+                    <div className="space-y-3">
+                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                            <UserCheck className="w-3.5 h-3.5" /> Your Details
+                        </div>
+                        <input className={inputCls} placeholder="Full Name *" value={formData.name} onChange={e => setField('name', e.target.value)} />
+                        <div className="grid grid-cols-2 gap-3">
+                            <input type="number" className={inputCls} placeholder="Age" value={formData.age} onChange={e => setField('age', e.target.value)} />
+                            <select className={inputCls} value={formData.gender} onChange={e => setField('gender', e.target.value)}>
+                                <option>Male</option><option>Female</option><option>Other</option>
+                            </select>
+                        </div>
+                        <input className={inputCls} placeholder="Mobile Number" value={formData.contact} onChange={e => setField('contact', e.target.value)} />
+                        <input className={inputCls} placeholder="City / Address" value={formData.address} onChange={e => setField('address', e.target.value)} />
+                    </div>
+
+                    {/* Insurance Card */}
+                    <div className="space-y-3 border-t border-gray-100 pt-5">
+                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                            <BookmarkCheck className="w-3.5 h-3.5" /> Insurance Card
+                            <span className="text-gray-300 font-normal normal-case">— upload or type below</span>
+                        </div>
+                        <input ref={cardInputRef} type="file" accept="image/*,application/pdf" className="hidden"
+                            onChange={e => { const f = e.target.files?.[0]; if (f) scanCard(f); }} />
+                        <div
+                            onClick={() => cardInputRef.current?.click()}
+                            className="border-2 border-dashed border-emerald-200 rounded-2xl p-5 text-center cursor-pointer hover:border-emerald-400 hover:bg-emerald-50/50 transition"
+                        >
+                            {cardPreviewUrl ? (
+                                <img src={cardPreviewUrl} alt="card" className="max-h-28 mx-auto rounded-xl object-contain" />
+                            ) : (
+                                <div className="space-y-1">
+                                    <BookmarkCheck className="w-8 h-8 text-emerald-300 mx-auto" />
+                                    <div className="text-sm font-semibold text-emerald-600">Tap to photo your insurance card</div>
+                                    <div className="text-xs text-gray-400">AI will read policy number, insurer & sum insured automatically</div>
+                                </div>
+                            )}
+                        </div>
+                        {cardScanning && (
+                            <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl text-xs text-blue-700">
+                                <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+                                Reading your insurance card...
+                            </div>
+                        )}
+                        {cardScanResult && !cardScanning && (
+                            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-emerald-700">✓ Card read ({cardScanResult.confidence}% confidence)</span>
+                                    <button onClick={applyCard} className="text-xs px-3 py-1 bg-emerald-600 text-white rounded-lg font-bold">Fill form ↓</button>
+                                </div>
+                                <div className="text-xs text-emerald-800 grid grid-cols-2 gap-1">
+                                    {cardScanResult.insurerName && <span>Insurer: <strong>{cardScanResult.insurerName}</strong></span>}
+                                    {cardScanResult.policyNumber && <span>Policy: <strong>{cardScanResult.policyNumber}</strong></span>}
+                                    {cardScanResult.sumInsured && <span>Sum: <strong>₹{cardScanResult.sumInsured.toLocaleString('en-IN')}</strong></span>}
+                                    {cardScanResult.tpaName && <span>TPA: <strong>{cardScanResult.tpaName}</strong></span>}
+                                </div>
+                            </div>
+                        )}
+                        <div className="grid grid-cols-2 gap-3">
+                            <input className={inputCls} placeholder="Insurer name" value={formData.insurerName} onChange={e => setField('insurerName', e.target.value)} />
+                            <input className={inputCls} placeholder="TPA name" value={formData.tpa} onChange={e => setField('tpa', e.target.value)} />
+                            <input className={inputCls} placeholder="Policy number" value={formData.policyNumber} onChange={e => setField('policyNumber', e.target.value)} />
+                            <input type="number" className={inputCls} placeholder="Sum insured (₹)" value={formData.sumInsured} onChange={e => setField('sumInsured', e.target.value)} />
+                        </div>
+                    </div>
+
+                    {/* Clinical */}
+                    <div className="space-y-3 border-t border-gray-100 pt-5">
+                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                            <HeartPulse className="w-3.5 h-3.5" /> Symptoms
+                        </div>
+                        <input className={inputCls} placeholder="Chief complaints (e.g. high fever, vomiting since 3 days)" value={formData.chiefComplaints} onChange={e => setField('chiefComplaints', e.target.value)} />
+                        <input className={inputCls} placeholder="Diagnosis if known (e.g. Dengue suspected)" value={formData.diagnosis} onChange={e => setField('diagnosis', e.target.value)} />
+                    </div>
+
+                    <button
+                        onClick={handleSubmit}
+                        disabled={!formData.name.trim() || registering}
+                        className="w-full py-4 bg-opd-primary text-white font-bold rounded-2xl hover:opacity-90 transition disabled:opacity-40 text-base shadow-lg shadow-opd-primary/20"
+                    >
+                        {registering ? 'Registering...' : '✓ Complete Registration'}
+                    </button>
+
+                    <p className="text-center text-[11px] text-gray-400">Your data is stored securely and only shared with the hospital and your insurer.</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // --- MAIN INSURANCE COMPONENT ---
 
 export const InsuranceModule: React.FC = () => {
@@ -1040,6 +2646,17 @@ export const InsuranceModule: React.FC = () => {
         { id: 11, name: '11. Claim Packet Preview', icon: <FileText className="w-4 h-4" />, type: 'real' },
         { id: 12, name: '12. Analytics & Accuracy', icon: <TrendingUp className="w-4 h-4" />, type: 'real' },
     ];
+
+    // Detect ?register=TOKEN in URL → show patient-facing form
+    const [registerToken] = React.useState<string | null>(() => {
+        const p = new URLSearchParams(window.location.search);
+        return p.get('register');
+    });
+    const [patientFormDone, setPatientFormDone] = React.useState(false);
+
+    if (registerToken && !patientFormDone) {
+        return <PatientRegistrationPage token={registerToken} onDone={() => setPatientFormDone(true)} />;
+    }
 
     return (
         <div className="min-h-screen bg-opd-bg text-opd-text-primary p-6">
@@ -1161,13 +2778,32 @@ export const InsuranceModule: React.FC = () => {
                                 {selectedScreen === 3 && <UploadIngestionView onCaseCreated={handleCaseCreated} />}
                                 {selectedScreen === 4 && <DocumentIdentificationView activeCase={activeCase} />}
                                 {selectedScreen === 5 && <ExtractedInformationView activeCase={activeCase} />}
-                                {selectedScreen === 6 && <ClaimReadinessView activeCase={activeCase} />}
+                                {selectedScreen === 6 && <ClaimReadinessView activeCase={activeCase} onCaseUpdated={refreshCases} />}
                                 {selectedScreen === 7 && <EvidenceExplorerView activeCase={activeCase} />}
                                 {selectedScreen === 8 && <PolicyValidationView activeCase={activeCase} />}
                                 {selectedScreen === 9 && <TpaQueryPredictionView activeCase={activeCase} />}
                                 {selectedScreen === 10 && <ClaimWorkflowTimelineView activeCase={activeCase} />}
                                 {selectedScreen === 11 && <ClaimPacketPreviewView activeCase={activeCase} />}
                                 {selectedScreen === 12 && <AnalyticsView />}
+
+                                {/* ── Next / Prev navigation ── */}
+                                <div className="flex items-center justify-between pt-2 border-t border-opd-border">
+                                    <button
+                                        onClick={() => setSelectedScreen(s => Math.max(1, s - 1))}
+                                        disabled={selectedScreen === 1}
+                                        className="flex items-center gap-2 px-4 py-2 text-xs font-bold border border-opd-border rounded-xl text-opd-text-secondary hover:border-opd-primary hover:text-opd-primary transition disabled:opacity-30 disabled:cursor-not-allowed"
+                                    >
+                                        ← Previous
+                                    </button>
+                                    <span className="text-[10px] text-gray-400 font-mono">Screen {selectedScreen} of {SCREENS.length}</span>
+                                    <button
+                                        onClick={() => setSelectedScreen(s => Math.min(SCREENS.length, s + 1))}
+                                        disabled={selectedScreen === SCREENS.length}
+                                        className="flex items-center gap-2 px-4 py-2 text-xs font-bold bg-opd-primary text-white rounded-xl hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                                    >
+                                        Next →
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>

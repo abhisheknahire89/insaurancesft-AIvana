@@ -1,0 +1,89 @@
+{
+  "id": 19354,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "hospital_rent",
+  "diagnosis": "Community-acquired Pneumonia",
+  "code": "J18.9",
+  "chiefComplaints": "High-grade fever with chills for 5 days, severe productive cough with rusty sputum, and progressive shortness of breath for 2 days.",
+  "hpi": "Mr. Ramesh Chandra Verma, a 62-year-old male with a history of Controlled Hypertension, presented to the Emergency Department with a 5-day history of high-grade fever reaching up to 103 F, accompanied by rigors and chills. He complained of a wet cough producing rust-colored sputum. Over the last 48 hours, he experienced worsening shortness of breath even at rest, prompting urgent medical evaluation.",
+  "relevantClinicalFindings": "On examination, the patient was tachypneic with a respiratory rate of 28 breaths/minute, tachycardia of 112 bpm, and oxygen saturation (SpO2) at 89% on room air, which corrected to 94% on 4L oxygen via nasal cannula. Chest auscultation revealed bronchial breath sounds and coarse crepitations in the right middle and lower lung zones. Chest X-ray confirmed dense lobar consolidation in the right middle and lower lobes. Lab investigations showed an elevated WBC count of 16,800 cells/mm3 with 88% neutrophils, and a C-Reactive Protein (CRP) of 98 mg/L.",
+  "additionalClinicalNotes": "The patient was initially admitted to the ICU due to severe hypoxemia (SpO2 89% on room air), tachypnea, and age-related risk factors. He was started on IV Ceftriaxone 2g OD and Linezolid 600mg IV BD along with nebulization and oxygen therapy. After 3 days of intensive monitoring, his clinical status stabilized (SpO2 96% on room air, respiratory rate 18/min, afebrile for 24 hours), and he was stepped down to a Single Deluxe Room for 4 days of further recuperation and transition to oral antibiotics.",
+  "duration": "7 days",
+  "treatmentTakenSoFar": "Self-medicated with Paracetamol 650mg SOS at home with no relief.",
+  "reasonForHospitalisation": "Severe acute respiratory distress secondary to severe lobar community-acquired pneumonia requiring immediate oxygen supplementation, intravenous broad-spectrum antibiotics, and intensive hemodynamic monitoring.",
+  "uploadedDocuments": [
+    "emergency_admission_notes",
+    "chest_xray_report",
+    "cbc_crp_lab_reports",
+    "icu_step_down_summary",
+    "final_hospital_bill",
+    "discharge_summary"
+  ],
+  "patientName": "Ramesh Chandra Verma",
+  "patient": {
+    "patientName": "Ramesh Chandra Verma",
+    "age": 62,
+    "gender": "Male",
+    "mobileNumber": "+919812345678"
+  },
+  "insurance": {
+    "policyNumber": "CHI/2022/9984102",
+    "insurerName": "Care Health Insurance",
+    "tpaName": "Care Health TPA",
+    "sumInsured": 300000,
+    "balanceSumInsured": 280000,
+    "tpaIdCardNumber": "TPA-9984102-A"
+  },
+  "vitals": {
+    "bp": "110/70 mmHg",
+    "pulse": "112 bpm",
+    "temp": "102 F",
+    "spo2": "89%",
+    "rr": "28/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "PROPORTIONAL_DEDUCTION_APPLIED",
+      "ROOM_RENT_CAPPING_EXCEEDED",
+      "ICU_STEP_DOWN_AUDIT_REQUIRED"
+    ],
+    "mustNotFlag": [
+      "MATERNITY_LIMIT_EXCEEDED"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "Verify room rent capping compliance. The policy restricts normal room rent to 1% of Sum Insured (Rs. 3,000/day) and ICU to 2% (Rs. 6,000/day). The hospital charged Rs. 8,000/day for Single Deluxe and Rs. 12,000/day for ICU. Proportional deductions must be applied to all associated expenses (RMO, nursing, professional fees) but excluded from pharmacy and consumables as per IRDAI standards.",
+  "realGap": "The hospital billed room charges significantly higher than the patient's eligible policy limits (1% of SI for normal room, 2% of SI for ICU). Because the patient opted for a higher room category (Single Deluxe at Rs. 8,000 vs eligible Rs. 3,000), the TPA has applied proportional deductions on all associated clinical expenses, including RMO fees, nursing charges, and specialist consultation fees. However, the TPA incorrectly attempted to apply proportional deductions to the pharmacy and medicines bill, which violates standard IRDAI guidelines that protect non-associated costs like pharmacy and implants from proportional cuts.",
+  "sourceReasoning": "As per the IRDAI (Health Insurance Business) Regulations, 2016, and subsequent circulars, while insurers are allowed to apply proportional deductions on 'associated medical expenses' when a patient chooses a room category higher than their eligible limit, they cannot apply these deductions to the cost of pharmacy, medicines, consumables, or medical devices.",
+  "rawDocumentText": "MAXIMUS SUPER SPECIALITY HOSPITAL\nSector 62, Noida, UP - 201301\nDISCHARGE SUMMARY\n\nPATIENT NAME: Ramesh Chandra Verma  |  AGE: 62 Years  |  GENDER: Male\nIP NO: IP-9928131  |  DATE OF ADMISSION: 12-Oct-2023 11:30 AM  |  DATE OF DISCHARGE: 19-Oct-2023 04:00 PM\nPOLICY NO: CHI/2022/9984102  |  INSURER: Care Health Insurance Ltd.  |  SUM INSURED: Rs. 3,00,000/-\nDIAGNOSIS: Right Lobar Community-Acquired Pneumonia (ICD J18.9), Controlled Hypertension\n\nCHIEF COMPLAINTS:\n- High-grade fever with chills x 5 days\n- Productive cough with rusty sputum x 5 days\n- Severe shortness of breath x 2 days\n\nHISTORY OF PRESENT ILLNESS:\n62-year-old male with known history of Hypertension (on Tab Telmisartan 40mg OD) presented with acute onset of severe fever, chills, productive rust-colored sputum, and progressive breathlessness. On arrival in ER, patient was hypoxic with SpO2 89% on room air. Immediate chest X-ray was obtained, showing dense consolidation of the right middle and lower lobes. WBC was 16,800/mm3. Due to impending respiratory failure and age-associated risks, patient was admitted directly to the ICU.\n\nCOURSE IN THE HOSPITAL:\n- ICU Stay (12-Oct to 15-Oct, 3 days): Patient was placed on high-flow nasal oxygen, IV antibiotics (Ceftriaxone 2g OD + Linezolid 600mg IV BD), and supportive care. Fever settled by Day 2. Oxygenation improved, and weaned to room air on Day 3.\n- Single Deluxe Room Stay (15-Oct to 19-Oct, 4 days): Stepped down to Single Deluxe Ward once hemodynamically stable and maintaining SpO2 >95% on room air. Completed course of IV antibiotics and transitioned to oral medications (Tab Cefuroxime Axetil 500mg BD).\n\nFINAL HOSPITAL BILL SUMMARY:\n1. ICU Room Charges: 3 days @ Rs. 12,000/day = Rs. 36,000\n2. Single Deluxe Room Charges: 4 days @ Rs. 8,000/day = Rs. 32,000\n3. Nursing & RMO Services (Deluxe Ward): 4 days @ Rs. 2,500/day = Rs. 10,000\n4. Nursing & RMO Services (ICU): 3 days @ Rs. 4,000/day = Rs. 12,000\n5. Pulmonologist & Specialist Consultations: Rs. 25,000\n6. Investigations (Lab + Radiology): Rs. 20,000\n7. Pharmacy & Medicines: Rs. 50,000\nTOTAL BILLED AMOUNT: Rs. 1,85,000\n\nDISCHARGE CONDITION:\nPatient is hemodynamically stable, afebrile, and chest clear. SpO2 97% on room air.\n\nDr. Akhil Saxena, MD (Pulmonary Medicine)\nReg No: UP-882711",
+  "simulatedDenialReason": "Partial approval of pre-auth/claim. Total billed amount is Rs. 1,85,000. Approved amount is Rs. 98,375. The policy holds a strict room rent capping of 1% of Sum Insured (Rs. 3,000/day) for Normal/Deluxe Rooms and 2% of Sum Insured (Rs. 6,000/day) for ICU. Since the patient stayed in a Deluxe Room costing Rs. 8,000/day and ICU costing Rs. 12,000/day, a proportional deduction factor of 37.5% (3,000 / 8,000) has been applied to all associated expenses including Nursing, RMO charges, Specialist Consultations, Diagnostic Investigations, and Pharmacy. ICU-associated charges have been scaled down by 50% (6,000 / 12,000). Total disallowed deductions stand at Rs. 86,625.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Ramesh Chandra Verma",
+      "age": 62,
+      "gender": "Male",
+      "policyNumber": "CHI/2022/9984102",
+      "insurerName": "Care Health Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "PROPORTIONAL_DEDUCTION_APPLIED",
+        "ROOM_RENT_CAPPING_EXCEEDED",
+        "ICU_STEP_DOWN_AUDIT_REQUIRED"
+      ],
+      "mustNotFlag": [
+        "MATERNITY_LIMIT_EXCEEDED"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "J18.9",
+    "expectedCost": 185000,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "Insurers are prohibited from applying proportional deductions to the cost of pharmacy, medicines, and consumables as per IRDAI Guidelines on Standardization of General Clauses in Health Insurance Contracts (Ref: IRDAI/HLT/REG/CIR/193/07/2020).",
+      "The pharmacy bill of Rs. 50,000 must be paid in full without any proportional cuts (37.5% or 50% deduction), subject to overall sum insured limits.",
+      "The clinical stepped-down transition from ICU to ward on 15-Oct-2023 was medically justified based on clinical recovery (SpO2 96% on room air, afebrile status)."
+    ]
+  }
+}

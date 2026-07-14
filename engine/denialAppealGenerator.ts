@@ -126,6 +126,21 @@ export async function generateDenialAppeal(
   const reasons = parseDenialReasons(denialReasonText);
   const claimValue = record.costEstimate?.amountClaimedFromInsurer ?? 0;
 
+  if (reasons.length === 0) {
+    return {
+      recordId: record.id,
+      denialReasonsParsed: [],
+      citedEvidence: [],
+      stillMissing: [],
+      addressedCount: 0,
+      totalReasons: 0,
+      priorityScore: 0,
+      appealText: 'No valid denial reasons provided for appeal generation.',
+      generatedAt: new Date().toISOString(),
+      appealStatus: 'draft'
+    };
+  }
+
   // Build the clinical pool of allowed facts
   const clinicalPool: { item: string; source: 'anchor' | 'discriminator'; forChallenge?: string }[] = [
     ...existingReport.requiredEvidence.filter(e => e.present).map(e => ({

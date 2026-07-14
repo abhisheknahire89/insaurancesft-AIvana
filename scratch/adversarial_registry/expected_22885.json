@@ -1,0 +1,28 @@
+{
+  "expectedExtraction": {
+    "patientName": "Mrs. Ananya Sharma",
+    "age": 31,
+    "gender": "Female",
+    "policyNumber": "POL-99887766",
+    "insurerName": "Star Health & Allied Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "O-code chapter lock validation",
+      "Maternity package ceiling check"
+    ],
+    "mustNotFlag": [
+      "O34.21 CM code mismatch",
+      "Emergency triage exception"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "O34.2",
+  "expectedCost": 65000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "The patient Mrs. Ananya Sharma has a previous LSCS scar (O34.2)",
+    "The correct WHO standard code is O34.2, not the US-CM code O34.21",
+    "Maternity package of Rs. 65,000 applies under the policy sub-limit"
+  ]
+}

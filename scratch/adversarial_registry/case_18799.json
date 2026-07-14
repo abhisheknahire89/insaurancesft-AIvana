@@ -1,0 +1,85 @@
+{
+  "id": 18799,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "hospital_rent",
+  "diagnosis": "Community-acquired Pneumonia",
+  "code": "J18.9",
+  "chiefComplaints": "High-grade fever with chills for 5 days, productive cough with thick yellowish sputum, and progressive shortness of breath for 2 days.",
+  "hpi": "A 64-year-old male patient presented to the ER with a 5-day history of high-grade fever accompanied by rigors, and a productive cough. Over the last 48 hours, he developed severe progressive dyspnea (NYHA Grade III) and pleuritic chest pain. On arrival, he was hypoxic with an SpO2 of 84% on room air, tachypneic (RR 28/min), and febrile (101.5 F). He was immediately stabilized with supplemental oxygen, arterial blood gas (ABG) was drawn, and he was admitted to the Medical ICU (MICU) for close monitoring and IV antibiotic therapy.",
+  "relevantClinicalFindings": "Chest auscultation revealed bronchial breath sounds and coarse crepitations in the bilateral lower zones. Chest X-ray showed bilateral lower lobe bronchopneumonic consolidations. Lab investigations revealed leukocytosis (WBC: 16,500/cumm) with neutrophilia (85%), elevated CRP (84 mg/L), and mild hyponatremia (Sodium: 131 mEq/L). ABG on room air showed moderate hypoxemic respiratory failure.",
+  "additionalClinicalNotes": "The patient has co-morbidities of Type 2 Diabetes Mellitus for 8 years (on Tab. Metformin 500mg BD, latest HbA1c 7.6%) and Essential Hypertension for 5 years (on Tab. Telmisartan 40mg OD). Sputum culture subsequently isolated Streptococcus pneumoniae, sensitive to Ceftriaxone.",
+  "duration": "6 days",
+  "treatmentTakenSoFar": "On admission, shifted to MICU, started on High-Flow Nasal Cannula (HFNC) oxygen support. Initiated empirical IV Ceftriaxone 2g QD, IV Azithromycin 500mg QD, nebulization with Duolin and Budecort every 6 hours, IV fluids, and strict glycemic monitoring. Shifted to the Single Private Ward on Day 3 once oxygen requirements stabilized to room air.",
+  "reasonForHospitalisation": "Acute hypoxemic respiratory failure secondary to severe community-acquired pneumonia requiring ICU monitoring, high-flow oxygen therapy, and intravenous antibiotics.",
+  "uploadedDocuments": [
+    "admission_notes",
+    "discharge_summary",
+    "lab_reports",
+    "chest_xray_report",
+    "hospital_bill"
+  ],
+  "patientName": "Ramesh Chandra Verma",
+  "patient": {
+    "patientName": "Ramesh Chandra Verma",
+    "age": 64,
+    "gender": "Male",
+    "mobileNumber": "9876543210"
+  },
+  "insurance": {
+    "policyNumber": "HA/2023/8892102",
+    "insurerName": "Care Health Insurance",
+    "tpaName": "Medsave Health Insurance TPA",
+    "sumInsured": 300000,
+    "balanceSumInsured": 300000
+  },
+  "vitals": {
+    "bp": "110/70",
+    "pulse": "98",
+    "temp": "101.5 F",
+    "spo2": "84%",
+    "rr": "28"
+  },
+  "expected": {
+    "mustFlag": [
+      "ROOM_RENT_CAPPING_EXCEEDED",
+      "PROPORTIONAL_DEDUCTION_APPLICABLE"
+    ],
+    "mustNotFlag": [
+      "INVESTIGATION_ONLY_ADMISSION"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "The case involves a room rent cap issue. Under a 3 Lakh Sum Insured policy, the room rent limit is 1% (Rs. 3,000/day) for normal rooms and 2% (Rs. 6,000/day) for ICU. The patient spent 2 days in ICU at Rs. 5,500/day (well within the Rs. 6,000 limit) and 4 days in a Single Deluxe Private Room at Rs. 5,000/day (which exceeds the Rs. 3,000 limit). The TPA has erroneously applied a 40% proportional deduction to the entire bill, including ICU charges, pharmacy, and diagnostics, violating standard IRDAI guidelines.",
+  "realGap": "The TPA applied a blanket 40% proportional deduction across the entire bill (including ICU stay, diagnostics, and pharmacy) because the Single Private Room availed (Rs. 5,000) exceeded the policy's normal room cap (Rs. 3,000). Proportional deductions must only apply to room-rent-linked services (nursing, RMO fees, resident doctor visits) during the specific days the capped room was occupied, and must strictly exclude ICU charges, diagnostics, and pharmacy/consumables.",
+  "sourceReasoning": "As per the IRDAI 'Standardization of General Terms in Health Insurance Policies' circular, insurers/TPAs are restricted from applying proportional deductions to non-room-rent-linked charges such as ICU charges, cost of pharmacy, implants, medical devices, and diagnostic tests. Deductions can only be applied proportionally to 'associated medical expenses' (like doctor fees, nursing, and room rent) for the period the over-limit room was occupied.",
+  "rawDocumentText": "METRO MULTISPECIALTY HOSPITAL, NEW DELHI\nDISCHARGE SUMMARY\n\nPATIENT NAME: Ramesh Chandra Verma\nAGE / GENDER: 64 Years / Male\nUHID: MMH-2023-99882\nIP NO: IP-992120\nDATE OF ADMISSION: 10-Nov-2023, 10:30 AM\nDATE OF DISCHARGE: 16-Nov-2023, 04:00 PM\nINSURER: Care Health Insurance\nPOLICY NO: HA/2023/8892102\nSUM INSURED: Rs. 3,00,000\n\nDIAGNOSIS: \n1. Severe Community-acquired Pneumonia (ICD-10: J18.9)\n2. Type 2 Diabetes Mellitus\n3. Essential Hypertension\n\nCHIEF COMPLAINTS AT ADMISSION:\n- High-grade fever with chills since 5 days\n- Cough with yellow-colored sputum since 5 days\n- Shortness of breath on mild exertion since 2 days\n\nCLINICAL STATUS AT ADMISSION:\nPatient was conscious, oriented, but in moderate respiratory distress. SpO2 was 84% on room air, RR 28/min, Pulse 98 bpm, BP 110/70 mmHg, Temp 101.5 F.\nOn Chest Auscultation: Bilateral bronchial breath sounds with coarse crackles heard in lower zones.\n\nINVESTIGATIONS:\n- Chest X-Ray (10-Nov): Bilateral patch consolidations in lower lobes.\n- WBC: 16,500 cells/cumm, CRP: 84 mg/L.\n- Serum Sodium: 131 mEq/L, Creatinine: 0.9 mg/dL.\n- Sputum Culture: Positive for Streptococcus pneumoniae.\n\nCOURSE IN HOSPITAL:\nThe patient was immediately admitted to the MICU (Bed No. ICU-04) on 10-Nov. He was placed on high-flow nasal oxygen. IV Ceftriaxone 2g OD and IV Azithromycin 500mg OD were commenced. Diabetic and hypertensive regimens were optimized. Over the next 48 hours, the patient's respiratory distress settled, and SpO2 reached 96% on room air. He was stepped down to a Single Deluxe Private Room (Room No. 302) on 12-Nov. IV antibiotics were continued for another 4 days. The patient was discharged on oral medications on 16-Nov-2023 in stable clinical condition.\n\nFINAL HOSPITAL BILL BREAKDOWN:\n1. ICU Bed Charges (2 days @ Rs. 5,500/day): Rs. 11,000\n2. Single Deluxe Room Rent (4 days @ Rs. 5,000/day): Rs. 20,000\n3. Nursing Charges (6 days @ Rs. 1,000/day): Rs. 6,000\n4. RMO & Consultant Visits (6 days @ Rs. 2,000/day): Rs. 12,000\n5. Investigations (CT Chest, Labs, X-Rays): Rs. 18,000\n6. Medicines, Consumables & IV Fluids: Rs. 35,000\nTOTAL BILL AMOUNT: Rs. 1,02,000\n\nDischarge Medication:\nTab. Clavix 625mg TDS x 5 days\nTab. Telmisartan 40mg OD\nTab. Metformin 500mg BD\nTab. Paracetamol 650mg SOS",
+  "simulatedDenialReason": "Claim partially approved for Rs. 61,200. Proportional deduction of 40% (Rs. 40,800) has been applied to the total hospital bill as the patient stayed in a Single Deluxe Private Room charging Rs. 5,000/day, which exceeds the eligible room rent capping of 1% of Sum Insured (Rs. 3,000/day) under the policy terms.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Ramesh Chandra Verma",
+      "age": 64,
+      "gender": "Male",
+      "policyNumber": "HA/2023/8892102",
+      "insurerName": "Care Health Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "ROOM_RENT_CAPPING_EXCEEDED",
+        "PROPORTIONAL_DEDUCTION_APPLICABLE"
+      ],
+      "mustNotFlag": [
+        "INVESTIGATION_ONLY_ADMISSION"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "J18.9",
+    "expectedCost": 102000,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "Proportional deduction of 40% cannot be applied to ICU Bed Charges as the ICU limit is 2% of SI (Rs. 6,000/day) and hospital ICU charges were Rs. 5,500/day.",
+      "As per standard IRDAI guidelines, proportional deductions are not applicable to the cost of pharmacy, medicines, and diagnostic investigations.",
+      "The room rent capping deduction should strictly be applied only to room-rent-associated charges (Single Private Room rent, and proportional associate nursing/doctor fees during those 4 days of ward stay)."
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "id": 19559,
+  "category": "D",
+  "difficulty": "high",
+  "focusCategory": "preauth_heavy",
+  "diagnosis": "Primary Osteoarthritis of Left Knee",
+  "code": "M17.1",
+  "chiefComplaints": "Severe pain, mechanical deformity, and progressive restriction of movement in the left knee for the past 2 years, rendering patient homebound for the last 6 months.",
+  "hpi": "Mrs. Rukmini Iyer is a 66-year-old female presenting with progressive mechanical left knee pain. The pain is localized to the medial joint line, exacerbated by weight-bearing, standing, and walking, and minimally relieved by rest or analgesics. The patient has tried physical therapy for 9 consecutive months (documented) and has undergone a course of oral NSAIDs which had to be discontinued due to acute-on-chronic kidney injury (creatinine spiked to 1.8 mg/dL). She received a single intra-articular steroid injection (triamcinolone) in her left knee 6 months ago, which provided temporary relief for only 3 weeks. Currently, her walking distance is limited to less than 50 meters, and she is unable to perform basic activities of daily living.",
+  "relevantClinicalFindings": "Physical Examination: Left knee shows severe varus deformity, marked joint line tenderness along the medial compartment, and thick, painful crepitus during active flexion. Range of motion (ROM) is restricted from 10 degrees to 90 degrees with severe terminal pain. Moderate joint effusion present. Patellofemoral grind test is positive.\n\nRadiology: Left Knee X-ray (Weight-bearing AP and Lateral views) demonstrates severe medial joint space obliteration, prominent subchondral sclerosis, osteophyte formation, and subchondral cysts in the medial tibial plateau, consistent with Kellgren-Lawrence Grade IV Osteoarthritis.",
+  "additionalClinicalNotes": "Comorbidities and Clearances:\n1. Ischemic Heart Disease (IHD): Post-percutaneous transluminal coronary angioplasty (PTCA) with Drug-Eluting Stent (DES) to the Left Anterior Descending (LAD) coronary artery in August 2022. Patient is currently on Tab. Clopidogrel 75mg OD and Tab. Atorvastatin 40mg OD. Dual antiplatelets were held 5 days prior after formal cardiology clearance. Cardiologist Dr. K. Srinivasan has certified the patient as Class II NYHA, fit for surgery under regional anesthesia with high-risk consent.\n2. Chronic Kidney Disease (CKD) Stage 3: Baseline Serum Creatinine is 1.6 mg/dL with an estimated GFR of 38 mL/min/1.73m2. Nephrologist Dr. S. Kalyanaraman has cleared the patient, advising avoidance of postoperative NSAIDs, strict perioperative hydration, and close monitoring of renal parameters.\n3. Hypertension: Poorly controlled on Tab. Telmisartan 40mg OD and Tab. Amlodipine 5mg OD. Admission BP is 162/96 mmHg.",
+  "duration": "2 years",
+  "treatmentTakenSoFar": "Supervised physiotherapy for 9 months, oral NSAIDs (Tab. Ultracet, Tab. Etoshine - discontinued due to renal dysfunction), intra-articular steroid injection 6 months ago.",
+  "reasonForHospitalisation": "Planned left total knee arthroplasty (TKA) to restore mobility and relieve intractable pain, necessitating multidisciplinary inpatient management due to severe cardiac and renal comorbidities.",
+  "uploadedDocuments": [
+    "orthopedic_clinical_evaluation_notes",
+    "x_ray_report_bilateral_knees",
+    "cardiology_clearance_and_echo_report",
+    "nephrology_clearance_letter",
+    "blood_biochemistry_reports_creatinine",
+    "pre_authorization_request_form"
+  ],
+  "patientName": "Rukmini Iyer",
+  "patient": {
+    "patientName": "Rukmini Iyer",
+    "age": 66,
+    "gender": "Female",
+    "mobileNumber": "9840123456"
+  },
+  "insurance": {
+    "policyNumber": "HDF-33491-IP-2024",
+    "insurerName": "HDFC ERGO General Insurance Co. Ltd.",
+    "tpaName": "Medi Assist TPA",
+    "sumInsured": 750000,
+    "balanceSumInsured": 620000,
+    "tpaIdCardNumber": "MA-99231-A"
+  },
+  "vitals": {
+    "bp": "162/96 mmHg",
+    "pulse": "74 bpm",
+    "temp": "98.4 F",
+    "spo2": "97%",
+    "rr": "18/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "M17.1",
+      "conservative_management_failure",
+      "cardiac_clearance",
+      "renal_impairment_comorbidity"
+    ],
+    "mustNotFlag": [
+      "M17.11",
+      "acute_traumatic_tear"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This case tests the 'preauth_heavy' segment for major joint replacement (TKR). TPAs heavily audit these cases for conservative trial documentation, X-ray evidence of severe disease (KL Grade III/IV), and multi-specialty clearances for patients with high-risk comorbidities (IHD with prior stent and Stage 3 CKD). The ICD-10 code must map strictly to the WHO code M17.1 without US-specific lateralization suffixes.",
+  "realGap": "TPAs routinely raise pre-auth queries or deny planned joint replacements by citing lack of documented proof of conservative management trial length, lack of radiological reports demonstrating joint destruction, or failure to justify inpatient monitoring for high-risk patients with severe medical comorbidities.",
+  "sourceReasoning": "Per IRDAI standardization rules and common TPA underwriting criteria, major orthopedic joint replacements require proof of conservative management failure (typically 3 to 6 months), radiographic validation of advanced disease (KL Grade III or IV), and detailed medical clearance from relevant specialists (Cardiology, Nephrology) whenever complex systemic comorbidities exist to establish surgical necessity and patient safety.",
+  "rawDocumentText": "APOLLO HOSPITALS, GREAMS ROAD, CHENNAI\nPRE-ADMISSION ASSESSMENT & SURGICAL PLANNING SHEET\n\nPATIENT NAME: Mrs. Rukmini Iyer | AGE: 66 Years | GENDER: Female\nIP NO: AP-2024-998124 | REG NO: 442910\nINSURER: HDFC ERGO General Insurance Co. Ltd.\nPOLICY NO: HDF-33491-IP-2024 | TPA ID: MA-99231-A (Medi Assist TPA)\nDATE OF ADMISSION: 24-Oct-2024 (Planned)\n\nDIAGNOSIS: Severe Primary Osteoarthritis of the Left Knee (Kellgren-Lawrence Grade IV)\nPLAN OF HT/PROCEDURE: Left Total Knee Arthroplasty (TKA) under Combined Spinal Epidural Anesthesia.\nESTIMATED COST: INR 2,85,000/- (Semi-Private Room Package)\n\nCHIEF COMPLAINTS: Intractable pain, worsening mechanical varus deformity, and progressive loss of physical function of the left knee for 2 years. Patient reports her walking distance has decreased to < 50 meters. Completely dependent on family members for daily living for the last 6 months.\n\nHISTORY OF PRESENT ILLNESS: Patient has been undergoing conservative management for the past 9 months, including regular supervised physical therapy and isometric exercises, but without relief. She was prescribed Tab. Etoshine (Etoricoxib) 90 mg OD but had to discontinue use due to gastric mucosal irritation and deteriorating renal parameters. A single intra-articular steroid injection (Triamcinolone 40mg) administered 6 months ago provided transient relief for only 3 weeks. Due to worsening pain, night pain, and joint stiffness, she is now scheduled for elective Left TKR.\n\nCOMORBIDITIES & MEDICAL HISTORY:\n1. Ischemic Heart Disease (IHD): Post-PTCA with a Drug-Eluting Stent (DES) to the LAD in August 2022. Followed up regularly by Dr. K. Srinivasan (Cardiologist). Currently on Tab. Clopidogrel 75mg OD and Tab. Atorvastatin 40mg OD. Dual antiplatelets have been safely held for 5 days pre-op. 2D Echo shows EF of 50%, no regional wall motion abnormalities. Cleared for surgery under high-risk consent.\n2. Chronic Kidney Disease (Stage 3): Baseline Serum Creatinine is 1.6 mg/dL, eGFR is 38 ml/min/1.73m2. Dr. S. Kalyanaraman (Nephrologist) reviewed the patient and issued clearance with instructions to strictly avoid nephrotoxic drugs post-op (no NSAIDs), maintain intraoperative hydration, and monitor creatinine daily.\n3. Essential Hypertension: On Tab. Telmisartan 40mg OD + Tab. Amlodipine 5mg OD. Admission BP: 162/96 mmHg. Pulse: 74/min.\n\nPHYSICAL EXAMINATION:\n- Left Knee: Severe varus deformity, lateral laxity, severe patellofemoral and medial compartment crepitus. Range of flexion: 10 to 90 degrees with agonizing terminal restriction. Visual Analog Scale (VAS) pain score is 8/10 on flat ground.\n- Cardiovascular: S1, S2 heard. No murmurs. Chest clear.\n\nINVESTIGATION FINDINGS:\n- Left Knee AP/LAT X-ray: Complete obliteration of medial joint space, dense subchondral sclerosis, subchondral bone cysts, and large osteophytes on both femoral and tibial margins. Consistent with KL Grade IV Osteoarthritis.\n- Blood Biochemistry: Hb: 11.2 g/dL, WBC: 7,400/mm3, Serum Creatinine: 1.6 mg/dL, Blood Urea: 45 mg/dL, Na+: 138 mEq/L, K+: 4.2 mEq/L.\n- Coagulation: PT: 12 sec, INR: 1.05.\n\nRECOMMENDED SURGERY: Left Total Knee Arthroplasty (TKA).\nADMITTING CONSULTANT: Dr. Rajesh Venkat, MS, MCh (Ortho)\nCO-MANAGING CONSULTANTS: Dr. K. Srinivasan (Cardiology), Dr. S. Kalyanaraman (Nephrology)",
+  "simulatedDenialReason": "Pre-authorization query: 1. Provide evidence of conservative non-surgical management trials for at least 6 months, including physiotherapy records and drug prescriptions. 2. Provide the X-ray report and film verifying Kellgren-Lawrence Grade III/IV joint destruction. 3. Justify inpatient pre-authorization and high-risk surgical necessity with explicit cardiac and nephrology clearance certificates due to documented history of PTCA (stent) and elevated serum creatinine.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Rukmini Iyer",
+      "age": 66,
+      "gender": "Female",
+      "policyNumber": "HDF-33491-IP-2024",
+      "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "M17.1",
+        "conservative_management_failure",
+        "cardiac_clearance",
+        "renal_impairment_comorbidity"
+      ],
+      "mustNotFlag": [
+        "M17.11",
+        "acute_traumatic_tear"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "M17.1",
+    "expectedCost": 285000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "conservative management for the past 9 months, including regular supervised physical therapy",
+      "Left Knee X-ray (Weight-bearing AP and Lateral views) demonstrates severe medial joint space obliteration... consistent with Kellgren-Lawrence Grade IV",
+      "Post-PTCA with a Drug-Eluting Stent (DES) to the LAD in August 2022",
+      "Chronic Kidney Disease (Stage 3): Baseline Serum Creatinine is 1.6 mg/dL",
+      "Dr. K. Srinivasan (Cardiologist) has certified... fit for surgery",
+      "Dr. S. Kalyanaraman (Nephrologist) has cleared the patient"
+    ]
+  }
+}

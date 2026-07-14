@@ -1,0 +1,88 @@
+{
+  "id": 16098,
+  "category": "D",
+  "difficulty": "high",
+  "focusCategory": "denial_heavy",
+  "diagnosis": "Leiomyoma of uterus, unspecified (Uterine Fibroids)",
+  "code": "D25.9",
+  "chiefComplaints": "Heavy menstrual bleeding (menorrhagia) with large clots for the past 8 months, severe spasmodic lower abdominal pain during cycles, and increased frequency of micturition.",
+  "hpi": "Sunita Sharma, a 44-year-old female (P2L2, both normal deliveries), presented with a history of progressive menorrhagia and dysmenorrhea over the last 1.5 years, worsening significantly over the last 8 months. She reports soaking 5-6 fully wet sanitary pads per day during her periods, which last for 8-10 days. She also experiences dull aching pelvic pain radiating to the lower back, and urinary frequency due to pressure symptoms. She has a documented clinical history of receiving medical management with oral progestins (Tab. Primolut-N 5mg TID) and antifibrinolytics (Tab. Texakind 500mg TID) for 6 months prescribed by her local gynecologist, which failed to control the heavy bleeding. Her recent blood work reveals severe microcytic hypochromic anemia with a Hemoglobin level of 8.1 g/dL, despite oral iron supplementation (Tab. Autrin).",
+  "relevantClinicalFindings": "Abdominal Examination: Uterus palpated, enlarged to about 14 weeks size, firm, non-tender, restricted mobility. Pelvic Ultrasound (USG Pelvis dated 12/10/2023): Shows an enlarged anteverted uterus measuring 11.8 x 7.6 x 8.2 cm. There is a large intramural leiomyoma in the posterior myometrium measuring 6.8 x 5.9 cm, causing compression of the endometrial cavity, and another subserosal fibroid of 3.2 cm at the fundus. Endometrial thickness is 10.5 mm. Both ovaries appear normal. No free fluid in the pouch of Douglas. Laboratory findings: Hemoglobin: 8.1 g/dL, RBC count: 3.2 million/cu.mm, MCV: 68 fL, Serum Ferritin: 9.2 mcg/L (consistent with severe iron deficiency anemia secondary to chronic menorrhagia).",
+  "additionalClinicalNotes": "Patient is scheduled for a planned Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingectomy under General Anesthesia. Because of her severe anemia (Hb 8.1 g/dL), 1 unit of Packed Red Blood Cells (PRBC) has been cross-matched and kept reserved for intraoperative/postoperative transfusion if required. Her comorbid factors include Hypertension, controlled on Tab. Telma 40 mg OD.",
+  "duration": "8 months of severe worsening symptoms, 1.5 years overall history.",
+  "treatmentTakenSoFar": "Tab. Primolut-N (Norethisterone) 5mg thrice daily for 6 months, Tab. Texakind (Tranexamic Acid) during cycles, and Tab. Autrin (iron supplement) once daily for 3 months.",
+  "reasonForHospitalisation": "Failed conservative medical management of symptomatic uterine fibroids, severe persistent menorrhagia causing profound secondary iron-deficiency anemia, and pelvic pressure symptoms, requiring definitive surgical intervention (Total Laparoscopic Hysterectomy).",
+  "uploadedDocuments": [
+    "gynecologist_consultation_notes",
+    "usg_pelvis_report",
+    "complete_blood_count_report",
+    "prior_prescription_history",
+    "pre_operative_fitness_certificate"
+  ],
+  "patientName": "Sunita Sharma",
+  "patient": {
+    "patientName": "Sunita Sharma",
+    "age": 44,
+    "gender": "Female",
+    "mobileNumber": "9845012345"
+  },
+  "insurance": {
+    "policyNumber": "1-2039-4482-01",
+    "insurerName": "Care Health Insurance Co. Ltd.",
+    "tpaName": "Vidal Health Insurance TPA Pvt. Ltd.",
+    "sumInsured": 500000,
+    "balanceSumInsured": 485000,
+    "tpaIdCardNumber": "VH99283451"
+  },
+  "vitals": {
+    "bp": "130/80 mmHg",
+    "pulse": "84 bpm",
+    "temp": "98.4 F",
+    "spo2": "99%",
+    "rr": "18 breaths/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "FAILED_CONSERVATIVE_TRIAL",
+      "SECONDARY_ANEMIA_DOCUMENTED"
+    ],
+    "mustNotFlag": [
+      "PREGNANCY_COMPLICATION_LOCK",
+      "MALIGNANT_NEOPLASM"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "Gynecological surgical case focusing on testing ICD-10 chapter locks for D-codes (D25.9 for uterine fibroid). This is a denial heavy scenario where the TPA queries the lack of trial of conservative management, but the clinical record explicitly documents 6 months of failed hormonal therapy (Norethisterone) and severe secondary anemia (Hb 8.1 g/dL).",
+  "realGap": "The TPA claims handler issued an automated denial/query asserting that conservative medical trial was not attempted or documented prior to opting for hysterectomy. This overlooks the explicit prescription history of Tab. Primolut-N (Norethisterone) taken for 6 months and the severe anemia complication, which clinically makes continued conservative therapy unsafe and mandates definitive surgical intervention.",
+  "sourceReasoning": "Under standard IRDAI medical necessity guidelines, surgical intervention for uterine leiomyomas (hysterectomy or myomectomy) is indicated and must be approved when there is documented failure of conservative medical management of at least 3-6 months, or if there is secondary anemia (Hb < 9 g/dL) or significant pressure symptoms (urinary frequency/pelvic pain) caused by large fibroids (>5 cm).",
+  "rawDocumentText": "BLOSSOM HOSPITAL & GYNECOLOGY CLINIC\nErandwane, Pune, Maharashtra - 411004\n\nPRE-AUTHORIZATION REQUEST & CLINICAL SUMMARY\nDate: 14/10/2023\n\nPATIENT DETAILS:\nName: Mrs. Sunita Sharma\nAge: 44 Years / Female\nUHID: BH-2023-8849\nInsurer: Care Health Insurance Co. Ltd.\nTPA: Vidal Health TPA\nPolicy No: 1-2039-4482-01\n\nCHIEF COMPLAINTS:\n- Menorrhagia (heavy menstrual bleeding) with passage of large blood clots during cycles for the past 8 months.\n- Severe spasmodic lower back and pelvic pain during menstruation, not relieved by standard NSAIDs.\n- Increased frequency of micturition for the last 4 months.\n\nHISTORY OF PRESENT ILLNESS:\nMrs. Sunita Sharma, P2L2, presented with progressive menstrual irregularities and heavy bleeding over 1.5 years. Her periods last for 8-10 days, requiring 5-6 fully soaked pads daily. She was evaluated 6 months ago by Dr. Anjali Deshmukh and started on conservative hormonal therapy (Tab. Primolut-N 5mg TID for 21 days per cycle) along with Tab. Texakind 500mg TID during cycles and oral hematinics (Tab. Autrin OD). Despite strict adherence to medical management for 6 consecutive cycles, her symptoms of heavy bleeding and severe pelvic pressure have persisted, and she has developed profound fatigue and weakness.\n\nPAST HISTORY / COMORBIDITIES:\n- Known case of Essential Hypertension for 3 years, controlled on Tab. Telma 40mg OD.\n- No history of prior pelvic surgeries, diabetes, or bleeding disorders.\n\nCLINICAL EXAMINATION:\n- General: Moderately built, pale skin and conjunctiva (significant pallor present). No icterus, edema, or lymphadenopathy.\n- Vitals: BP: 130/80 mmHg, Pulse: 84/min, Temp: 98.4 F, RR: 18/min.\n- Cardiovascular: S1 S2 heard, no murmurs. Respiratory: Chest clear, bilateral air entry equal.\n- Abdomen: Soft, non-tender. Uterus palpated per abdomen to be firm and enlarged to approximately 14 weeks size.\n- Per-Vaginal Exam: Uterus enlarged, firm, restricted mobility, posterior wall fullness noted. Cervix and vagina healthy.\n\nDIAGNOSTIC INVESTIGATIONS:\n1. Complete Blood Count (CBC) (11/10/2023):\n   - Hb: 8.1 g/dL (Severe Anemia)\n   - RBC: 3.2 million/cu.mm\n   - Hct: 26%\n   - MCV: 68 fL (Microcytic Hypochromic)\n   - WBC: 6,800/cu.mm\n   - Platelets: 2.10 Lakhs/cu.mm\n2. USG Pelvis (12/10/2023):\n   - Uterus: Anteverted, enlarged, measures 11.8 x 7.6 x 8.2 cm.\n   - Myometrium: Shows a large intramural fibroid in the posterior wall measuring 6.8 x 5.9 cm, causing compression and indentation of the endometrial echo.\n   - Fundus: Subserosal fibroid of 3.2 x 2.8 cm noted.\n   - ET: 10.5 mm.\n   - Ovaries: Right ovary measures 2.8 x 1.9 cm, Left ovary measures 3.0 x 2.1 cm. Both normal in echotexture.\n   - No pelvic free fluid.\n3. Renal & Liver Function Tests: Within normal limits.\n4. ECG: Normal sinus rhythm.\n\nPROPOSED PLAN OF TREATMENT:\nIn view of the failed medical management of symptomatic uterine fibroids, severe secondary microcytic anemia, and significant pressure symptoms (increased urinary frequency), the patient is advised to undergo Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingectomy under General Anesthesia. Patient has been counselled regarding the surgery and has given high-risk consent for the same. 1 unit of PRBC is cross-matched and reserved.\n\nDr. Anjali Deshmukh, MD, DGO\nSenior Consultant Gynecologist & Obstetrician\nReg No: MMC-2002/08/2931\nBlossom Hospital, Pune",
+  "simulatedDenialReason": "Pre-authorization request for Total Laparoscopic Hysterectomy is denied. As per the policy terms and standard clinical guidelines, surgical hysterectomy is considered a major intervention. Pre-auth is denied because there is no sufficient evidence of a prior trial of conservative medical management or documentation showing why conservative treatment was unsuccessful or contraindicated.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Sunita Sharma",
+      "age": 44,
+      "gender": "Female",
+      "policyNumber": "1-2039-4482-01",
+      "insurerName": "Care Health Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "FAILED_CONSERVATIVE_TRIAL",
+        "SECONDARY_ANEMIA_DOCUMENTED"
+      ],
+      "mustNotFlag": [
+        "PREGNANCY_COMPLICATION_LOCK",
+        "MALIGNANT_NEOPLASM"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.9",
+    "expectedCost": 125000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Patient was on conservative hormonal therapy (Tab. Primolut-N 5mg TID for 21 days per cycle) along with Tab. Texakind 500mg TID during cycles for 6 consecutive cycles under Dr. Anjali Deshmukh, which failed to control the menorrhagia.",
+      "Patient has developed severe secondary microcytic hypochromic anemia with Hemoglobin level of 8.1 g/dL due to chronic heavy bleeding.",
+      "USG Pelvis dated 12/10/2023 shows a large posterior wall intramural fibroid of 6.8 x 5.9 cm, causing endometrial compression and urinary frequency pressure symptoms."
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "expectedExtraction": {
+    "patientName": "Hemendra Prasad",
+    "age": 62,
+    "gender": "Male",
+    "policyNumber": "POL-9981273-CAD",
+    "insurerName": "HDFC ERGO General Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "stage_4_ckd_comorbidity",
+      "renal_protection_protocol",
+      "cardiology_board_evaluation"
+    ],
+    "mustNotFlag": [
+      "emergency_admission_criteria_met",
+      "acute_myocardial_infarction_active_management"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "I25.1",
+  "expectedCost": 385000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "SYNTAX score of 38 indicating multi-vessel diffuse disease unsuitable for PCI",
+    "Stage 4 CKD with baseline Creatinine of 3.4 mg/dL requiring intensive pre-operative nephrology optimization to prevent intra-operative acute kidney injury",
+    "Nephrologist clearance outlining clinical mandate for 48 hours of pre-operative intravenous sodium bicarbonate hydration protocol"
+  ]
+}

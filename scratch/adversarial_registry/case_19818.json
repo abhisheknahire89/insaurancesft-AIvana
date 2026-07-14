@@ -1,0 +1,96 @@
+{
+  "id": 19818,
+  "category": "C",
+  "difficulty": "extreme",
+  "focusCategory": "denial_heavy",
+  "diagnosis": "Acute Myocardial Infarction (NSTEMI)",
+  "code": "I21.4",
+  "chiefComplaints": "Acute crushing retrosternal chest pain radiating to the left shoulder and jaw for 4 hours, associated with profuse sweating, mild dyspnea, and nausea.",
+  "hpi": "A 56-year-old male with a significant medical history of Type 2 Diabetes Mellitus, Essential Hypertension, and Chronic Kidney Disease (CKD) Stage 3 presented to the emergency department of Metro Heart & Kidney Institute, New Delhi, at 04:30 AM with sudden onset, severe crushing chest pain starting at 12:30 AM. The pain was rated 8/10 on the Numeric Rating Scale (NRS) and was unresponsive to sublingual sorbitrate taken at home. The patient complained of associated cold sweats and breathlessness on minimal exertion (NYHA Class III). No history of recent fever, trauma, or similar episodes in the past month.",
+  "relevantClinicalFindings": "On admission, the patient was anxious and diaphoretic. Vitals: BP 160/100 mmHg, Heart Rate 104 bpm (regular, tachycardic), SpO2 94% on room air, Respiratory Rate 22/min. Cardiopulmonary examination revealed normal S1/S2 with no murmurs, and bilateral basal crackles on lung auscultation. Emergency ECG showed 1.5mm to 2mm ST-segment depression in the anterolateral leads (V4-V6) and T-wave inversions. Laboratory investigations revealed a highly elevated Cardiac Troponin-I level of 0.85 ng/mL (Reference: < 0.04 ng/mL). Serum Creatinine was elevated at 1.8 mg/dL with an estimated GFR of 42 ml/min/1.73m2, indicating Stage 3 CKD. High HbA1c of 8.9% was noted. In view of NSTEMI and underlying high-risk renal status (high risk for Contrast-Induced Nephropathy), the patient was immediately shifted to the Coronary Care Unit (CCU) for invasive risk stratification, nephrosafe hydration protocols, and urgent coronary angiogram.",
+  "additionalClinicalNotes": "The patient was managed with dual antiplatelet therapy (Aspirin 325 mg, Clopidogrel 300 mg loading doses), low molecular weight heparin (Enoxaparin 0.6 ml subcutaneously), IV Glyceryl Trinitrate infusion, and aggressive intravenous saline hydration (0.9% NaCl at 50 ml/hr under strict monitoring of central venous status to avoid fluid overload in the setting of borderline LV function and CKD). Nephrology clearance was obtained. Coronary Angiography (CAG) via right radial artery route was performed on 14/10/2023, revealing 90% critical stenosis in the mid-left anterior descending (LAD) artery and 70% stenosis in the right coronary artery (RCA). Successful percutaneous transluminal coronary angioplasty (PTCA) with a drug-eluting stent (DES) to the mid-LAD was performed under low-osmolar non-ionic contrast medium. Post-procedure, serum creatinine remained stable at 1.75 mg/dL. The patient was discharged after 3 days of ICU/ward monitoring in a hemodynamically stable condition.",
+  "duration": "4 days",
+  "treatmentTakenSoFar": "Loading doses of Aspirin, Clopidogrel, Atorvastatin, IV Nitroglycerin, Enoxaparin, Nephrosafe IV Hydration, Coronary Angiogram, and PTCA with DES to mid-LAD.",
+  "reasonForHospitalisation": "Emergency management of Acute Coronary Syndrome (NSTEMI) in a high-risk patient with Stage 3 CKD requiring continuous cardiac monitoring and specialized percutaneous intervention.",
+  "uploadedDocuments": [
+    "emergency_admission_sheet",
+    "ecg_report",
+    "troponin_i_report",
+    "serum_creatinine_report",
+    "cardiology_consultation_notes",
+    "nephrology_clearance_note",
+    "coronary_angiography_and_angioplasty_report",
+    "discharge_summary"
+  ],
+  "patientName": "Rajesh Kumar",
+  "patient": {
+    "patientName": "Rajesh Kumar",
+    "age": 56,
+    "gender": "Male",
+    "mobileNumber": "9811098234"
+  },
+  "insurance": {
+    "policyNumber": "HDF-908234-A",
+    "insurerName": "HDFC ERGO General Insurance Co. Ltd.",
+    "tpaName": "Medi Assist TPA",
+    "sumInsured": 500000,
+    "balanceSumInsured": 485000,
+    "tpaIdCardNumber": "MA-908234-11"
+  },
+  "vitals": {
+    "bp": "160/100 mmHg",
+    "pulse": "104 bpm",
+    "temp": "98.6 F",
+    "spo2": "94%",
+    "rr": "22 bpm"
+  },
+  "expected": {
+    "mustFlag": [
+      "Troponin-I elevation",
+      "ECG changes",
+      "Contrast-Induced Nephropathy Risk",
+      "ICU monitoring necessity"
+    ],
+    "mustNotFlag": [
+      "Elective diagnostic admission",
+      "Stable Angina"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This is a classic 'denial heavy' scenario designed to challenge a TPA's denial of an emergency cardiac intervention. TPAs often flag angioplasties as elective or diagnostic evaluations if they spot pre-existing CKD or lack of ST-elevation (confusing NSTEMI with stable CAD). The clinical documentation specialist must draft a robust appeal citing emergency markers.",
+  "realGap": "The TPA's denial completely ignores the clinical definition of NSTEMI, focusing solely on the absence of ST-elevation (which is expected in NSTEMI) and incorrectly labeling an emergency life-saving procedure as an elective evaluation. They also overlooked the patient's critical renal comorbidity (CKD) which made inpatient ICU care and strict pre/post-procedure hydration mandatory to prevent Contrast-Induced Acute Kidney Injury.",
+  "sourceReasoning": "Under the IRDAI Guidelines on Standardization of Common Exclusions in Health Insurance Contracts (Rule 4.4 - Diagnostics/Evaluation Exclusion), any evaluation or diagnostic procedure that cannot be safely performed on an outpatient/daycare basis due to the acute clinical severity, risk profile, or active emergency management of the patient must be covered. Denying an emergency acute coronary syndrome admission under the guise of 'diagnostic evaluation' is a direct violation of standard clinical adjudication guidelines.",
+  "rawDocumentText": "METRO HEART & KIDNEY INSTITUTE, NEW DELHI\nDISCHARGE SUMMARY\nPATIENT NAME: Rajesh Kumar | AGE: 56 Years | GENDER: Male\nUHID: MH-2023-89023 | REGISTRATION NO: REG-90112\nADMISSION DATE: 12/10/2023 (04:45 AM) | DISCHARGE DATE: 16/10/2023 (02:00 PM)\nINSURANCE: HDFC ERGO General Insurance Co. Ltd.\nPOLICY NO: HDF-908234-A | TPA: Medi Assist TPA\n\nDIAGNOSIS:\n1. ACUTE SUBENDOCARDIAL MYOCARDIAL INFARCTION (NSTEMI)\n2. TYPE 2 DIABETES MELLITUS (UNCONTROLLED)\n3. CHRONIC KIDNEY DISEASE (STAGE 3, BASELINE CREATININE 1.8 MG/DL, EGFR 42)\n4. ESSENTIAL HYPERTENSION\n\nCHIEF COMPLAINTS:\nCrushing retrosternal chest pain radiating to left arm and jaw since 12:30 AM (approx. 4 hours prior to ED arrival), accompanied by profuse diaphoresis, dyspnea NYHA Class III, and vomiting.\n\nHISTORY OF PRESENT ILLNESS:\nPatient is a 56-year-old male, known diabetic (12 years) and hypertensive (10 years) with documented Stage 3 CKD. He presented to the ED with severe chest pain. He had taken Tab. Sorbitrate 5mg sublingually at home without relief. No history of cough, trauma, or gastroesophageal reflux symptoms.\n\nCLINICAL FINDINGS & PHYSICAL EXAMINATION:\nO/E: Diaphoretic, pale, distressed.\nPulse: 104/min, regular, rhythmic. BP: 160/100 mmHg. RR: 22/min. Temp: 98.6 F. SpO2: 94% on room air.\nChest: Bilateral basal rales present. Heart: S1 S2 heard, no murmurs. Abdomen: Soft, non-tender.\n\nINVESTIGATIONS:\n- ECG (12/10/2023, 04:50 AM): Sinus tachycardia, 2mm ST-depression in V4, V5, V6, and flat T-waves. No ST-elevation.\n- Cardiac Troponin-I: 0.85 ng/mL (Cut-off for Myocardial Infarction: > 0.04 ng/mL).\n- CBC: Hb: 11.2 g/dL, WBC: 9,800/mm3, Platelets: 2.1 Lacs.\n- Renal Function: Blood Urea: 54 mg/dL, Serum Creatinine: 1.8 mg/dL (eGFR: 42 ml/min).\n- HbA1c: 8.9%.\n- Electrolytes: Na: 138 mEq/L, K: 4.1 mEq/L.\n\nCOURSE IN HOSPITAL & CLINICAL DECISION MAKING:\nIn view of NSTEMI with elevated Troponin-I and high-risk comorbidities (Diabetes, Hypertension, CKD), the patient was admitted to the CCU under Dr. Alok Sharma (Senior Cardiologist). Nephrology clearance was obtained from Dr. S.K. Gupta. To prevent Contrast-Induced Nephropathy (CIN), a pre-procedure hydration protocol with 0.9% Normal Saline was initiated at 50 ml/hr under CVP monitoring.\nPatient was loaded with Tab. Aspirin 325 mg and Tab. Clopidogrel 300 mg, and started on Inj. Enoxaparin 0.6 ml SC BD. Coronary Angiography (14/10/2023) showed critical 90% LAD mid-shaft stenosis. PTCA with DES to mid-LAD was performed successfully using low-osmolar, non-ionic contrast (45 ml total volume). Post-procedure, hydration was continued. Serum Creatinine monitored on 15/10/2023 was stable at 1.75 mg/dL. Patient was shifted to ward on 15/10/2023 and is now stable for discharge.\n\nDISCHARGE MEDICATIONS:\n- Tab. Aspirin 150 mg OD\n- Tab. Clopidogrel 75 mg OD\n- Tab. Atorvastatin 40 mg HS\n- Tab. Metoprolol XL 25 mg OD\n- Tab. Metformin 500 mg BD\n- Tab. Cilnidipine 10 mg OD\n\nDr. Alok Sharma, MD, DM (Cardiology)\nSenior Cardiologist, Metro Heart & Kidney Institute",
+  "simulatedDenialReason": "Pre-authorization request for inpatient admission and PTCA is denied. As per the submitted documents, the patient had a history of chronic kidney disease and stable hypertension. There is no document supporting acute myocardial infarction or hemodynamic instability to warrant emergency ICU admission. The coronary angiography and subsequent procedure are deemed elective diagnostic/therapeutic measures which could be planned under short-stay/daycare, or represent evaluation of chronic stable CAD, excluded under policy clause 4.4.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Rajesh Kumar",
+      "age": 56,
+      "gender": "Male",
+      "policyNumber": "HDF-908234-A",
+      "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "Troponin-I elevation",
+        "ECG changes",
+        "Contrast-Induced Nephropathy Risk",
+        "ICU monitoring necessity"
+      ],
+      "mustNotFlag": [
+        "Elective diagnostic admission",
+        "Stable Angina"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "I21.4",
+    "expectedCost": 285000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Cardiac Troponin-I was significantly elevated at 0.85 ng/mL (normal < 0.04), confirming acute myocardial necrosis (NSTEMI).",
+      "ECG showed acute ischemic changes with ST depressions (>1.5mm) in leads V4-V6.",
+      "Patient has Stage 3 Chronic Kidney Disease (Creatinine 1.8 mg/dL, eGFR 42 ml/min) which mandated intensive saline hydration and nephrologist clearance prior to contrast administration to prevent Contrast-Induced Nephropathy.",
+      "Retrosternal chest pain of crushing nature radiating to left arm accompanied by profuse diaphoresis constitutes an emergency cardiac presentation."
+    ]
+  }
+}

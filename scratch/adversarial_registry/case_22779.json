@@ -1,0 +1,90 @@
+{
+  "id": 22779,
+  "category": "C",
+  "difficulty": "extreme",
+  "focusCategory": "preauth_heavy",
+  "diagnosis": "Atherosclerotic heart disease of native coronary artery / Triple Vessel Disease (TVD)",
+  "code": "I25.1",
+  "chiefComplaints": "Exertional retrosternal chest pain (NYHA Class III) for 3 months, worsening over the last 15 days, associated with shortness of breath on mild exertion and sweating.",
+  "hpi": "The patient is a 62-year-old male with a 15-year history of poorly controlled Type 2 Diabetes Mellitus, a 12-year history of Essential Hypertension, and Stage 4 Chronic Kidney Disease (baseline Serum Creatinine ~3.2-3.5 mg/dL). He presented with progressive exertional chest pain. Coronary Angiography (CAG) conducted on 12th Oct 2023 revealed severe Triple Vessel Disease: LAD osteo-proximal 90% stenosis, LCx mid 80% stenosis, and RCA 90% diffuse long-segment disease. Due to diffuse disease and a high SYNTAX score of 38, the multi-disciplinary Heart Team recommended Coronary Artery Bypass Grafting (CABG) instead of PCI. He is admitted for elective CABG under high-risk consent owing to severe renal impairment (CKD Stage 4).",
+  "relevantClinicalFindings": "Echocardiogram: LVEF 40% with regional wall motion abnormalities (RWMA) in the LAD and LCx territories. Grade II Diastolic Dysfunction. Renal Function Tests: Serum Creatinine is elevated at 3.4 mg/dL, Blood Urea Nitrogen (BUN) is 78 mg/dL, with an estimated GFR (eGFR) of 18 mL/min/1.73m² (indicative of Stage 4 CKD). HbA1c: 8.4% showing suboptimal glycemic control. Cardiac Enzymes (Troponin T & I) are negative.",
+  "additionalClinicalNotes": "Pre-operative nephrology review by Dr. S. K. Agarwal (Senior Consultant Nephrologist) was obtained. To prevent contrast-induced nephropathy during pre-surgical workup and acute kidney injury (AKI) post-cardiopulmonary bypass, a strict renal protection protocol is ordered. Patient requires 48 hours of pre-operative intravenous hydration with isotonic sodium bicarbonate, continuous monitoring of fluid balance, and cessation of all nephrotoxic medications. Post-operative hemodialysis backup has been arranged in case of acute-on-chronic renal failure.",
+  "duration": "3 months",
+  "treatmentTakenSoFar": "Tab. Aspirin 75mg OD, Tab. Clopidogrel 75mg OD (held for 5 days pre-operatively), Tab. Atorvastatin 40mg HS, Tab. Metoprolol XL 50mg OD, Tab. Cilnidipine 10mg BD, Inj. Lantus (Insulin) 14 units SC at bedtime.",
+  "reasonForHospitalisation": "Planned elective Coronary Artery Bypass Grafting (CABG) x 3 grafts (LIMA-LAD, SVG-OM1, SVG-PDA) requiring specialized pre-operative nephrology optimization for Stage 4 CKD.",
+  "uploadedDocuments": [
+    "coronary_angiography_report",
+    "nephrology_clearance_letter",
+    "echocardiogram_report",
+    "blood_biochemistry_panel",
+    "pre_auth_form"
+  ],
+  "patientName": "Hemendra Prasad",
+  "patient": {
+    "patientName": "Hemendra Prasad",
+    "age": 62,
+    "gender": "Male",
+    "mobileNumber": "9810245678"
+  },
+  "insurance": {
+    "policyNumber": "POL-9981273-CAD",
+    "insurerName": "HDFC ERGO General Insurance",
+    "tpaName": "Family Health Plan Insurance TPA Limited (FHPL)",
+    "sumInsured": 1000000,
+    "balanceSumInsured": 850000,
+    "tpaIdCardNumber": "FHPL-9921-HP"
+  },
+  "vitals": {
+    "bp": "150/90 mmHg",
+    "pulse": "68/min",
+    "temp": "98.4 F",
+    "spo2": "96%",
+    "rr": "18/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "stage_4_ckd_comorbidity",
+      "renal_protection_protocol",
+      "cardiology_board_evaluation"
+    ],
+    "mustNotFlag": [
+      "emergency_admission_criteria_met",
+      "acute_myocardial_infarction_active_management"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This pre-authorization request tests the clinical validation rules of TPAs regarding multi-day pre-operative hospital stays for elective major surgeries. Elective CABGs typically require 1-day pre-op admission. However, in patients with severe comorbidities like CKD Stage 4 (Creatinine 3.4), a 48-hour pre-operative admission is clinically indicated to administer nephroprotective hydration protocols, manage fluid balance, and minimize the risk of post-bypass acute kidney injury. The model must extract and defend this medical necessity.",
+  "realGap": "TPAs frequently issue queries or partial denials for pre-operative hospital stays exceeding 24 hours for elective surgeries, claiming them to be 'unnecessary hospitalization for pre-op workup'. They overlook documented severe comorbidities like CKD Stage 4 that necessitate intensive inpatient renal preparation protocols to prevent fatal post-bypass renal failure.",
+  "sourceReasoning": "According to the IRDAI Guidelines on Standardization of Common TPA Procedures, pre-authorization requests for multi-day pre-operative preparation cannot be summarily denied or trimmed if there is documented, specialist-driven clinical justification (e.g., nephrology-mandated renal protection protocols) to address high-risk co-morbidities prior to major open-heart surgery.",
+  "rawDocumentText": "FORTIS ESCORTS HEART INSTITUTE, OKHLA ROAD, NEW DELHI\nPRE-AUTHORIZATION CLINICAL SUMMARY & REQUEST FOR CABG\n\nPATIENT NAME: Hemendra Prasad | AGE: 62 Years | GENDER: Male\nUHID: FEHI-981726 | IP No: IP-2023-8891\nPOLICY NO: POL-9981273-CAD | INSURER: HDFC ERGO General Insurance\nTPA: Family Health Plan Insurance TPA Limited (FHPL)\nPRIMARY DIAGNOSIS: Atherosclerotic Heart Disease, Triple Vessel Disease (TVD) (ICD-10: I25.1)\nCO-MORBIDITIES: Stage 4 Chronic Kidney Disease (CKD) (ICD-10: N18.4), Type 2 Diabetes Mellitus (E11.9), Essential Hypertension (I10)\nCHIEF COMPLAINTS: Exertional retrosternal angina (NYHA class III) for 3 months, acutely worsening with diaphoresis over the past 2 weeks.\n\nHISTORY OF PRESENT ILLNESS:\nMr. Hemendra Prasad is a known diabetic (15 years) and hypertensive (12 years) with Stage 4 CKD (baseline Creatinine ~3.2 mg/dL under active nephrology follow-up). He presented to our outpatient cardiology department with a history of worsening exertional chest tightness. Coronary Angiogram (CAG) dated 12/10/2023 revealed: \n- Left Main: Mild plaque\n- LAD: Osteo-proximal 90% stenosis\n- LCx: Mid 80% stenosis\n- RCA: Diffuse 90% disease throughout\nGiven the diffuse triple vessel disease and SYNTAX Score of 38, PCI was deemed unsuitable. Heart Team (CTVS & Cardiology) advised Coronary Artery Bypass Grafting (CABG) under cardiopulmonary bypass.\n\nCLINICAL FINDINGS & INVESTIGATIONS:\nO/E: Conscious, oriented. BP: 150/90 mmHg, HR: 68 bpm, SpO2: 96% on RA.\nECHO: LVEF 40%, hypokinesia in LAD & LCx territories, Grade II LVDD.\nKFT: Blood Urea: 78 mg/dL, Serum Creatinine: 3.4 mg/dL, eGFR: 18 ml/min/1.73m2 (Stage 4 CKD).\nHbA1c: 8.4% | CBC: Hb: 10.2 g/dL (normocytic normochromic anemia of CKD).\n\nPLAN OF TREATMENT & MEDICAL NECESSITY FOR 2-DAY PRE-OP STAY:\nPlanned for elective CABG (LIMA-LAD, SVG-OM1, SVG-PDA) under General Anesthesia on 15/10/2023. \nSpecialist Nephrology Clearance obtained from Dr. S. K. Agarwal. Due to high risk of acute-on-chronic renal failure secondary to cardiopulmonary bypass, the patient is being admitted 48 hours prior (on 13/10/2023) for an intensive renal protection protocol. This includes: \n1. Controlled isotonic sodium bicarbonate intravenous hydration (0.9% NaCl + NaHCO3) at 1ml/kg/hr.\n2. Serial electrolyte monitoring (Serum Potassium target < 4.8 mEq/L) and strict input/output charting.\n3. Safe discontinuation of ACEi/ARBs/Nephrotoxic agents and tight insulin infusion protocol for glycemic target 140-180 mg/dL.\nEstimated Cost of Surgery Package + Comorbidity management: INR 3,85,000/-\n\nDr. Ashok Seth, Director of CTVS\nReg No: DMC/45612",
+  "simulatedDenialReason": "Pre-authorization query raised: Please clarify the medical necessity for a 48-hour pre-operative hospital admission for an elective CABG procedure scheduled on 15/10/2023. Typically, pre-operative stay is limited to 24 hours. Explain why the pre-operative workup and optimization could not be conducted on an outpatient (OPD) basis.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Hemendra Prasad",
+      "age": 62,
+      "gender": "Male",
+      "policyNumber": "POL-9981273-CAD",
+      "insurerName": "HDFC ERGO General Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "stage_4_ckd_comorbidity",
+        "renal_protection_protocol",
+        "cardiology_board_evaluation"
+      ],
+      "mustNotFlag": [
+        "emergency_admission_criteria_met",
+        "acute_myocardial_infarction_active_management"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "I25.1",
+    "expectedCost": 385000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "SYNTAX score of 38 indicating multi-vessel diffuse disease unsuitable for PCI",
+      "Stage 4 CKD with baseline Creatinine of 3.4 mg/dL requiring intensive pre-operative nephrology optimization to prevent intra-operative acute kidney injury",
+      "Nephrologist clearance outlining clinical mandate for 48 hours of pre-operative intravenous sodium bicarbonate hydration protocol"
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "id": 19550,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "specialty_caps",
+  "diagnosis": "Maternity (LSCS) - Previous Cesarean Section Scar",
+  "code": "O34.2",
+  "chiefComplaints": "Admitted for elective Lower Segment Cesarean Section (LSCS) at 38 weeks 2 days gestation with history of a previous LSCS.",
+  "hpi": "A 29-year-old G2P1L1 female at 38 weeks 2 days gestation presented to the hospital for elective delivery. She has a history of a previous LSCS performed 18 months ago. Recent obstetric ultrasound indicated progressive oligohydramnios with an AFI of 6.2 cm. Due to the high risk of uterine rupture associated with a short inter-pregnancy interval (<18 months) and compounding oligohydramnios, she has been scheduled for a planned repeat LSCS.",
+  "relevantClinicalFindings": "Abdomen: Gravid uterus, term size, relaxed. No scar tenderness. Fetal heart rate regular at 142 bpm. Ultrasound findings: Single live fetus, cephalic, 38 weeks. Amniotic Fluid Index (AFI) is 6.2 cm (Oligohydramnios). Previous uterine scar thickness is measured at 2.1 mm (thinning scar).",
+  "additionalClinicalNotes": "TOLAC (Trial of Labor After Cesarean) was contraindicated due to the high risk of scar rupture. Inter-pregnancy interval is 18 months, and scar thickness is 2.1 mm.",
+  "duration": "3 days",
+  "treatmentTakenSoFar": "Routine antenatal care and prenatal supplements.",
+  "reasonForHospitalisation": "Elective Lower Segment Cesarean Section (LSCS) due to previous LSCS scar with short inter-pregnancy interval, scar thinning, and oligohydramnios.",
+  "uploadedDocuments": [
+    "doctor_notes",
+    "ultrasound_report",
+    "ant_natal_card"
+  ],
+  "patientName": "Priyanka Sharma",
+  "patient": {
+    "patientName": "Priyanka Sharma",
+    "age": 29,
+    "gender": "Female",
+    "mobileNumber": "9876543210"
+  },
+  "insurance": {
+    "policyNumber": "SHAI/2024/7732109",
+    "insurerName": "Star Health and Allied Insurance Co. Ltd.",
+    "tpaName": "In-House (Star Health)",
+    "sumInsured": 500000,
+    "balanceSumInsured": 450000,
+    "tpaIdCardNumber": "SH20240981"
+  },
+  "vitals": {
+    "bp": "110/70 mmHg",
+    "pulse": "84 bpm",
+    "temp": "98.4 F",
+    "spo2": "99%",
+    "rr": "18/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "O34.2",
+      "Previous LSCS"
+    ],
+    "mustNotFlag": [
+      "O34.21",
+      "M17.1"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "Tests the ICD-10 chapter lock for maternity codes (O-codes instead of general surgical codes) and evaluates the clinical appeal argument regarding safety parameters of repeat LSCS versus vaginal trial (TOLAC).",
+  "realGap": "The TPA queried the clinical necessity of a repeat LSCS, demanding justification for not performing a Trial of Labor After Cesarean (TOLAC), while overlooking critical maternal-fetal risk factors: an 18-month inter-pregnancy interval and documented scar thinning (2.1 mm), both of which are high-risk indicators for uterine rupture.",
+  "sourceReasoning": "Per FOGSI and ACOG guidelines, TOLAC is contraindicated or carries a significantly elevated risk of uterine rupture when the inter-pregnancy interval is under 18-24 months, or when there is documented scar thinning (<2.5 mm) or oligohydramnios. Insurers cannot reject surgical delivery pre-auth under these standard safety parameters.",
+  "rawDocumentText": "Dr. Sunita Deshmukh, MD, DGO\nSenior Consultant Obstetrician & Gynecologist\nMatrika Women & Child Hospital, Pune\n\nDate: 12-Oct-2024\n\nPRE-AUTHORIZATION REQUEST & CLINICAL JUSTIFICATION NOTE\n\nPatient Name: Mrs. Priyanka Sharma\nAge: 29 Years / Female\nIPD Reg No: MCH-2024-8843\nPolicy No: SHAI/2024/7732109\nInsurer: Star Health and Allied Insurance Co. Ltd.\n\nDiagnosis: G2P1L1 with 38 Weeks 2 Days Gestation with Previous LSCS Scar in Short Interpregnancy Interval (18 months) with Oligohydramnios.\nProposed Procedure: Elective Lower Segment Cesarean Section (LSCS) under Spinal Anesthesia.\n\nClinical History:\nThe patient presented to the outpatient department for planned delivery. She has a history of one previous cesarean delivery 1.8 years ago (April 2023) due to intrapartum fetal distress. Her current pregnancy has been uneventful until the late third trimester when routine scan revealed declining amniotic fluid levels.\n\nOn Examination:\n- General Condition: Fair, afebrile.\n- BP: 110/70 mmHg, Pulse: 84 bpm.\n- Cardiovascular & Respiratory Systems: WNL.\n- Abdomen: Gravid uterus of 38 weeks size. Cephalic presentation, FHR 142 bpm, regular. No uterine contractions felt. No scar tenderness present.\n- Per Vaginal Examination: Cervix posterior, uneffaced, closed.\n\nInvestigation Findings:\n- USG Obstetric (dated 10-Oct-2024): Single live fetus in cephalic presentation. Gestational age by biometry: 38 weeks 1 day. Estimated fetal weight: 2.9 kg. AFI (Amniotic Fluid Index): 6.2 cm (Oligohydramnios). Placenta: Fundal anterior, Grade III maturity.\n- Scar thickness evaluation: Lower uterine segment scar thickness is measured at 2.1 mm (indicated thinning).\n- Hemoglobin: 11.2 g/dL, Blood Group: O Positive.\n\nClinical Justification for Repeat LSCS:\nA Trial of Labor After Cesarean (TOLAC) was considered but ruled out due to the following high-risk factors:\n1. Short Interpregnancy Interval: The interval between the previous LSCS and the current delivery is approximately 18 months. An interval of less than 18-24 months is clinically proven to carry a 2- to 3-fold higher risk of uterine rupture during labor.\n2. Oligohydramnios: AFI is 6.2 cm, indicating reduced liquor volume which increases the risk of cord compression and fetal distress during active labor.\n3. Thinning Lower Uterine Segment: Ultrasound evaluation demonstrates a scar thickness of 2.1 mm, indicating significant thinning of the previous hysterotomy scar, making uterine rupture highly probable if labor is induced or allowed to progress naturally.\n\nIn view of these absolute risks, a planned elective repeat LSCS is scheduled for 13-Oct-2024 to safeguard both maternal and fetal health.\n\nDr. Sunita Deshmukh\nReg No: DMC-67211",
+  "simulatedDenialReason": "Pre-auth query: Please provide clinical justification for choosing repeat LSCS over Trial of Labor After Cesarean (TOLAC). Clarify if there is active labor or scar tenderness. If elective, please note that maternity benefits may be subjected to standard package limits or co-pay if medical necessity for surgical delivery is not established.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Priyanka Sharma",
+      "age": 29,
+      "gender": "Female",
+      "policyNumber": "SHAI/2024/7732109",
+      "insurerName": "Star Health and Allied Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "O34.2",
+        "previous LSCS"
+      ],
+      "mustNotFlag": [
+        "O34.21"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "O34.2",
+    "expectedCost": 65000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Short Interpregnancy Interval: The interval between the previous LSCS and the current delivery is approximately 18 months.",
+      "AFI (Amniotic Fluid Index): 6.2 cm (Oligohydramnios).",
+      "Lower uterine segment scar thickness is measured at 2.1 mm (indicated thinning)."
+    ]
+  }
+}

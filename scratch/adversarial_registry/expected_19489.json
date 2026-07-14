@@ -1,0 +1,32 @@
+{
+  "expectedExtraction": {
+    "patientName": "Rajesh Kumar",
+    "age": 58,
+    "gender": "Male",
+    "policyNumber": "HP/2023/883912",
+    "insurerName": "Niva Bupa Health Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "In-Stent Thrombosis",
+      "ST-Segment Elevation (STEMI)",
+      "Emergency Primary PTCA",
+      "Elevated Cardiac Troponin-I"
+    ],
+    "mustNotFlag": [
+      "Elective Angioplasty",
+      "Planned/Chronic CAD Treatment",
+      "Stable Angina Exclusions"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "I21.0",
+  "expectedCost": 285000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Emergency ECG (04:40 AM): Shows sinus tachycardia, ST-segment elevation of 3mm in V1, V2, V3, and V4",
+    "Troponin-I: 4.2 ng/mL (highly elevated)",
+    "CAG revealed: LAD: 99% thrombotic occlusion at the proximal edge of the previously deployed stent",
+    "In view of the acute anterior wall STEMI, the patient was taken up for emergency Coronary Angiography (CAG)"
+  ]
+}

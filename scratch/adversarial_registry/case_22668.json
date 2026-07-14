@@ -1,0 +1,92 @@
+{
+  "id": 22668,
+  "category": "B",
+  "difficulty": "high",
+  "focusCategory": "specialty_caps",
+  "diagnosis": "Multiple Uterine Leiomyomas (Submucous & Intramural) leading to Abnormal Uterine Bleeding (AUB-L)",
+  "code": "D25.9",
+  "chiefComplaints": "Heavy menstrual bleeding (menorrhagia) lasting 10-12 days per cycle for the past 6 months, severe lower abdominal spasmodic pain, and generalized fatigue/weakness.",
+  "hpi": "A 44-year-old female, P2L2, presented with a history of worsening menorrhagia and dysmenorrhea for 6 months. She reports soaking 5-6 pads/day during menses, with passage of large clots. Symptoms are accompanied by chronic pelvic pain and urinary frequency. Failed conservative medical management with tranexamic acid and hormonal therapy (oral progestins) initiated by her local gynecologist 3 months ago. Ultrasonography of the pelvis reveals multiple uterine fibroids (largest intramural fibroid measuring 5.4 x 4.8 cm in the anterior myometrium, and a submucosal fibroid of 3.2 cm distorting the endometrial cavity). Her hemoglobin has dropped to 8.2 g/dL despite oral iron supplementation.",
+  "relevantClinicalFindings": "On per-vaginal examination: Uterus is enlarged to ~14 weeks size, firm, mobile, non-tender. Pelvic ultrasound: Uterus measures 11.2 x 7.4 x 6.5 cm. Multiple fibroids noted: 1. Intramural fibroid in anterior wall 5.4 cm. 2. Submucosal fibroid 3.2 cm projecting into the endometrial cavity. Endometrial thickness is 9 mm. Endometrial biopsy shows benign proliferative endometrium. Hemoglobin: 8.2 g/dL (Microcytic hypochromic anemia). Patient is scheduled for Total Laparoscopic Hysterectomy (TLH) with bilateral salpingectomy under General Anesthesia.",
+  "additionalClinicalNotes": "History of controlled Primary Hypertension on Tab. Amlodipine 5mg OD. No history of previous abdominal surgeries.",
+  "duration": "6 months",
+  "treatmentTakenSoFar": "Tab. Tranexamic Acid 500mg TID during menses, Tab. Medroxyprogesterone acetate 10mg daily for 21 days/cycle for 3 months, and Tab. Autrin (iron supplement) daily.",
+  "reasonForHospitalisation": "Planned Total Laparoscopic Hysterectomy (TLH) with bilateral salpingectomy for symptomatic uterine fibroids refractory to medical management.",
+  "uploadedDocuments": [
+    "doctor_prescription",
+    "ultrasound_pelvis_report",
+    "cbc_report",
+    "pre_anesthetic_clearance_form",
+    "discharge_summary"
+  ],
+  "patientName": "Sunita Sharma",
+  "patient": {
+    "patientName": "Sunita Sharma",
+    "age": 44,
+    "gender": "Female",
+    "mobileNumber": "9876543210"
+  },
+  "insurance": {
+    "policyNumber": "POL-8837261-09",
+    "insurerName": "Star Health and Allied Insurance Co. Ltd.",
+    "tpaName": "In-house",
+    "sumInsured": 500000,
+    "balanceSumInsured": 480000,
+    "tpaIdCardNumber": "SH-9928374"
+  },
+  "vitals": {
+    "bp": "130/80 mmHg",
+    "pulse": "78 bpm",
+    "temp": "98.4 F",
+    "spo2": "98%",
+    "rr": "16/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "D25.9",
+      "Hysterectomy",
+      "Total Laparoscopic Hysterectomy"
+    ],
+    "mustNotFlag": [
+      "D25.91",
+      "N80.9",
+      "O34.2"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "Ensuring correct gynecology chapter lock mapping to D25.9 (WHO code) instead of US-specific codes or incorrect obstetric O-codes.",
+  "realGap": "TPAs frequently raise queries or deny hysterectomies in women under 45, citing lack of conservative management trials or lack of medical necessity documentation. In this case, the patient is 44 (under 45) and has documented failure of conservative medical management (hormonal and non-hormonal) which is crucial to highlight to avoid 'unnecessary surgery' denials under IRDAI guidelines.",
+  "sourceReasoning": "Under IRDAI standardized guidelines and TPA claim processing rules, hysterectomy procedures in pre-menopausal women (especially under 45 years) are heavily scrutinized for medical necessity, requiring documentation of failed conservative therapies (like hormonal therapy, Mirena, or myomectomy options) and endometrial biopsy to rule out malignancy before hysterectomy is approved.",
+  "rawDocumentText": "APOLLO HOSPITALS, JAYANAGAR, BANGALORE\nDEPARTMENT OF OBSTETRICS & GYNECOLOGY\nADMISSION NOTES & CLINICAL RECORD\n\nPatient Name: Sunita Sharma | Age: 44 Years | Gender: Female\nUHID: AHB-2023-99812 | IP No: IP-883726\nAdmitted Date: 24/10/2023 | Planned Discharge Date: 26/10/2023\nConsultant: Dr. Meenakshi Iyer, MD, DGO (Senior Consultant Gynecologist)\nInsurer: Star Health and Allied Insurance Co. Ltd. | Policy No: POL-8837261-09\n\nDIAGNOSIS:\nMultiple Symptomatic Uterine Leiomyomas (Submucous & Intramural Fibroids), Abnormal Uterine Bleeding (AUB-L), Severe Secondary Microcytic Hypochromic Anemia, Essential Hypertension (Controlled).\n\nCHIEF COMPLAINTS:\n- Menorrhagia (heavy menstrual bleeding lasting 10-12 days per cycle) with passage of large blood clots since 6 months.\n- Severe dysmenorrhea and dull aching pelvic pain.\n- Progressive fatigue, weakness, and exertional dyspnea.\n\nHISTORY OF PRESENT ILLNESS:\nMrs. Sunita Sharma, a 44-year-old P2L2, presented with worsening menorrhagia and severe spasmodic dysmenorrhea for the last 6 months. She reports using 5 to 6 fully soaked sanitary pads per day during her menstrual cycles, which now extend up to 12 days. She was evaluated by her local gynecologist 3 months ago and was started on medical management with Tab. Tranexamic Acid 500 mg TID during cycles and Tab. Medroxyprogesterone acetate (MPA) 10 mg daily for 21 days per cycle. Despite compliance with this hormonal and non-hormonal regimen, her bleeding has remained uncontrolled, and her hemoglobin plummeted to 8.2 g/dL despite ongoing oral iron therapy (Tab. Autrin OD). She also complains of urinary frequency, likely due to pressure effects from the enlarged uterus.\n\nPAST HISTORY:\n- Known case of Primary Hypertension for 4 years, well-controlled on Tab. Amlodipine 5mg OD. No history of diabetes, asthma, or ischemic heart disease.\n- Obstetric History: P2L2, both normal vaginal deliveries. Last delivery 12 years ago. Tubectomy done.\n\nPHYSICAL & CLINICAL EXAMINATION:\n- Vitals: BP: 130/80 mmHg, Pulse: 78/min, Temp: 98.4 F, SpO2: 98% on room air, RR: 16/min.\n- Cardiovascular: S1 S2 heard, no murmurs. Respiratory: Bilateral chest clear.\n- Abdominal Exam: Soft, non-tender, no organomegaly. A firm mass corresponding to ~14 weeks uterus palpable in the suprapubic region.\n- Per-Vaginal Exam: Uterus enlarged to about 14 weeks size, firm, mobile, non-tender. Fornices free.\n\nINVESTIGATIONS & IMAGING:\n1. Complete Blood Count (CBC): Hb: 8.2 g/dL (Low), RBC: 3.4 million/cumm, Hct: 26%, WBC: 7,200/cumm, Platelets: 2.8 Lakhs/cumm.\n2. Pelvic Ultrasound (USG) dated 12/10/2023:\n   - Uterus measures 11.2 x 7.4 x 6.5 cm (enlarged).\n   - Large intramural fibroid measuring 5.4 x 4.8 cm seen in the anterior myometrium.\n   - Submucosal fibroid measuring 3.2 x 2.8 cm seen projecting into and distorting the endometrial cavity.\n   - Endometrial thickness (ET): 9 mm.\n   - Both ovaries normal. No free fluid in POD.\n3. Endometrial Biopsy (Pipelle) dated 15/10/2023:\n   - Histopathology: Benign proliferative phase endometrium. No atypia or malignancy detected.\n4. Serum Creatinine: 0.8 mg/dL, Blood Urea: 22 mg/dL, Na+: 138 mEq/L, K+: 4.1 mEq/L.\n5. ECG: Normal sinus rhythm. Echo: LVEF 60%, no regional wall motion abnormalities.\n\nTREATMENT PLAN & CLINICAL RATIONALE:\nConsidering the patient's age (44 years), failure of conservative medical management (both hormonal with progestins and anti-fibrinolytic therapy) over 3 months, severe symptomatic anemia (Hb 8.2 g/dL) refractory to hematinics due to persistent menorrhagia, and the presence of a submucosal fibroid distorting the endometrial cavity, she is scheduled for a Total Laparoscopic Hysterectomy (TLH) with bilateral salpingectomy. Ovaries will be conserved. Pre-anesthetic clearance has been obtained. Written informed consent has been taken.",
+  "simulatedDenialReason": "Pre-authorization query raised: Patient age is 44 years. Please provide clinical justification for choosing Total Laparoscopic Hysterectomy over conservative medical management or less invasive procedures. Share documentation/prescription of prior conservative treatments tried and endometrial biopsy report to rule out malignancy.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Sunita Sharma",
+      "age": 44,
+      "gender": "Female",
+      "policyNumber": "POL-8837261-09",
+      "insurerName": "Star Health and Allied Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "Failed medical management documented",
+        "Endometrial biopsy benign",
+        "USG showing symptomatic submucosal and intramural fibroids"
+      ],
+      "mustNotFlag": [
+        "No prior trial of conservative therapy",
+        "Malignancy suspected"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.9",
+    "expectedCost": 145000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Failed conservative medical management with Tab. Tranexamic acid and Tab. Medroxyprogesterone acetate for 3 months",
+      "USG pelvis showing multiple fibroids (intramural 5.4cm, submucosal 3.2cm causing cavity distortion)",
+      "Endometrial biopsy showing benign proliferative endometrium",
+      "Severe persistent anemia (Hb 8.2 g/dL) refractory to oral iron therapy due to ongoing menorrhagia"
+    ]
+  }
+}

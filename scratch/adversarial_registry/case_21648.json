@@ -1,0 +1,89 @@
+{
+  "id": 21648,
+  "category": "C",
+  "difficulty": "extreme",
+  "focusCategory": "billing_complex",
+  "diagnosis": "Uterine Fibroids",
+  "code": "D25.1",
+  "chiefComplaints": "Heavy menstrual bleeding (menorrhagia) lasting for 10-12 days per cycle for the past 8 months, severe lower abdominal pressure, pain, and increased urinary frequency.",
+  "hpi": "A 45-year-old female, known case of chronic mild hypertension, presented with a history of worsening menorrhagia and dysmenorrhea. She has been experiencing generalized fatigue and breathlessness on exertion due to chronic blood loss. A pelvic ultrasound revealed a bulky uterus with multiple large intramural uterine fibroids. Medical management with progestins and haemostatics failed to provide relief. She has been advised to undergo a Total Laparoscopic Hysterectomy with Bilateral Salpingo-Oophorectomy.",
+  "relevantClinicalFindings": "USG Pelvis: Uterus is bulky measuring 14.8 x 8.9 x 8.2 cm. Multiple intramural fibroids noted; the largest is an intramural fibroid in the anterior myometrium measuring 7.4 x 6.2 cm, compressing the urinary bladder. Hemoglobin is low at 8.2 g/dL, indicating moderate microcytic hypochromic anemia. Cardiovascular system: S1 S2 heard, no murmurs. Blood Pressure: 138/84 mmHg on Tab. Amlodipine 5mg.",
+  "additionalClinicalNotes": "Pre-operative correction of anemia done with 1 unit of packed red blood cells (PRBC) and intravenous iron sucrose. Fitness for general anesthesia obtained from the cardiologist. Dense pelvic adhesions were noted intra-operatively between the posterior uterine wall and the sigmoid colon, requiring extensive adhesiolysis.",
+  "duration": "8 months",
+  "treatmentTakenSoFar": "Tab. Deviry (Medroxyprogesterone acetate) 10mg daily for 3 months, Tab. Tranexa (Tranexamic Acid) during menstrual cycles, Oral Iron Supplements.",
+  "reasonForHospitalisation": "Planned elective Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-Oophorectomy (BSO) and Pelvic Adhesiolysis under General Anesthesia.",
+  "uploadedDocuments": [
+    "admission_notes",
+    "usg_pelvis_report",
+    "complete_blood_count",
+    "pre_operative_ecg",
+    "interim_hospital_bill",
+    "room_upgrade_consent_form"
+  ],
+  "patientName": "Suman Lata",
+  "patient": {
+    "patientName": "Suman Lata",
+    "age": 45,
+    "gender": "Female",
+    "mobileNumber": "9876543210"
+  },
+  "insurance": {
+    "policyNumber": "POL-99281-2023",
+    "insurerName": "Star Health and Allied Insurance",
+    "tpaName": "Medi Assist TPA",
+    "sumInsured": 300000,
+    "balanceSumInsured": 300000,
+    "tpaIdCardNumber": "MA-88291-01"
+  },
+  "vitals": {
+    "bp": "138/84 mmHg",
+    "pulse": "78 bpm",
+    "temp": "98.4 F",
+    "spo2": "99%",
+    "rr": "16 breaths/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "PROPORTIONAL_DEDUCTION_APPLICABLE",
+      "UNBUNDLED_PROCEDURES_DETECTED",
+      "ROOM_RENT_CAPPING_EXCEEDED"
+    ],
+    "mustNotFlag": [
+      "MATERNITY_LIMIT_EXCEEDED"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "The case tests key clinical-billing compliance rules. First, the hospital has unbundled the procedures by billing separately for Bilateral Salpingo-Oophorectomy (Rs. 45,000) and Pelvic Adhesiolysis (Rs. 25,000) alongside the primary Total Laparoscopic Hysterectomy package (Rs. 1,10,000). Standard IRDAI/GIPSA guidelines state that salpingo-oophorectomy and adhesiolysis are components of a standard hysterectomy procedure and should not be billed as separate, standalone packages (unbundling warning). Second, the patient stayed in a Suite Room costing Rs. 9,000/day, whereas her Star Health policy caps normal room rent at 1% of the Sum Insured (Rs. 3,000/day). Consequently, a proportional deduction of 66.67% (since Rs. 3,000 / Rs. 9,000 = 1/3) must be applied to all associate medical expenses (Surgeon fee, Anaesthetist fee, OT charges, Nursing charges).",
+  "realGap": "Hospital unbundling of surgical packages (charging separately for BSO and adhesiolysis which are clinically part of the primary TLH hysterectomy) combined with an upgrade to a high-end Suite room that exceeds the 1% policy room capping, requiring strict proportional deductions across all associated surgical and professional fees.",
+  "sourceReasoning": "Under GIPSA PPN guidelines and standard IRDAI billing mandates, secondary surgical procedures performed during the same session through the same incision are either bundled into the primary procedure's package or capped at a maximum of 50% of their standalone cost. Additionally, IRDAI Standardized Guidelines on Room Rent Capping allow TPAs to apply proportional deductions on all associate medical charges if the patient opts for a room category higher than their eligible limit.",
+  "rawDocumentText": "PARVATHY OBSTETRICS & GYN CLINIC & MULTISPECIALITY HOSPITAL\nGSTIN: 33AAACP2348A1Z9 | CHENNAI, TAMIL NADU\n\nDISCHARGE SUMMARY & BILL AUDIT DOCUMENT\n\nPATIENT DETAILS:\nPatient Name: Suman Lata\nAge / Gender: 45 Years / Female\nIP No: IP/2023/11094\nDate of Admission: 12-Nov-2023\nDate of Discharge: 14-Nov-2023\nPrimary Consultant: Dr. Anjali Mehta, MS, DGO (Reg No: 48291)\n\nDIAGNOSIS & CLINICAL PROFILE:\nMultiple Intramural Uterine Fibroids (ICD-10: D25.1), Secondary Severe Menorrhagia with Chronic Iron Deficiency Anemia, Essential Hypertension.\n\nSURGICAL PROCEDURE PERFORMED:\nTotal Laparoscopic Hysterectomy (TLH) + Bilateral Salpingo-Oophorectomy (BSO) + Pelvic Adhesiolysis under General Anesthesia on 12-Nov-2023.\nSurgeon: Dr. Anjali Mehta\nAnaesthetist: Dr. R. K. Shastry, DA, MD\n\nOPERATIVE FINDINGS:\n- Bulky uterus (~14-week size) with a large anterior intramural fibroid of 7.4 cm.\n- Dense pelvic adhesions noted between the posterior uterine wall, left adnexa, and sigmoid colon.\n- Both ovaries and fallopian tubes bilaterally removed due to chronic inflammatory changes.\n- Extensive blunt and sharp adhesiolysis carried out to mobilize the uterus safely.\n\nINTERIM MEDICAL BILL BREAKDOWN:\n1. Room Rent (Suite Room): 2 Days @ Rs. 9,000/day = Rs. 18,000\n2. Primary Surgery Package (TLH): Rs. 1,10,000\n3. Bilateral Salpingo-Oophorectomy (BSO) Charges: Rs. 45,000\n4. Pelvic Adhesiolysis Charges: Rs. 25,000\n5. Professional Surgeon Fees: Rs. 30,000\n6. Anaesthetist Charges: Rs. 15,000\n7. OT Consumables & Medicines: Rs. 22,000\nTOTAL CLAIMED AMOUNT: Rs. 2,65,000\n\nPOLICY & ROOM UPGRADE DECLARATION:\nInsured Name: Suman Lata | Policy No: POL-99281-2023 | Insurer: Star Health and Allied Insurance. Sum Insured is Rs. 3,00,000. As per policy conditions, the room rent eligibility is capped at 1% of the Sum Insured (Rs. 3,000 per day for a Twin Sharing Room). The patient has voluntarily opted for a Suite Room costing Rs. 9,000 per day. The patient and her attendants have signed the Room Category Upgrade Consent Form acknowledging that they will bear the proportional deduction costs on all associated medical expenses.",
+  "simulatedDenialReason": "Interim Pre-auth Query: The hospital has submitted a bill containing unbundled surgical items. The charges for Bilateral Salpingo-Oophorectomy (Rs. 45,000) and Pelvic Adhesiolysis (Rs. 25,000) are billed separately from the primary Total Laparoscopic Hysterectomy package (Rs. 1,10,000). Please clarify why these are billed separately when they form an integral part of the hysterectomy surgical access and procedure. Additionally, the patient is staying in a Suite Room (Rs. 9,000/day) which exceeds her eligible limit of Rs. 3,000/day (1% of Rs. 3,00,000 SI). Please confirm that proportional deductions of 66.67% will be applied to all associated medical expenses, and provide the patient-share calculation sheet.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Suman Lata",
+      "age": 45,
+      "gender": "Female",
+      "policyNumber": "POL-99281-2023",
+      "insurerName": "Star Health and Allied Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "PROPORTIONAL_DEDUCTION_APPLICABLE",
+        "UNBUNDLED_PROCEDURES_DETECTED",
+        "ROOM_RENT_CAPPING_EXCEEDED"
+      ],
+      "mustNotFlag": [
+        "MATERNITY_LIMIT_EXCEEDED"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.1",
+    "expectedCost": 265000,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "Suite Room charges of Rs. 9,000/day exceed the eligible limit of Rs. 3,000/day",
+      "unbundled surgical charges for BSO (Rs. 45,000) and Adhesiolysis (Rs. 25,000)",
+      "proportional deductions applicable on OT, Surgeon, and Anaesthetist fees"
+    ]
+  }
+}

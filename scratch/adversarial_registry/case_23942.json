@@ -1,0 +1,91 @@
+{
+  "id": 23942,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "denial_heavy",
+  "diagnosis": "Uterine Fibroids",
+  "code": "D25.9",
+  "chiefComplaints": "Menorrhagia (heavy menstrual bleeding) with severe spasmodic dysmenorrhea for the last 6 months, dragging pain in lower abdomen, and urinary frequency.",
+  "hpi": "A 44-year-old female, P2L2, presented with complaints of heavy menstrual bleeding lasting 8 to 10 days per cycle, requiring 5-6 fully soaked pads per day for the last 6 months. This was accompanied by severe spasmodic dysmenorrhea and passage of large blood clots. She also reported a persistent dull ache in the lower abdomen and increased frequency of micturition due to pressure symptoms. There is no prior history of similar complaints, irregular cycles, or pelvic surgeries.",
+  "relevantClinicalFindings": "On per-abdominal examination, a firm, non-tender pelvic mass corresponding to 14 weeks size uterus was palpable. On per-vaginal examination, the uterus was found to be enlarged to about 14 weeks size, firm, mobile, with restricted lateral mobility, and non-tender. Cervix and vagina appeared healthy on speculum examination. Pelvic Ultrasound (USG) dated 12/10/2023 showed a bulky uterus measuring 11.5 cm x 7.8 cm x 6.2 cm with a large intramural leiomyoma in the anterior myometrium measuring 6.5 cm x 5.8 cm, and another small subserosal fibroid of 2.1 cm. Endometrial thickness was 9 mm. Hemoglobin was recorded at 8.4 g/dL, indicating moderate microcytic hypochromic anemia.",
+  "additionalClinicalNotes": "The patient was managed conservatively by her local gynecologist for 3 months with oral Tranexamic acid (500 mg TID) during menstruation and oral Medroxyprogesterone acetate (10 mg daily) for 21 days per cycle, along with oral iron supplements. However, there was no objective relief in bleeding or pressure symptoms. Given the failure of medical management and persistent symptomatic bulky uterus, she was advised to undergo a Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingectomy.",
+  "duration": "6 months",
+  "treatmentTakenSoFar": "Tranexamic acid 500mg TID, Medroxyprogesterone acetate 10mg daily for 3 cycles, and Oral Carbonyl Iron therapy.",
+  "reasonForHospitalisation": "Persistent symptomatic uterine leiomyoma with pressure symptoms and moderate anemia failing conservative medical management; scheduled for elective Total Laparoscopic Hysterectomy with Bilateral Salpingectomy.",
+  "uploadedDocuments": [
+    "opd_consultation_paper",
+    "pelvic_ultrasound_report",
+    "complete_blood_count_report",
+    "pre_operative_fitness_certificate"
+  ],
+  "patientName": "Meera Deshmukh",
+  "patient": {
+    "patientName": "Meera Deshmukh",
+    "age": 44,
+    "gender": "Female",
+    "mobileNumber": "9820154321"
+  },
+  "insurance": {
+    "policyNumber": "POL-9982341-2021",
+    "insurerName": "Star Health and Allied Insurance",
+    "tpaName": "In-house",
+    "sumInsured": 500000,
+    "balanceSumInsured": 500000,
+    "tpaIdCardNumber": "SH-887234-A"
+  },
+  "vitals": {
+    "bp": "110/70 mmHg",
+    "pulse": "82 bpm",
+    "temp": "98.4 F",
+    "spo2": "98%",
+    "rr": "16"
+  },
+  "expected": {
+    "mustFlag": [
+      "D25.9",
+      "Total Laparoscopic Hysterectomy",
+      "waiting period dispute"
+    ],
+    "mustNotFlag": [
+      "D25.90",
+      "D25.11",
+      "US-CM lateralization"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "Ensures gynecology/D-code chapter lock. Validates WHO ICD-10 code D25.9 (Leiomyoma of uterus, unspecified) instead of US-specific CM codes. Highlights a common Indian TPA issue where the TPA claims a large fibroid constitutes a pre-existing disease based on arbitrary growth-rate assumptions, despite the policy being outside the standard 24-month waiting period.",
+  "realGap": "The TPA denied the pre-authorization by claiming the fibroid is a Pre-Existing Disease (PED) because its size (6.5 cm) suggests a chronicity of multiple years, thus pre-dating the policy's inception of 25 months ago. They used this speculative chronicity to trigger the 4-year PED waiting period under Clause 4.1, ignoring the clinical reality that fibroids can grow rapidly and that there is no prior medical record or clinical history of symptoms pre-dating the policy.",
+  "sourceReasoning": "As per IRDAI Guidelines on Standardization of General Terms in Health Insurance Policies, a Pre-Existing Disease (PED) must be diagnosed by a physician or have had symptoms and treatment documented within 48 months prior to the policy's inception. Speculation by TPA medical officers regarding the 'age' or 'chronicity' of a fibroid based purely on its physical dimensions (without prior medical documentation) is legally unsustainable and cannot be used to deny claims under the PED clause once the specific 2-year waiting period for fibroids has already expired (policy is in its 26th month).",
+  "rawDocumentText": "SAHYADRI SUPER SPECIALITY HOSPITAL, PUNE\nDISCHARGE SUMMARY / PRE-AUTH DOCUMENTATION\nPATIENT NAME: Mrs. Meera Deshmukh | AGE: 44 Years | GENDER: Female\nUHID: S-9923412 | ADMISSION DATE: 15-Nov-2023 | PROPOSED SURGERY DATE: 16-Nov-2023\nPOLICY NO: POL-9982341-2021 | INSURER: Star Health and Allied Insurance | TPA: In-house\nPOLICY INCEPTION DATE: 10-Oct-2021 (Current Policy Age: 25 Months and 5 Days)\n\nDIAGNOSIS:\nSymptomatic Bulky Uterus with Multiple Uterine Fibroids (ICD-10: D25.9)\nModerate Microcytic Hypochromic Anemia (Hb: 8.4 g/dL)\n\nCHIEF COMPLAINTS:\n- Heavy menstrual bleeding (Menorrhagia) for 6 months, with large clots.\n- Severe spasmodic dysmenorrhea not relieved by routine NSAIDs.\n- Lower abdominal pressure and dragging pain.\n- Urinary frequency.\n\nHISTORY OF PRESENT ILLNESS:\nPatient is a 44-year-old P2L2 (both LSCS, last 12 years ago) who presented with worsening menstrual flow over the last 6 months. Cycle length has increased to 8-10 days, with cycle intervals of 24-26 days. She uses 5-6 fully soaked sanitary pads per day on peak flow days. She reports painful cramping requiring bed rest. She also complains of a heavy sensation in her pelvis and a frequent urge to urinate, especially at night. No history of post-coital bleeding, intermenstrual bleeding, or thyroid disorders.\n\nPAST MEDICAL HISTORY:\nNo known history of hypertension, diabetes, asthma, or ischemic heart disease. No prior history of uterine fibroids, abnormal uterine bleeding, or pelvic pathology prior to 6 months ago. No pelvic ultrasounds done in the past 5 years.\n\nCLINICAL FINDINGS:\n- Abdomen: Soft, non-tender. A firm mass of 14 weeks size felt in the suprapubic region.\n- PV Exam: Uterus enlarged to 14 weeks size, firm, mobile, non-tender. Cervix and vagina healthy.\n- Vitals: BP: 110/70 mmHg, HR: 82 bpm, Temp: 98.4 F, SpO2: 98% on RA, RR: 16/min.\n\nINVESTIGATIONS:\n- USG Pelvis (12-Oct-2023): Bulky uterus (11.5 x 7.8 x 6.2 cm). Large intramural fibroid in the anterior wall measuring 6.5 x 5.8 cm. Small subserosal fibroid measuring 2.1 cm. Endometrial thickness: 9 mm. Both ovaries appear normal. No free fluid in POD.\n- Complete Blood Count (CBC): Hb: 8.4 g/dL, WBC: 6,800/mm3, Platelets: 2.4 Lakhs/mm3.\n- Coagulation Profile: PT/INR: Normal.\n- Renal & Liver Function Tests: Within normal limits.\n\nTREATMENT PLAN:\nAdvised Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingectomy under General Anesthesia. Patient has failed a 3-month trial of conservative medical management (Tranexamic acid and oral progesterones) administered by her local gynecologist.\n\nESTIMATED SURGICAL COST: Rs. 1,45,000/- (including surgeon package, laparoscopic consumables, OT charges, and semi-private room rent for 3 days).\n\nDR. ANJALI JOSHI, MD, DGO\nCONSULTANT GYNECOLOGICAL SURGEON\nREG NO: 2004/03/1234-MCI",
+  "simulatedDenialReason": "Pre-authorization request for Total Laparoscopic Hysterectomy is denied under Policy Clause 4.1 (Non-disclosure of Pre-Existing Disease). As per the submitted USG report, the patient has a large intramural fibroid measuring 6.5 cm. In the opinion of our medical panel, a fibroid of this size takes several years to grow and must have been pre-existing prior to the policy inception date (10-Oct-2021). Since this chronic condition was not disclosed at the time of proposal, the claim is not admissible within the 48-month PED waiting period.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Meera Deshmukh",
+      "age": 44,
+      "gender": "Female",
+      "policyNumber": "POL-9982341-2021",
+      "insurerName": "Star Health and Allied Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "D25.9",
+        "arbitrary chronicity speculation",
+        "policy age exceeds 24 months"
+      ],
+      "mustNotFlag": [
+        "D25.90",
+        "US-CM modifier"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.9",
+    "expectedCost": 145000,
+    "expectedEligibility": "denied",
+    "expectedAppealCitations": [
+      "Policy inception date is 10-Oct-2021, meaning the policy has completed 25 months (more than 2 years), which is past the standard 24-month waiting period for Uterine Fibroids.",
+      "Symptoms and medical records document onset of complaints only 6 months ago (May 2023).",
+      "There is no medical record, ultrasound, or physician consultation documenting fibroids prior to policy inception.",
+      "Denying a claim based on speculative growth rates of fibroids violates IRDAI guidelines, which mandate that the burden of proving a Pre-Existing Disease lies on the insurer and must be backed by documentary medical evidence, not arbitrary size-based assumptions."
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "expectedExtraction": {
+    "patientName": "Saritha Krishnan",
+    "age": 44,
+    "gender": "Female",
+    "policyNumber": "101200312345678",
+    "insurerName": "Star Health and Allied Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "Prior USG reports from past 3 years",
+      "GIPSA Package validation for TLH",
+      "Hypertension history documented since 2 years"
+    ],
+    "mustNotFlag": [
+      "Maternity exclusions"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.1",
+  "expectedCost": 145000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Ultrasound pelvis dated 14/10/2023 showing 7.8 x 6.5 cm intramural fibroid",
+    "Failed medical therapy with Norethisterone and Antifibrinolytics",
+    "Hb 8.2 g/dL representing symptomatic chronic anemia secondary to menorrhagia"
+  ]
+}

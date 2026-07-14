@@ -1,0 +1,29 @@
+{
+  "expectedExtraction": {
+    "patientName": "Mrs. Sunita Sharma",
+    "age": 46,
+    "gender": "Female",
+    "policyNumber": "1-2093-8472-00",
+    "insurerName": "Star Health and Allied Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "PROPORTIONAL_DEDUCTION_APPLICABLE",
+      "MULTI_PROCEDURE_DISCOUNT_MISSING",
+      "ROOM_RENT_CAPPING_EXCEEDED"
+    ],
+    "mustNotFlag": [
+      "PRE_EXISTING_DISEASE_EXCLUSION_APPLIED"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.1",
+  "expectedCost": 285000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "Single Deluxe Room (rented at INR 9,000 per day) at the time of admission",
+    "Laparoscopic Cholecystectomy Package: INR 80,000",
+    "Room Rent Limit: 1% of SI per day (i.e. INR 5,000/day)",
+    "TLH Surgery Package (including Surgeon, Asst, OT, Anesthesia): INR 1,50,000"
+  ]
+}

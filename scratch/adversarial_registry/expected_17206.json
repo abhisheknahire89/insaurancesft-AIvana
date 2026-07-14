@@ -1,0 +1,27 @@
+{
+  "expectedExtraction": {
+    "patientName": "Priya Sharma",
+    "age": 29,
+    "gender": "Female",
+    "policyNumber": "POL-MAT-2023-8891",
+    "insurerName": "Star Health and Allied Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "O34.2",
+      "Maternity package ceiling check"
+    ],
+    "mustNotFlag": [
+      "O34.21"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "O34.2",
+  "expectedCost": 75000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "History of previous LSCS 3 years ago due to non-progression of labor",
+    "Co-existing Gestational Hypertension managed with Tab. Labetalol 100 mg BD",
+    "Maternal request and medical recommendation to avoid risks of uterine scar rupture associated with trial of labor after cesarean (TOLAC)"
+  ]
+}

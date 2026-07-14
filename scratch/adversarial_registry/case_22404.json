@@ -1,0 +1,87 @@
+{
+  "id": 22404,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "billing_complex",
+  "diagnosis": "Uterine Fibroids and Chronic Cholecystitis",
+  "code": "D25.1",
+  "chiefComplaints": "Heavy menstrual bleeding with large clots during cycles for the past 6 months, severe dysmenorrhea, and recurrent sharp pain in the right upper abdomen accompanied by post-prandial bloating for 3 months.",
+  "hpi": "Sunita Sharma, a 45-year-old female, presented with a 6-month history of menorrhagia and fatigue. Pelvic ultrasound revealed a large intramural fibroid measuring 6.5 x 5.8 cm in the anterior myometrium. She also complained of episodic right hypochondriac pain radiating to the back, aggravated by fatty meals. Abdominal ultrasound showed multiple calculi in the gallbladder with wall thickening (4.2 mm) suggestive of chronic cholecystitis. After consultation, she was advised to undergo a combined single-sitting surgical management: Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-Oophorectomy (BSO) along with Laparoscopic Cholecystectomy under General Anesthesia to minimize double exposure to anesthesia.",
+  "relevantClinicalFindings": "Abdomen: Soft, mild tenderness on deep palpation in the right hypochondrium, Murphy's sign was negative at presentation. Pelvic examination: Uterus enlarged to 12 weeks size, firm, mobile. Lab results: Hemoglobin 9.2 g/dL (mild microcytic hypochromic anemia), Total Leukocyte Count 7,800/cu.mm, Liver Function Tests (LFTs) within normal parameters (Total Bilirubin: 0.8 mg/dL, SGOT: 28 U/L, SGPT: 32 U/L), Renal Function Tests normal. Electrocardiogram (ECG) showed normal sinus rhythm. Pre-anesthetic check-up (PAC) cleared her as ASA Grade II due to controlled hypertension.",
+  "additionalClinicalNotes": "The patient was admitted to a Deluxe Private Room (Rent: Rs. 8,000 per day). Her insurance policy terms stipulate a room rent capping of Rs. 5,000 per day or Twin Sharing standard room eligibility. The combined procedures were completed successfully with no intra-operative complications. Post-operative period was uneventful.",
+  "duration": "3 days",
+  "treatmentTakenSoFar": "Symptomatic treatment with oral Tranexamic acid 500mg TDS during menses, and Pantoprazole 40mg OD for dyspepsia.",
+  "reasonForHospitalisation": "Planned concurrent major surgeries: Total Laparoscopic Hysterectomy with Bilateral Salpingo-Oophorectomy and Laparoscopic Cholecystectomy.",
+  "uploadedDocuments": [
+    "admission_note",
+    "ultrasound_pelvis_and_abdomen_report",
+    "complete_blood_count",
+    "pre_anesthetic_clearance_sheet",
+    "operation_theater_notes",
+    "final_hospital_bill",
+    "discharge_summary"
+  ],
+  "patientName": "Sunita Sharma",
+  "patient": {
+    "patientName": "Sunita Sharma",
+    "age": 45,
+    "gender": "Female",
+    "mobileNumber": "9876543210"
+  },
+  "insurance": {
+    "policyNumber": "POL-2023-883921",
+    "insurerName": "HDFC ERGO General Insurance",
+    "tpaName": "Medi Assist TPA",
+    "sumInsured": 500000,
+    "balanceSumInsured": 450000,
+    "tpaIdCardNumber": "MA-9928310-A"
+  },
+  "vitals": {
+    "bp": "130/84 mmHg",
+    "pulse": "76 bpm",
+    "temp": "98.2 F",
+    "spo2": "99%",
+    "rr": "16/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "PROPORTIONAL_ROOM_RENT_DEDUCTION_OVERCALCULATION",
+      "MULTI_PROCEDURE_DISCOUNT_APPLICABILITY"
+    ],
+    "mustNotFlag": [
+      "INCORRECT_ICD_CHAPTER_LOCK"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This case tests the 'billing_complex' focus by presenting a multi-procedure surgery (TLH + Lap Cholecystectomy) which is subject to GIPSA guidelines (100% of major, 50% of secondary surgery under the same GA session) and room rent capping breach. The hospital billed both packages at 100% (Rs. 90,000 + Rs. 50,000 = Rs. 1,40,000) and applied proportional deductions across the entire bill including consumables and pharmacy, violating standard IRDAI guidelines.",
+  "realGap": "Hospitals frequently fail to apply the contractually mandated 50% discount on the secondary procedure performed during the same surgical session under the same anesthesia. Concurrently, TPAs often erroneously apply proportional room rent deductions to fixed-price consumables, implants, and medicines, which are explicitly protected from proportional scaling under IRDAI Standardized Billing rules.",
+  "sourceReasoning": "Under GIPSA and major insurer (such as HDFC ERGO) guidelines, when multiple distinct surgical procedures are performed during the same session under the same anesthesia, the primary (higher valued) procedure is payable at 100%, and any secondary procedures are payable at a maximum of 50%. Additionally, the IRDAI circular on Standardization of Health Insurance (2020) dictates that proportional deductions due to room rent category breach must only apply to associate medical expenses (like surgeon fees, OT charges, nursing, and room charges) and MUST NOT be applied to material costs of medicines, implants, and medical devices.",
+  "simulatedDenialReason": "Claim Query / Partial Approval Notice: The final bill has been restricted as the hospital has billed full package charges for both Total Laparoscopic Hysterectomy (Rs. 90,000) and Laparoscopic Cholecystectomy (Rs. 50,000). As per policy terms for multiple surgeries under single anesthesia, the secondary procedure is subject to a 50% discount. Furthermore, a proportional deduction of 37.5% has been applied across all bill heads, including pharmacy and consumables, because the patient occupied a Deluxe Room (Rs. 8,000/day) exceeding the eligible room cap limit of Rs. 5,000/day.",
+  "rawDocumentText": "MAX SUPER SPECIALITY HOSPITAL, NEW DELHI\nDISCHARGE SUMMARY\nPATIENT NAME: Sunita Sharma | AGE: 45 Years | GENDER: Female\nIPID: IP-299381-2023 | ADMISSION DATE: 12-Nov-2023 | DISCHARGE DATE: 15-Nov-2023\nPOLICY NO: POL-2023-883921 | INSURER: HDFC ERGO General Insurance | TPA: Medi Assist\nELIGIBLE ROOM CATEGORY: Rs. 5,000/day (Twin Sharing) | ROOM OCCUPIED: Deluxe Suite Room 402 (Rs. 8,000/day)\n\nDIAGNOSES:\n1. Intramural Uterine Leiomyoma (ICD-10: D25.1) causing Menorrhagia & Dysmenorrhea.\n2. Cholelithiasis with Chronic Cholecystitis (ICD-10: K80.1) causing recurrent biliary colic.\n3. Essential Hypertension (ICD-10: I10) - Controlled.\n\nCLINICAL SUMMARY:\nPatient presented with heavy menstrual bleeding with passage of clots and abdominal cramps. Concurrently reported recurrent right upper quadrant pain radiating to back and indigestion. Pelvic USG showed an intramural uterine fibroid measuring 6.5 x 5.8 cm. Abdominal USG showed multiple gallstones (largest 12mm) with thickened gallbladder wall (4.2mm). Evaluated by Gynecology and Surgical Gastroenterology teams. Decision made for joint surgical intervention.\n\nSURGICAL PROCEDURE (12-Nov-2023):\nJoint Laparoscopic Surgery under General Anesthesia (GA):\n1. Total Laparoscopic Hysterectomy (TLH) + Bilateral Salpingo-Oophorectomy (BSO) performed by Dr. Meenakshi Roy (Gynecologist).\n2. Laparoscopic Cholecystectomy performed by Dr. Rajesh Gupta (GI Surgeon).\nNo intra-op complications. Findings: Enormously enlarged uterus with a large anterior wall fibroid; thickened gallbladder containing multiple cholesterol stones.\n\nHOSPITAL BILL BREAKUP:\n- Room Rent (Deluxe Room: Rs. 8,000 x 3 days): Rs. 24,000\n- OT Charges (Combined): Rs. 35,000\n- Primary Surgery Package (TLH + BSO): Rs. 90,000\n- Secondary Surgery Package (Laparoscopic Cholecystectomy): Rs. 50,000\n- Professional Surgeon Fees (Combined): Rs. 40,000\n- Anesthetist Fees: Rs. 15,000\n- Pharmacy & Consumables (Non-medical and medical items): Rs. 24,000\nTOTAL BILL AMOUNT: Rs. 2,78,000\n\nTPA CLAIM ASSESSMENT:\n- Room Rent restricted to Rs. 15,000 (3 days x Rs. 5,000 policy limit). Excess of Rs. 9,000 to be borne by patient.\n- Co-sharing/Proportional deduction of 37.5% (calculated as [8000-5000]/8000) applied on all associate charges (OT, Surgeon Fees, Anesthetist Fees, and Pharmacy/Consumables).\n- Secondary surgery billed at 100% (Rs. 50,000) instead of 50% (Rs. 25,000) under GIPSA guidelines.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Sunita Sharma",
+      "age": 45,
+      "gender": "Female",
+      "policyNumber": "POL-2023-883921",
+      "insurerName": "HDFC ERGO General Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "PROPORTIONAL_ROOM_RENT_DEDUCTION_OVERCALCULATION",
+        "MULTI_PROCEDURE_DISCOUNT_APPLICABILITY"
+      ],
+      "mustNotFlag": [
+        "INCORRECT_ICD_CHAPTER_LOCK"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.1",
+    "expectedCost": 198000,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "In accordance with standard GIPSA multi-procedure norms, the primary surgery (TLH, Rs. 90,000) is payable at 100%, and the secondary surgery (Laparoscopic Cholecystectomy, Rs. 50,000) is payable at 50% (Rs. 25,000). The hospital's double-package billing of Rs. 1,40,000 must be adjusted to Rs. 1,15,000.",
+      "As per IRDAI Standardized Billing Guidelines (Ref: IRDAI/HLT/REG/CIR/194/07/2020), proportional deductions due to room rent category breach (37.5%) are strictly prohibited on material costs, which includes pharmacy, medicines, and surgical consumables (Rs. 24,000). These must be reimbursed without proportional cuts."
+    ]
+  }
+}

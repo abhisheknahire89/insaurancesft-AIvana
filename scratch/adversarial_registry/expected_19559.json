@@ -1,0 +1,33 @@
+{
+  "expectedExtraction": {
+    "patientName": "Rukmini Iyer",
+    "age": 66,
+    "gender": "Female",
+    "policyNumber": "HDF-33491-IP-2024",
+    "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "M17.1",
+      "conservative_management_failure",
+      "cardiac_clearance",
+      "renal_impairment_comorbidity"
+    ],
+    "mustNotFlag": [
+      "M17.11",
+      "acute_traumatic_tear"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "M17.1",
+  "expectedCost": 285000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "conservative management for the past 9 months, including regular supervised physical therapy",
+    "Left Knee X-ray (Weight-bearing AP and Lateral views) demonstrates severe medial joint space obliteration... consistent with Kellgren-Lawrence Grade IV",
+    "Post-PTCA with a Drug-Eluting Stent (DES) to the LAD in August 2022",
+    "Chronic Kidney Disease (Stage 3): Baseline Serum Creatinine is 1.6 mg/dL",
+    "Dr. K. Srinivasan (Cardiologist) has certified... fit for surgery",
+    "Dr. S. Kalyanaraman (Nephrologist) has cleared the patient"
+  ]
+}

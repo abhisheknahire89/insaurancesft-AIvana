@@ -1,0 +1,28 @@
+{
+  "expectedExtraction": {
+    "patientName": "Rajeshwari Swaminathan",
+    "age": 46,
+    "gender": "Female",
+    "policyNumber": "SH/2024/CH/883921",
+    "insurerName": "Star Health and Allied Insurance Co Ltd"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "D25.9"
+    ],
+    "mustNotFlag": [
+      "D25.1",
+      "N92.0",
+      "D25.91"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.9",
+  "expectedCost": 165000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "tried conservative medical management under an outside gynecologist... with Tab Tranexamic Acid 500mg TID and Tab Medroxyprogesterone Acetate 10mg QD for 3 consecutive cycles, but experienced no relief",
+    "Large intramural fibroid measuring 6.5 x 5.8 cm in the anterior myometrium, causing significant mass effect on the urinary bladder (posterior wall compression)",
+    "Hb: 8.2 g/dL... 2 units of Packed Red Blood Cells (PRBC) kept cross-matched"
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "id": 19733,
+  "testCase": {
+    "id": 19733,
+    "category": "B",
+    "difficulty": "high",
+    "focusCategory": "specialty_caps",
+    "diagnosis": "Maternal care due to uterine scar from previous surgery",
+    "code": "O34.2",
+    "chiefComplaints": "Term pregnancy at 38 weeks 2 days, scheduled for elective repeat Lower Segment Cesarean Section (LSCS), mild lower abdominal stretching sensation.",
+    "hpi": "A 31-year-old G2P1L1 female at 38.2 weeks of gestation presented to the obstetric triage with a history of one previous LSCS performed 3 years ago (2021) due to breech presentation. After thorough counseling regarding the risks and benefits of Vaginal Birth After Cesarean (VBAC) versus an elective Repeat LSCS, the patient and her family opted for an elective Repeat LSCS. She has been under regular antenatal follow-up, and all scans have been normal. The current pregnancy has been uneventful, with no gestational diabetes or pregnancy-induced hypertension.",
+    "relevantClinicalFindings": "On examination, the patient is conscious, oriented, and hemodynamically stable. Per abdomen: Uterus is term size, relaxed, cephalic presentation, FHR is 144 bpm, regular. Scar tenderness is clinically absent. Per vaginum: Cervix is closed, posterior, uneffaced, and membranes are intact. Pelvic adequacy assessment shows a borderline pelvic outlet.",
+    "additionalClinicalNotes": "The patient has a Star Health MediClassic Policy with a maternity rider active. The policy was incepted in January 2022, signifying a continuous policy coverage of 26 months. The maternity rider waiting period specified in this specific policy plan is 24 months, which has been completed. TPA has raised a query/denial citing that the previous LSCS represents a Pre-Existing Disease (PED) and is subject to a 48-month exclusion.",
+    "duration": "3 days",
+    "treatmentTakenSoFar": "Regular antenatal supplements (Iron, Calcium, Folic acid). No prior hospitalizations during this pregnancy.",
+    "reasonForHospitalisation": "Elective repeat LSCS in view of previous LSCS with borderline pelvis and patient choice.",
+    "uploadedDocuments": [
+      "obstetric_admission_note",
+      "antenatal_scans_and_reports",
+      "previous_discharge_summary_2021",
+      "insurance_policy_schedule"
+    ],
+    "patientName": "Priyadarshini Iyer",
+    "patient": {
+      "patientName": "Priyadarshini Iyer",
+      "age": 31,
+      "gender": "Female",
+      "mobileNumber": "9840123456"
+    },
+    "insurance": {
+      "policyNumber": "P/161112/01/2024/004321",
+      "insurerName": "Star Health and Allied Insurance Co Ltd",
+      "tpaName": "Family Health Plan Insurance TPA Limited",
+      "sumInsured": 500000,
+      "balanceSumInsured": 500000,
+      "tpaIdCardNumber": "FHPL-STAR-00987654"
+    },
+    "vitals": {
+      "bp": "120/80 mmHg",
+      "pulse": "82 bpm",
+      "temp": "98.4 F",
+      "spo2": "98%",
+      "rr": "18"
+    },
+    "expected": {
+      "mustFlag": [
+        "O34.2",
+        "Maternity Exclusion Bypass Check",
+        "Waiting Period Validation"
+      ],
+      "mustNotFlag": [
+        "O34.21",
+        "H25.1",
+        "M17.1"
+      ],
+      "shouldGenerate": true
+    },
+    "notes": "Verify that the ICD-10 chapter lock assigns maternity codes (O-codes) correctly for LSCS and prevent the claim from being rejected under general pre-existing disease (PED) clauses by citing standard IRDAI guidelines for maternity riders.",
+    "realGap": "TPAs frequently misclassify physiological obstetrical history (like a previous LSCS scar) as a standard 'Pre-Existing Disease' (PED) under the 4-year exclusion rule, overriding the specific 2-year maternity rider waiting period that has already been met.",
+    "sourceReasoning": "Under IRDAI Guidelines on Standardization of Exclusions in Health Insurance Contracts, maternity benefits are governed strictly by their specific policy-defined waiting periods and sub-limits. A history of a prior physiological delivery or uterine scar cannot be categorized as a chronic Pre-Existing Disease (PED) to deny coverage for subsequent obstetric deliveries once the maternity waiting period is completed.",
+    "rawDocumentText": "APOLLO CRADLE & CHILDREN'S HOSPITAL\nShafee Mohammed Road, Thousand Lights, Chennai - 600006\n\nADMISSION RECORD & OBSTETRIC CLINICAL NOTE\n\nPatient Name: Mrs. Priyadarshini Iyer\nAge/Gender: 31 Years / Female\nUHID: AC-2024-99881\nDate of Admission: 12-Mar-2024\nAdmitting Consultant: Dr. Meenakshi Sundaram, MD, DGO (Obstetrics & Gynecology)\nIP No: IP-1002938\n\nDIAGNOSIS: Gravida 2 Para 1 Live 1 at 38 Weeks 2 Days Gestation with Previous LSCS, Elective Repeat LSCS.\nICD-10 Code: O34.2 (Maternal care due to uterine scar from previous surgery)\n\nCHIEF COMPLAINTS:\n- Term pregnancy of 38.2 weeks presented for planned elective Lower Segment Cesarean Section.\n- Mild abdominal stretching/discomfort for the past 4 hours.\n\nHISTORY OF PRESENT ILLNESS:\nMrs. Priyadarshini Iyer, a 31-year-old G2P1L1 at 38 weeks 2 days gestation, presented to Apollo Cradle with complaints of mild abdominal tightness. She has a history of one prior Lower Segment Cesarean Section (LSCS) in August 2021 done due to a breech presentation (3 years ago). No history of gestational diabetes mellitus (GDM), pregnancy-induced hypertension (PIH), or any cardiac anomalies. Regular antenatal check-ups were maintained. The patient has been thoroughly counseled regarding the option of Vaginal Birth After Cesarean (VBAC) versus repeat LSCS. Due to a borderline pelvic outlet and the patient's strong preference to avoid labor pain, she is scheduled for an elective repeat LSCS.\n\nPAST MEDICAL/SURGICAL HISTORY:\n- LSCS in August 2021 (Pfannenstiel incision, single healthy male baby born, no postoperative complications).\n- No other history of major medical illnesses or surgeries.\n\nPHYSICAL EXAMINATION:\n- Temp: 98.4 F | Pulse: 82/min | BP: 120/80 mmHg | RR: 18/min | SpO2: 98% on room air.\n- Cardiovascular System: S1 S2 heard, no murmurs.\n- Respiratory System: Bilateral chest clear, normal vesicular breath sounds.\n- Abdomen: Term size, relaxed. Cephalic presentation. Fetal Heart Rate (FHR) is stable at 144 bpm, regular. No uterine contractions felt at presentation. Clinical examination of the lower uterine segment shows no scar tenderness.\n- Vaginal Examination (P/V): Cervix closed, posterior, uneffaced. Membranes intact. No active bleeding or leaking per vaginum.\n\nINSURANCE & POLICY DETAILS:\n- Insurer: Star Health and Allied Insurance Co Ltd\n- Policy Name: MediClassic Policy (Individual)\n- Policy Number: P/161112/01/2024/004321\n- Inception Date: 15-Jan-2022\n- TPA Name: Family Health Plan Insurance TPA Limited (FHPL)\n- Maternity Benefit Limit: INR 50,000 (as per plan parameters)\n- Maternity Waiting Period: 24 Months (Completed as of Jan 2024)\n\nPLAN OF TREATMENT:\n- Scheduled for elective Lower Segment Cesarean Section (LSCS) under spinal anesthesia on 13-Mar-2024.\n- Post-operative monitoring in obstetric ward.\n\nDr. Meenakshi Sundaram, MD, DGO\nSenior Consultant Obstetrician & Gynecologist\nApollo Cradle, Chennai\nReg No: TN-MC-654321",
+    "simulatedDenialReason": "The pre-authorization request for planned LSCS is denied under Exclusion Clause 4.1 (Pre-Existing Diseases / Exclusions) as the patient has a documented history of a prior Lower Segment Cesarean Section (LSCS) dating back to 2021, which constitutes a pre-existing physical deformity/surgical scar prior to the inception of the current policy (Inception: Jan 2022, current policy age 26 months). Hence, any complications or repeat procedures related to this pre-existing scar are excluded under the 48-month waiting period.",
+    "expectedAnswer": {
+      "expectedExtraction": {
+        "patientName": "Priyadarshini Iyer",
+        "age": 31,
+        "gender": "Female",
+        "policyNumber": "P/161112/01/2024/004321",
+        "insurerName": "Star Health and Allied Insurance Co Ltd"
+      },
+      "expectedReview": {
+        "mustFlag": [
+          "O34.2",
+          "Maternity Exclusion Bypass Check",
+          "Waiting Period Validation"
+        ],
+        "mustNotFlag": [
+          "O34.21",
+          "H25.1",
+          "M17.1"
+        ],
+        "shouldGenerate": true
+      },
+      "expectedCode": "O34.2",
+      "expectedCost": 85000,
+      "expectedEligibility": "partial_approved",
+      "expectedAppealCitations": [
+        "The patient's policy was incepted on 15-Jan-2022, meaning she has completed 26 months of continuous coverage.",
+        "The maternity waiting period under the Star MediClassic Policy is 24 months, which has been fully served.",
+        "IRDAI Guidelines on Standardization of Exclusions state that maternity benefits cannot be denied using Pre-Existing Disease (PED) exclusion clauses for a physiological condition or prior obstetric scar.",
+        "A previous cesarean delivery scar (ICD-10 O34.2) is an obstetric condition and does not constitute a pre-existing chronic illness or deformity under Clause 4.1."
+      ]
+    }
+  },
+  "expected": {
+    "expectedExtraction": {
+      "patientName": "Priyadarshini Iyer",
+      "age": 31,
+      "gender": "Female",
+      "policyNumber": "P/161112/01/2024/004321",
+      "insurerName": "Star Health and Allied Insurance Co Ltd"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "O34.2",
+        "Maternity Exclusion Bypass Check",
+        "Waiting Period Validation"
+      ],
+      "mustNotFlag": [
+        "O34.21",
+        "H25.1",
+        "M17.1"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "O34.2",
+    "expectedCost": 85000,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "The patient's policy was incepted on 15-Jan-2022, meaning she has completed 26 months of continuous coverage.",
+      "The maternity waiting period under the Star MediClassic Policy is 24 months, which has been fully served.",
+      "IRDAI Guidelines on Standardization of Exclusions state that maternity benefits cannot be denied using Pre-Existing Disease (PED) exclusion clauses for a physiological condition or prior obstetric scar.",
+      "A previous cesarean delivery scar (ICD-10 O34.2) is an obstetric condition and does not constitute a pre-existing chronic illness or deformity under Clause 4.1."
+    ]
+  },
+  "failedModules": [
+    "3. Patient Info Extraction",
+    "10. Final Claim Packet"
+  ]
+}

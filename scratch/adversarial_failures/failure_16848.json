@@ -1,0 +1,121 @@
+{
+  "id": 16848,
+  "testCase": {
+    "id": 16848,
+    "category": "C",
+    "difficulty": "high",
+    "focusCategory": "billing_complex",
+    "diagnosis": "Uterine Leiomyoma with Menorrhagia",
+    "code": "D25.9",
+    "chiefComplaints": "Heavy menstrual bleeding lasting for 10-12 days per cycle for the past 6 months, severe lower abdominal pain radiating to the lower back, and increased urinary frequency.",
+    "hpi": "Mrs. Sunita Sharma, a 48-year-old female, presented with a history of progressive menorrhagia and dysmenorrhea for the last 6 months. She reports soaking 5-6 fully wet pads per day during menstruation, passing large blood clots, and experiencing persistent pressure symptoms in her lower abdomen. She has also complained of increased urinary frequency over the past 3 months. USG abdomen and pelvis revealed an enlarged uterus (14-week size) with multiple intramural and subserosal fibroids, with the largest measuring 7.5 cm in the anterior wall, causing a mass effect on the urinary bladder. Conservative management with antifibrinolytics and hormonal therapy yielded no symptomatic relief. She was admitted for planned elective Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-Oophorectomy (BSO).",
+    "relevantClinicalFindings": "USG Abdomen & Pelvis: Uterus enlarged, measuring 12.4 x 8.6 x 7.2 cm. Multiple leiomyomas noted: 1) Large anterior wall intramural leiomyoma of 7.5 x 6.2 cm indenting the superior wall of the urinary bladder. 2) Posterior wall subserosal leiomyoma of 4.5 x 3.8 cm. Hemoglobin: 8.4 g/dL (Moderate microcytic hypochromic anemia). Packed red cell transfusion (1 unit) was administered pre-operatively. Post-transfusion Hb: 9.8 g/dL. No active cardiopulmonary issues.",
+    "additionalClinicalNotes": "Intraoperatively, dense pelvic adhesions were noted between the anterior lower uterine segment and the posterior wall of the urinary bladder. Dr. Meenakshi Iyer performed careful sharp adhesiolysis. To ensure bladder integrity and rule out ureteral injury, a diagnostic cystoscopy was performed intraoperatively, which confirmed bilateral ureteric jet patency and an intact bladder mucosa. Total Laparoscopic Hysterectomy with Bilateral Salpingo-Oophorectomy was successfully completed.",
+    "duration": "3 days",
+    "treatmentTakenSoFar": "Tablet Tranexamic Acid 500mg TID during cycles and oral progesterone therapy (Medroxyprogesterone acetate) for 3 months with poor response. Transfused 1 Unit of PRBC on admission to optimize hemoglobin.",
+    "reasonForHospitalisation": "Elective major surgical management (TLH + BSO + Cystoscopy) under General Anesthesia for symptomatic multiple uterine fibroids failing conservative therapy.",
+    "uploadedDocuments": [
+      "doctor_notes",
+      "usg_pelvis_report",
+      "cbc_blood_report",
+      "surgical_ot_notes",
+      "final_hospital_bill",
+      "discharge_summary"
+    ],
+    "patientName": "Sunita Sharma",
+    "patient": {
+      "patientName": "Sunita Sharma",
+      "age": 48,
+      "gender": "Female",
+      "mobileNumber": "9812345678"
+    },
+    "insurance": {
+      "policyNumber": "CHI/4982739/2023",
+      "insurerName": "Care Health Insurance",
+      "tpaName": "Medi Assist TPA",
+      "sumInsured": 500000,
+      "balanceSumInsured": 480000,
+      "tpaIdCardNumber": "MA/89273/992"
+    },
+    "vitals": {
+      "bp": "118/76 mmHg",
+      "pulse": "82 bpm",
+      "temp": "98.4 F",
+      "spo2": "98%",
+      "rr": "16/min"
+    },
+    "expected": {
+      "mustFlag": [
+        "proportional_deduction_clause_applicable",
+        "cystoscopy_unbundling_violation"
+      ],
+      "mustNotFlag": [
+        "maternity_lock_violation"
+      ],
+      "shouldGenerate": true
+    },
+    "notes": "This case tests clinical billing auditing capabilities in Indian private health insurance context. It targets two main billing errors: 1) Proportional deductions applied to associate medical charges (OT, surgeon fee, anesthesia) because the patient upgraded to a Deluxe Room (INR 9,000/day) while her policy capped room rent at 1% of Sum Insured (INR 5,000/day). 2) Code/charge unbundling, where the hospital billed a diagnostic cystoscopy (INR 15,000) separately from the primary Laparoscopic Hysterectomy procedure, violating standard PPN guidelines.",
+    "realGap": "The billing department submitted separate line items for Cystoscopy (INR 15,000) and Adhesiolysis (INR 10,000) alongside the primary TLH package (INR 1,10,000). Under Standard IRDAI & GIPSA billing protocols, clinical access procedures, safety checks (like cystoscopy during complex pelvic surgery), and adhesiolysis are bundled into the major surgery package and cannot be billed separately. Additionally, the patient's room upgrade to a Deluxe Suite (INR 9,000/day) exceeds her entitlement of a Single Private AC Room (capped at INR 5,000/day, i.e., 1% of INR 5,00,000 Sum Insured). This triggers a proportional deduction of 44.44% [(9000-5000)/9000] on all 'associate medical expenses' including surgeon fees, OT charges, and anesthetist fees, which the hospital failed to adjust before submitting the pre-auth/claim.",
+    "sourceReasoning": "IRDAI Guidelines on Standardization of General Terms in Health Insurance Policies (2020) state that if a policyholder opts for a room category higher than their entitlement, the insurer can apply proportional deductions to associate medical expenses (surgeon fees, OT charges, anesthesia, nursing). Further, standard PPN (Preferred Provider Network) agreements in India mandate that access-related or safety procedures (like cystoscopy to check ureteral flow during hysterectomy) are inherently part of the main surgery package and cannot be unbundled or billed as separate procedures unless specified in the pre-agreed tariff list.",
+    "simulatedDenialReason": "Partial Approval Letter: Approved INR 85,000 out of total claimed INR 1,65,000. Deductions: 1) Cystoscopy charges of INR 15,000 completely disallowed as it is a bundled component of the main Total Laparoscopic Hysterectomy procedure under Care Health PPN guidelines. 2) Proportional deduction of 44.44% applied to Surgeon Fees (INR 35,000), OT Charges (INR 25,000), and Anesthesia Charges (INR 15,000) due to patient staying in a Deluxe Suite (charged INR 9,000/day) against the eligible Single Private A/C Room limit (INR 5,000/day) as per Policy Clause 4.2.",
+    "expectedAnswer": {
+      "expectedExtraction": {
+        "patientName": "Sunita Sharma",
+        "age": 48,
+        "gender": "Female",
+        "policyNumber": "CHI/4982739/2023",
+        "insurerName": "Care Health Insurance"
+      },
+      "expectedReview": {
+        "mustFlag": [
+          "proportional_deduction_clause_applicable",
+          "cystoscopy_unbundling_violation"
+        ],
+        "mustNotFlag": [
+          "maternity_lock_violation"
+        ],
+        "shouldGenerate": true
+      },
+      "expectedCode": "D25.9",
+      "expectedCost": 165000,
+      "expectedEligibility": "partial_approved",
+      "expectedAppealCitations": [
+        "Adhesiolysis was extensive due to dense bladder adhesions, justifying separate complexity pricing.",
+        "Cystoscopy was a critical safety measure to rule out intraoperative bladder perforation given the proximity of the 7.5 cm anterior fibroid.",
+        "The patient is willing to pay the differential room rent directly; however, proportional deductions should not be applied to implant or consumable charges."
+      ]
+    },
+    "rawDocumentText": "SHREE BALAJI SUPERSPECIALITY HOSPITAL\nSector 12, Dwarka, New Delhi - 110075\nDISCHARGE SUMMARY\n\nPATIENT NAME: Mrs. Sunita Sharma\nAGE / GENDER: 48 Years / Female\nIPD NO: S-9824021\nADMISSION DATE: 12-Oct-2023\nDISCHARGE DATE: 15-Oct-2023\nROOM NO: 402 (Deluxe Suite)\nATTENDING CONSULTANT: Dr. Meenakshi Iyer, MD, DGO (Sr. Consultant Gynaecologist)\nINSURER: Care Health Insurance Ltd.\nPOLICY NO: CHI/4982739/2023\nTPA: Medi Assist TPA Pvt. Ltd.\n\nDIAGNOSIS:\nMultiple Uterine Leiomyomata (ICD-10: D25.9) with Severe Menorrhagia and Chronic Pelvic Pain, Moderate Anemia (Hb: 8.4 g/dL).\n\nPROCEDURE PERFORMED:\nTotal Laparoscopic Hysterectomy (TLH) + Bilateral Salpingo-Oophorectomy (BSO) + Extramural Adhesiolysis + Intraoperative Diagnostic Cystoscopy (Date of Surgery: 13-Oct-2023).\n\nCLINICAL PROFILE & HPI:\nPatient presented with heavy, painful menstrual bleeding for 6 months. Menses cycle 26-28 days, bleeding lasting for 10-12 days with passage of large clots. Intermenstrual pelvic pain and increased urinary frequency present. Tried hormonal therapies under local GP, but symptoms persisted. \nOn Examination: Vitals stable. BP: 118/76, PR: 82/min, Temp: 98.4 F, SpO2: 98% on RA. Abdomen: Uterus enlarged, corresponding to 14 weeks size, firm and restricted mobility. Bimanual Exam: Uterus bulky, tender, bilateral fornices free.\n\nINVESTIGATIONS:\n- Hb: 8.4 g/dL, WBC: 7,200/cumm, Platelets: 2.1 Lakhs/cumm.\n- USG Pelvis: Anteverted uterus measuring 12.4 x 8.6 x 7.2 cm. Large intramural fibroid of size 7.5 x 6.2 cm arising from the anterior lower uterine segment, causing significant compression and mass effect on the bladder base. Another subserosal fibroid of 4.5 x 3.8 cm on the posterior wall. Bilateral adnexa normal.\n\nOPERATIVE FINDINGS:\n- Uterus enlarged to 14 weeks size. Large anterior intramural fibroid.\n- Dense adhesions present between lower anterior uterine wall and the urinary bladder wall.\n- Dr. Meenakshi Iyer performed careful sharp adhesiolysis to separate the bladder from the lower uterine segment.\n- TLH and BSO completed successfully.\n- Intraoperative Cystoscopy performed using a 30-degree scope to inspect bladder mucosa and verify bilateral ureteral jet patency using IV indigo carmine dye. Bladder wall intact. Clear blue jets seen bilaterally.\n- Blood loss: ~150 ml.\n\nPOST-OPERATIVE COURSE:\nPatient received 1 unit PRBC transfusion pre-operatively to raise Hb to 9.8 g/dL. Post-op recovery was uneventful. Foley catheter removed on Post-Op Day 1, patient voided normally. Pain well controlled with IV analgesics. Discharged in stable condition on oral medications on 15-Oct-2023.\n\nIP FINAL BILLING DETAILS (INR):\n1. Room Rent (Deluxe Suite @ Rs. 9,000/day for 3 days): Rs. 27,000\n2. TLH + BSO Package (including Surgeon & OT Fee): Rs. 1,10,000\n3. Intraoperative Cystoscopy (Separate procedure charge): Rs. 15,000\n4. Adhesiolysis Charge (Complex): Rs. 10,000\n5. Professional Fee (Anesthetist): Rs. 15,000\n6. Medicines & OT Consumables: Rs. 13,000\n--------------------------------------------\nTOTAL BILLED AMOUNT: Rs. 1,65,000\n--------------------------------------------\nDr. Meenakshi Iyer, MD, DGO\nReg No: DMC-48293\nConsultant Gynecologic Surgeon"
+  },
+  "expected": {
+    "expectedExtraction": {
+      "patientName": "Sunita Sharma",
+      "age": 48,
+      "gender": "Female",
+      "policyNumber": "CHI/4982739/2023",
+      "insurerName": "Care Health Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "proportional_deduction_clause_applicable",
+        "cystoscopy_unbundling_violation"
+      ],
+      "mustNotFlag": [
+        "maternity_lock_violation"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.9",
+    "expectedCost": 165000,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "Adhesiolysis was extensive due to dense bladder adhesions, justifying separate complexity pricing.",
+      "Cystoscopy was a critical safety measure to rule out intraoperative bladder perforation given the proximity of the 7.5 cm anterior fibroid.",
+      "The patient is willing to pay the differential room rent directly; however, proportional deductions should not be applied to implant or consumable charges."
+    ]
+  },
+  "failedModules": [
+    "3. Patient Info Extraction",
+    "10. Final Claim Packet"
+  ]
+}

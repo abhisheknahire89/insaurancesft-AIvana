@@ -1,0 +1,30 @@
+{
+  "expectedExtraction": {
+    "patientName": "Sunita Sharma",
+    "age": 44,
+    "gender": "Female",
+    "policyNumber": "POL-8837261-09",
+    "insurerName": "Star Health and Allied Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "Failed medical management documented",
+      "Endometrial biopsy benign",
+      "USG showing symptomatic submucosal and intramural fibroids"
+    ],
+    "mustNotFlag": [
+      "No prior trial of conservative therapy",
+      "Malignancy suspected"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.9",
+  "expectedCost": 145000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Failed conservative medical management with Tab. Tranexamic acid and Tab. Medroxyprogesterone acetate for 3 months",
+    "USG pelvis showing multiple fibroids (intramural 5.4cm, submucosal 3.2cm causing cavity distortion)",
+    "Endometrial biopsy showing benign proliferative endometrium",
+    "Severe persistent anemia (Hb 8.2 g/dL) refractory to oral iron therapy due to ongoing menorrhagia"
+  ]
+}

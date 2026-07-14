@@ -1,0 +1,28 @@
+{
+  "expectedExtraction": {
+    "patientName": "Rajesh Kumar",
+    "age": 58,
+    "gender": "Male",
+    "policyNumber": "CARE-IND-9981273",
+    "insurerName": "Care Health Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "proportional_deductions_applied",
+      "icu_stay_downgrade",
+      "room_rent_capping_breach"
+    ],
+    "mustNotFlag": [
+      "pre_existing_exclusion_applied"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "J18.9",
+  "expectedCost": 161400,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "Patient was put on Non-Invasive Ventilation (NIV) support (IPAP 14, EPAP 6, FiO2 50%) to combat Type 1 Respiratory Failure.",
+    "On 13/10/2023 (Day 2), respiratory distress persisted but was controlled on NIV. Vitals stabilized hemodynamically (BP: 118/76 mmHg, PR: 88 bpm). However, target SpO2 was dependent on continuous NIV.",
+    "On 14/10/2023 (Day 3), patient's condition improved. Successfully weaned from NIV to High-Flow Nasal Cannula (HFNC) at 30 L/min, FiO2 40%."
+  ]
+}

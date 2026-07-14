@@ -1,0 +1,28 @@
+{
+  "expectedExtraction": {
+    "patientName": "Mrs. Sunita Sharma",
+    "age": 48,
+    "gender": "Female",
+    "policyNumber": "CHI/209384/2023",
+    "insurerName": "Care Health Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "ROOM_RENT_CAPPING_VIOLATION",
+      "PROPORTIONATE_DEDUCTION_APPLIED",
+      "UNBUNDLED_SURGICAL_CHARGES"
+    ],
+    "mustNotFlag": [
+      "MATERNITY_ICD_MISMATCH"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.1",
+  "expectedCost": 210000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "Multiple Uterine Fibroids (Intramural & Subserosal) - ICD-10: D25.1",
+    "Dense pelvic adhesions noted between the rectosigmoid colon, posterior uterine wall, and bilateral adnexa",
+    "Meticulous dissection and adhesiolysis done to clear the pouch of Douglas"
+  ]
+}

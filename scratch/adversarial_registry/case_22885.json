@@ -1,0 +1,87 @@
+{
+  "id": 22885,
+  "category": "D",
+  "difficulty": "high",
+  "focusCategory": "specialty_caps",
+  "diagnosis": "Maternal care due to uterine scar from previous surgery",
+  "code": "O34.2",
+  "chiefComplaints": "Term pregnancy with mild lower abdominal pain and tightening of 6 hours duration, history of previous LSCS.",
+  "hpi": "A 31-year-old female, G2P1L1, at 38 weeks 4 days of gestation, presented with complaints of intermittent lower abdominal pain and uterine tightening for the last 6 hours. Her obstetric history is significant for a previous Lower Segment Cesarean Section (LSCS) performed 3 years ago due to breech presentation. She has been on regular antenatal checkups. Fetal movements are reported to be well perceived. No history of leaking or bleeding per vaginam.",
+  "relevantClinicalFindings": "On examination, the patient is conscious and oriented. Pulse rate is 82 bpm, BP is 120/80 mmHg, and she is afebrile. Obstetric examination reveals a relaxed uterus with mild, infrequent contractions (1 contraction lasting 15 seconds in 10 minutes). Scar tenderness is absent. Fetal Heart Rate (FHR) is stable at 144 bpm, regular. On per-vaginal examination, the cervix is posterior, 1.5 cm dilated, 30% effaced, membranes are intact, and the presenting part is vertex at -3 station.",
+  "additionalClinicalNotes": "The patient and her relatives were counselled regarding the risks and benefits of Trial of Labor After Cesarean (TOLAC) vs. planned repeat LSCS. Due to the clinical evaluation of cervix status, estimated fetal weight of 3.4 kg, and strong maternal preference, the decision was made to proceed with an elective repeat Lower Segment Cesarean Section (LSCS) under spinal anesthesia.",
+  "duration": "1 day prior to admission",
+  "treatmentTakenSoFar": "Antenatal supplements (Iron, Calcium, Folic Acid) and regular obstetric follow-up.",
+  "reasonForHospitalisation": "Planned repeat LSCS due to a scarred uterus from previous cesarean delivery, approaching full term with early signs of labor.",
+  "uploadedDocuments": [
+    "admission_note",
+    "obstetric_ultrasound_report",
+    "cbc_and_coagulation_profile",
+    "consent_form_for_lscs"
+  ],
+  "patientName": "Mrs. Ananya Sharma",
+  "patient": {
+    "patientName": "Mrs. Ananya Sharma",
+    "age": 31,
+    "gender": "Female",
+    "mobileNumber": "9876543210"
+  },
+  "insurance": {
+    "policyNumber": "POL-99887766",
+    "insurerName": "Star Health & Allied Insurance Co. Ltd.",
+    "tpaName": "Medi Assist TPA",
+    "sumInsured": 500000,
+    "balanceSumInsured": 480000,
+    "tpaIdCardNumber": "MA-9988-776"
+  },
+  "vitals": {
+    "bp": "120/80 mmHg",
+    "pulse": "82 bpm",
+    "temp": "98.4 F",
+    "spo2": "99%",
+    "rr": "16/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "O-code chapter lock validation",
+      "Maternity package ceiling check"
+    ],
+    "mustNotFlag": [
+      "O34.21 CM code mismatch",
+      "Emergency triage exception"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "Tests the maternal/obstetric ICD-10 chapter lock (O-codes) in Indian claims administration systems. It verifies that the system maps the patient to O34.2 (WHO ICD-10) instead of the US-specific CM code O34.21, which triggers claim rejections or classification errors in standard Indian TPA portals.",
+  "realGap": "Indian TPA portals often use outdated databases or incorrectly import US-specific ICD-10-CM codes (like O34.21) which contain trimester or lateralization details not supported by the WHO ICD-10 standard. This leads to automated query generation or rejection because the portal's system rule maps valid maternity benefits only to standard WHO O-codes (O34.2, O82), causing delay in pre-authorization.",
+  "sourceReasoning": "As per IRDAI guidelines on standardization of health insurance, insurers must strictly use WHO ICD-10 classification codes for coding diseases and procedures. Using US-specific CM codes with fifth/sixth character extensions (like O34.21) violates the standard coding convention of WHO ICD-10 used by Indian TPAs, leading to administrative mismatches.",
+  "rawDocumentText": "APOLLO CRADLE MATERNITY HOSPITAL\nJayanagar, Bangalore, Karnataka\n\nADMISSION SUMMARY & PRE-AUTHORIZATION REQUEST\nDate of Admission: 24/10/2023\n\nPATIENT INFORMATION:\nPatient Name: Mrs. Ananya Sharma\nAge: 31 Years\nGender: Female\nUHID: BLR-APC-908231\nPolicy No: POL-99887766\nInsurer: Star Health & Allied Insurance Co. Ltd.\nTPA: Medi Assist TPA\n\nCLINICAL DETAILS:\nChief Complaints: G2P1L1, 38 weeks 4 days gestational age, presented with intermittent lower abdominal pain and backache of 6 hours duration. No leaking or bleeding PV. Good fetal movements.\n\nHistory of Present Illness: Patient is a 31-year-old lady, G2P1L1 with a history of previous LSCS done 3 years back (2020) for breech presentation. She is currently at 38.4 weeks of gestation. She presented with early labor pain. Uterine contractions are mild and sporadic.\n\nPHYSICAL & OBSTETRIC EXAMINATION:\nTemp: 98.4 F | HR: 82/min | BP: 120/80 mmHg | SpO2: 99% on RA\nP/A: Uterus is term size, relaxed, cephalic presentation, FHR is 144 bpm, regular. Scar tenderness is absent.\nP/V: Cervix is posterior, 1.5 cm dilated, 30% effaced, membranes intact, station -3.\n\nPROVISIONAL DIAGNOSIS:\nPregnancy with Previous LSCS in early labor (Maternal care due to uterine scar from previous surgery).\nProposed Procedure: Planned Lower Segment Cesarean Section (LSCS) under spinal anesthesia.\nPlanned Date of Surgery: 24/10/2023\nEstimated Package Cost: INR 65,000\n\nDr. Kavitha Reddy, MS (OBG)\nReg No: KMC-56431\nConsultant Obstetrician & Gynecologist",
+  "simulatedDenialReason": "Pre-auth query: Maternity benefit package validation failed. The submitted ICD-10 code in the pre-auth request is O34.21, which is not a valid 3 or 4-character WHO ICD-10 code. Kindly clarify the exact WHO ICD-10 code and resubmit the clinical justification for repeat LSCS.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Mrs. Ananya Sharma",
+      "age": 31,
+      "gender": "Female",
+      "policyNumber": "POL-99887766",
+      "insurerName": "Star Health & Allied Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "O-code chapter lock validation",
+        "Maternity package ceiling check"
+      ],
+      "mustNotFlag": [
+        "O34.21 CM code mismatch",
+        "Emergency triage exception"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "O34.2",
+    "expectedCost": 65000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "The patient Mrs. Ananya Sharma has a previous LSCS scar (O34.2)",
+      "The correct WHO standard code is O34.2, not the US-CM code O34.21",
+      "Maternity package of Rs. 65,000 applies under the policy sub-limit"
+    ]
+  }
+}

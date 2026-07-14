@@ -1,0 +1,91 @@
+{
+  "id": 21914,
+  "category": "B",
+  "difficulty": "extreme",
+  "focusCategory": "preauth_heavy",
+  "diagnosis": "Triple Vessel Disease / Ischemic Heart Disease",
+  "code": "I25.1",
+  "chiefComplaints": "Refractory exertional chest pain (NYHA Class III) for 3 months, worsening over the last 15 days, associated with shortness of breath on minimal walking.",
+  "hpi": "The patient is a 64-year-old male, known diabetic and hypertensive, who presented with a history of progressive exertional angina. He has a history of ischemic heart disease and underwent PTCA with a drug-eluting stent (DES) to the LAD in August 2022. Despite compliance with optimal medical therapy (dual antiplatelets, high-dose statins, nitrates, and beta-blockers), he developed worsening NYHA Class III angina. A recent coronary angiogram (CAG) performed on 12/10/24 revealed severe triple vessel disease with 90% in-stent restenosis (ISR) of the LAD, 85% mid-segment stenosis of the LCx, and 95% proximal stenosis of the RCA. In view of diffuse multivessel involvement and severe ISR, the Heart Team (comprising Dr. K. Sridhar, Cardiothoracic Surgeon, and Dr. R. K. Mishra, Interventional Cardiologist) recommended planned Coronary Artery Bypass Grafting (CABG) surgery.",
+  "relevantClinicalFindings": "Chest: Bilateral clear lung fields. Heart sounds: S1, S2 heard, no murmurs. ECG shows sinus rhythm, T-wave inversions in anterolateral leads. Echocardiography (ECHO) reveals regional wall motion abnormalities (RWMA) in the LAD and RCA territories with an estimated Left Ventricular Ejection Fraction (LVEF) of 40%. Laboratory investigations are significant for severe renal impairment: Serum Creatinine is 2.8 mg/dL (baseline 2.1 mg/dL), with an estimated GFR of 21.8 mL/min/1.73 m², indicating Stage IV Chronic Kidney Disease (CKD). HbA1c is 8.4%, showing suboptimal diabetic control. Urine analysis reveals microalbuminuria.",
+  "additionalClinicalNotes": "Due to the patient's Stage IV Chronic Kidney Disease (CKD), the patient is at extremely high risk for perioperative contrast-induced or bypass-induced acute kidney injury (AKI) on CKD. A pre-operative consultation with Consultant Nephrologist Dr. Amit Verma was obtained. The patient has been recommended a strict renal-protective perioperative hydration and medication-modulating protocol, avoiding nephrotoxic agents, maintaining mean arterial pressure (MAP) above 75 mmHg during cardiopulmonary bypass, and setting up standby hemodialysis.",
+  "duration": "3 months",
+  "treatmentTakenSoFar": "Tab Clopidogrel 75mg OD, Tab Aspirin 150mg OD, Tab Atorvastatin 40mg HS, Tab Metoprolol Succinate 50mg OD, Tab Nicorandil 10mg BD, Tab Hydrochlorothiazide 12.5mg OD, Inj Insulin Mixtard 12 units Subcutaneously BD.",
+  "reasonForHospitalisation": "Elective admission for surgical revascularization via Coronary Artery Bypass Grafting (CABG) under cardiopulmonary bypass, requiring intensive renal-protective monitoring and post-operative ICU care due to advanced CKD, uncontrolled hypertension, and diabetes.",
+  "uploadedDocuments": [
+    "angiography_report",
+    "echocardiography_report",
+    "nephrology_clearance_letter",
+    "renal_function_tests",
+    "doctor_admission_notes",
+    "treatment_cost_estimate"
+  ],
+  "patientName": "Rajendra Prasad Sharma",
+  "patient": {
+    "patientName": "Rajendra Prasad Sharma",
+    "age": 64,
+    "gender": "Male",
+    "mobileNumber": "9848022314"
+  },
+  "insurance": {
+    "policyNumber": "231400/31/2024/004562",
+    "insurerName": "HDFC ERGO General Insurance Co. Ltd.",
+    "tpaName": "Family Health Plan Insurance TPA Limited",
+    "sumInsured": 1000000,
+    "balanceSumInsured": 950000,
+    "tpaIdCardNumber": "FHPL-99238411"
+  },
+  "vitals": {
+    "bp": "170/100 mmHg",
+    "pulse": "88 bpm",
+    "temp": "98.4 F",
+    "spo2": "95%",
+    "rr": "20/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "STAGE_IV_CKD_HIGH_RISK",
+      "IN_STENT_RESTENOSIS",
+      "RENAL_PROTECTION_PROTOCOL"
+    ],
+    "mustNotFlag": [
+      "ACUTE_INFARCTION_ST_ELEVATION",
+      "ACTIVE_DIALYSIS_DEPENDENT"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This case tests the 'preauth_heavy' focus category. The TPA claim requires careful adjudication because the patient is extremely high-risk with Stage IV CKD (Creatinine 2.8 mg/dL) and a history of previous coronary stenting (PTCA in 2022). The presence of multiple severe comorbidities like Stage IV CKD, uncontrolled hypertension, and diabetes mellitus must be highlighted during the pre-auth query response to justify the extended ICU stay and specialty consultation costs.",
+  "realGap": "The TPA is querying the medical necessity of CABG over repeat PTCA / medical management, while also demanding concrete nephrological risk-stratification, baseline renal parameter trends, and justification for the high-risk CABG package pricing under the standard policy exclusions for pre-existing stented patients.",
+  "sourceReasoning": "Under IRDAI Guidelines on Standardization in Health Insurance (2020), insurers must transparently assess medical necessity for high-risk surgical procedures. Standard clinical pathways (ACC/AHA/ESC) justify CABG over repeat PCI in triple-vessel disease with complex ISR and diabetic complications. The insurer requires formal nephrology clearance and preoperative eGFR records to approve the specialized high-risk surgical package.",
+  "rawDocumentText": "CARE HOSPITALS, HYDERABAD\nCLINICAL SUMMARY & PRE-AUTHORIZATION REQUEST\n\nPATIENT NAME: Rajendra Prasad Sharma  AGE: 64 Years  GENDER: Male\nUHID: CR-2024-0098421  IP No: IP-992341\nINSURER: HDFC ERGO General Insurance Co. Ltd.\nPOLICY NO: 231400/31/2024/004562\nTPA: Family Health Plan Insurance TPA Limited (FHPL)\nTPA CARD NO: FHPL-99238411\n\nCHIEF COMPLAINTS:\nPatient presented with chest tightness and severe dyspnea on minimal exertion (NYHA Class III) for the past 3 months, worsening progressively over the last 15 days. \n\nHISTORY OF PRESENT ILLNESS:\nMr. Rajendra Prasad Sharma is a 64-year-old gentleman with a known history of Ischemic Heart Disease (IHD). He underwent percutaneous transluminal coronary angioplasty (PTCA) with a drug-eluting stent (DES) to the LAD in August 2022. He has long-standing Type 2 Diabetes Mellitus (on insulin therapy) and Essential Hypertension, which is currently uncontrolled. Over the last 3 months, despite maximum tolerable medical management (Aspirin, Clopidogrel, Atorvastatin, Metoprolol, and nitrates), he has had recurrent episodes of typical angina.\n\nCLINICAL EVALUATION & INVESTIGATIONS:\n- BP: 170/100 mmHg | Pulse: 88 bpm | SpO2: 95% on RA\n- Coronary Angiography (CAG) dated 12/10/2024: Severe Triple Vessel Disease (TVD). Left Main: 30% osteal disease. LAD: 90% severe In-Stent Restenosis (ISR) in the mid segment. LCx: 85% mid-segment stenosis. RCA: 95% severe proximal calcified stenosis.\n- Echocardiogram: LVEF 40%, hypokinesia in LAD and RCA territories, grade II diastolic dysfunction.\n- Renal Profile: Serum Creatinine 2.8 mg/dL, Blood Urea 64 mg/dL, eGFR 21.8 mL/min/1.73 m² (Stage IV Chronic Kidney Disease).\n- HbA1c: 8.4% (poorly controlled diabetes).\n\nPLAN OF TREATMENT:\nIn view of severe symptomatic TVD with LAD ISR and diabetic status, the Heart Team (Dr. K. Sridhar, CTVS, and Dr. R. K. Mishra, Cardiology) advised Coronary Artery Bypass Grafting (CABG) surgery. Due to Stage IV CKD, the patient is at extreme risk of perioperative Acute Kidney Injury. Dr. Amit Verma (Nephrologist) has cleared the patient for surgery with a detailed renal-protective protocol: avoiding nephrotoxic drugs, maintaining MAP > 75 mmHg on bypass, and arranging standby hemodialysis for the post-operative period.\n\nESTIMATED SURGICAL PACKAGE COST: INR 3,85,000 (inclusive of high-risk surgical monitoring, post-op ICU, and Nephrology team consultation charges).\n\nDr. K. Sridhar, MS, MCh\nSenior Consultant Cardiothoracic Surgeon\nCare Hospitals, Hyderabad",
+  "simulatedDenialReason": "Pre-authorization is queried. Please provide: 1. Detailed Nephrologist clearance and perioperative renal-protective management plan in view of baseline Serum Creatinine of 2.8 mg/dL (Stage IV CKD). 2. Quantitative justification by the cardiothoracic surgeon for performing CABG over medical management or repeat PTCA given the high surgical risk (EuroSCORE II / STS score). 3. Historic angiography reports from the PTCA performed in August 2022 to rule out pre-existing undisclosed chronicity exclusions.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Rajendra Prasad Sharma",
+      "age": 64,
+      "gender": "Male",
+      "policyNumber": "231400/31/2024/004562",
+      "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "STAGE_IV_CKD_HIGH_RISK",
+        "IN_STENT_RESTENOSIS",
+        "RENAL_PROTECTION_PROTOCOL"
+      ],
+      "mustNotFlag": [
+        "ACUTE_INFARCTION_ST_ELEVATION",
+        "ACTIVE_DIALYSIS_DEPENDENT"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "I25.1",
+    "expectedCost": 385000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "CAG dated 12/10/24 showing severe Triple Vessel Disease with 90% severe In-Stent Restenosis (ISR) in the LAD",
+      "Serum Creatinine 2.8 mg/dL and eGFR 21.8 mL/min/1.73 m² (Stage IV CKD)",
+      "Pre-operative consultation and renal-protective clearance by Nephrologist Dr. Amit Verma"
+    ]
+  }
+}

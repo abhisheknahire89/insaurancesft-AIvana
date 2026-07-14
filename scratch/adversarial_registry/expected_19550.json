@@ -1,0 +1,27 @@
+{
+  "expectedExtraction": {
+    "patientName": "Priyanka Sharma",
+    "age": 29,
+    "gender": "Female",
+    "policyNumber": "SHAI/2024/7732109",
+    "insurerName": "Star Health and Allied Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "O34.2",
+      "previous LSCS"
+    ],
+    "mustNotFlag": [
+      "O34.21"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "O34.2",
+  "expectedCost": 65000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Short Interpregnancy Interval: The interval between the previous LSCS and the current delivery is approximately 18 months.",
+    "AFI (Amniotic Fluid Index): 6.2 cm (Oligohydramnios).",
+    "Lower uterine segment scar thickness is measured at 2.1 mm (indicated thinning)."
+  ]
+}

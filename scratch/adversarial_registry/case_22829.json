@@ -1,0 +1,87 @@
+{
+  "id": 22829,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "billing_complex",
+  "diagnosis": "Acute Myocardial Infarction",
+  "code": "I21.9",
+  "chiefComplaints": "Acute crushing retrosternal chest pain, radiating to left shoulder and jaw, accompanied by profuse sweating and dyspnea for 3 hours.",
+  "hpi": "A 58-year-old male, known diabetic and hypertensive, presented to the Emergency Room with sudden onset severe crushing chest pain since 3 hours. Pain was retrosternal, radiating to the left arm and neck, accompanied by cold diaphoresis and breathlessness. No prior history of ischemic heart disease.",
+  "relevantClinicalFindings": "ECG showed ST elevation in leads V1-V4 with reciprocal depressions in inferior leads. Troponin-I was highly elevated at 4.8 ng/mL (Normal <0.04). Bedside Echo revealed hypokinesia of the anterior wall, LVEF 40%. Coronary Angiogram showed 95% thrombotic occlusion of the Left Anterior Descending (LAD) artery. Patient underwent primary Percutaneous Transluminal Coronary Angioplasty (PTCA) with a drug-eluting stent (DES) to LAD.",
+  "additionalClinicalNotes": "Admitted to Coronary Care Unit (CCU) for 3 days for continuous hemodynamic monitoring, then transferred to a Deluxe Room for 2 days. Total hospital stay: 5 days. Discharged in stable condition.",
+  "duration": "5 Days",
+  "treatmentTakenSoFar": "Primary PTCA with DES to LAD, dual antiplatelets (Aspirin + Ticagrelor), Atorvastatin, Metoprolol, Ramipril, and IV Low Molecular Weight Heparin.",
+  "reasonForHospitalisation": "Emergency life-saving Primary PTCA and intensive post-procedural monitoring in CCU.",
+  "uploadedDocuments": [
+    "emergency_er_notes",
+    "ecg_report",
+    "cardiac_troponin_report",
+    "coronary_angiography_and_angioplasty_report",
+    "discharge_summary",
+    "final_hospital_bill"
+  ],
+  "patientName": "Rajesh Kumar Sharma",
+  "patient": {
+    "patientName": "Rajesh Kumar Sharma",
+    "age": 58,
+    "gender": "Female",
+    "mobileNumber": "9812345678"
+  },
+  "insurance": {
+    "policyNumber": "121400238491",
+    "insurerName": "Star Health and Allied Insurance Co Ltd",
+    "tpaName": "In-house TPA - Star Health",
+    "sumInsured": 300000,
+    "balanceSumInsured": 300000,
+    "tpaIdCardNumber": "SH1299381"
+  },
+  "vitals": {
+    "bp": "145/95 mmHg",
+    "pulse": "102 bpm",
+    "temp": "98.4 F",
+    "spo2": "93% on room air",
+    "rr": "24 bpm"
+  },
+  "expected": {
+    "mustFlag": [
+      "proportional_deduction_applied_to_implants",
+      "room_rent_capping_excess"
+    ],
+    "mustNotFlag": [
+      "non_disclosure_rejection"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "The case tests TPA auditing logic on room rent capping. The patient had a sum insured of INR 3,00,000, which caps normal room rent at 1% (INR 3,000/day) and CCU/ICU at 2% (INR 6,000/day). The patient stayed in a Deluxe Room (INR 7,500/day) and CCU (INR 10,000/day). The TPA incorrectly applied proportional deduction to the drug-eluting stent (implants) and pharmacy bills. Under IRDAI guidelines, proportional deductions cannot be applied to the cost of implants, medical devices, diagnostics, and medicines.",
+  "realGap": "The TPA applied a proportional deduction of 60% on the entire hospital bill including the drug-eluting stent (DES) cost and medicines. Under the IRDAI Standardization Guidelines, proportional deductions are strictly prohibited on cost of implants (stents), diagnostics, and pharmacy.",
+  "sourceReasoning": "As per IRDAI Circular Ref: IRDAI/HLT/REG/CIR/193/07/2020 dated 21-July-2020 (Annexure-B), insurers are allowed to apply associate medical expenses (proportional deduction) only on expenses linked to room rent (such as nursing, RMO, and consultant fees). Insurers are explicitly barred from applying proportionate recovery on cost of implants, medical devices, drugs, and diagnostics.",
+  "rawDocumentText": "METRO HEART & VASCULAR INSTITUTE\nSector 12, Noida, UP - 201301\nDISCHARGE SUMMARY\n\nPATIENT NAME: Rajesh Kumar Sharma\nAGE: 58 Years | GENDER: Male\nIPD NO: MH-2023-8891\nADMISSION DATE: 12-Oct-2023 04:30 AM\nDISCHARGE DATE: 17-Oct-2023 11:30 AM\nDIAGNOSIS: Acute Anteroseptal Myocardial Infarction (STEMI), Type 2 Diabetes Mellitus, Essential Hypertension.\nICD-10 Code: I21.9\n\nCHIEF COMPLAINTS:\n- Sudden onset severe, retrosternal crushing chest pain since 1:30 AM (approx. 3 hours before presentation) radiating to left arm and jaw.\n- Associated with profuse sweating, nausea, and shortness of breath.\n\nHISTORY OF PRESENT ILLNESS:\nMr. Rajesh Kumar Sharma, a 58-year-old male with known co-morbidities of Type 2 DM and HTN for 5 years on regular oral medications, was brought to the Emergency Department with acute chest discomfort. The pain was severe, constant, and not relieved by rest. On examination, the patient was diaphoretic and anxious.\n\nCLINICAL FINDINGS & INVESTIGATIONS:\n- ECG: ST elevation in leads V1 to V4 with reciprocal ST depression in II, III, aVF.\n- Cardiac Biomarkers: Troponin-I: 4.8 ng/mL (highly positive); CK-MB: 48 U/L.\n- Echocardiogram: Regional wall motion abnormality (hypokinesia of anterior septum), Left Ventricular Ejection Fraction (LVEF) 40%, mild MR.\n- Coronary Angiogram (CAG): 12-Oct-2023: Single vessel disease. Left Anterior Descending (LAD) artery showed 95% critical thrombotic occlusion in the mid-segment. LCx and RCA were normal.\n- Angioplasty (PTCA): Primary PTCA to LAD was done successfully on 12-Oct-2023 via right radial route. A Drug-Eluting Stent (DES) - Promus Premier 3.0 x 24mm was deployed at 14 atm. Post-dilatation showed TIMI-III flow with no residual stenosis.\n\nHOSPITAL COURSE:\nPost-procedure, the patient was monitored in the Coronary Care Unit (CCU - Bed Charge: Rs. 10,000/day) for 3 days (12-Oct to 15-Oct). Hemodynamics remained stable. He was then shifted to a Single Deluxe Room (Bed Charge: Rs. 7,500/day) for further 2 days (15-Oct to 17-Oct) of monitoring and rehabilitation. He was mobilized gradually and tolerated it well.\n\nFINAL BILL SUMMARY (METRO HOSPITALS):\n1. CCU Bed Charges (3 Days @ Rs. 10,000/day): Rs. 30,000\n2. Single Deluxe Room Charges (2 Days @ Rs. 7,500/day): Rs. 15,000\n3. Primary PTCA Package (including cathlab charges, surgeon fees, cardiologist fees): Rs. 1,10,000\n4. Drug-Eluting Stent (DES - Promus Premier): Rs. 30,000\n5. Pharmacy & Consumables: Rs. 28,500\n6. Diagnostics (CAG, Lab, Echo, ECG): Rs. 18,000\n7. Resident Doctor & Nursing Charges: Rs. 12,000\nTOTAL BILL AMOUNT: Rs. 2,43,500\n\nDISCHARGE MEDICATIONS:\n- Tab. Aspirin 75mg OD\n- Tab. Ticagrelor 90mg BD\n- Tab. Atorvastatin 40mg HS\n- Tab. Metoprolol 25mg OD\n- Tab. Ramipril 2.5mg OD\n- Tab. Metformin 500mg BD\n\nDr. Sunil K. Mehta, DM (Cardiology)\nSenior Consultant Cardiologist\nRegistration No: DMC/44129",
+  "simulatedDenialReason": "We have partially approved the claim up to Rs. 1,48,500. As per the policy terms and conditions of Star Classic Health Policy, the room rent limit is capped at 1% of Sum Insured (SI = Rs. 3,00,000, i.e., Rs. 3,000/day) for Normal Ward and 2% of SI (i.e., Rs. 6,000/day) for CCU/ICU. Since you opted for a Deluxe Room at Rs. 7,500/day and CCU at Rs. 10,000/day, a proportionate deduction of 60% (1 - 3000/7500) has been applied across all bill items, including the PTCA procedure package, cardiac stent cost (Rs. 30,000), pharmacy bills (Rs. 28,500), and diagnostics (Rs. 18,000). Deductions applied as per Policy Clause 4.2.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Rajesh Kumar Sharma",
+      "age": 58,
+      "gender": "Male",
+      "policyNumber": "121400238491",
+      "insurerName": "Star Health and Allied Insurance Co Ltd"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "proportional_deduction_applied_to_implants",
+        "room_rent_capping_excess"
+      ],
+      "mustNotFlag": [
+        "non_disclosure_rejection"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "I21.9",
+    "expectedCost": 243500,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "IRDAI Circular Ref: IRDAI/HLT/REG/CIR/193/07/2020",
+      "Proportionate recovery is not applicable on cost of implants (DES Promus Premier - Rs. 30,000)",
+      "Proportionate recovery is not applicable on pharmacy (Rs. 28,500) and diagnostics (Rs. 18,000)"
+    ]
+  }
+}

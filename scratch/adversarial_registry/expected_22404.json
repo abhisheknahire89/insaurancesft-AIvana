@@ -1,0 +1,26 @@
+{
+  "expectedExtraction": {
+    "patientName": "Sunita Sharma",
+    "age": 45,
+    "gender": "Female",
+    "policyNumber": "POL-2023-883921",
+    "insurerName": "HDFC ERGO General Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "PROPORTIONAL_ROOM_RENT_DEDUCTION_OVERCALCULATION",
+      "MULTI_PROCEDURE_DISCOUNT_APPLICABILITY"
+    ],
+    "mustNotFlag": [
+      "INCORRECT_ICD_CHAPTER_LOCK"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.1",
+  "expectedCost": 198000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "In accordance with standard GIPSA multi-procedure norms, the primary surgery (TLH, Rs. 90,000) is payable at 100%, and the secondary surgery (Laparoscopic Cholecystectomy, Rs. 50,000) is payable at 50% (Rs. 25,000). The hospital's double-package billing of Rs. 1,40,000 must be adjusted to Rs. 1,15,000.",
+    "As per IRDAI Standardized Billing Guidelines (Ref: IRDAI/HLT/REG/CIR/194/07/2020), proportional deductions due to room rent category breach (37.5%) are strictly prohibited on material costs, which includes pharmacy, medicines, and surgical consumables (Rs. 24,000). These must be reimbursed without proportional cuts."
+  ]
+}

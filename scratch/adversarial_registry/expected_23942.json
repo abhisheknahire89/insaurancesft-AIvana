@@ -1,0 +1,30 @@
+{
+  "expectedExtraction": {
+    "patientName": "Meera Deshmukh",
+    "age": 44,
+    "gender": "Female",
+    "policyNumber": "POL-9982341-2021",
+    "insurerName": "Star Health and Allied Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "D25.9",
+      "arbitrary chronicity speculation",
+      "policy age exceeds 24 months"
+    ],
+    "mustNotFlag": [
+      "D25.90",
+      "US-CM modifier"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.9",
+  "expectedCost": 145000,
+  "expectedEligibility": "denied",
+  "expectedAppealCitations": [
+    "Policy inception date is 10-Oct-2021, meaning the policy has completed 25 months (more than 2 years), which is past the standard 24-month waiting period for Uterine Fibroids.",
+    "Symptoms and medical records document onset of complaints only 6 months ago (May 2023).",
+    "There is no medical record, ultrasound, or physician consultation documenting fibroids prior to policy inception.",
+    "Denying a claim based on speculative growth rates of fibroids violates IRDAI guidelines, which mandate that the burden of proving a Pre-Existing Disease lies on the insurer and must be backed by documentary medical evidence, not arbitrary size-based assumptions."
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "id": 19489,
+  "category": "A",
+  "difficulty": "high",
+  "focusCategory": "denial_heavy",
+  "diagnosis": "Acute Anterior Wall Myocardial Infarction",
+  "code": "I21.0",
+  "chiefComplaints": "Acute onset of crushing retrosternal chest pain radiating to the left shoulder and jaw, accompanied by profuse sweating (diaphoresis), dyspnea at rest, and mild nausea for 3 hours.",
+  "hpi": "Mr. Rajesh Kumar, a 58-year-old male with a known history of Type 2 Diabetes Mellitus and Hypertension, and a prior history of Coronary Artery Disease (CAD status-post Percutaneous Transluminal Coronary Angioplasty [PTCA] with a Drug-Eluting Stent [DES] to the Left Anterior Descending [LAD] artery 18 months ago), presented to the Emergency Department at 4:30 AM. He reported sudden-onset, severe, crushing substernal chest pain (intensity 9/10) radiating to his left arm. The pain was associated with extreme diaphoresis, shortness of breath, and nausea. He took a sublingual Sorbitrate (5mg) at home with no relief, prompting his family to rush him to the hospital.",
+  "relevantClinicalFindings": "On presentation, the patient was anxious and diaphoretic. Pulse: 104 bpm, regular. BP: 154/96 mmHg. SpO2: 91% on room air. Cardiovascular examination revealed normal S1 and S2 with an S4 gallop; no murmurs. Chest auscultation revealed bilateral basal crepitations. Electrocardiogram (ECG) performed immediately at 4:40 AM demonstrated hyperacute T waves and ST-segment elevation of 3 mm in precordial leads V1 to V4, indicating an acute anterior wall STEMI. Emergency Cardiac Biomarkers showed highly elevated Troponin-I at 4.2 ng/mL (Reference: < 0.04 ng/mL) and elevated CK-MB at 48 U/L. Bedside Echocardiogram showed hypokinesia of the anterior wall and apex, with a reduced Left Ventricular Ejection Fraction (LVEF) of 38-40%.",
+  "additionalClinicalNotes": "The patient was immediately loaded with Tab Aspirin 325 mg, Tab Clopidogrel 600 mg, and Tab Atorvastatin 80 mg. Intravenous Heparin bolus of 5000 IU was administered. Given the presentation of acute STEMI, he was wheeled into the Cardiac Cath Lab for an emergency primary Percutaneous Coronary Intervention (PCI). Coronary Angiogram (CAG) revealed severe 99% thrombotic occlusion at the proximal edge of the previously deployed stent in the LAD (In-stent thrombosis/restenosis). Manual thrombus aspiration was performed, followed by successful balloon dilatation and deployment of a new Drug-Eluting Stent (DES) (size 3.0 x 18 mm) to the LAD. Post-procedure, Thrombolysis in Myocardial Infarction (TIMI) III flow was achieved. The patient was transferred to the Coronary Care Unit (CCU) for close monitoring.",
+  "duration": "3 days",
+  "treatmentTakenSoFar": "Emergency loading doses (Aspirin, Clopidogrel, Atorvastatin), IV unfractionated heparin, oxygen therapy (2L/min via nasal cannula), emergency Primary PTCA with DES to the LAD, post-procedure dual antiplatelet therapy (DAPT), beta-blockers (Metoprolol 12.5 mg OD), and ACE inhibitors (Ramipril 2.5 mg OD).",
+  "reasonForHospitalisation": "Life-saving emergency coronary intervention (Primary PTCA) for acute transmural anterior wall myocardial infarction (STEMI) presenting with cardiogenic symptoms and severe left ventricular dysfunction.",
+  "uploadedDocuments": [
+    "emergency_admission_record",
+    "ecg_report_admission",
+    "troponin_i_lab_report",
+    "coronary_angiography_and_angioplasty_report",
+    "discharge_summary",
+    "tpa_denial_letter"
+  ],
+  "patientName": "Rajesh Kumar",
+  "patient": {
+    "patientName": "Rajesh Kumar",
+    "age": 58,
+    "gender": "Female",
+    "mobileNumber": "9810456721"
+  },
+  "insurance": {
+    "policyNumber": "HP/2023/883912",
+    "insurerName": "Niva Bupa Health Insurance Co. Ltd.",
+    "tpaName": "Family Health Plan Insurance TPA Ltd. (FHPL)",
+    "sumInsured": 500000,
+    "balanceSumInsured": 450000,
+    "tpaIdCardNumber": "FHPL-9921-8812"
+  },
+  "vitals": {
+    "bp": "154/96 mmHg",
+    "pulse": "104 bpm",
+    "temp": "98.4 F",
+    "spo2": "91%",
+    "rr": "24 breaths/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "In-Stent Thrombosis",
+      "ST-Segment Elevation (STEMI)",
+      "Emergency Primary PTCA",
+      "Elevated Cardiac Troponin-I"
+    ],
+    "mustNotFlag": [
+      "Elective Angioplasty",
+      "Planned/Chronic CAD Treatment",
+      "Stable Angina Exclusions"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This case tests the TPA's inappropriate denial of an acute emergency life-saving procedure under standard Pre-existing Disease (PED) waiting periods. The patient has a history of CAD/Stenting from 18 months ago, but presented with an acute, life-threatening myocardial infarction (STEMI). TPAs often falsely classify emergency PTCA for AMI as elective chronic disease management to trigger 3 or 4-year PED exclusions.",
+  "realGap": "The insurer/TPA denied the claim under the Pre-existing Disease (PED) 3-year waiting period, ignoring the fact that the admission was for an acute, life-threatening emergency (Acute Myocardial Infarction/STEMI). Standard insurance rules state that emergency medical stabilization and life-saving interventions for acute myocardial infarctions cannot be withheld or denied under elective/chronic waiting periods if the patient was admitted in an acute emergency state.",
+  "sourceReasoning": "As per the IRDAI Master Circular on Standardization of Common Exclusions (IRDAI/HLT/REG/CIR/191/07/2020) and General Insurance Council rules, critical/emergency life-saving treatments for acute medical emergencies (such as STEMI/Acute MI) must not be summarily rejected under chronic PED waiting period clauses if there is clear, documented evidence of a hyperacute onset and active life-threatening clinical presentation.",
+  "rawDocumentText": "MAX SUPER SPECIALITY HOSPITAL\n1, Press Enclave Road, Saket, New Delhi - 110017\nDEPARTMENT OF CARDIOLOGY - DISCHARGE SUMMARY\n\nPATIENT NAME: Mr. Rajesh Kumar | AGE: 58 Years | GENDER: Male\nIPD NO: IP-2023-998214 | ADMISSION DATE: 14-Oct-2023 04:45 AM | DISCHARGE DATE: 17-Oct-2023 02:00 PM\nINSURER: Niva Bupa Health Insurance | TPA: FHPL | POLICY NO: HP/2023/883912\n\nFINAL DIAGNOSIS:\n1. Acute Anterior Wall Myocardial Infarction (STEMI)\n2. Coronary Artery Disease (CAD) - Post-PTCA (DES to LAD in April 2022)\n3. Type 2 Diabetes Mellitus\n4. Essential Hypertension\n\nCHIEF COMPLAINTS AT ADMISSION:\n- Sudden onset of severe, crushing substernal chest pain radiating to left arm and jaw since 01:30 AM (approx. 3 hours duration prior to presentation).\n- Severe diaphoresis, breathlessness (NYHA Class IV), and nausea.\n\nHISTORY OF PRESENT ILLNESS:\nMr. Rajesh Kumar, 58/M, known hypertensive and diabetic, with a history of past PTCA with DES to LAD 18 months ago, presented to the Emergency Room with acute-onset, typical cardiac chest pain. The pain was chest-crushing, non-positional, non-pleuritic, and did not subside with sublingual nitrates. On arrival, he was in severe distress, tachypneic, and cold/clammy.\n\nCLINICAL FINDINGS & PHYSICAL EXAMINATION:\n- General Status: Conscious, oriented, severely diaphoretic, anxious.\n- BP: 154/96 mmHg | Pulse: 104 bpm (regular) | Temp: 98.4 F | SpO2: 91% on room air | RR: 24/min.\n- CVS: S1 S2 heard, soft S4 present, no murmurs. JVP not raised.\n- Chest: Bilateral basal rales present.\n- Abdomen: Soft, non-tender, no organomegaly.\n\nINVESTIGATIONS:\n- Emergency ECG (04:40 AM): Shows sinus tachycardia, ST-segment elevation of 3mm in V1, V2, V3, and V4 with reciprocal ST depression in II, III, and aVF, highly suggestive of Hyperacute Anterior Wall STEMI.\n- Cardiac Biomarkers: Troponin-I: 4.2 ng/mL (highly elevated; Normal <0.04); CK-MB: 48 U/L.\n- Echocardiogram: Regional wall motion abnormality (RWMA) present - severe hypokinesia of the anterior wall, apex, and septum. LVEF: 38%. Grade I Diastolic Dysfunction.\n- Lab Parameters: Hb: 13.8 g/dL, WBC: 11,200/cumm, Serum Creatinine: 0.98 mg/dL, Blood Sugar (Random): 214 mg/dL.\n\nCOURSE IN HOSPITAL & TREATMENT DETAIL:\nPatient was loaded with Inj Heparin 5000 IU IV, Tab Aspirin 325 mg, Tab Clopidogrel 600 mg, and Tab Atorvastatin 80 mg in the emergency room. Oxygen therapy initiated at 2L/min.\nIn view of the acute anterior wall STEMI, the patient was taken up for emergency Coronary Angiography (CAG) via the right radial route. CAG revealed: Left Main: Normal; LAD: 99% thrombotic occlusion at the proximal edge of the previously deployed stent; LCx: 40% plaque; RCA: 30% minor disease.\nDecision was made for emergency Primary PTCA. A 6F EBU 3.5 guide catheter was used to cannulate the LCA. A runthrough wire was crossed across the lesion. Manual aspiration thrombectomy was performed, yielding red thrombi. Balloon dilation was done, and a fresh Drug-Eluting Stent (DES) (Promus Premier 3.0 x 18 mm) was successfully deployed overlapping the old stent segment at 14 atm. Post-dilatation done with a 3.25 NC balloon. Final angiogram showed TIMI III distal flow with no dissection or distal embolization. Patient tolerated the procedure well.\nPost-procedure, the patient was managed in the CCU on DAPT (Aspirin 150 mg OD, Clopidogrel 75 mg BD), Inj Clexane 0.6 ml SC BD for 2 days, Metoprolol 12.5 mg OD, Ramipril 2.5 mg OD, and insulin infusion to control hyperglycemia. He improved clinically, chest pain subsided, and lung fields cleared up. He is now hemodynamically stable and is being discharged with appropriate advice.\n\nDR. ADITYA KAPOOR, DM (CARDIOLOGY)\nSenior Consultant Interventional Cardiologist\nReg No: DMC/44829",
+  "simulatedDenialReason": "We regret to inform you that your pre-authorization/reimbursement claim for Rajesh Kumar under policy HP/2023/883912 has been rejected under Policy Exclusion Clause 4.1 (Pre-existing Disease waiting period). As per the submitted medical documents, the patient is a known case of Coronary Artery Disease (CAD) and underwent a PTCA (Angioplasty) with a stent 18 months ago. The present admission is for coronary intervention (Angioplasty) to the LAD artery. Since the underlying coronary artery disease is pre-existing and is within the 3-year/4-year exclusion waiting period of the policy, any treatment, surgical intervention, or complications arising from this pre-existing condition are not admissible under the terms and conditions of the policy.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Rajesh Kumar",
+      "age": 58,
+      "gender": "Male",
+      "policyNumber": "HP/2023/883912",
+      "insurerName": "Niva Bupa Health Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "In-Stent Thrombosis",
+        "ST-Segment Elevation (STEMI)",
+        "Emergency Primary PTCA",
+        "Elevated Cardiac Troponin-I"
+      ],
+      "mustNotFlag": [
+        "Elective Angioplasty",
+        "Planned/Chronic CAD Treatment",
+        "Stable Angina Exclusions"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "I21.0",
+    "expectedCost": 285000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Emergency ECG (04:40 AM): Shows sinus tachycardia, ST-segment elevation of 3mm in V1, V2, V3, and V4",
+      "Troponin-I: 4.2 ng/mL (highly elevated)",
+      "CAG revealed: LAD: 99% thrombotic occlusion at the proximal edge of the previously deployed stent",
+      "In view of the acute anterior wall STEMI, the patient was taken up for emergency Coronary Angiography (CAG)"
+    ]
+  }
+}

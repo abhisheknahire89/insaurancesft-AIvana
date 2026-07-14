@@ -1,0 +1,87 @@
+{
+  "id": 19294,
+  "category": "D",
+  "difficulty": "high",
+  "focusCategory": "specialty_caps",
+  "diagnosis": "Uterine Fibroids (Leiomyoma of uterus)",
+  "code": "D25.9",
+  "chiefComplaints": "Heavy menstrual bleeding (menorrhagia) for the past 6 months, severe lower abdominal pain (dysmenorrhea), and pelvic heaviness with increased urinary frequency.",
+  "hpi": "The patient is a 46-year-old female, G2P2L2, presenting with a 6-month history of worsening menorrhagia characterized by a menstrual cycle of 10-12 days of heavy flow with large clots every 24-26 days. She complains of progressive, severe spasmodic lower abdominal pain during menses, not relieved by standard analgesics. She also reports a persistent feeling of fullness in the pelvic region and a marked increase in urinary frequency over the last 3 months. She has developed chronic fatigue and exertional dyspnea, secondary to severe iron deficiency anemia (Hb: 8.2 g/dL) despite undergoing oral iron supplementation.",
+  "relevantClinicalFindings": "Abdominal Examination: Uterus felt palpable, about 12 weeks size, firm, non-tender, with restricted mobility. Pelvic Examination: Cervix healthy, bulky uterus of 12 weeks size felt, anterior wall fullness present, fornices free and non-tender. Pelvic Ultrasound (dated 12/10/2023): Bulky uterus measuring 12.4 x 8.2 x 7.1 cm. A well-defined intramural hypoechoic lesion measuring 6.5 x 5.8 cm is noted in the anterior myometrium of the uterine body, causing a mass effect and compressing the posterior wall of the urinary bladder. Multiple smaller subserosal fibroids noted, largest measuring 2.1 cm. Endometrial thickness is 8.2 mm. Bilateral adnexa normal. Lab investigations: Hemoglobin: 8.2 g/dL, Hematocrit: 26.4%, MCV: 68 fL (microcytic hypochromic picture). Renal and liver function tests are within normal limits.",
+  "additionalClinicalNotes": "The patient has completed her family. She was previously treated conservatively with Tab Tranexamic Acid 500 mg TID during cycles and Tab Medroxyprogesterone Acetate 10 mg QD for 21 days per cycle for 3 consecutive cycles at an outpatient clinic, which failed to control the heavy bleeding. In view of failed medical management, symptomatic bulky fibroid causing urinary pressure symptoms, and profound anemia, she has been advised to undergo a Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingectomy under General Anesthesia.",
+  "duration": "6 months",
+  "treatmentTakenSoFar": "Hormonal therapy (Progesterone-only pills for 3 months), Antifibrinolytics (Tranexamic Acid during menses), Oral Iron Supplements (Tab Autrin QD).",
+  "reasonForHospitalisation": "Elective Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingectomy under General Anesthesia.",
+  "uploadedDocuments": [
+    "pelvic_ultrasound_report",
+    "complete_hemogram",
+    "gynecology_opd_consultation_sheet",
+    "pre_anesthetic_fitness_certificate"
+  ],
+  "patientName": "Rajeshwari Swaminathan",
+  "patient": {
+    "patientName": "Rajeshwari Swaminathan",
+    "age": 46,
+    "gender": "Female",
+    "mobileNumber": "9840123456"
+  },
+  "insurance": {
+    "policyNumber": "SH/2024/CH/883921",
+    "insurerName": "Star Health and Allied Insurance Co Ltd",
+    "tpaName": "In-house TPA - Star Health",
+    "sumInsured": 500000,
+    "balanceSumInsured": 480000,
+    "tpaIdCardNumber": "STAR88392101"
+  },
+  "vitals": {
+    "bp": "110/70",
+    "pulse": "88",
+    "temp": "98.4 F",
+    "spo2": "98%",
+    "rr": "16"
+  },
+  "expected": {
+    "mustFlag": [
+      "D25.9"
+    ],
+    "mustNotFlag": [
+      "D25.1",
+      "N92.0",
+      "D25.91"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This case tests the system's ability to lock the gynecological category (D-N-Z codes) for uterine fibroid conditions, specifically identifying the ICD-10 code D25.9, while ensuring no US-specific lateralization/sub-classification suffixes (such as CM-modified codes) are extracted. It also tests the extraction of clinical justifications regarding failed conservative treatments to address simulated insurer queries.",
+  "realGap": "TPAs frequently query laparoscopic hysterectomy pre-authorization requests to demand documented proof of failed prior conservative medical management (such as hormonal/antifibrinolytic trials) and diagnostic scans clearly detailing pressure symptoms or size thresholds (>12 weeks or >5cm) before approving laparoscopic surgical packages.",
+  "sourceReasoning": "Per standard Indian TPA/GIPSA medical audit guidelines, elective hysterectomies for benign uterine conditions must provide a minimum 3-month history of failed medical management, unless contraindicated, or clear objective evidence of acute symptoms/compression to prevent unwarranted surgical utilization.",
+  "rawDocumentText": "SRI RAMACHANDRA MEDICAL CENTRE\nNo. 1, Ramachandra Nagar, Porur, Chennai - 600116\nDEPT OF OBSTETRICS & GYNECOLOGY\nADMISSION SUMMARY & CLINICAL NOTE\n\nPatient Name: Mrs. Rajeshwari Swaminathan\nAge/Gender: 46 Years / Female\nUHID: SRMC-GYN-2023-99182\nIP No: IP/2023/881729\nDate of Admission: 18/10/2023\nConsultant: Dr. Meenakshi Sundaram, MD, DGO (Senior Consultant Gynecologist)\nInsurer: Star Health and Allied Insurance Co Ltd\nPolicy No: SH/2024/CH/883921\nTPA ID Card: STAR88392101\n\nCHIEF COMPLAINTS:\n- Menorrhagia with passage of large blood clots since 6 months (menses lasting 10-12 days, cycle length 24-26 days).\n- Severe spasmodic dysmenorrhea not relieved by oral analgesics.\n- Pelvic heaviness & pressure symptoms in the form of increased frequency of micturition for 3 months.\n- Extreme fatigue and generalized weakness.\n\nHISTORY OF PRESENT ILLNESS:\nMrs. Rajeshwari Swaminathan, a 46-year-old P2L2, presented with complaints of heavy menstrual bleeding and severe dysmenorrhea for the last 6 months. Her flow has been heavy, requiring 5-6 fully soaked pads/day for the first 5 days, accompanied by massive clots. She gives a history of pelvic fullness and urinary frequency. She tried conservative medical management under an outside gynecologist (Dr. Kavitha, Apollo Clinic) with Tab Tranexamic Acid 500mg TID and Tab Medroxyprogesterone Acetate 10mg QD for 3 consecutive cycles, but experienced no relief. She has also been taking Tab Autrin (iron supplement) for microcytic hypochromic anemia secondary to chronic blood loss. Due to persistent severe symptoms, failure of medical therapy, and a bulky uterus causing bladder pressure, she is scheduled for Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingectomy.\n\nPHYSICAL EXAMINATION:\n- General: Moderately built, pale +, no icterus, no clubbing, no pedal edema.\n- Vitals: BP: 110/70 mmHg, HR: 88 bpm, Temp: 98.4 F, SpO2: 98% on room air, RR: 16/min.\n- Cardiovascular: S1 S2 heard, no murmurs.\n- Respiratory: Chest clear, bilateral air entry equal.\n- Abdominal Exam: Soft, uterus palpable ~12 weeks size, firm, mobile, non-tender. No organomegaly.\n- Pelvic Exam (P/S): Cervix healthy, mild descent. P/V: Uterus ~12 weeks size, bulky, anterior wall fibroid felt, bilateral fornices free and non-tender.\n\nINVESTIGATIONS:\n- Pelvic Ultrasound (12/10/2023): Uterus measures 12.4 x 8.2 x 7.1 cm. Large intramural fibroid measuring 6.5 x 5.8 cm in the anterior myometrium, causing significant mass effect on the urinary bladder (posterior wall compression). Minor subserosal fibroids present, largest 2.1 cm. ET: 8.2 mm. Ovaries normal.\n- CBC: Hb: 8.2 g/dL (Low), RBC: 3.4 million/cmm, WBC: 6,800/cmm, Platelets: 2.1 lakhs/cmm, PCV: 26.4%, MCV: 68 fL.\n- Renal Function: Urea: 22 mg/dL, Creatinine: 0.7 mg/dL.\n- Liver Function: Bilirubin (T): 0.6 mg/dL, SGOT: 24 U/L, SGPT: 22 U/L.\n- Coagulation: PT: 12.1 sec, INR: 1.05.\n- PAC: Cleared under ASA Grade II (due to moderate anemia).\n\nTREATMENT PLAN:\n- Scheduled for Total Laparoscopic Hysterectomy with Bilateral Salpingectomy on 19/10/2023.\n- Under General Anesthesia.\n- 2 units of Packed Red Blood Cells (PRBC) kept cross-matched in view of low baseline Hb of 8.2 g/dL.\n\nDr. Meenakshi Sundaram, MD, DGO\nReg No: 55421 (TNMOC)",
+  "simulatedDenialReason": "The pre-authorization request for Total Laparoscopic Hysterectomy is placed under query. Please submit clinical records of prior medical management trials (hormonal therapy/antifibrinolytics) for at least 3 months, and clarify the specific medical necessity for electing laparoscopic intervention over open hysterectomy in view of the patient's severe anemia (Hb 8.2 g/dL).",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Rajeshwari Swaminathan",
+      "age": 46,
+      "gender": "Female",
+      "policyNumber": "SH/2024/CH/883921",
+      "insurerName": "Star Health and Allied Insurance Co Ltd"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "D25.9"
+      ],
+      "mustNotFlag": [
+        "D25.1",
+        "N92.0",
+        "D25.91"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.9",
+    "expectedCost": 165000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "tried conservative medical management under an outside gynecologist... with Tab Tranexamic Acid 500mg TID and Tab Medroxyprogesterone Acetate 10mg QD for 3 consecutive cycles, but experienced no relief",
+      "Large intramural fibroid measuring 6.5 x 5.8 cm in the anterior myometrium, causing significant mass effect on the urinary bladder (posterior wall compression)",
+      "Hb: 8.2 g/dL... 2 units of Packed Red Blood Cells (PRBC) kept cross-matched"
+    ]
+  }
+}

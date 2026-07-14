@@ -1,0 +1,89 @@
+{
+  "id": 23479,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "billing_complex",
+  "diagnosis": "Leiomyoma of uterus, unspecified (Uterine Fibroids)",
+  "code": "D25.9",
+  "chiefComplaints": "Heavy menstrual bleeding (menorrhagia) for the past 8 months, lower abdominal pain, and pressure symptoms.",
+  "hpi": "46-year-old female presenting with a history of menorrhagia, passing clots during menstruation, and dull-aching lower abdominal pain. Symptoms have progressively worsened over the last 3 months, causing fatigue and exertional dyspnea. Ultrasound abdomen-pelvis shows a large intramural fibroid measuring 6.2 x 5.8 cm in the anterior wall of the uterus and multiple smaller subserosal fibroids.",
+  "relevantClinicalFindings": "Uterus enlarged to 14 weeks size, firm, mobile. Severe pallor present. Hb: 8.4 g/dL. Pelvic USG: Multiple uterine fibroids (largest intramural 62mm). Endometrial thickness: 9mm. Patient is planned for Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-Oophorectomy (BSO).",
+  "additionalClinicalNotes": "Patient has a history of primary hypertension controlled on Tab. Amlodipine 5mg OD. No history of previous abdominal surgeries.",
+  "duration": "8 months",
+  "treatmentTakenSoFar": "Oral Hemostatics (Tranexamic acid) and NSAIDs with temporary relief.",
+  "reasonForHospitalisation": "Surgical management of symptomatic uterine fibroids (TLH + BSO).",
+  "uploadedDocuments": [
+    "admission_note",
+    "ultrasound_report",
+    "discharge_summary",
+    "final_hospital_bill",
+    "room_rent_eligibility_consent"
+  ],
+  "patientName": "Sunita Sharma",
+  "patient": {
+    "patientName": "Sunita Sharma",
+    "age": 46,
+    "gender": "Female",
+    "mobileNumber": "9876543210"
+  },
+  "insurance": {
+    "policyNumber": "SH/2024/1002938",
+    "insurerName": "Star Health and Allied Insurance",
+    "tpaName": "In-House Star TPA",
+    "sumInsured": 300000,
+    "balanceSumInsured": 300000,
+    "tpaIdCardNumber": "STAR98372615"
+  },
+  "vitals": {
+    "bp": "130/80 mmHg",
+    "pulse": "78 bpm",
+    "temp": "98.4 F",
+    "spo2": "98%",
+    "rr": "18 breaths/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "UNBUNDLED_PROCEDURES",
+      "ROOM_RENT_CAPPING_EXCEEDED",
+      "PROPORTIONAL_DEDUCTION_APPLICABLE"
+    ],
+    "mustNotFlag": [
+      "CO-PAYMENT_EXEMPT"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This case tests the TPA billing validator for a multi-procedure gynecological case. The hospital unbundled TLH, BSO, and Adhesiolysis as separate packages, whereas BSO is considered inclusive or subject to a 50% discount. Additionally, the patient upgraded to a Deluxe Suite (6,000/day) despite being eligible only for a Single Private A/C Room (capped at 3,000/day), triggering a proportional deduction across all non-consumable associate expenses.",
+  "realGap": "Unbundling of surgical packages (charging BSO and Adhesiolysis separately from TLH) and breach of room rent capping resulting in proportional deductions on associated medical charges under GIPSA guidelines.",
+  "sourceReasoning": "Under GIPSA/PPN guidelines and Star Health policy terms, if the patient opts for a room category higher than eligibility, proportional deductions apply to all associated expenses (OT, Surgeon fee, Anaesthetist charges, Nursing, etc.). Furthermore, secondary surgeries performed through the same incision/portal during the same session must be bundled or discounted by 50% rather than billed as independent full packages.",
+  "rawDocumentText": "DISCHARGE SUMMARY - APEX MULTISPECIALITY HOSPITAL, DELHI\n\nPATIENT NAME: Mrs. Sunita Sharma  | AGE: 46 Years | GENDER: Female\nIPD NO: IP-887361-24 | ADMISSION DATE: 12-Oct-2024 | DISCHARGE DATE: 16-Oct-2024\nATTENDING CONSULTANT: Dr. Meenakshi Iyer, MD, DGO (Gynecology)\nINSURANCE POLICY NO: SH/2024/1002938 | INSURER: Star Health and Allied Insurance\n\nDIAGNOSIS:\n1. Multiple Uterine Fibroids (D25.9)\n2. Menorrhagia with Secondary Anemia\n3. Essential Hypertension (I10)\n\nPROCEDURE PERFORMED:\nTotal Laparoscopic Hysterectomy (TLH) + Bilateral Salpingo-Oophorectomy (BSO) + Extensive Adhesiolysis under General Anesthesia on 13-Oct-2024.\n\nCLINICAL SUMMARY:\nPatient presented with severe menorrhagia since 8 months, with dysmenorrhea and pressure symptoms over the bladder. Not controlled on conservative medical therapy. Blood transfusion of 1 unit PCV was given pre-operatively on 12-Oct-2024 to correct anemia (pre-op Hb 8.4 g/dL, post-op Hb 10.2 g/dL). Intraoperatively, dense omental and bowel adhesions were noted on the posterior uterine wall, which were lysed. TLH + BSO was completed uneventfully. Specimen sent for histopathology.\n\nROOM DETAILS OCCUPIED:\nDeluxe Suite (Room No 402) - Charged @ INR 6,000/- per day. (Note: Policy eligible room is Single Private A/C Room, capped at INR 3,000/- per day or 1% of SI).\n\nITEMIZED HOSPITAL BILL SUMMARY:\n1. Deluxe Suite Room Rent (4 Days @ INR 6000/day): INR 24,000\n2. TLH Surgery Package Charge (Primary): INR 1,20,000\n3. Bilateral Salpingo-Oophorectomy Package Charge (Secondary): INR 45,000\n4. Pelvic Adhesiolysis Surcharge: INR 30,000\n5. Surgeon Fees (Specialist): INR 20,000\n6. Operation Theatre (OT) Charges: INR 15,000\n7. Anesthesia Charges: INR 10,000\n8. Consumables & Pharmacy: INR 21,000\n--------------------------------------------\nTOTAL BILLED AMOUNT: INR 2,85,000\n--------------------------------------------\n\nDr. Meenakshi Iyer, Attending Gynecologist\nReg No: DMC/G/442938",
+  "simulatedDenialReason": "Authorization partially approved. The TPA has disallowed the separate package charges for Bilateral Salpingo-Oophorectomy (INR 45,000) and Adhesiolysis (INR 30,000) as they are considered integral parts of the primary procedure (TLH). Furthermore, proportional deduction of 50% has been applied to OT charges, Surgeon fees, and Nursing charges due to the patient occupying a Deluxe Suite room (INR 6,000/day) against her eligible category of Single Private A/C room (INR 3,000/day).",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Sunita Sharma",
+      "age": 46,
+      "gender": "Female",
+      "policyNumber": "SH/2024/1002938",
+      "insurerName": "Star Health and Allied Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "UNBUNDLED_PROCEDURES",
+        "ROOM_RENT_CAPPING_EXCEEDED",
+        "PROPORTIONAL_DEDUCTION_APPLICABLE"
+      ],
+      "mustNotFlag": [
+        "CO-PAYMENT_EXEMPT"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.9",
+    "expectedCost": 135000,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "Deluxe Suite room (INR 6,000/day)",
+      "Single Private A/C room (INR 3,000/day)",
+      "Bilateral Salpingo-Oophorectomy (INR 45,000)",
+      "Adhesiolysis (INR 30,000)"
+    ]
+  }
+}

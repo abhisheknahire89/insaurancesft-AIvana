@@ -1,0 +1,89 @@
+{
+  "id": 17246,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "billing_complex",
+  "diagnosis": "Intramural leiomyoma of uterus (Uterine Fibroids)",
+  "code": "D25.1",
+  "chiefComplaints": "Menorrhagia with passage of large blood clots for 6 months, severe dysmenorrhea, and chronic dragging pelvic pain.",
+  "hpi": "Mrs. Sunita Sharma, a 48-year-old female with a known history of Type 2 Diabetes Mellitus and Hypertension, presented with heavy menstrual bleeding lasting for 8-10 days per cycle for the past 6 months. She describes needing 4 to 5 fully soaked sanitary pads per day, accompanied by the passage of large blood clots and severe, cramping lower abdominal pain. Over the last two months, she has also experienced a constant dragging sensation in her lower abdomen and increased urinary frequency.",
+  "relevantClinicalFindings": "Abdominal Examination: Soft, non-tender, uterus palpable at 14 weeks size, firm, irregular. Pelvic Examination (Per-Vaginum): Uterus retroverted, enlarged to 14 weeks size, firm and nodular, mobile, bilateral fornices free. Speculum examination shows a healthy cervix. Pelvic Ultrasound (USG) dated 05/10/2023: Reveals multiple uterine fibroids. There is a large intramural leiomyoma in the anterior myometrium measuring 6.2 cm x 5.8 cm, and another subserosal fibroid in the posterior wall measuring 4.5 cm x 3.8 cm. Endometrial thickness is 10.5 mm. Hemoglobin is low at 8.9 g/dL, indicating moderate microcytic hypochromic anemia.",
+  "additionalClinicalNotes": "The patient is a known diabetic and hypertensive on oral Metformin 500mg BD and Telmisartan 40mg OD. Due to the failure of conservative medical management with Tranexamic acid and hormonal therapy, and given her symptomatic multiple fibroids, she was posted for Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-Oophorectomy (BSO). Intraoperatively, dense pelvic adhesions were noted between the posterior uterine wall, the rectosigmoid colon, and the pouch of Douglas. Meticulous adhesiolysis was performed to mobilize the uterus safely before executing the TLH + BSO. Total surgical time was 140 minutes.",
+  "duration": "3 days",
+  "treatmentTakenSoFar": "Antifibrinolytics (Tranexamic Acid 500mg TID during cycles) and oral iron supplementation (Carbonyl Iron) for anemia, with minimal symptomatic relief.",
+  "reasonForHospitalisation": "Surgical management (Total Laparoscopic Hysterectomy with Bilateral Salpingo-Oophorectomy) for symptomatic multiple uterine fibroids.",
+  "uploadedDocuments": [
+    "admission_note",
+    "ultrasound_pelvis_report",
+    "cbc_and_biochemistry_reports",
+    "ot_note",
+    "discharge_summary",
+    "final_hospital_bill"
+  ],
+  "patientName": "Mrs. Sunita Sharma",
+  "patient": {
+    "patientName": "Mrs. Sunita Sharma",
+    "age": 48,
+    "gender": "Female",
+    "mobileNumber": "9830021456"
+  },
+  "insurance": {
+    "policyNumber": "CHI/209384/2023",
+    "insurerName": "Care Health Insurance",
+    "tpaName": "Self-Administered (Care Health TPA)",
+    "sumInsured": 300000,
+    "balanceSumInsured": 300000,
+    "tpaIdCardNumber": "CHI-TX-8839041"
+  },
+  "vitals": {
+    "bp": "130/80 mmHg",
+    "pulse": "78 bpm",
+    "temp": "98.4 F",
+    "spo2": "99%",
+    "rr": "16/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "ROOM_RENT_CAPPING_VIOLATION",
+      "PROPORTIONATE_DEDUCTION_APPLIED",
+      "UNBUNDLED_SURGICAL_CHARGES"
+    ],
+    "mustNotFlag": [
+      "MATERNITY_ICD_MISMATCH"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This complex billing scenario tests the clinical auditor's ability to identify proportional deductions triggered by room rent limits. The patient stayed in a Deluxe Room costing Rs. 8,000/day, whereas her policy's 1% Sum Insured capping limits room rent to Rs. 3,000/day. This mismatch triggers proportionate deductions across all associated medical expenses (such as OT charges, surgeon fees, and anesthesia fees). Additionally, the hospital has unbundled 'Adhesiolysis' as an extra Rs. 25,000 charge outside the primary major surgery package (TLH + BSO), which is disallowed under standard PPN/GIPSA guidelines as adhesiolysis is an integral component of a hysterectomy when adhesions are encountered.",
+  "realGap": "The hospital attempted to charge separately for an intraoperative component (adhesiolysis) that is medically bundled with the primary hysterectomy, while the patient's room upgrade to a deluxe suite triggered heavy proportional deductions on all non-fixed surgical costs, leading to a massive patient-share portion.",
+  "sourceReasoning": "As per IRDAI Guidelines on Standardization in Health Insurance (2019), if a policyholder opts for a room category higher than their eligibility, the insurer is entitled to recover a proportional share of all 'associated medical expenses' from the patient. Furthermore, under GIPSA and standard TPA billing guidelines, adhesiolysis is considered a standard step of a complex gynecological surgery and cannot be unbundled or billed as an independent secondary procedure code.",
+  "rawDocumentText": "APOLLO GLENEAGLES HOSPITALS, KOLKATA\nDISCHARGE SUMMARY\nPATIENT NAME: Mrs. Sunita Sharma | AGE: 48 Years | GENDER: Female\nUHID: AGH-7730912 | REGISTRATION NO: REG-2023-889311\nADMISSION DATE: 12-Oct-2023 | DISCHARGE DATE: 15-Oct-2023\nWARD/ROOM: Deluxe Room - 402 | INSURER: Care Health Insurance Ltd.\nPOLICY NO: CHI/209384/2023 | SUM INSURED: Rs. 3,00,000 | TPA: Care Health TPA\n\nFINAL DIAGNOSIS:\n1. Multiple Uterine Fibroids (Intramural & Subserosal) - ICD-10: D25.1\n2. Moderate Microcytic Anemia (Hb 8.9 g/dL) - ICD-10: D64.9\n3. Type 2 Diabetes Mellitus - ICD-10: E11.9\n4. Essential Hypertension - ICD-10: I10\n\nPROCEDURE PERFORMED:\nTotal Laparoscopic Hysterectomy (TLH) with Bilateral Salpingo-Oophorectomy (BSO) + Extensive Pelvic Adhesiolysis (Dr. Ranjana Sen, MD, DGO) on 12-Oct-2023 under General Anesthesia.\n\nCLINICAL HISTORY & SUMMARY:\nPatient presented with menorrhagia, severe dysmenorrhea, and pressure symptoms in the pelvis. Evaluated with USG Pelvis showing large anterior wall intramural fibroid of 6.2cm and a posterior subserosal fibroid of 4.5cm. Pre-op Hb was 8.9 g/dL. Cardiologist clearance obtained for HTN and DM. Admitted in Deluxe Room on patient's request.\n\nOPERATIVE FINDINGS:\n- Uterus enlarged to 14 weeks size, irregular and distorted by fibroids.\n- Dense pelvic adhesions noted between the rectosigmoid colon, posterior uterine wall, and bilateral adnexa.\n- Meticulous dissection and adhesiolysis done to clear the pouch of Douglas.\n- TLH and BSO completed successfully. Hemostasis achieved. Specimen retrieved vaginally.\n\nHOSPITAL BILL BREAKUP:\n1. Deluxe Room Rent (3 days @ Rs. 8,000/day): Rs. 24,000\n2. TLH + BSO Primary Surgeon Package Charge: Rs. 1,20,000\n3. Additional Unbundled Procedure (Pelvic Adhesiolysis): Rs. 25,000\n4. OT Charges & Anesthesia Fees: Rs. 25,000\n5. Nursing & Service Charges: Rs. 6,000\n6. Medicines & Consumables (including Laparoscopic Port kits): Rs. 30,000\nTOTAL CLAIMED AMOUNT: Rs. 2,10,000",
+  "simulatedDenialReason": "Claim is partially approved for Rs. 1,12,000 against the total billed amount of Rs. 2,10,000. Deductions are as follows: 1) Proportional deductions have been applied to all associated medical expenses (Surgeon Fees, OT Charges, Anesthesia, and Nursing charges) under Policy Clause 4.1, as the patient opted for a Deluxe Room at Rs. 8,000/day whereas the eligible room rent cap under the Rs. 3,00,000 Sum Insured policy is 1% (Rs. 3,000/day). 2) The additional fee of Rs. 25,000 for Pelvic Adhesiolysis is disallowed/rejected as it is an unbundled surgical component and is considered an integral part of the primary Total Laparoscopic Hysterectomy package.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Mrs. Sunita Sharma",
+      "age": 48,
+      "gender": "Female",
+      "policyNumber": "CHI/209384/2023",
+      "insurerName": "Care Health Insurance"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "ROOM_RENT_CAPPING_VIOLATION",
+        "PROPORTIONATE_DEDUCTION_APPLIED",
+        "UNBUNDLED_SURGICAL_CHARGES"
+      ],
+      "mustNotFlag": [
+        "MATERNITY_ICD_MISMATCH"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.1",
+    "expectedCost": 210000,
+    "expectedEligibility": "partial_approved",
+    "expectedAppealCitations": [
+      "Multiple Uterine Fibroids (Intramural & Subserosal) - ICD-10: D25.1",
+      "Dense pelvic adhesions noted between the rectosigmoid colon, posterior uterine wall, and bilateral adnexa",
+      "Meticulous dissection and adhesiolysis done to clear the pouch of Douglas"
+    ]
+  }
+}

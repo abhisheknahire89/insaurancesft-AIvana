@@ -1,0 +1,27 @@
+{
+  "expectedExtraction": {
+    "patientName": "Rajesh Kumar Sharma",
+    "age": 58,
+    "gender": "Male",
+    "policyNumber": "121400238491",
+    "insurerName": "Star Health and Allied Insurance Co Ltd"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "proportional_deduction_applied_to_implants",
+      "room_rent_capping_excess"
+    ],
+    "mustNotFlag": [
+      "non_disclosure_rejection"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "I21.9",
+  "expectedCost": 243500,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "IRDAI Circular Ref: IRDAI/HLT/REG/CIR/193/07/2020",
+    "Proportionate recovery is not applicable on cost of implants (DES Promus Premier - Rs. 30,000)",
+    "Proportionate recovery is not applicable on pharmacy (Rs. 28,500) and diagnostics (Rs. 18,000)"
+  ]
+}

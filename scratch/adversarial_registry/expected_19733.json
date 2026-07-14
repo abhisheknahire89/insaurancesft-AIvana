@@ -1,0 +1,31 @@
+{
+  "expectedExtraction": {
+    "patientName": "Priyadarshini Iyer",
+    "age": 31,
+    "gender": "Female",
+    "policyNumber": "P/161112/01/2024/004321",
+    "insurerName": "Star Health and Allied Insurance Co Ltd"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "O34.2",
+      "Maternity Exclusion Bypass Check",
+      "Waiting Period Validation"
+    ],
+    "mustNotFlag": [
+      "O34.21",
+      "H25.1",
+      "M17.1"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "O34.2",
+  "expectedCost": 85000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "The patient's policy was incepted on 15-Jan-2022, meaning she has completed 26 months of continuous coverage.",
+    "The maternity waiting period under the Star MediClassic Policy is 24 months, which has been fully served.",
+    "IRDAI Guidelines on Standardization of Exclusions state that maternity benefits cannot be denied using Pre-Existing Disease (PED) exclusion clauses for a physiological condition or prior obstetric scar.",
+    "A previous cesarean delivery scar (ICD-10 O34.2) is an obstetric condition and does not constitute a pre-existing chronic illness or deformity under Clause 4.1."
+  ]
+}

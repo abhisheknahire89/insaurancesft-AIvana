@@ -1,0 +1,29 @@
+{
+  "expectedExtraction": {
+    "patientName": "Sunita Sharma",
+    "age": 48,
+    "gender": "Female",
+    "policyNumber": "POL-8839201-02",
+    "insurerName": "Star Health and Allied Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "UNBUNDLED_PROCEDURAL_CHARGES",
+      "ROOM_RENT_CAPPING_EXCESS",
+      "PROPORTIONAL_DEDUCTION_APPLIED"
+    ],
+    "mustNotFlag": [
+      "DENY_HYSTERECTOMY_MEDICAL_NECESSITY",
+      "INVALID_ICD_CODE"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.9",
+  "expectedCost": 110000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "The separate billing of Salpingo-Oophorectomy (Rs. 25,000) is non-compliant as it is standard practice to bundle adnexal clearance with a hysterectomy for a 48-year-old patient.",
+    "Proportional deduction was correctly applied under standard IRDAI guidelines in the ratio of 3,000 (eligible room rent) to 8,000 (actual room rent charged), yielding a 37.5% recovery rate on associated variable costs.",
+    "The dense pelvic adhesions requiring meticulous adhesiolysis were documented, but do not justify unbundling as standard surgical access includes management of basic adhesions unless a complex pelvic distorting pathology like stage IV endometriosis is established."
+  ]
+}

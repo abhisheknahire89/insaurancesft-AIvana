@@ -1,0 +1,28 @@
+{
+  "expectedExtraction": {
+    "patientName": "Suman Lata",
+    "age": 45,
+    "gender": "Female",
+    "policyNumber": "POL-99281-2023",
+    "insurerName": "Star Health and Allied Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "PROPORTIONAL_DEDUCTION_APPLICABLE",
+      "UNBUNDLED_PROCEDURES_DETECTED",
+      "ROOM_RENT_CAPPING_EXCEEDED"
+    ],
+    "mustNotFlag": [
+      "MATERNITY_LIMIT_EXCEEDED"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.1",
+  "expectedCost": 265000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "Suite Room charges of Rs. 9,000/day exceed the eligible limit of Rs. 3,000/day",
+    "unbundled surgical charges for BSO (Rs. 45,000) and Adhesiolysis (Rs. 25,000)",
+    "proportional deductions applicable on OT, Surgeon, and Anaesthetist fees"
+  ]
+}

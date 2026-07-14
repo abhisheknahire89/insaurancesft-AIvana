@@ -1,0 +1,31 @@
+{
+  "expectedExtraction": {
+    "patientName": "Ramesh Chandran",
+    "age": 62,
+    "gender": "Male",
+    "policyNumber": "10120034291880",
+    "insurerName": "Star Health & Allied Insurance Co Ltd"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "comorbid_ckd_stage_iii",
+      "prior_ptca_history",
+      "nephrology_clearance_required",
+      "icd_code_i25_1"
+    ],
+    "mustNotFlag": [
+      "maternity_exclusion",
+      "acute_mi_acute_onset_under_24h"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "I25.1",
+  "expectedCost": 385000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Known case of IHD post-PTCA to LAD (2021), with current policy inception in 2020, covering the 3-year PED waiting period.",
+    "Nephrology consultation by Dr. S. Menon advising perioperative hydration protocol and standby hemodialysis.",
+    "Severe Triple Vessel Disease (LAD 90%, LCx 80%, RCA 85%) establishing absolute medical necessity for CABG over medical management.",
+    "Anesthetic risk graded as ASA Class III due to combined cardiovascular and renal impairment (baseline creatinine 2.1 mg/dL, eGFR 38 mL/min/1.73m2)."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "expectedExtraction": {
+    "patientName": "Sunita Sharma",
+    "age": 48,
+    "gender": "Female",
+    "policyNumber": "CHI/4982739/2023",
+    "insurerName": "Care Health Insurance"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "proportional_deduction_clause_applicable",
+      "cystoscopy_unbundling_violation"
+    ],
+    "mustNotFlag": [
+      "maternity_lock_violation"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.9",
+  "expectedCost": 165000,
+  "expectedEligibility": "partial_approved",
+  "expectedAppealCitations": [
+    "Adhesiolysis was extensive due to dense bladder adhesions, justifying separate complexity pricing.",
+    "Cystoscopy was a critical safety measure to rule out intraoperative bladder perforation given the proximity of the 7.5 cm anterior fibroid.",
+    "The patient is willing to pay the differential room rent directly; however, proportional deductions should not be applied to implant or consumable charges."
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "expectedExtraction": {
+    "patientName": "Rukmini Venkatraman",
+    "age": 68,
+    "gender": "Female",
+    "policyNumber": "CHI/2023/8892019/A",
+    "insurerName": "Care Health Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "CKD_STAGE_3_NEPHROLOGY_CLEARANCE",
+      "CARDIAC_CLEARANCE_STENT_HISTORY",
+      "CONSERVATIVE_TREATMENT_TRIAL_DOCUMENTATION",
+      "KELLGREN_LAWRENCE_GRADE_IV"
+    ],
+    "mustNotFlag": [
+      "ACUTE_ARTHRITIS_EMERGENCY"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "M17.1",
+  "expectedCost": 285000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Kellgren-Lawrence Grade IV",
+    "intra-articular steroid injection in the right knee 8 months ago",
+    "Stage 3 CKD",
+    "PCI with DES to LAD in August 2021",
+    "Nephrology clearance obtained",
+    "Cardiology clearance sought for DAPT bridging"
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "id": 24597,
+  "category": "C",
+  "difficulty": "high",
+  "focusCategory": "preauth_heavy",
+  "diagnosis": "Triple Vessel Disease (Chronic Ischemic Heart Disease) with Stage III Chronic Kidney Disease, Uncontrolled Hypertension, and Type 2 Diabetes",
+  "code": "I25.1",
+  "chiefComplaints": "Worsening exertional chest pain (Class III to IV NYHA) for the last 1 week, associated with breathlessness on minimal activity, and occasional palpitations.",
+  "hpi": "The patient is a 63-year-old male, known diabetic and hypertensive for 12 years, with a history of PTCA to LAD 2 years ago. He presented with history of worsening chest pain on exertion for 3 months, which escalated severely over the past week, occurring even at minimal rest. He is a known case of CKD Stage III with baseline creatinine of 1.8-2.1 mg/dL.",
+  "relevantClinicalFindings": "Coronary Angiography (CAG) performed on 12/10/2023 shows: Left Main: Normal; LAD: 90% ostial stenosis; LCx: 85% mid-segment stenosis; RCA: 95% distal stenosis. Syntax Score: 36. Echo: LVEF 40%, hypokinesia in LAD territory. Creatinine: 2.3 mg/dL, HbA1c: 8.8%, eGFR: 31 mL/min/1.73m².",
+  "additionalClinicalNotes": "Nephrology consultation obtained. High risk for contrast-induced nephropathy/acute kidney injury post-surgery. Recommended perioperative hydration protocol and backup hemodialysis if needed. Cardiothoracic surgeon recommends CABG x 3 grafts (LIMA-LAD, SVG-OM, SVG-RCA) given diabetes and multi-vessel disease.",
+  "duration": "3 months worsening over 1 week",
+  "treatmentTakenSoFar": "Tab Metformin 500mg BD, Tab Telmisartan 40mg OD, Tab Clopidogrel 75mg OD, Tab Atorvastatin 40mg OD. Sublingual NTG as needed.",
+  "reasonForHospitalisation": "Surgical revascularization via Coronary Artery Bypass Grafting (CABG) due to severe Triple Vessel Disease, unsuitable for simple PCI due to complex anatomy (Syntax Score 36) and diabetic status.",
+  "uploadedDocuments": [
+    "doctor_notes",
+    "coronary_angiography_report",
+    "echo_report",
+    "nephrology_clearance",
+    "blood_test_reports",
+    "pre_auth_form"
+  ],
+  "patientName": "Ramesh Kumar Sharma",
+  "patient": {
+    "patientName": "Ramesh Kumar Sharma",
+    "age": 63,
+    "gender": "Female",
+    "mobileNumber": "+919876543210"
+  },
+  "insurance": {
+    "policyNumber": "AD/1102/894321",
+    "insurerName": "HDFC ERGO General Insurance Co. Ltd.",
+    "tpaName": "Family Health Plan Insurance TPA Ltd.",
+    "sumInsured": 1000000,
+    "balanceSumInsured": 950000,
+    "tpaIdCardNumber": "FHPL-998231-A"
+  },
+  "vitals": {
+    "bp": "160/95 mmHg",
+    "pulse": "88 bpm",
+    "temp": "98.4 F",
+    "spo2": "94% on RA",
+    "rr": "20/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "CKD Stage III",
+      "Creatinine 2.3",
+      "Syntax Score 36",
+      "Prior PTCA"
+    ],
+    "mustNotFlag": [
+      "acute myocardial infarction",
+      "PCI indicated"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "High-risk pre-auth case requiring thorough documentation of comorbidities (CKD, HTN, DM) to justify intensive care monitoring, nephrology backup, and the clinical decision of CABG over PCI based on Syntax Score and diabetic status.",
+  "realGap": "Lack of documented Syntax Score in primary pre-auth application and missing explicit nephrology-led renal preservation/dialysis backup plan, which leads TPAs to query the safety and necessity of major open-heart surgery vs high-risk PCI in a patient with severe renal impairment.",
+  "sourceReasoning": "As per IRDAI Guidelines on Standardization in Health Insurance and common TPA underwriting manuals, surgical interventions in patients with severe systemic comorbidities (ASA Class III/IV) such as Stage III/IV CKD must include a multi-disciplinary clearance (Nephrology clearance) and documented justification (e.g., Syntax Score > 33 for CABG over PCI in diabetics) to prevent rejection on grounds of 'inadequate clinical optimization' or 'unjustified surgical risk'.",
+  "rawDocumentText": "METRO HEART & KIDNEY INSTITUTE\nSector 62, Noida, UP\nDEPT OF CARDIOTHORACIC & VASCULAR SURGERY\n\nPRE-OPERATIVE CLINICAL EVALUATION & ADMISSION SUMMARY\nDate: 14th Oct 2023\n\nPatient Name: Mr. Ramesh Kumar Sharma | Age: 63 Years | Gender: Male\nIP No: IP/23/90821 | Bed No: ICU-04 | Policy No: AD/1102/894321\nInsurer: HDFC ERGO General Insurance Co. Ltd. | TPA: Family Health Plan Insurance TPA Ltd.\n\nDIAGNOSIS:\n- Severe Triple Vessel Coronary Artery Disease (CAD-TVD)\n- Chronic Kidney Disease (CKD) Stage IIIb (Baseline Creatinine 1.8 - 2.1 mg/dL, current 2.3 mg/dL)\n- Type 2 Diabetes Mellitus (T2DM) - Poorly Controlled (HbA1c 8.8%)\n- Essential Hypertension (HTN) - Uncontrolled\n- Status Post PTCA (DES) to LAD 2 Years Ago (Nov 2021)\n\nCHIEF COMPLAINTS:\nPatient presented with worsening retrosternal chest pain/exertional angina (NYHA Class III to IV) since 1 week, radiating to left arm, associated with diaphoresis and severe dyspnea on minimal physical activity (climbing 1 flight of stairs or walking < 50 meters). Chest pain partially relieved by sublingual Sorbitrate.\n\nHISTORY OF PRESENT ILLNESS:\nPatient is a known diabetic and hypertensive since 12 years on regular oral hypoglycemics and antihypertensives. History of Coronary Artery Disease with prior angioplasty (PTCA) to LAD in Nov 2021 with a drug-eluting stent. Developed recurrent progressive angina over the last 3 months, acutely worsening over the past week. Patient is also a known case of CKD Stage III under regular follow-up with Dr. S. K. Mahapatra (Nephrologist). No history of asthma, COPD, or bleeding diathesis.\n\nCLINICAL EXAMINATION & VITALS:\n- Conscious, oriented, anxious, mildly dyspneic at rest.\n- Pulse: 88 bpm, regular, bilateral peripheral pulses palpable.\n- Blood Pressure: 160/95 mmHg (uncontrolled HTN, high-normal limits).\n- Temp: 98.4 F | SpO2: 94% on Room Air | RR: 20 breaths/min.\n- CVS: S1, S2 heard, no murmurs. Respiratory: Bilateral clear, vesicular breath sounds.\n- Abdomen: Soft, non-tender, no organomegaly.\n\nINVESTIGATION SUMMARY:\n1. Coronary Angiogram (CAG) (12/10/2023 at Metro Heart): \n   - Left Main: Normal\n   - LAD: 90% severe ostial stenosis, patent old mid-LAD stent.\n   - LCx: 85% mid-segment stenosis.\n   - RCA: 95% severe calcified distal stenosis.\n   - Syntax Score: 36 (indicating complex multivessel disease with superior mortality benefits for CABG over PCI, particularly in a diabetic patient).\n2. Echocardiography:\n   - Left Ventricular Hypokinesia in LAD territory. LVEF: 40%. Grade I Diastolic Dysfunction.\n3. Renal Function Tests:\n   - Serum Creatinine: 2.3 mg/dL (eGFR: 31 mL/min/1.73m² - Stage IIIb CKD)\n   - Blood Urea: 64 mg/dL\n   - Serum Potassium: 4.8 mEq/L\n4. HbA1c: 8.8% (Poorly controlled glycemia).\n\nSPECIALIST CONSULTATIONS & PLAN:\n- Nephrology Clearance (Dr. S. K. Mahapatra): High risk of perioperative Contrast-Induced Nephropathy (CIN) and postoperative Acute Kidney Injury (AKI). Approved for CABG with strict perioperative hydration protocol (0.9% Normal Saline at 1ml/kg/hr post-op), avoidance of nephrotoxic drugs, and standby hemodialysis backup in the CTVS ICU.\n- Cardiac Surgery Recommendation (Dr. A. K. Banerjee, Sr. CTVS Consultant): In view of severe Triple Vessel Disease with high Syntax Score (36), poor diabetic control, and history of prior PTCA, multi-vessel PCI is not clinically feasible and carries high failure rates. CABG x 3 Grafts (LIMA to LAD, SVG to OM, SVG to RCA) under Cardiopulmonary Bypass (CPB) is highly indicated for long-term survival.\n\nPROPOSED SURGERY: Coronary Artery Bypass Grafting (CABG) x 3 Grafts (LIMA-LAD, SVG-OM, SVG-RCA) under General Anesthesia.\nESTIMATED COST: Rs. 4,50,000/-\n\n(Signed)\nDr. A. K. Banerjee, MS, MCh (CTVS)\nReg No: UP-45921",
+  "simulatedDenialReason": "Pre-authorization query: Please clarify the medical necessity of CABG over PCI in view of prior PTCA history and high surgical risk due to elevated creatinine (2.3 mg/dL). Provide Syntax Score details, Nephrologist clearance, and concrete plan for renal protection/dialysis backup during the perioperative period.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Ramesh Kumar Sharma",
+      "age": 63,
+      "gender": "Male",
+      "policyNumber": "AD/1102/894321",
+      "insurerName": "HDFC ERGO General Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "CKD Stage III",
+        "Creatinine 2.3",
+        "Syntax Score 36",
+        "Prior PTCA"
+      ],
+      "mustNotFlag": [
+        "acute myocardial infarction",
+        "PCI indicated"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "I25.1",
+    "expectedCost": 450000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Syntax Score: 36 (indicating complex CAD where CABG has clear mortality benefit over PCI in diabetic patients)",
+      "Nephrology consultation clearance obtained with baseline creatinine 2.3 mg/dL",
+      "Known diabetic for 12 years with multi-vessel disease (LAD 90%, LCx 85%, RCA 95%)",
+      "History of PTCA to LAD 2 years ago"
+    ]
+  }
+}

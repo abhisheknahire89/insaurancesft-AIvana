@@ -2216,6 +2216,16 @@ const TpaQueryPredictionView: React.FC<{ activeCase: PatientCaseRecord | null }>
                                         }`}>
                                             {q.severity} Query
                                         </span>
+                                        {/* Brief 2: Provenance badge */}
+                                        {q.source === 'rule_verified' ? (
+                                            <span className="text-[9px] px-2 py-0.5 rounded font-black border uppercase tracking-wider bg-gray-800 text-white border-gray-800">
+                                                ✓ Rule-Verified
+                                            </span>
+                                        ) : (
+                                            <span className="text-[9px] px-2 py-0.5 rounded font-black border uppercase tracking-wider bg-white text-gray-500 border-gray-300">
+                                                ✦ AI-Suggested
+                                            </span>
+                                        )}
                                     </div>
                                     <h3 className="font-bold text-sm text-gray-800">{q.queryText}</h3>
                                 </div>
@@ -2645,6 +2655,7 @@ export const InsuranceModule: React.FC = () => {
         { id: 10, name: '10. Workflow Timeline', icon: <FileCheck className="w-4 h-4" />, type: 'real' },
         { id: 11, name: '11. Claim Packet Preview', icon: <FileText className="w-4 h-4" />, type: 'real' },
         { id: 12, name: '12. Analytics & Accuracy', icon: <TrendingUp className="w-4 h-4" />, type: 'real' },
+        { id: 13, name: '13. Denial Queue', icon: <AlertCircle className="w-4 h-4" />, type: 'real' },
     ];
 
     // Detect ?register=TOKEN in URL → show patient-facing form
@@ -2785,7 +2796,7 @@ export const InsuranceModule: React.FC = () => {
                                 {selectedScreen === 10 && <ClaimWorkflowTimelineView activeCase={activeCase} />}
                                 {selectedScreen === 11 && <ClaimPacketPreviewView activeCase={activeCase} />}
                                 {selectedScreen === 12 && <AnalyticsView />}
-
+                                {selectedScreen === 13 && <DenialQueue />}
                                 {/* ── Next / Prev navigation ── */}
                                 <div className="flex items-center justify-between pt-2 border-t border-opd-border">
                                     <button

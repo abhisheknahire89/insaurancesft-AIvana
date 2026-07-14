@@ -126,8 +126,17 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string, 
   if (endpointUrl) {
     let attempts = 1;
     let lastError: any = null;
-    const modelName = qwenUrl ? 'qwen2.5:7b' : 'medgemma:4b';
+    // Brief 3: configurable model name — VITE_QWEN_MODEL_NAME overrides the default
+    // so cloud Cerebras hosts (which use a different model ID) work without breaking local Ollama
+    const qwenModelDefault = 'qwen2.5:7b';
+    const qwenModelOverride = (import.meta as any).env?.VITE_QWEN_MODEL_NAME || process.env.VITE_QWEN_MODEL_NAME;
+    const modelName = qwenUrl
+      ? (qwenModelOverride || qwenModelDefault)
+      : 'medgemma:4b';
     const logPrefix = qwenUrl ? 'qwen_endpoint' : 'medgemma_endpoint';
+    // Brief 3: Bearer token for Cerebras (and any other hosted endpoint that requires auth)
+    // Local Ollama does not require Authorization and silently ignores this header
+    const qwenApiKey = (import.meta as any).env?.VITE_QWEN_API_KEY || process.env.VITE_QWEN_API_KEY || '';
 
     while (attempts > 0) {
       try {
@@ -140,7 +149,8 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string, 
           temperature: 0.1,
           stream: false
         }, {
-          timeout: 600000 // 10 mins
+          timeout: 600000, // 10 mins
+          ...(qwenApiKey && { headers: { Authorization: `Bearer ${qwenApiKey}` } })
         });
 
         if (response.data?.choices?.[0]?.message?.content) {

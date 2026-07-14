@@ -471,6 +471,8 @@ export interface IRDAIPreAuthForm {
       liver: { present: boolean; duration?: string };
       alcoholism: { present: boolean; duration?: string };
       smoking: { present: boolean; duration?: string };
+      hyperlipidemia?: { present: boolean; duration?: string };
+      osteoarthritis?: { present: boolean; duration?: string };
       anyOther: { present: boolean; details?: string };
     };
 

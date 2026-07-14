@@ -32,6 +32,8 @@ const PAST_CONDITIONS = [
     ['hiv', 'HIV'],
     ['alcoholism', 'Alcoholism'],
     ['smoking', 'Smoking'],
+    ['hyperlipidemia', 'Hyperlipidemia'],
+    ['osteoarthritis', 'Osteoarthritis'],
 ] as const;
 
 const DEFAULT_PMH: PastMedicalHistory = {
@@ -39,6 +41,7 @@ const DEFAULT_PMH: PastMedicalHistory = {
     asthma: { present: false }, epilepsy: { present: false }, cancer: { present: false },
     kidney: { present: false }, liver: { present: false }, hiv: { present: false },
     alcoholism: { present: false }, smoking: { present: false },
+    hyperlipidemia: { present: false }, osteoarthritis: { present: false },
     anyOther: { present: false },
 };
 

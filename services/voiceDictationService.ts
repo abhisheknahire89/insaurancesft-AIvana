@@ -70,7 +70,9 @@ Return ONLY valid JSON, no markdown, no code fences.
       "liver": { "present": true_or_false },
       "hiv": { "present": true_or_false },
       "alcoholism": { "present": true_or_false },
-      "smoking": { "present": true_or_false }
+      "smoking": { "present": true_or_false },
+      "hyperlipidemia": { "present": true_or_false },
+      "osteoarthritis": { "present": true_or_false }
     }
   }
 }`;
@@ -203,6 +205,8 @@ export async function parseTranscriptWithGemini(transcript: string): Promise<Voi
         hiv: pmh.hiv ?? defaultCond,
         alcoholism: pmh.alcoholism ?? defaultCond,
         smoking: pmh.smoking ?? defaultCond,
+        hyperlipidemia: pmh.hyperlipidemia ?? defaultCond,
+        osteoarthritis: pmh.osteoarthritis ?? defaultCond,
         anyOther: { present: false },
       },
       previousHospitalization: { wasHospitalizedBefore: false },

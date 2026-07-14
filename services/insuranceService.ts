@@ -342,6 +342,9 @@ Diabetes: ${formData.section5_AdmissionDetails.pastMedicalHistory.diabetes.prese
 Hypertension: ${formData.section5_AdmissionDetails.pastMedicalHistory.hypertension.present ? `Yes (${formData.section5_AdmissionDetails.pastMedicalHistory.hypertension.duration})` : 'No'}
   Heart Disease: ${formData.section5_AdmissionDetails.pastMedicalHistory.heartDisease.present ? `Yes (${formData.section5_AdmissionDetails.pastMedicalHistory.heartDisease.duration})` : 'No'}
 Asthma: ${formData.section5_AdmissionDetails.pastMedicalHistory.asthma.present ? `Yes (${formData.section5_AdmissionDetails.pastMedicalHistory.asthma.duration})` : 'No'}
+Hyperlipidemia: ${formData.section5_AdmissionDetails.pastMedicalHistory.hyperlipidemia?.present ? `Yes (${formData.section5_AdmissionDetails.pastMedicalHistory.hyperlipidemia.duration || 'unknown'})` : 'No'}
+Osteoarthritis: ${formData.section5_AdmissionDetails.pastMedicalHistory.osteoarthritis?.present ? `Yes (${formData.section5_AdmissionDetails.pastMedicalHistory.osteoarthritis.duration || 'unknown'})` : 'No'}
+
 
 ────────────────────────────────────────────────────────────────────────────────
 SECTION 6: ESTIMATED COST BREAK - UP

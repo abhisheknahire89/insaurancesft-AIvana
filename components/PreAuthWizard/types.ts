@@ -290,6 +290,8 @@ export interface PastMedicalHistory {
     hiv?: PastCondition;
     alcoholism?: PastCondition;
     smoking?: PastCondition;
+    hyperlipidemia?: PastCondition;
+    osteoarthritis?: PastCondition;
     anyOther?: PastCondition & { details?: string };
 }
 

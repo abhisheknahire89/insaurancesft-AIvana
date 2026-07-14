@@ -24,14 +24,21 @@
   "dependencies": {
     "@google/genai": "^1.19.0",
     "@google/generative-ai": "^0.24.1",
+    "@neondatabase/serverless": "^1.1.0",
     "axios": "^1.13.4",
+    "bcryptjs": "^3.0.3",
     "dexie": "^4.4.4",
+    "dotenv": "^17.4.2",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.563.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/dotenv": "^6.1.1",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.19.13",
     "@vitejs/plugin-react": "^5.0.0",
     "playwright": "^1.61.1",

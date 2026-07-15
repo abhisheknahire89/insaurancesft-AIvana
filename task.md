@@ -43,6 +43,8 @@
 
 ## Phase 3: Premium Light-Mode Design System Refactoring
 - [x] Update `index.html` with Google Lora font, Tailwind config, and CSS utilities
+- [x] Replace static `ClaimWorkflowTimelineView` inside `components/InsuranceModule.tsx` with `<WorkflowOrchestrator />`
+- [x] Run dev server verification to ensure the simulator compiles and loads without errors
 - [x] Remove `bg-black` class wrapper in `App.tsx`
 - [x] Refactor `InsuranceModule.tsx` UI
 - [x] Refactor `PreAuthDashboard/CaseList.tsx` UI (remove Spline and make light mode)
@@ -51,7 +53,7 @@
 - [ ] Refactor `PreAuthWizard` files (`index.tsx`, `PatientInsuranceStep.tsx`, `ClinicalDetailsStep.tsx`, `AdmissionCostStep.tsx`, `ClaimReadinessRail.tsx`, `DocumentsGenerateStep.tsx`)
 - [ ] Refactor TPA Platform views (`PriorAuthCopilot.tsx`, `DenialHub.tsx`, `BillingCoderView.tsx`, `WorkflowOrchestrator.tsx`)
 - [ ] Refactor PostSubmission view (`DenialQueue.tsx`)
-- [ ] Refactor `AuthModal.tsx` login UI
+- [x] Refactor `AuthModal.tsx` login UI
 - [ ] Refactor Scribe and Sidebar layouts (`Sidebar.tsx`, `VedaSessionView.tsx`)
 
 

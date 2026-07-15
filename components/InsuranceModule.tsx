@@ -13,6 +13,7 @@ import { DenialHub } from './TpaPlatform/DenialHub';
 import { BillingCoderView } from './TpaPlatform/BillingCoderView';
 import { WorkflowOrchestrator } from './TpaPlatform/WorkflowOrchestrator';
 import { DenialQueue } from './PostSubmission/DenialQueue';
+import { simulateInsurerDecision } from '../services/simulatedInsurerService';
 
 // Import Master Patient Record functions
 import {
@@ -1615,21 +1616,38 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
         if (!activeCase) return;
         setSaving(true);
         try {
+            // Evaluate case via simulated decision engine
+            const decision = simulateInsurerDecision(activeCase, 'initial', pa.totalEstimated || 0);
+
+            const authStatus = (decision.outcome === 'approved' ? 'approved' : 
+                                decision.outcome === 'partial_approved' ? 'partial_approved' : 
+                                decision.outcome === 'query' ? 'query_raised' : 'denied') as any;
+
             const authRecord = {
                 id: `AUTH-${activeCase.id}-${Date.now()}`,
-                status: 'submitted' as const,
+                status: authStatus,
                 requestedAmount: pa.totalEstimated || 0,
+                approvedAmount: decision.approvedAmount,
+                deductionReason: decision.deductionReason,
+                queryDetails: decision.queryDetails,
+                denialReason: decision.denialReason,
                 submittedAt: new Date().toISOString(),
+                respondedAt: new Date().toISOString(),
                 tpaReceiptId: `TPA-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
             };
+
+            const stageStatus = (decision.outcome === 'approved' ? 'approved' : 
+                                 decision.outcome === 'partial_approved' ? 'approved' : 
+                                 decision.outcome === 'query' ? 'query_raised' : 'denied') as any;
+
             const updated = {
                 ...activeCase,
                 authorizations: [...(activeCase.authorizations || []), authRecord],
-                currentStage: 'authorization_submitted' as any,
+                currentStage: stageStatus,
                 auditLog: [
                     ...(activeCase.auditLog || []),
                     { timestamp: new Date().toISOString(), action: 'preauth_submitted', actor: 'hospital_desk',
-                      details: `PA submitted. Amount: ₹${pa.totalEstimated?.toLocaleString('en-IN')}. TPA Ref: ${authRecord.tpaReceiptId}` }
+                      details: `PA submitted. Amount: ₹${pa.totalEstimated?.toLocaleString('en-IN')}. TPA Ref: ${authRecord.tpaReceiptId}. Simulated Decision: ${decision.outcome.toUpperCase()}` }
                 ],
                 updatedAt: new Date().toISOString(),
             };
@@ -2250,55 +2268,10 @@ const TpaQueryPredictionView: React.FC<{ activeCase: PatientCaseRecord | null }>
 };
 
 const ClaimWorkflowTimelineView: React.FC<{ activeCase: PatientCaseRecord | null }> = ({ activeCase }) => {
-    if (!activeCase) {
-        return <div className="p-6 text-center text-opd-text-secondary">Select a case to inspect workflow stepper.</div>;
-    }
-
-    const stages: Array<{ key: CaseStage; label: string }> = [
-        { key: 'admission', label: 'Admission' },
-        { key: 'docs_uploaded', label: 'Docs Uploaded' },
-        { key: 'ai_processing', label: 'AI Process' },
-        { key: 'hospital_review', label: 'Hospital Review' },
-        { key: 'ready_to_submit', label: 'Ready to Submit' },
-        { key: 'submitted_to_tpa', label: 'Submitted to TPA' },
-        { key: 'tpa_review', label: 'TPA Review' },
-        { key: 'approved', label: 'Approved' },
-        { key: 'payment', label: 'Payment Completed' }
-    ];
-
-    const currentStageIndex = stages.findIndex(s => s.key === activeCase.currentStage);
-
     return (
         <div className="card-premium space-y-6 text-left">
-            <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 10: Claim Workflow Timeline</h2>
-            
-            {/* 9 stage horizontal timeline */}
-            <div className="flex items-center justify-between gap-1 overflow-x-auto pb-4">
-                {stages.map((stg, i) => {
-                    const isActive = i === currentStageIndex;
-                    const isCompleted = i < currentStageIndex;
-                    return (
-                        <div key={stg.key} className="flex items-center gap-1 shrink-0">
-                            <div className={`p-2.5 rounded-xl text-[10px] font-bold text-center transition ${
-                                isActive ? 'bg-opd-primary text-white shadow-md' :
-                                isCompleted ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                                'bg-gray-50 text-gray-400 border'
-                            }`}>
-                                {stg.label}
-                            </div>
-                            {i < stages.length - 1 && <ChevronRight className="w-3.5 h-3.5 text-gray-300" />}
-                        </div>
-                    );
-                })}
-            </div>
-
-            <div className="bg-gray-50 p-4 rounded-xl text-xs space-y-3 max-w-sm">
-                <span className="font-bold text-opd-primary">Pipeline Actions</span>
-                <div className="grid grid-cols-2 gap-2">
-                    <button className="px-3 py-2 bg-opd-primary text-white rounded-lg font-bold shadow hover:bg-opd-primary/95">Submit to TPA</button>
-                    <button className="px-3 py-2 bg-white border rounded-lg font-bold text-gray-700 hover:bg-gray-50">Download PDF</button>
-                </div>
-            </div>
+            <h2 className="text-lg font-bold font-lora text-opd-primary mb-2">Screen 10: Claim Workflow Timeline</h2>
+            <WorkflowOrchestrator />
         </div>
     );
 };
@@ -2623,7 +2596,10 @@ export const InsuranceModule: React.FC = () => {
     const handleCaseCreated = (id: string) => {
         refreshCases();
         setActiveCaseId(id);
-        setSelectedScreen(3); // Go to uploader
+        setIsDemoMode(false);
+        setPrefilledData(null);
+        setSelectedRecord(null);
+        setShowWizard(true); // Launch wizard directly for the newly ingested case!
     };
 
     const runDemoCase = (record: any) => {
@@ -2694,6 +2670,21 @@ export const InsuranceModule: React.FC = () => {
                                 ))}
                                 <option value="NEW">+ Ingest New Case...</option>
                             </select>
+
+                            {activeCaseId && (
+                                <button
+                                    onClick={() => {
+                                        setIsDemoMode(false);
+                                        setPrefilledData(null);
+                                        setSelectedRecord(null);
+                                        setShowWizard(true);
+                                    }}
+                                    className="ml-2 flex items-center gap-1.5 px-3 py-1.5 bg-opd-primary hover:bg-opd-primary-dark text-white rounded-xl text-[11px] font-bold transition shadow-sm active:scale-95 border border-transparent shrink-0"
+                                >
+                                    <Volume2 className="w-3.5 h-3.5" />
+                                    Launch Pre-Auth Scribe
+                                </button>
+                            )}
                         </div>
                     </div>
 

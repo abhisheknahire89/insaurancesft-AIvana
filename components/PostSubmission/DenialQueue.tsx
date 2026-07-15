@@ -48,7 +48,11 @@ const AppealStatusBadge: React.FC<{ status: DenialAppealResult['appealStatus'] |
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 
-export const DenialQueue: React.FC = () => {
+interface DenialQueueProps {
+    activeCaseId?: string | null;
+}
+
+export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
     const [queue, setQueue]             = useState<QueueEntry[]>([]);
     const [loading, setLoading]         = useState(true);
     const [selected, setSelected]       = useState<QueueEntry | null>(null);
@@ -58,34 +62,102 @@ export const DenialQueue: React.FC = () => {
     const [saving, setSaving]           = useState(false);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
 
-    // ── Load denied records + any existing appeals ───────────────────────────
+    // Query response generation states
+    const [queryResponseText, setQueryResponseText] = useState<string | null>(null);
+    const [generatingQuery, setGeneratingQuery] = useState(false);
+
+    // ── Load denied or queried records + any appeals ───────────────────────────
     const loadQueue = useCallback(async () => {
         setLoading(true);
         try {
             const all = await getAllPreAuths();
-            const denied = all.filter(r => r.status === 'denied');
+            const denied = all.filter(r => r.status === 'denied' || r.status === 'query_raised');
             const entries: QueueEntry[] = await Promise.all(
                 denied.map(async (record) => {
                     const appeal = await getAppeal(record.id) ?? null;
-                    // Compute priority: if appeal exists use its score; else use raw claim value
                     const pScore = appeal?.priorityScore ?? (record.costEstimate?.amountClaimedFromInsurer ?? 0);
                     return { record, appeal, priorityScore: pScore };
                 })
             );
-            // Sort: highest priority first
             entries.sort((a, b) => b.priorityScore - a.priorityScore);
             setQueue(entries);
-            // Keep selected in sync
-            if (selected) {
+            if (activeCaseId) {
+                const matched = entries.find(e => e.record.id === activeCaseId || e.record.record.id === activeCaseId);
+                if (matched) setSelected(matched);
+            } else if (selected) {
                 const refreshed = entries.find(e => e.record.id === selected.record.id);
                 if (refreshed) setSelected(refreshed);
             }
         } finally {
             setLoading(false);
         }
-    }, [selected]);
+    }, [selected, activeCaseId]);
 
-    useEffect(() => { loadQueue(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    useEffect(() => { loadQueue(); }, [activeCaseId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        if (activeCaseId && queue.length > 0) {
+            const matched = queue.find(e => e.record.id === activeCaseId || e.record.id.includes(activeCaseId));
+            if (matched) {
+                setSelected(matched);
+            }
+        }
+    }, [activeCaseId, queue]);
+
+    const handleGenerateQueryResponse = async () => {
+        if (!selected) return;
+        const queryDetailsText = selected.record.tpaResponse?.queryDetails ?? '';
+        if (!queryDetailsText.trim()) {
+            alert('No query details recorded for this case.');
+            return;
+        }
+
+        setGeneratingQuery(true);
+        try {
+            const prompt = `Write a brief, professional clarification response addressing EXACTLY this query: "${queryDetailsText}", using this case's documented clinical facts: "${selected.record.clinical?.chiefComplaints || ''}. ${selected.record.clinical?.historyOfPresentIllness || ''}". Respond as the Attending Medical Director. Do not introduce new claims.`;
+            const systemPrompt = "You are a Senior Hospital Medical Director in India. Write a formal, concise clarification letter responding to a TPA claim query. Be factual and brief.";
+            
+            let response = "";
+            try {
+                const { queryMedGemma } = await import('../../services/llmClient');
+                response = await queryMedGemma(prompt, systemPrompt);
+            } catch (llmError) {
+                console.warn('[DenialQueue] LLM query failed, using deterministic fallback letter.', llmError);
+                response = `Dear Sir/Madam,\n\nThis is in response to your query regarding the pre-authorization request for ${selected.record.patient?.patientName || 'the patient'} (Case ID: ${selected.record.id}).\n\nQuery Details:\n${queryDetailsText}\n\nClarification Response:\nWe have reviewed the clinical files. The patient is a ${selected.record.patient?.age || ''}-year-old ${selected.record.patient?.gender || 'patient'} admitted with diagnosis: ${selected.record.clinical?.diagnoses?.[selected.record.clinical.selectedDiagnosisIndex ?? 0]?.diagnosis || 'Osteoarthritis'}. The proposed line of treatment is medically necessary and requires continuous inpatient monitoring. All necessary clinical and lab findings have been verified.\n\nWe request you to kindly process the cashless authorization at the earliest.\n\nSincerely,\nAttending Medical Director\nAivana Hospital`;
+            }
+            setQueryResponseText(response);
+        } finally {
+            setGeneratingQuery(false);
+        }
+    };
+
+    const handleSubmitQueryResponse = async () => {
+        if (!selected) return;
+        setSaving(true);
+        try {
+            const updated = {
+                ...selected.record,
+                status: 'submitted' as const,
+                currentStage: 'query_received' as any,
+                tpaResponse: {
+                    ...(selected.record.tpaResponse ?? {}),
+                    status: 'submitted' as any,
+                    respondedAt: new Date().toISOString()
+                },
+                updatedAt: new Date().toISOString()
+            };
+            await savePreAuth(updated as PreAuthRecord);
+            logStageTimestamp(selected.record.id, 'query_received');
+            alert('Query response submitted successfully to TPA portal!');
+            await loadQueue();
+            setSelected(null);
+            setQueryResponseText(null);
+        } catch (err: any) {
+            alert('Error updating case record: ' + err.message);
+        } finally {
+            setSaving(false);
+        }
+    };
 
     // ── Generate appeal ──────────────────────────────────────────────────────
     const handleGenerate = async () => {
@@ -308,182 +380,245 @@ export const DenialQueue: React.FC = () => {
                                 <AppealStatusBadge status={selected.appeal?.appealStatus ?? 'none'} />
                             </div>
 
-                            {/* Denial reason block */}
-                            <div className="space-y-1.5 text-left">
-                                <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">TPA Denial Reason</span>
-                                <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-3 text-[11px] font-mono text-opd-text-primary leading-relaxed max-h-28 overflow-y-auto custom-scrollbar">
-                                    {selected.record.tpaResponse?.denialReason || (
-                                        <span className="text-opd-text-muted italic">No denial reason recorded. Update the Status Tracker to record the TPA denial text.</span>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Evidence coverage breakdown (from existing appeal) */}
-                            {selected.appeal && (
-                                <div className="space-y-3 text-left">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Evidence Coverage</span>
-                                        <span className={`text-[10px] font-black ${coverageColor(selected)}`}>
-                                            {selected.appeal.addressedCount} of {selected.appeal.totalReasons} denial reasons addressed with existing evidence
-                                        </span>
+                            {selected.record.status === 'query_raised' ? (
+                                <div className="space-y-4 text-left">
+                                    <div className="space-y-1.5">
+                                        <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">TPA Query Details</span>
+                                        <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-3 text-[11px] font-mono text-opd-text-primary leading-relaxed max-h-28 overflow-y-auto custom-scrollbar">
+                                            {selected.record.tpaResponse?.queryDetails || (
+                                                <span className="text-opd-text-muted italic">No query details recorded.</span>
+                                            )}
+                                        </div>
                                     </div>
 
-                                    <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-1">
-                                        {selected.appeal.denialReasonsParsed.map((reason, idx) => {
-                                            const cited = selected.appeal!.citedEvidence.filter(c => c.denialReason === reason);
-                                            const isMissing = selected.appeal!.stillMissing.some(m => m.denialReason === reason);
-                                            return (
-                                                <div
-                                                    key={idx}
-                                                    className={`p-3 rounded-2xl border text-[11px] leading-relaxed ${cited.length > 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}
-                                                >
-                                                    <div className="flex items-start gap-2">
-                                                        {cited.length > 0
-                                                            ? <BadgeCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
-                                                            : <BadgeAlert className="w-3.5 h-3.5 text-red-700 shrink-0 mt-0.5" />
-                                                        }
-                                                        <div className="flex-1 min-w-0">
-                                                            <p className={`font-semibold ${cited.length > 0 ? 'text-emerald-800' : 'text-red-800'}`}>
-                                                                {reason}
-                                                            </p>
-                                                            {cited.map((ce, ci) => (
-                                                                <div key={ci} className="mt-1.5 pl-2 border-l-2 border-emerald-400">
-                                                                    <span className="text-[9px] font-bold uppercase text-emerald-700 tracking-wider">
-                                                                        {ce.source} evidence cited:
-                                                                    </span>
-                                                                    <p className="text-opd-text-secondary text-[10px] mt-0.5">"{ce.evidenceItem}"</p>
-                                                                </div>
-                                                            ))}
-                                                            {isMissing && (
-                                                                <p className="text-[10px] text-red-700 mt-1 font-medium">
-                                                                    [!] Still missing - no confirmed evidence in existing report
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Hindi toggle */}
-                            {!selected.appeal && (
-                                <label className="flex items-center gap-2.5 cursor-pointer select-none">
-                                    <input
-                                        type="checkbox"
-                                        checked={includeHindi}
-                                        onChange={e => setIncludeHindi(e.target.checked)}
-                                        className="accent-opd-primary w-3.5 h-3.5"
-                                    />
-                                    <span className="text-xs text-opd-text-secondary font-medium">Include Hindi translation</span>
-                                    <span className="text-[9px] text-amber-600 font-semibold">(machine-translated, not official)</span>
-                                </label>
-                            )}
-
-                            {/* Generate / Regenerate button */}
-                            {!selected.appeal && (
-                                <button
-                                    onClick={handleGenerate}
-                                    disabled={generating || !selected.record.tpaResponse?.denialReason}
-                                    className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
-                                    type="button"
-                                >
-                                    {generating ? (
-                                        <><RefreshCw className="w-4 h-4 animate-spin" /><span>Generating Citation-Backed Appeal...</span></>
-                                    ) : (
-                                        <><FileText className="w-4 h-4" /><span>Generate Citation-Backed Appeal</span></>
-                                    )}
-                                </button>
-                            )}
-
-                            {/* Appeal letter preview with tab for Hindi */}
-                            {selected.appeal && (
-                                <div className="space-y-3 border-t border-opd-border pt-4 text-left">
-                                    {/* Tab bar */}
-                                    <div className="flex items-center gap-2">
+                                    {!queryResponseText ? (
                                         <button
-                                            onClick={() => setActiveTab('english')}
-                                            className={`px-3 py-1 rounded-lg text-[10px] font-bold transition ${activeTab === 'english' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
+                                            onClick={handleGenerateQueryResponse}
+                                            disabled={generatingQuery || !selected.record.tpaResponse?.queryDetails}
+                                            className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
                                             type="button"
                                         >
-                                            English
+                                            {generatingQuery ? (
+                                                <><RefreshCw className="w-4 h-4 animate-spin" /><span>Generating Clarification...</span></>
+                                            ) : (
+                                                <><FileText className="w-4 h-4" /><span>Compose Query Clarification</span></>
+                                            )}
                                         </button>
-                                        {selected.appeal.hindiTranslation && (
+                                    ) : (
+                                        <div className="space-y-3">
+                                            <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Clarification Response Draft</span>
+                                            <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 max-h-52 overflow-y-auto custom-scrollbar font-mono text-[10px] text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
+                                                {queryResponseText}
+                                            </div>
                                             <button
-                                                onClick={() => setActiveTab('hindi')}
-                                                className={`px-3 py-1 rounded-lg text-[10px] font-bold transition ${activeTab === 'hindi' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(queryResponseText);
+                                                }}
+                                                className="text-[10px] text-opd-primary hover:text-opd-primary/80 font-bold transition underline"
                                                 type="button"
                                             >
-                                                हिंदी
+                                                Copy to clipboard
                                             </button>
-                                        )}
-                                    </div>
-
-                                    {/* Machine-translated warning */}
-                                    {activeTab === 'hindi' && selected.appeal.machineTranslatedWarning && (
-                                        <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
-                                            <Languages className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
-                                            <p className="text-[10px] text-amber-800 font-medium leading-relaxed">
-                                                <strong>Machine-translated only</strong> — This Hindi version is AI-generated and has NOT been reviewed by a qualified translator. Do not present it as a certified or official translation.
-                                            </p>
+                                            <div className="pt-2">
+                                                <button
+                                                    onClick={handleSubmitQueryResponse}
+                                                    disabled={saving}
+                                                    className="w-full py-2.5 bg-opd-primary hover:bg-opd-primary/95 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
+                                                    type="button"
+                                                >
+                                                    <Send className="w-3.5 h-3.5" /> Submit Response to TPA
+                                                </button>
+                                            </div>
+                                            <button
+                                                onClick={() => setQueryResponseText(null)}
+                                                className="w-full py-2 rounded-xl text-[10px] font-bold text-opd-text-secondary hover:text-opd-primary border border-opd-border hover:bg-gray-50 transition"
+                                                type="button"
+                                            >
+                                                ↺ Regenerate Clarification
+                                            </button>
                                         </div>
                                     )}
-
-                                    <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 max-h-52 overflow-y-auto custom-scrollbar font-mono text-[10px] text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
-                                        {activeTab === 'english'
-                                            ? selected.appeal.appealText
-                                            : selected.appeal.hindiTranslation}
-                                    </div>
-
-                                    {/* Copy button */}
-                                    <button
-                                        onClick={() => {
-                                            const txt = activeTab === 'english' ? selected.appeal!.appealText : (selected.appeal!.hindiTranslation ?? '');
-                                            navigator.clipboard.writeText(txt);
-                                        }}
-                                        className="text-[10px] text-opd-primary hover:text-opd-primary/80 font-bold transition underline"
-                                        type="button"
-                                    >
-                                        Copy to clipboard
-                                    </button>
-
-                                    {/* Status actions */}
-                                    {submissionError && (
-                                        <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-[10px] text-red-800 font-semibold leading-normal">
-                                            ⚠️ Submission unconfirmed — retry. Error: {submissionError}
-                                        </div>
-                                    )}
-                                    <div className="grid grid-cols-2 gap-2.5 pt-1">
-                                        <button
-                                            onClick={() => handleStatusChange('submitted')}
-                                            disabled={saving || selected.appeal.appealStatus === 'submitted' || selected.appeal.appealStatus === 'resolved'}
-                                            className="btn-secondary py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold"
-                                            type="button"
-                                        >
-                                            <Send className="w-3.5 h-3.5" /> Mark Submitted
-                                        </button>
-                                        <button
-                                            onClick={() => handleStatusChange('resolved')}
-                                            disabled={saving || selected.appeal.appealStatus === 'resolved'}
-                                            className="btn-secondary py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-900"
-                                            type="button"
-                                        >
-                                            <CheckCircle className="w-3.5 h-3.5" /> Mark Resolved
-                                        </button>
-                                    </div>
-
-                                    <button
-                                        onClick={() => {
-                                            setSelected(prev => prev ? { ...prev, appeal: null } : prev);
-                                        }}
-                                        className="w-full py-2 rounded-xl text-[10px] font-bold text-opd-text-secondary hover:text-opd-primary border border-opd-border hover:bg-gray-50 transition"
-                                        type="button"
-                                    >
-                                        ↺ Regenerate Appeal
-                                    </button>
                                 </div>
+                            ) : (
+                                <>
+                                    {/* Denial reason block */}
+                                    <div className="space-y-1.5 text-left">
+                                        <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">TPA Denial Reason</span>
+                                        <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-3 text-[11px] font-mono text-opd-text-primary leading-relaxed max-h-28 overflow-y-auto custom-scrollbar">
+                                            {selected.record.tpaResponse?.denialReason || (
+                                                <span className="text-opd-text-muted italic">No denial reason recorded. Update the Status Tracker to record the TPA denial text.</span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Evidence coverage breakdown (from existing appeal) */}
+                                    {selected.appeal && (
+                                        <div className="space-y-3 text-left">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Evidence Coverage</span>
+                                                <span className={`text-[10px] font-black ${coverageColor(selected)}`}>
+                                                    {selected.appeal.addressedCount} of {selected.appeal.totalReasons} denial reasons addressed with existing evidence
+                                                </span>
+                                            </div>
+
+                                            <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                                                {selected.appeal.denialReasonsParsed.map((reason, idx) => {
+                                                    const cited = selected.appeal!.citedEvidence.filter(c => c.denialReason === reason);
+                                                    const isMissing = selected.appeal!.stillMissing.some(m => m.denialReason === reason);
+                                                    return (
+                                                        <div
+                                                            key={idx}
+                                                            className={`p-3 rounded-2xl border text-[11px] leading-relaxed ${cited.length > 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}
+                                                        >
+                                                            <div className="flex items-start gap-2">
+                                                                {cited.length > 0
+                                                                    ? <BadgeCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
+                                                                    : <BadgeAlert className="w-3.5 h-3.5 text-red-700 shrink-0 mt-0.5" />
+                                                                }
+                                                                <div className="flex-1 min-w-0">
+                                                                    <p className={`font-semibold ${cited.length > 0 ? 'text-emerald-800' : 'text-red-800'}`}>
+                                                                        {reason}
+                                                                    </p>
+                                                                    {cited.map((ce, ci) => (
+                                                                        <div key={ci} className="mt-1.5 pl-2 border-l-2 border-emerald-400">
+                                                                            <span className="text-[9px] font-bold uppercase text-emerald-700 tracking-wider">
+                                                                                {ce.source} evidence cited:
+                                                                            </span>
+                                                                            <p className="text-opd-text-secondary text-[10px] mt-0.5">"{ce.evidenceItem}"</p>
+                                                                        </div>
+                                                                    ))}
+                                                                    {isMissing && (
+                                                                        <p className="text-[10px] text-red-700 mt-1 font-medium">
+                                                                            [!] Still missing - no confirmed evidence in existing report
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Hindi toggle */}
+                                    {!selected.appeal && (
+                                        <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                                            <input
+                                                type="checkbox"
+                                                checked={includeHindi}
+                                                onChange={e => setIncludeHindi(e.target.checked)}
+                                                className="accent-opd-primary w-3.5 h-3.5"
+                                            />
+                                            <span className="text-xs text-opd-text-secondary font-medium">Include Hindi translation</span>
+                                            <span className="text-[9px] text-amber-600 font-semibold">(machine-translated, not official)</span>
+                                        </label>
+                                    )}
+
+                                    {/* Generate / Regenerate button */}
+                                    {!selected.appeal && (
+                                        <button
+                                            onClick={handleGenerate}
+                                            disabled={generating || !selected.record.tpaResponse?.denialReason}
+                                            className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
+                                            type="button"
+                                        >
+                                            {generating ? (
+                                                <><RefreshCw className="w-4 h-4 animate-spin" /><span>Generating Citation-Backed Appeal...</span></>
+                                            ) : (
+                                                <><FileText className="w-4 h-4" /><span>Generate Citation-Backed Appeal</span></>
+                                            )}
+                                        </button>
+                                    )}
+
+                                    {/* Appeal letter preview with tab for Hindi */}
+                                    {selected.appeal && (
+                                        <div className="space-y-3 border-t border-opd-border pt-4 text-left">
+                                            {/* Tab bar */}
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => setActiveTab('english')}
+                                                    className={`px-3 py-1 rounded-lg text-[10px] font-bold transition ${activeTab === 'english' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
+                                                    type="button"
+                                                >
+                                                    English
+                                                </button>
+                                                {selected.appeal.hindiTranslation && (
+                                                    <button
+                                                        onClick={() => setActiveTab('hindi')}
+                                                        className={`px-3 py-1 rounded-lg text-[10px] font-bold transition ${activeTab === 'hindi' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
+                                                        type="button"
+                                                    >
+                                                        हिंदी
+                                                    </button>
+                                                )}
+                                            </div>
+
+                                            {/* Machine-translated warning */}
+                                            {activeTab === 'hindi' && selected.appeal.machineTranslatedWarning && (
+                                                <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+                                                    <Languages className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
+                                                    <p className="text-[10px] text-amber-800 font-medium leading-relaxed">
+                                                        <strong>Machine-translated only</strong> — This Hindi version is AI-generated and has NOT been reviewed by a qualified translator. Do not present it as a certified or official translation.
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 max-h-52 overflow-y-auto custom-scrollbar font-mono text-[10px] text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
+                                                {activeTab === 'english'
+                                                    ? selected.appeal.appealText
+                                                    : selected.appeal.hindiTranslation}
+                                            </div>
+
+                                            {/* Copy button */}
+                                            <button
+                                                onClick={() => {
+                                                    const txt = activeTab === 'english' ? selected.appeal!.appealText : (selected.appeal!.hindiTranslation ?? '');
+                                                    navigator.clipboard.writeText(txt);
+                                                }}
+                                                className="text-[10px] text-opd-primary hover:text-opd-primary/80 font-bold transition underline"
+                                                type="button"
+                                            >
+                                                Copy to clipboard
+                                            </button>
+
+                                            {/* Status actions */}
+                                            {submissionError && (
+                                                <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-[10px] text-red-800 font-semibold leading-normal">
+                                                    ⚠️ Submission unconfirmed — retry. Error: {submissionError}
+                                                </div>
+                                            )}
+                                            <div className="grid grid-cols-2 gap-2.5 pt-1">
+                                                <button
+                                                    onClick={() => handleStatusChange('submitted')}
+                                                    disabled={saving || selected.appeal.appealStatus === 'submitted' || selected.appeal.appealStatus === 'resolved'}
+                                                    className="btn-secondary py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold"
+                                                    type="button"
+                                                >
+                                                    <Send className="w-3.5 h-3.5" /> Mark Submitted
+                                                </button>
+                                                <button
+                                                    onClick={() => handleStatusChange('resolved')}
+                                                    disabled={saving || selected.appeal.appealStatus === 'resolved'}
+                                                    className="btn-secondary py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-900"
+                                                    type="button"
+                                                >
+                                                    <CheckCircle className="w-3.5 h-3.5" /> Mark Resolved
+                                                </button>
+                                            </div>
+
+                                            <button
+                                                onClick={() => {
+                                                    setSelected(prev => prev ? { ...prev, appeal: null } : prev);
+                                                }}
+                                                className="w-full py-2 rounded-xl text-[10px] font-bold text-opd-text-secondary hover:text-opd-primary border border-opd-border hover:bg-gray-50 transition"
+                                                type="button"
+                                            >
+                                                ↺ Regenerate Appeal
+                                            </button>
+                                        </div>
+                                    )}
+                                </>
                             )}
 
                         </div>

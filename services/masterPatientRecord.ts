@@ -283,7 +283,7 @@ export function mapCaseToPreAuth(caseRecord: PatientCaseRecord): PreAuthRecord {
             patientName: caseRecord.patientProfile.name,
             age: caseRecord.patientProfile.age,
             gender: caseRecord.patientProfile.gender as any,
-            mobileNumber: caseRecord.patientProfile.contact,
+            mobileNumber: caseRecord.patientProfile.contact || (caseRecord.patientProfile as any).contactNumber || '',
             uhid: caseRecord.patientProfile.uhid,
         },
         insurance: {

@@ -17,6 +17,8 @@ import { computeReadiness, scoreColorClass, readinessStatusLine } from '../../ut
 import { priorAuthOrchestrator, ExtendedEvidenceReviewReport } from '../../engine/priorAuthWorkflow';
 import { runBillingCodingWorkflow, BillingInput } from '../../engine/billingCoder';
 import type { BillingCodingOutput } from '../../services/geminiService';
+import { getPatientRecord, savePatientRecord, PatientCaseRecord } from '../../services/masterPatientRecord';
+import { simulateInsurerDecision } from '../../services/simulatedInsurerService';
 
 // ── tiny re-usable ring (lifted from ClaimReadinessRail) ──────────────────────
 
@@ -33,12 +35,12 @@ function ScoreRing({ score }: { score: number }) {
         <div className="relative" style={{ width: RING_SIZE, height: RING_SIZE }}>
             <svg width={RING_SIZE} height={RING_SIZE} style={{ transform: 'rotate(-90deg)' }}
                 viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}>
-                <circle cx={RING_CX} cy={RING_CY} r={RING_R} fill="none"
-                    stroke="#E1E7E6" strokeWidth={5} />
-                <circle cx={RING_CX} cy={RING_CY} r={RING_R} fill="none"
-                    stroke={colors.stroke} strokeWidth={5} strokeLinecap="round"
-                    strokeDasharray={CIRCUMFERENCE} strokeDashoffset={offset}
-                    style={{ transition: 'stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1)' }} />
+                    <circle cx={RING_CX} cy={RING_CY} r={RING_R} fill="none"
+                        stroke="#E1E7E6" strokeWidth={5} />
+                    <circle cx={RING_CX} cy={RING_CY} r={RING_R} fill="none"
+                        stroke={colors.stroke} strokeWidth={5} strokeLinecap="round"
+                        strokeDasharray={CIRCUMFERENCE} strokeDashoffset={offset}
+                        style={{ transition: 'stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1)' }} />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="font-bold font-lora tabular-nums leading-none"
@@ -176,6 +178,69 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
     const [tpaLoading, setTpaLoading] = useState(!record.tpaEvidenceReview);
     const [billingOutput, setBillingOutput] = useState<BillingCodingOutput | null>(null);
     const [billingLoading, setBillingLoading] = useState(false);
+    
+    // Case Record state for Dexie Case syncing & enhancements
+    const [caseRecord, setCaseRecord] = useState<PatientCaseRecord | null>(null);
+    const [showEnhanceDialog, setShowEnhanceDialog] = useState(false);
+    const [enhanceTrigger, setEnhanceTrigger] = useState<'icu_upgrade' | 'extended_stay' | 'new_procedure'>('extended_stay');
+    const [enhanceAmount, setEnhanceAmount] = useState<number>(0);
+    const [enhanceReason, setEnhanceReason] = useState('');
+
+    useEffect(() => {
+        getPatientRecord(record.id).then(r => {
+            if (r) setCaseRecord(r);
+        });
+    }, [record.id]);
+
+    const handleCreateEnhancement = async (trigger: 'icu_upgrade' | 'extended_stay' | 'new_procedure', requestedAmount: number, reason: string) => {
+        if (!caseRecord) return;
+        
+        const decision = simulateInsurerDecision(caseRecord, 'enhancement', requestedAmount);
+        
+        const newEnhancement = {
+            id: `ENH-${Math.floor(100000 + Math.random() * 900000)}`,
+            trigger,
+            requestedAmount,
+            status: decision.outcome,
+            gaps: decision.outcome === 'query' ? [decision.queryDetails || ''] : [],
+            anticipatedQueries: decision.outcome === 'query' ? [{ query: decision.queryDetails }] : [],
+            reviewedAt: new Date().toISOString(),
+            details: { reason }
+        };
+        
+        const updated = {
+            ...caseRecord,
+            enhancements: [...(caseRecord.enhancements || []), newEnhancement],
+            updatedAt: new Date().toISOString()
+        };
+        
+        if (decision.outcome === 'approved' && decision.approvedAmount) {
+            updated.authorizations.push({
+                id: `AUTH-ENH-${Math.floor(100000 + Math.random() * 900000)}`,
+                status: 'approved',
+                requestedAmount,
+                approvedAmount: decision.approvedAmount,
+                submittedAt: new Date().toISOString(),
+                respondedAt: new Date().toISOString()
+            });
+        } else if (decision.outcome === 'partial_approved' && decision.approvedAmount) {
+            updated.authorizations.push({
+                id: `AUTH-ENH-${Math.floor(100000 + Math.random() * 900000)}`,
+                status: 'partial_approved',
+                requestedAmount,
+                approvedAmount: decision.approvedAmount,
+                submittedAt: new Date().toISOString(),
+                respondedAt: new Date().toISOString(),
+                deductionReason: decision.deductionReason
+            });
+        }
+        
+        await savePatientRecord(updated);
+        setCaseRecord(updated);
+        alert(`Enhancement processed! Outcome: ${decision.outcome.toUpperCase()}` + 
+              (decision.approvedAmount ? ` (Approved Amount: ₹${decision.approvedAmount})` : '') + 
+              (decision.queryDetails ? ` (Query Details: ${decision.queryDetails})` : ''));
+    };
 
     const selectedDx = record.clinical?.diagnoses?.[record.clinical.selectedDiagnosisIndex ?? 0];
     const diagnosisText = selectedDx?.diagnosis ?? '—';
@@ -410,6 +475,62 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                             </div>
                         )}
                     </section>
+
+                    {/* ── Enhancement Ledger ── */}
+                    {caseRecord && (
+                        <section className="bg-white border border-opd-border rounded-2xl p-4 space-y-4 shadow-sm text-left">
+                            <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2.5 flex justify-between items-center">
+                                <span>Enhancements Ledger ({caseRecord.enhancements?.length || 0})</span>
+                                {(record.status === 'submitted' || record.status === 'approved' || record.status === 'query_raised' || record.status === 'query_received' || record.status === 'enhancement_requested') && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEnhanceDialog(true)}
+                                        className="px-2.5 py-1.5 bg-opd-primary text-white text-[10px] font-bold rounded-lg hover:bg-opd-primary/95 transition border uppercase tracking-wider"
+                                    >
+                                        + Request Enhancement
+                                    </button>
+                                )}
+                            </div>
+                            
+                            {(!caseRecord.enhancements || caseRecord.enhancements.length === 0) ? (
+                                <p className="text-xs text-opd-text-muted italic py-3 text-center bg-gray-50/50 rounded-xl border border-dashed">
+                                    No enhancements requested for this case.
+                                </p>
+                            ) : (
+                                <div className="space-y-3">
+                                    {caseRecord.enhancements.map(enh => (
+                                        <div key={enh.id} className="border border-opd-border rounded-xl p-3 bg-gray-50/50 space-y-2 text-xs">
+                                            <div className="flex justify-between items-center">
+                                                <span className="font-bold text-opd-primary font-mono text-[10px]">{enh.id}</span>
+                                                <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase border tracking-wide ${
+                                                    enh.status === 'approved' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                                                    enh.status === 'partial_approved' ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                                                    'bg-blue-50 border-blue-200 text-blue-700'
+                                                }`}>
+                                                    {enh.status}
+                                                </span>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2 text-[10px]">
+                                                <div>
+                                                    <span className="text-gray-400 font-bold uppercase tracking-wider text-[8px]">Trigger Type:</span>{' '}
+                                                    <span className="font-bold text-opd-text-primary capitalize">{enh.trigger.replace(/_/g, ' ')}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-gray-400 font-bold uppercase tracking-wider text-[8px]">Requested:</span>{' '}
+                                                    <span className="font-mono font-bold text-opd-text-primary">₹{enh.requestedAmount.toLocaleString('en-IN')}</span>
+                                                </div>
+                                            </div>
+                                            {enh.details?.reason && (
+                                                <div className="bg-white border border-opd-border p-2 rounded-lg italic text-[11px] text-opd-text-secondary leading-normal">
+                                                    "{enh.details.reason}"
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+                    )}
                 </div>
 
                 {/* ── RIGHT RAIL ────────────────────────────────────────────── */}
@@ -554,6 +675,84 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                 </aside>
             </div>
+
+            {/* Enhancement Dialog Modal */}
+            {showEnhanceDialog && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-sm p-4 text-left">
+                    <div className="bg-white border border-opd-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+                        <div className="flex justify-between items-center border-b border-opd-border pb-3">
+                            <h3 className="font-bold text-sm font-lora text-opd-primary uppercase tracking-wider">Request Case Enhancement</h3>
+                            <button 
+                                type="button" 
+                                onClick={() => setShowEnhanceDialog(false)} 
+                                className="text-gray-400 hover:text-gray-600 font-bold text-sm"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        
+                        <div className="space-y-3.5 text-xs">
+                            <div className="flex flex-col gap-1">
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Trigger Type</label>
+                                <select
+                                    className="border border-opd-border rounded-lg px-3 py-2 bg-white text-xs focus:outline-none focus:border-opd-primary"
+                                    value={enhanceTrigger}
+                                    onChange={e => setEnhanceTrigger(e.target.value as any)}
+                                >
+                                    <option value="icu_upgrade">ICU Upgrade / Transfer</option>
+                                    <option value="extended_stay">Stay Duration Extension</option>
+                                    <option value="new_procedure">New Comorbid Procedure</option>
+                                </select>
+                            </div>
+                            
+                            <div className="flex flex-col gap-1">
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Additional Requested Amount (₹)</label>
+                                <input
+                                    type="number"
+                                    placeholder="e.g. 80000"
+                                    className="border border-opd-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-opd-primary font-mono font-semibold"
+                                    value={enhanceAmount || ''}
+                                    onChange={e => setEnhanceAmount(+e.target.value)}
+                                />
+                            </div>
+                            
+                            <div className="flex flex-col gap-1">
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Clinical Justification</label>
+                                <textarea
+                                    rows={3}
+                                    placeholder="Explain the clinical complication or stay extension details..."
+                                    className="border border-opd-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-opd-primary resize-none"
+                                    value={enhanceReason}
+                                    onChange={e => setEnhanceReason(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="flex justify-end gap-2 pt-3 border-t border-opd-border text-xs">
+                            <button
+                                type="button"
+                                onClick={() => setShowEnhanceDialog(false)}
+                                className="px-4 py-2 border border-opd-border rounded-xl hover:bg-gray-50 font-bold transition text-opd-text-secondary"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (!enhanceAmount || enhanceAmount <= 0) { alert('Enter a valid amount.'); return; }
+                                    handleCreateEnhancement(enhanceTrigger, enhanceAmount, enhanceReason);
+                                    setShowEnhanceDialog(false);
+                                    setEnhanceAmount(0);
+                                    setEnhanceReason('');
+                                }}
+                                className="px-4 py-2 bg-opd-primary text-white font-bold rounded-xl hover:bg-opd-primary/95 transition shadow-sm"
+                            >
+                                Submit Request
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

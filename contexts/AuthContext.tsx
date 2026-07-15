@@ -14,6 +14,7 @@ interface AuthContextType {
     loading: boolean;
     login: (email: string, password: string) => Promise<void>;
     signup: (data: SignupData) => Promise<void>;
+    loginAsGuest: () => void;
     logout: () => void;
     refreshUser: () => Promise<void>;
 }
@@ -73,6 +74,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     };
 
+    const loginAsGuest = () => {
+        const guestUser: User = {
+            id: 'guest',
+            email: 'guest@aivana.demo',
+            firstName: 'Guest',
+            lastName: 'User',
+        };
+        setUser(guestUser);
+        setToken('guest-session');
+        localStorage.setItem('authToken', 'guest-session');
+        localStorage.setItem('user', JSON.stringify(guestUser));
+    };
+
     const logout = () => {
         setUser(null);
         setToken(null);
@@ -92,7 +106,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, loading, login, signup, logout, refreshUser }}>
+        <AuthContext.Provider value={{ user, token, loading, login, signup, loginAsGuest, logout, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

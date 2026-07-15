@@ -19,7 +19,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const { login, signup } = useAuth();
+    const { login, signup, loginAsGuest } = useAuth();
 
     if (!isOpen) return null;
 
@@ -232,6 +232,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                             {loading ? 'Please wait...' : activeTab === 'login' ? 'Login to Portal' : 'Create Account'}
                         </button>
                     </form>
+
+                    {/* Divider */}
+                    <div className="flex items-center gap-3 my-4">
+                        <div className="flex-1 h-px bg-opd-border" />
+                        <span className="text-[10px] text-opd-text-muted font-semibold uppercase tracking-widest">or</span>
+                        <div className="flex-1 h-px bg-opd-border" />
+                    </div>
+
+                    {/* Guest Login */}
+                    <button
+                        type="button"
+                        onClick={() => { loginAsGuest(); onClose(); }}
+                        className="w-full py-3 border border-opd-border rounded-xl text-xs font-bold text-opd-text-secondary hover:border-opd-primary hover:text-opd-primary hover:bg-primary-tint/40 transition-all flex items-center justify-center gap-2 active:scale-[.98]"
+                    >
+                        <User className="w-3.5 h-3.5" />
+                        Continue as Guest
+                    </button>
+                    <p className="text-[10px] text-opd-text-muted text-center mt-2 font-medium">
+                        Demo access — no account required. Some features may be limited.
+                    </p>
 
                     {activeTab === 'signup' && (
                         <p className="mt-4 text-[10px] text-opd-text-muted text-center font-medium leading-relaxed">

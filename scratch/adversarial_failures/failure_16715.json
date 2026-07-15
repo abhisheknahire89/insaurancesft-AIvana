@@ -1,0 +1,135 @@
+{
+  "id": 16715,
+  "testCase": {
+    "id": 16715,
+    "category": "D",
+    "difficulty": "high",
+    "focusCategory": "preauth_heavy",
+    "diagnosis": "Bilateral Primary Osteoarthritis of Knee",
+    "code": "M17.1",
+    "chiefComplaints": "Severe pain in the bilateral knee joints (Right > Left) for the last 3 years, progressively worsening over the last 6 months, rendering the patient unable to walk even 50 meters without support.",
+    "hpi": "A 66-year-old female presented with chronic, severe bilateral knee pain, right worse than left. The pain is mechanical in nature, aggravated by weight-bearing, standing, and climbing stairs, and minimally relieved by rest. Over the last 6 months, she has experienced rest pain and severe night pain, significantly disrupting her sleep. She has been on conservative management under her local GP, including multiple courses of NSAIDs (Aceclofenac, Etoricoxib), intra-articular hyaluronic acid injections (10 months ago), and intensive physiotherapy for 6 months, with no sustained improvement. Comorbidities include long-standing Type 2 Diabetes Mellitus (on Tab. Metformin 500mg BD), Essential Hypertension (on Tab. Telmisartan 40mg OD), and Stage IIIa Chronic Kidney Disease (under nephrology follow-up). Due to severe functional impairment and failure of non-operative treatment, she is now admitted for elective Right Total Knee Replacement (TKR).",
+    "relevantClinicalFindings": "On physical examination: Right Knee: Severe varus deformity, flexion contracture of 10 degrees, active flexion limited to 90 degrees. Pronounced medial joint line tenderness and patellofemoral crepitus. Antalgic gait present. Left Knee: Moderate crepitus, mild medial joint line tenderness, range of motion 0-110 degrees. Bilateral distal pulses are palpable, and neurological examination of the lower limbs is normal. Weight-bearing bilateral knee radiographs show complete loss of joint space in the medial compartment of the right knee, subchondral sclerosis, extensive osteophytes, and subchondral cyst formation (Kellgren-Lawrence Grade IV Osteoarthritis). Left knee shows Kellgren-Lawrence Grade II changes.",
+    "additionalClinicalNotes": "Nephrologist clearance obtained from Dr. S. Ramakrishnan, MD, DM (Nephrology). Serum Creatinine: 1.48 mg/dL, eGFR: 44 mL/min/1.73m2. Advised avoidance of post-operative NSAIDs; recommended paracetamol and epidural/femoral nerve block for post-operative analgesia along with adequate hydration. Cardiologist clearance obtained: ECG shows Left Ventricular Hypertrophy (LVH), Echocardiogram shows EF 55% with no regional wall motion abnormalities.",
+    "duration": "3 years",
+    "treatmentTakenSoFar": "Tab. Etoricoxib 90 mg PRN, Tab. Pregabalin 75 mg HS, Physiotherapy (Short Wave Diathermy + quadriceps strengthening exercises) for 6 months, Intra-articular Hyaluronic acid injection in the Right knee in April 2023.",
+    "reasonForHospitalisation": "Failed conservative management of severe, debilitating Right Knee Osteoarthritis (KL Grade IV), requiring planned Right Total Knee Arthroplasty (TKR) to restore mobility and relieve excruciating pain.",
+    "uploadedDocuments": [
+      "discharging_summary_draft",
+      "knee_xray_report",
+      "nephrology_clearance_letter",
+      "cardiologist_fitness_certificate",
+      "prescription_history_conservative_treatment",
+      "blood_chemistry_report"
+    ],
+    "patientName": "Devika Nair",
+    "patient": {
+      "patientName": "Devika Nair",
+      "age": 66,
+      "gender": "Female",
+      "mobileNumber": "9840123456"
+    },
+    "insurance": {
+      "policyNumber": "SI/2024/11092837",
+      "insurerName": "Star Health and Allied Insurance Co Ltd",
+      "tpaName": "In-house",
+      "sumInsured": 500000,
+      "balanceSumInsured": 485000,
+      "tpaIdCardNumber": "SH11092837-01"
+    },
+    "vitals": {
+      "bp": "148/86 mmHg",
+      "pulse": "74 bpm",
+      "temp": "98.2 F",
+      "spo2": "97%",
+      "rr": "18/min"
+    },
+    "expected": {
+      "mustFlag": [
+        "conservative management documentation",
+        "Stage III Chronic Kidney Disease",
+        "Kellgren-Lawrence Grade IV",
+        "nephrologist clearance"
+      ],
+      "mustNotFlag": [
+        "acute traumatic fracture",
+        "septic arthritis",
+        "unilateral primary osteoarthritis of left knee"
+      ],
+      "shouldGenerate": true
+    },
+    "notes": "This preauth_heavy case tests the pre-authorization validation for elective joint replacements. Insurers frequently issue queries or denials on TKRs by claiming lack of conservative treatment trials or lack of radiographic severity (KL Grade III/IV). Highlighting the patient's Stage III CKD is critical because it justifies the failure/inadmissibility of further conservative NSAID therapy, making surgery the only viable option.",
+    "realGap": "TPAs frequently query elective joint replacement surgeries to delay or deny approval, citing lack of documented conservative trial of 3 to 6 months or missing radiologist-certified Kellgren-Lawrence grades. In patients with severe comorbidities like CKD, prolonged NSAID therapy is contraindicated, which clinically accelerates the necessity for surgical intervention.",
+    "sourceReasoning": "Under IRDAI standardized guidelines and TPA pre-authorization checklists for major joint replacements, insurers require clear radiological proof of advanced joint destruction (KL Grade III or IV) and documented evidence of failure of conservative therapies. However, clinical exceptions apply where comorbidities (such as CKD Stage III/IV where NSAIDs are contraindicated) make further conservative medical management unsafe.",
+    "rawDocumentText": "APOLLO HOSPITALS, GREAMS ROAD, CHENNAI\nPRE-OPERATIVE CLINICAL PROFILE & SURGICAL ADMISSION NOTE\n\nPatient Name: Mrs. Devika Nair\nAge / Gender: 66 Years / Female\nIP No: IP-99082731\nDate of Admission: 18-Oct-2024\nDepartment: Orthopaedics & Joint Reconstruction\nConsulting Surgeon: Dr. Vijay Raghavan, MS, MCh (Ortho)\n\nDIAGNOSIS:\n1. Severe Bilateral Osteoarthritis of the Knee - Planned for Right Total Knee Replacement (TKR)\n2. Type 2 Diabetes Mellitus (T2DM)\n3. Essential Hypertension (HTN)\n4. Chronic Kidney Disease (CKD) - Stage IIIa (eGFR ~ 44 ml/min)\n\nCHIEF COMPLAINTS:\n- Severe, incapacitating pain in both knees (Right > Left) for 3 years, rendering her unable to walk >50 meters without a walking frame.\n- Severe night pain and rest pain in the right knee for the past 6 months.\n- Extreme difficulty in performing basic activities of daily living (ADLs) like using the toilet and standing.\n\nHISTORY OF PRESENT ILLNESS & CONSERVATIVE TRIAL:\nPatient is a known diabetic and hypertensive who has been suffering from progressive bilateral knee pain for 3 years. She has undergone extensive conservative management including physiotherapy (Quadriceps strengthening, SWD) for 6 months under a physical therapist, and oral analgesics (Etoricoxib, Aceclofenac) prescribed by her local GP. She received an intra-articular Hyaluronic acid injection in her Right knee in April 2023 with minimal, short-lived relief. In view of her Stage IIIa Chronic Kidney Disease (Serum Creatinine 1.48 mg/dL), long-term NSAID therapy is strictly contraindicated by her nephrologist. Her pain has now progressed to rest pain and night pain, with severe restriction of joint mobility.\n\nCLINICAL EXAMINATION:\n- Right Knee: Varus deformity of 15 degrees, fixed flexion deformity (FFD) of 10 degrees, flexion restricted to 90 degrees. Severe medial joint line tenderness and patellofemoral crepitus present. Antalgic gait.\n- Left Knee: Mild varus, no flexion contracture, range of motion 0-110 degrees, mild medial joint line tenderness.\n- No signs of active local infection or peripheral vascular disease. Distal pulses (Dorsalis pedis and Posterior tibial) are well felt.\n\nINVESTIGATIONS:\n- Radiograph Bilateral Knees (Weight-bearing AP/Lateral): Right knee shows near-complete obliteration of the medial joint space, subchondral sclerosis, large marginal osteophytes, and subchondral cyst formation - classic features of Kellgren-Lawrence Grade IV Osteoarthritis. Left knee shows KL Grade II changes.\n- Lab Reports: Hb: 10.8 g/dL, WBC: 7,200/cumm, HbA1c: 7.2%, Blood Urea: 48 mg/dL, Serum Creatinine: 1.48 mg/dL, eGFR: 44 mL/min/1.73m2, Sodium: 138 mEq/L, Potassium: 4.5 mEq/L.\n\nCOMORBIDITY CLEARANCES:\n- Nephrology Clearance (Dr. S. Ramakrishnan, DM): Fit for surgery under high risk. Strictly avoid post-op NSAIDs in view of Stage III CKD. Maintain strict perioperative hydration. Monitor urine output and serum creatinine post-operatively.\n- Cardiology Clearance: Fit for anesthesia. Echo shows concentric LVH, EF 55%, no RWMA.\n\nPROPOSED PLAN:\n- Patient is planned for elective Right Total Knee Arthroplasty (TKR) under spinal/epidural anesthesia on 19-Oct-2024.\n- Estimated stay: 4-5 days.\n- Estimated cost: INR 2,45,000/- (including implant charges, surgeon fees, OT charges, and ward stay).\n\nInsurance Policy Details: Star Health and Allied Insurance, Policy No: SI/2024/11092837. Sum Insured: INR 5,00,000/-.",
+    "simulatedDenialReason": "Pre-authorization query raised: Please provide documented evidence of active conservative management (such as physiotherapy prescriptions and pharmacotherapy charts) for a minimum of 6 continuous months, along with radiologist-signed weight-bearing X-ray reports explicitly certifying Kellgren-Lawrence Grade III or IV joint space narrowing. Please also clarify why surgical intervention is planned in the presence of compromised renal function (CKD Stage III) and submit a detailed clearance from a certified Nephrologist indicating the patient's fitness for major orthopedic surgery.",
+    "expectedAnswer": {
+      "expectedExtraction": {
+        "patientName": "Devika Nair",
+        "age": 66,
+        "gender": "Female",
+        "policyNumber": "SI/2024/11092837",
+        "insurerName": "Star Health and Allied Insurance Co Ltd"
+      },
+      "expectedReview": {
+        "mustFlag": [
+          "conservative management documentation",
+          "Stage III Chronic Kidney Disease",
+          "Kellgren-Lawrence Grade IV",
+          "nephrologist clearance"
+        ],
+        "mustNotFlag": [
+          "acute traumatic fracture",
+          "septic arthritis",
+          "unilateral primary osteoarthritis of left knee"
+        ],
+        "shouldGenerate": true
+      },
+      "expectedCode": "M17.1",
+      "expectedCost": 245000,
+      "expectedEligibility": "query",
+      "expectedAppealCitations": [
+        "Patient has undergone extensive conservative management including physiotherapy for 6 months and an intra-articular Hyaluronic acid injection in April 2023 with no sustained relief.",
+        "Weight-bearing radiographs demonstrate complete loss of joint space in the medial compartment, subchondral sclerosis, and marginal osteophytes, confirming Kellgren-Lawrence Grade IV Osteoarthritis.",
+        "Patient has comorbid Stage IIIa Chronic Kidney Disease (eGFR 44 mL/min/1.73m2, Creatinine 1.48 mg/dL) which strictly contraindicates long-term NSAID therapy, making conservative medical management no longer a viable or safe option.",
+        "Nephrology clearance has been formally obtained from Dr. S. Ramakrishnan, DM (Nephrology), who declared the patient fit for surgery under high-risk protocol with specific instructions to avoid post-operative NSAIDs."
+      ]
+    }
+  },
+  "expected": {
+    "expectedExtraction": {
+      "patientName": "Devika Nair",
+      "age": 66,
+      "gender": "Female",
+      "policyNumber": "SI/2024/11092837",
+      "insurerName": "Star Health and Allied Insurance Co Ltd"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "conservative management documentation",
+        "Stage III Chronic Kidney Disease",
+        "Kellgren-Lawrence Grade IV",
+        "nephrologist clearance"
+      ],
+      "mustNotFlag": [
+        "acute traumatic fracture",
+        "septic arthritis",
+        "unilateral primary osteoarthritis of left knee"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "M17.1",
+    "expectedCost": 245000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Patient has undergone extensive conservative management including physiotherapy for 6 months and an intra-articular Hyaluronic acid injection in April 2023 with no sustained relief.",
+      "Weight-bearing radiographs demonstrate complete loss of joint space in the medial compartment, subchondral sclerosis, and marginal osteophytes, confirming Kellgren-Lawrence Grade IV Osteoarthritis.",
+      "Patient has comorbid Stage IIIa Chronic Kidney Disease (eGFR 44 mL/min/1.73m2, Creatinine 1.48 mg/dL) which strictly contraindicates long-term NSAID therapy, making conservative medical management no longer a viable or safe option.",
+      "Nephrology clearance has been formally obtained from Dr. S. Ramakrishnan, DM (Nephrology), who declared the patient fit for surgery under high-risk protocol with specific instructions to avoid post-operative NSAIDs."
+    ]
+  },
+  "failedModules": [
+    "3. Patient Info Extraction",
+    "10. Final Claim Packet"
+  ]
+}

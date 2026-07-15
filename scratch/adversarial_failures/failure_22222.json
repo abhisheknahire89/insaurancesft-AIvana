@@ -1,0 +1,125 @@
+{
+  "id": 22222,
+  "testCase": {
+    "id": 22222,
+    "category": "D",
+    "difficulty": "high",
+    "focusCategory": "specialty_caps",
+    "diagnosis": "Intramural Leiomyoma of Uterus",
+    "code": "D25.1",
+    "chiefComplaints": "Severe menorrhagia with passage of large blood clots during menstruation for 6 months, deep pelvic pain, and urinary frequency.",
+    "hpi": "The patient, Smt. Sunita Sharma, a 46-year-old P2L2 female, presented with a history of progressive, disabling menorrhagia for the past 6 months. Her menstrual cycles have been prolonged (lasting 8-10 days) with heavy flow requiring 5-6 fully soaked pads per day, accompanied by dysmenorrhea. She also complains of a dragging sensation in her lower abdomen and progressive urinary frequency over the last 3 months, which wakes her up multiple times at night. She has been on oral haematinics and antifibrinolytics with no relief.",
+    "relevantClinicalFindings": "Abdominal exam: Uterus palpable around 12-14 weeks size, firm, non-tender. Pelvic exam: Uterus enlarged, retroverted, bilateral adnexa clear. Transvaginal Ultrasound (TVS) dated 12-Oct-2023 shows an enlarged uterus measuring 12.8 x 8.6 x 7.4 cm with a large, solitary intramural fibroid in the anterior wall of the uterine corpus measuring 8.4 x 7.2 cm, causing a significant contour deformity and mass-effect compressing the urinary bladder. Endometrial thickness is 8.5 mm. Laboratory findings: Hemoglobin is critically low at 7.4 g/dL, indicating severe microcytic hypochromic anemia secondary to chronic blood loss. Peripheral smear shows hypochromic microcytic picture.",
+    "additionalClinicalNotes": "Due to the size of the fibroid (>8 cm), severe pressure symptoms on the bladder, and profound secondary anemia (Hb 7.4 g/dL) refractory to conservative medical management, the patient is planned for Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingectomy under General Anesthesia. Blood transfusion of 1 unit of Packed Red Blood Cells (PRBC) is planned pre-operatively to optimize hemoglobin levels.",
+    "duration": "6 months",
+    "treatmentTakenSoFar": "Tablet Tranexamic Acid 500mg tid during cycles, Tablet Mefenamic Acid 500mg tid, and oral Iron (Carbonyl Iron) daily for the past 3-4 months prescribed by local gynecologist, with no improvement in bleeding patterns or Hb levels.",
+    "reasonForHospitalisation": "Surgical management via Total Laparoscopic Hysterectomy with bilateral salpingectomy to treat symptomatic large uterine fibroid causing bladder compression and profound anemia.",
+    "uploadedDocuments": [
+      "doctor_opd_notes",
+      "usg_pelvis_report",
+      "cbc_report_hematology",
+      "pre_auth_form",
+      "treatment_history_letter"
+    ],
+    "patientName": "Smt. Sunita Sharma",
+    "patient": {
+      "patientName": "Smt. Sunita Sharma",
+      "age": 46,
+      "gender": "Female",
+      "mobileNumber": "9876543210"
+    },
+    "insurance": {
+      "policyNumber": "SH/2024/1109283/02",
+      "insurerName": "Star Health and Allied Insurance Co Ltd",
+      "tpaName": "Star Health In-House TPA",
+      "sumInsured": 500000,
+      "balanceSumInsured": 480000,
+      "tpaIdCardNumber": "STAR-881203"
+    },
+    "vitals": {
+      "bp": "110/70 mmHg",
+      "pulse": "88 bpm",
+      "temp": "98.4 F",
+      "spo2": "98%",
+      "rr": "18 rpm"
+    },
+    "expected": {
+      "mustFlag": [
+        "severe_anemia_documented",
+        "bladder_pressure_symptoms",
+        "fibroid_size_exceeding_criteria"
+      ],
+      "mustNotFlag": [
+        "pregnancy_related_exclusion"
+      ],
+      "shouldGenerate": true
+    },
+    "notes": "Ensures the system correctly validates the WHO ICD-10 code D25.1 (Intramural leiomyoma of uterus) under the Gynae/Hysterectomy chapter lock and defends against TPA queries denying surgical necessity due to lack of medical trials.",
+    "realGap": "TPAs often raise arbitrary queries regarding conservative medical management trials (demanding 3-6 months of hormonal trials) in uterine fibroid cases, ignoring absolute surgical indications such as severe secondary anemia (Hb < 8 g/dL) or mechanical pressure symptoms (bladder compression by an 8cm+ fibroid).",
+    "sourceReasoning": "Under IRDAI Unified Standard Guidelines, surgical intervention for benign conditions like uterine fibroids is fully covered and medically necessary without a trial of medical management if there are documented complications such as severe anemia (Hb < 8 g/dL), urinary retention/frequency due to mass effect, or suspected malignancy.",
+    "rawDocumentText": "MAX SUPER SPECIALITY HOSPITAL, SAKET, NEW DELHI\nDEPARTMENT OF OBSTETRICS & GYNECOLOGY\nADMISSION SUMMARY / PRE-AUTH DOCUMENT\n\nPatient Name: Smt. Sunita Sharma  |  Age: 46 Years  |  Gender: Female  |  DOA: 24/10/2023\nIP No: IP-2023-88421  |  OPD Ref No: OP-991283\nInsurer: Star Health and Allied Insurance Co Ltd  |  Policy No: SH/2024/1109283/02  |  TPA ID: STAR-881203\nConsultant: Dr. Anjali Mehta, MD, DGO (Sr. Consultant Gynecologist)\n\nDIAGNOSIS:\nIntramural Leiomyoma of Uterus (ICD-10: D25.1)\nSevere Microcytic Anemia secondary to chronic blood loss (Hb: 7.4 g/dL)\n\nCHIEF COMPLAINTS:\n1. Severe menorrhagia with passage of large blood clots during cycles for 6 months.\n2. Deep pelvic pain and dragging lower abdominal discomfort for 4 months.\n3. Increased urinary frequency, urgency and nocturia (4-5 times nightly) for 3 months.\n\nHISTORY OF PRESENT ILLNESS:\nSmt. Sunita Sharma, a 46-year-old P2L2 female, presented with a history of heavy and prolonged menstrual cycles lasting 8-10 days for the past 6 months. She reports soaking 5-6 heavy pads daily during peak days. She complains of progressive dragging pelvic pain and urinary frequency. She has been managed conservatively by her local doctor with Tab Tranexamic Acid 500mg TID and oral Carbonyl Iron therapy for 3 months, with no resolution of symptoms. Bleeding remains heavy, resulting in extreme exhaustion and dyspnea on mild exertion.\n\nCLINICAL EXAMINATION:\n- General Condition: Pale, no icterus, no clubbing, mild pedal edema.\n- Pulse: 88 bpm  |  BP: 110/70 mmHg  |  Temp: 98.4 F  |  SpO2: 98% on room air  |  RR: 18 /min\n- Abdominal Exam: Uterus enlarged, equivalent to 14 weeks size, firm, mobile, non-tender.\n- Per Vaginal Exam: Uterus enlarged, retroverted, heavy, mobile, cervix healthy, bilateral fornices free.\n\nDIAGNOSTIC INVESTIGATIONS:\n- Complete Blood Count (CBC) dated 22-Oct-2023: Hb: 7.4 g/dL, RBC count: 3.2 million/uL, MCV: 68 fL (Microcytic hypochromic picture).\n- TVS Ultrasound Pelvis (dated 12-Oct-2023): Uterus measures 12.8 x 8.6 x 7.4 cm. Evidence of a large solitary intramural leiomyoma in the anterior wall of the uterine corpus measuring 8.4 x 7.2 cm. The fibroid causes a distinct anterior bulge and exerts direct extrinsic compression on the postero-superior wall of the urinary bladder. Endometrial thickness: 8.5 mm. Both ovaries are normal.\n\nTREATMENT PLAN:\n- Admit in Semi-Private Ward.\n- Pre-operative optimization: Transfusion of 1 unit of Packed Red Blood Cells (PRBC) to correct severe anemia (target pre-op Hb > 9 g/dL).\n- Plan for Total Laparoscopic Hysterectomy (TLH) with Bilateral Salpingectomy under General Anesthesia on 25-Oct-2023.\n- Expected Stay: 3 Days.\n- Estimated Cost: Rs. 1,35,000/- (inclusive of surgery, room rent, G.A. charges, implants, consumables, and blood transfusion charges).\n\nDr. Anjali Mehta, MD\nReg No: DMC-48291",
+    "simulatedDenialReason": "Pre-auth query raised by Star Health TPA: Please provide clinical justification for choosing major surgery (Total Laparoscopic Hysterectomy) directly without a documented trial of hormonal management (such as GnRH analogues, Mirena/LNG-IUS, or oral progesterone therapy) for at least 3 to 6 months. Also, clarify why conservative options like myomectomy are not feasible.",
+    "expectedAnswer": {
+      "expectedExtraction": {
+        "patientName": "Smt. Sunita Sharma",
+        "age": 46,
+        "gender": "Female",
+        "policyNumber": "SH/2024/1109283/02",
+        "insurerName": "Star Health and Allied Insurance Co Ltd"
+      },
+      "expectedReview": {
+        "mustFlag": [
+          "severe_anemia_documented",
+          "bladder_pressure_symptoms",
+          "fibroid_size_exceeding_criteria"
+        ],
+        "mustNotFlag": [
+          "pregnancy_related_exclusion"
+        ],
+        "shouldGenerate": true
+      },
+      "expectedCode": "D25.1",
+      "expectedCost": 135000,
+      "expectedEligibility": "query",
+      "expectedAppealCitations": [
+        "large solitary intramural leiomyoma in the anterior wall of the uterine corpus measuring 8.4 x 7.2 cm",
+        "exerts direct extrinsic compression on the postero-superior wall of the urinary bladder",
+        "severe microcytic hypochromic anemia secondary to chronic blood loss (Hb: 7.4 g/dL)",
+        "managed conservatively by her local doctor with Tab Tranexamic Acid 500mg TID and oral Carbonyl Iron therapy for 3 months, with no resolution"
+      ]
+    }
+  },
+  "expected": {
+    "expectedExtraction": {
+      "patientName": "Smt. Sunita Sharma",
+      "age": 46,
+      "gender": "Female",
+      "policyNumber": "SH/2024/1109283/02",
+      "insurerName": "Star Health and Allied Insurance Co Ltd"
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "severe_anemia_documented",
+        "bladder_pressure_symptoms",
+        "fibroid_size_exceeding_criteria"
+      ],
+      "mustNotFlag": [
+        "pregnancy_related_exclusion"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "D25.1",
+    "expectedCost": 135000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "large solitary intramural leiomyoma in the anterior wall of the uterine corpus measuring 8.4 x 7.2 cm",
+      "exerts direct extrinsic compression on the postero-superior wall of the urinary bladder",
+      "severe microcytic hypochromic anemia secondary to chronic blood loss (Hb: 7.4 g/dL)",
+      "managed conservatively by her local doctor with Tab Tranexamic Acid 500mg TID and oral Carbonyl Iron therapy for 3 months, with no resolution"
+    ]
+  },
+  "failedModules": [
+    "3. Patient Info Extraction",
+    "10. Final Claim Packet"
+  ]
+}

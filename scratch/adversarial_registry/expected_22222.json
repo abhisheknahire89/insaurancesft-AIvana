@@ -1,0 +1,29 @@
+{
+  "expectedExtraction": {
+    "patientName": "Smt. Sunita Sharma",
+    "age": 46,
+    "gender": "Female",
+    "policyNumber": "SH/2024/1109283/02",
+    "insurerName": "Star Health and Allied Insurance Co Ltd"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "severe_anemia_documented",
+      "bladder_pressure_symptoms",
+      "fibroid_size_exceeding_criteria"
+    ],
+    "mustNotFlag": [
+      "pregnancy_related_exclusion"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "D25.1",
+  "expectedCost": 135000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "large solitary intramural leiomyoma in the anterior wall of the uterine corpus measuring 8.4 x 7.2 cm",
+    "exerts direct extrinsic compression on the postero-superior wall of the urinary bladder",
+    "severe microcytic hypochromic anemia secondary to chronic blood loss (Hb: 7.4 g/dL)",
+    "managed conservatively by her local doctor with Tab Tranexamic Acid 500mg TID and oral Carbonyl Iron therapy for 3 months, with no resolution"
+  ]
+}

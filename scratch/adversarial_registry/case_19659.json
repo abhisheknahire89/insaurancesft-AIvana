@@ -1,0 +1,99 @@
+{
+  "id": 19659,
+  "category": "D",
+  "difficulty": "extreme",
+  "focusCategory": "denial_heavy",
+  "diagnosis": "Acute Inferior Wall Myocardial Infarction",
+  "code": "I21.1",
+  "chiefComplaints": "Severe retrosternal crushing chest pain radiating to the left arm for 4 hours, associated with profuse sweating, mild dyspnea, and nausea.",
+  "hpi": "A 58-year-old male, known diabetic and hypertensive, presented to the ER with acute onset retrosternal chest pain starting at 4:00 AM. Pain was crushing in nature, rated 9/10, radiating to left shoulder and jaw, accompanied by diaphoresis. No prior history of stable angina. Patient took Tab. Sorbitrate 5mg sublingually at home with no relief.",
+  "relevantClinicalFindings": "ECG: ST-segment elevation of >2mm in leads II, III, and aVF with reciprocal ST depression in leads I and aVL. Troponin I: Highly positive (1.8 ng/mL, normal <0.04). Echo: Hypokinesia of the inferior wall, Left Ventricular Ejection Fraction (LVEF) of 42%. Serum Creatinine: 1.8 mg/dL (indicating underlying CKD Stage 3, eGFR ~42 ml/min).",
+  "additionalClinicalNotes": "Patient has a history of Type 2 Diabetes Mellitus for 10 years on Oral Hypoglycemic Agents (Metformin 500mg BD) and Essential Hypertension for 8 years on Tab. Amlodipine 5mg OD. Due to chronic kidney disease stage 3 (Creatinine 1.8 mg/dL), contrast-induced nephropathy risk was high, hence after detailed discussion with family, emergency coronary angiography was deferred, and patient was medically managed with injection Tenecteplase 40mg IV bolus, Injection Low Molecular Weight Heparin (Enoxaparin) 0.6ml SC BD, dual antiplatelets (Tab. Aspirin 325mg + Tab. Clopidogrel 300mg loading, followed by maintenance), and intensive ICU monitoring for 48 hours.",
+  "duration": "4 days",
+  "treatmentTakenSoFar": "Thrombolysis with Inj. Tenecteplase, Dual Antiplatelet Therapy (DAPT), LMWH, Atorvastatin 80mg, IV Nitroglycerin infusion.",
+  "reasonForHospitalisation": "Emergency life-threatening cardiovascular event (Acute STEMI) requiring immediate thrombolysis, continuous ECG monitoring in Coronary Care Unit (CCU), and management of high-risk comorbidities (CKD, Hypertension, Diabetes).",
+  "uploadedDocuments": [
+    "er_admission_note",
+    "ecg_report",
+    "cardiac_biomarkers",
+    "echo_cardiography",
+    "discharge_summary"
+  ],
+  "patientName": "Harish Chandra Verma",
+  "patient": {
+    "patientName": "Harish Chandra Verma",
+    "age": 58,
+    "gender": "Male",
+    "mobileNumber": "9845012345"
+  },
+  "insurance": {
+    "policyNumber": "POL-8830129-2023",
+    "insurerName": "Niva Bupa Health Insurance Co. Ltd.",
+    "tpaName": "Health Insurance TPA of India",
+    "sumInsured": 500000,
+    "balanceSumInsured": 485000,
+    "tpaIdCardNumber": "TPA-992013-A"
+  },
+  "vitals": {
+    "bp": "150/90 mmHg",
+    "pulse": "104 bpm",
+    "temp": "98.4 F",
+    "spo2": "93% on room air",
+    "rr": "22/min"
+  },
+  "expected": {
+    "mustFlag": [
+      "acute myocardial infarction",
+      "thrombolysis",
+      "medical management",
+      "renal impairment",
+      "comorbidities"
+    ],
+    "mustNotFlag": [
+      "elective procedure",
+      "cosmetic",
+      "outpatient care"
+    ],
+    "shouldGenerate": true
+  },
+  "notes": "This case tests the TPA appeal process for an acute life-threatening emergency (Acute Inferior Wall MI) which was denied by the TPA claiming that hospitalization was not justified because coronary angioplasty (PTCA) was not performed and patient was managed medically. The appeal must strongly cite the comorbidities (CKD Stage 3, Hypertension, Diabetes Mellitus) and the high risk of Contrast-Induced Nephropathy (CIN) as the clinical rationale for deferring PTCA and choosing intensive medical management in the ICU, proving medical necessity.",
+  "realGap": "TPAs frequently deny medical management claims for Acute MI/ACS by classifying them as 'evaluation/observation only' or 'routine conservative management' if no invasive intervention (PTCA/CABG) is performed. They ignore the critical clinical decision-making where comorbidities like CKD restrict contrast usage, requiring careful ICU stabilization.",
+  "sourceReasoning": "Under IRDAI (Protection of Policyholders' Interests) Regulations and standard clinical guidelines, medical management of an acute STEMI with thrombolytic therapy in a CCU constitutes active emergency life-saving treatment. Denial of such claims on the basis of 'no surgical intervention' violates the definition of active medical hospitalization.",
+  "simulatedDenialReason": "Pre-authorization / Claim is denied. On review of clinical documents, the patient was managed conservatively with medicines only. There was no active surgical intervention (PTCA/CABG) performed during the hospitalization. As the patient was hemodynamically stable, the treatment and evaluation could have been safely managed on an outpatient (OPD) basis. Hence, inpatient hospitalization is not medically justified under Clause 4.4 of the policy terms.",
+  "expectedAnswer": {
+    "expectedExtraction": {
+      "patientName": "Harish Chandra Verma",
+      "age": 58,
+      "gender": "Male",
+      "policyNumber": "POL-8830129-2023",
+      "insurerName": "Niva Bupa Health Insurance Co. Ltd."
+    },
+    "expectedReview": {
+      "mustFlag": [
+        "acute myocardial infarction",
+        "thrombolysis",
+        "medical management",
+        "renal impairment",
+        "comorbidities"
+      ],
+      "mustNotFlag": [
+        "elective procedure",
+        "cosmetic",
+        "outpatient care"
+      ],
+      "shouldGenerate": true
+    },
+    "expectedCode": "I21.1",
+    "expectedCost": 125000,
+    "expectedEligibility": "query",
+    "expectedAppealCitations": [
+      "Diagnosis: Acute Inferior Wall Myocardial Infarction (STEMI)",
+      "ECG findings: ST-segment elevation of >2mm in leads II, III, and aVF",
+      "Troponin I: Highly positive (1.8 ng/mL)",
+      "Comorbidity: Chronic Kidney Disease Stage 3 (Serum Creatinine 1.8 mg/dL)",
+      "High risk of Contrast-Induced Nephropathy (CIN) justified deferral of immediate angiography/PTCA",
+      "Active Emergency Medical Intervention: Thrombolysis with Inj. Tenecteplase 40mg IV"
+    ]
+  },
+  "rawDocumentText": "METRO HEART & KIDNEY INSTITUTE\nOuter Ring Road, Nehru Place, New Delhi - 110019\n\nDISCHARGE SUMMARY\n\nPATIENT NAME: Mr. Harish Chandra Verma\nAGE: 58 Years\nGENDER: Male\nUHID: MH-2023-99812\nADMISSION DATE: 12/10/2023 04:45 AM\nDISCHARGE DATE: 16/10/2023 02:00 PM\nIPD NO: IP-881290\nPOLICY NO: POL-8830129-2023\nINSURER: Niva Bupa Health Insurance Co. Ltd.\nTPA: Health Insurance TPA of India\n\nCHIEF COMPLAINTS AT ADMISSION:\n- Acute onset of crushing retrosternal chest pain radiating to the left arm and jaw for the last 4 hours.\n- Profuse diaphoresis, mild dyspnea (NYHA Class II), and nausea.\n\nHISTORY OF PRESENT ILLNESS:\nMr. Harish Chandra Verma, a 58-year-old male with multiple cardiovascular risk factors, presented to our Emergency Department in a state of acute distress. The pain started suddenly at around 4:00 AM while at rest. It was crushing in nature, rated 9/10, radiating to his left shoulder, left arm, and jaw, accompanied by profuse cold sweating and nausea. The patient has a known history of Type 2 Diabetes Mellitus (on Tab. Metformin 500mg BD for 10 years) and Essential Hypertension (on Tab. Amlodipine 5mg OD for 8 years). No prior history of ischemic heart disease or coronary interventions.\n\nCLINICAL FINDINGS & PHYSICAL EXAMINATION:\n- Appearance: Pale, anxious, diaphoretic, in acute pain.\n- Pulse: 104 bpm, regular, low volume.\n- BP: 150/90 mmHg (Right arm, supine)\n- Temp: 98.4 F\n- Respiratory Rate: 22/min\n- SpO2: 93% on room air, improved to 98% on 2L oxygen via nasal cannulae.\n- Cardiovascular System: S1, S2 heard, no murmurs. Mild basal crackles present in bilateral lung bases.\n\nINVESTIGATIONS:\n1. Electrocardiogram (ECG) at ER: ST-segment elevation of >2mm in inferior leads II, III, and aVF with reciprocal ST depression in I and aVL, indicative of Acute Inferior Wall Myocardial Infarction (STEMI).\n2. Cardiac Biomarkers: Troponin I was highly elevated at 1.8 ng/mL (Normal <0.04 ng/mL). CPK-MB was 48 U/L.\n3. Renal Function Test: Serum Creatinine was 1.8 mg/dL, Blood Urea 46 mg/dL. Calculated eGFR ~42 ml/min/1.73 m2, pointing to underlying Chronic Kidney Disease (Stage 3).\n4. Echocardiography: Hypokinesia of the inferior myocardial wall, mild mitral regurgitation, Left Ventricular Ejection Fraction (LVEF) calculated at 42%.\n5. Hemoglobin: 11.8 g/dL, Total Leucocyte Count: 11,200/cu.mm, Platelet Count: 2.1 Lakhs/cu.mm.\n\nCLINICAL DECISION MAKING & COURSE IN THE HOSPITAL:\nUpon arrival in the ER, the patient was immediately loaded with Tab. Aspirin 325mg and Tab. Clopidogrel 300mg orally. In view of the acute Inferior Wall STEMI, emergency coronary angiography was initially planned. However, given the patient's elevated Serum Creatinine of 1.8 mg/dL (CKD Stage 3), there was an extremely high clinical risk of inducing Contrast-Induced Nephropathy (CIN), which could lead to acute-on-chronic renal failure requiring emergent hemodialysis.\n\nFollowing a detailed multidisciplinary consultation between Dr. Amit Shah (Chief Interventional Cardiologist) and the Nephrology team, and with the informed consent of the family, a clinical decision was made to defer immediate invasive angiography. Instead, emergency pharmacologic reperfusion therapy was initiated. The patient was thrombolyzed with Injection Tenecteplase 40mg IV bolus administered over 10 seconds at 05:15 AM under strict cardiac monitoring. Thrombolysis was successful, evidenced by >50% reduction in ST-segment elevation within 90 minutes and relief of chest pain.\n\nThe patient was transferred to the Coronary Care Unit (CCU) for continuous hemodynamic monitoring. He was started on Injection Low Molecular Weight Heparin (Enoxaparin) 0.6ml SC twice daily for 4 days, Tab. Aspirin 75mg OD, Tab. Clopidogrel 75mg OD, Tab. Atorvastatin 80mg OD, and Tab. Metoprolol 25mg OD. Serial serum creatinine levels were monitored closely to avoid further renal deterioration (remained stable at 1.7 - 1.8 mg/dL throughout the stay). His blood sugar levels were managed using a short-acting subcutaneous insulin sliding scale. \n\nBy Day 3, the patient was hemodynamically stable, asymptomatic, and free of chest pain. He was shifted to the step-down ward on Day 4 and is now being discharged in a stable clinical state with advice on strict medical adherence and regular follow-up.\n\nTREATMENT GIVEN:\n1. Inj. Tenecteplase 40mg IV Bolus (Thrombolytic)\n2. Inj. Enoxaparin 0.6ml SC BD for 4 days\n3. Tab. Aspirin 75mg OD\n4. Tab. Clopidogrel 75mg OD\n5. Tab. Atorvastatin 80mg OD\n6. Tab. Metoprolol 25mg OD\n7. Tab. Metformin 500mg BD\n8. Tab. Pantocid 40mg OD\n\nADVICE ON DISCHARGE:\n- Tab. Aspirin 75mg OD (After breakfast)\n- Tab. Clopidogrel 75mg OD (After lunch)\n- Tab. Atorvastatin 80mg HS (At bedtime)\n- Tab. Metoprolol Succinate 25mg OD\n- Tab. Metformin 500mg BD\n- Tab. Torsemide 10mg OD (Morning)\n- Restrict fluid intake to 1.5 Liters per 24 hours.\n- Avoid strenuous physical activity.\n- Follow up in Cardiology OPD with Dr. Amit Shah after 1 week.\n- Emergency Contact: Return to ER immediately if chest pain, severe breathlessness, or cold sweat recurs.\n\nDr. Amit Shah, MD, DM (Cardiology)\nSenior Consultant Interventional Cardiologist\nMetro Heart & Kidney Institute, New Delhi"
+}

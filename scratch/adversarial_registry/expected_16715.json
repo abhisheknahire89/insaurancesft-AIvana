@@ -1,0 +1,32 @@
+{
+  "expectedExtraction": {
+    "patientName": "Devika Nair",
+    "age": 66,
+    "gender": "Female",
+    "policyNumber": "SI/2024/11092837",
+    "insurerName": "Star Health and Allied Insurance Co Ltd"
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "conservative management documentation",
+      "Stage III Chronic Kidney Disease",
+      "Kellgren-Lawrence Grade IV",
+      "nephrologist clearance"
+    ],
+    "mustNotFlag": [
+      "acute traumatic fracture",
+      "septic arthritis",
+      "unilateral primary osteoarthritis of left knee"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "M17.1",
+  "expectedCost": 245000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Patient has undergone extensive conservative management including physiotherapy for 6 months and an intra-articular Hyaluronic acid injection in April 2023 with no sustained relief.",
+    "Weight-bearing radiographs demonstrate complete loss of joint space in the medial compartment, subchondral sclerosis, and marginal osteophytes, confirming Kellgren-Lawrence Grade IV Osteoarthritis.",
+    "Patient has comorbid Stage IIIa Chronic Kidney Disease (eGFR 44 mL/min/1.73m2, Creatinine 1.48 mg/dL) which strictly contraindicates long-term NSAID therapy, making conservative medical management no longer a viable or safe option.",
+    "Nephrology clearance has been formally obtained from Dr. S. Ramakrishnan, DM (Nephrology), who declared the patient fit for surgery under high-risk protocol with specific instructions to avoid post-operative NSAIDs."
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "expectedExtraction": {
+    "patientName": "Harish Chandra Verma",
+    "age": 58,
+    "gender": "Male",
+    "policyNumber": "POL-8830129-2023",
+    "insurerName": "Niva Bupa Health Insurance Co. Ltd."
+  },
+  "expectedReview": {
+    "mustFlag": [
+      "acute myocardial infarction",
+      "thrombolysis",
+      "medical management",
+      "renal impairment",
+      "comorbidities"
+    ],
+    "mustNotFlag": [
+      "elective procedure",
+      "cosmetic",
+      "outpatient care"
+    ],
+    "shouldGenerate": true
+  },
+  "expectedCode": "I21.1",
+  "expectedCost": 125000,
+  "expectedEligibility": "query",
+  "expectedAppealCitations": [
+    "Diagnosis: Acute Inferior Wall Myocardial Infarction (STEMI)",
+    "ECG findings: ST-segment elevation of >2mm in leads II, III, and aVF",
+    "Troponin I: Highly positive (1.8 ng/mL)",
+    "Comorbidity: Chronic Kidney Disease Stage 3 (Serum Creatinine 1.8 mg/dL)",
+    "High risk of Contrast-Induced Nephropathy (CIN) justified deferral of immediate angiography/PTCA",
+    "Active Emergency Medical Intervention: Thrombolysis with Inj. Tenecteplase 40mg IV"
+  ]
+}

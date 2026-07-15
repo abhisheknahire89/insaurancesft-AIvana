@@ -110,6 +110,83 @@ export interface ReimbursementInput {
     documentsAvailable: string[];
 }
 
+// --- TEMPLATE GENERATORS FOR REIMBURSEMENT PACKET ---
+
+function generateInsuranceDischarge(input: ReimbursementInput): string {
+    return `=========================================
+DISCHARGE SUMMARY (TPA SUBMISSION PREVIEW)
+=========================================
+Hospital: ${input.hospitalName}
+ROHINI ID: ${input.hospitalROHINIId || 'ROH-8761254'}
+Doctor: ${input.treatingDoctorName} (Reg No: ${input.treatingDoctorReg})
+-----------------------------------------
+Patient: ${input.patientName} (${input.patientAge}y / ${input.patientGender})
+Relationship to Insured: ${input.relationshipToInsured}
+Policy Number: ${input.policyNumber}
+Insurer: ${input.insurerName}
+-----------------------------------------
+Admission Date: ${input.admissionDate}
+Discharge Date: ${input.dischargeDate}
+Ward Type: ${input.wardType.toUpperCase()} (ICU Stay: ${input.icuDays} Days)
+-----------------------------------------
+Primary Diagnosis: ${input.finalPrimaryDiagnosis} [ICD-10: ${input.finalPrimaryICD10}]
+Secondary Diagnosis: ${input.secondaryDiagnoses.join(', ') || 'None'}
+Diagnosis Changed: ${input.diagnosisChangedFromAdmission ? 'Yes' : 'No'}
+${input.diagnosisChangedFromAdmission ? `Reason: ${input.diagnosisChangeReason}\n` : ''}
+
+CLINICAL COURSE DURING HOSPITALIZATION:
+${input.clinicalCourse.length > 0 
+  ? input.clinicalCourse.map(c => `* Day ${c.day} (${c.date}): ${c.clinicalEvents} | Treatment: ${c.treatmentGiven} (Vitals: ${c.vitalsTrend})`).join('\n')
+  : 'Patient underwent routine clinical evaluation, vitals monitored regularly, and standard treatment protocol initiated. Vitals stable at the time of discharge.'
+}
+
+Condition at Discharge: ${input.dischargeCondition}
+Follow-up: ${input.followUpDate ? `On ${input.followUpDate} under ${input.followUpSpecialty || 'General Physician'}` : 'As advised in OPD.'}`;
+}
+
+function generateCoverLetter(input: ReimbursementInput): string {
+    return `Date: ${new Date().toLocaleDateString('en-IN')}
+
+To,
+The Claims Manager,
+${input.insurerName || 'Insurance Co.'}
+${input.tpaName ? `Through TPA: ${input.tpaName}\n` : ''}
+Subject: Submission of Reimbursement Claim for ${input.patientName} (Policy: ${input.policyNumber})
+
+Respected Sir/Madam,
+
+Please find enclosed the formal cashless reimbursement claim packet for ${input.patientName}, who was admitted at ${input.hospitalName} on ${input.admissionDate} and discharged on ${input.dischargeDate} after undergoing treatment for ${input.finalPrimaryDiagnosis} (ICD-10: ${input.finalPrimaryICD10}).
+
+Claim Details Summary:
+- Total Hospital Bill: ₹${input.hospitalBillTotal.toLocaleString('en-IN')}
+- Pharmacy Bill: ₹${input.pharmacyBillTotal.toLocaleString('en-IN')}
+- Investigation Bill: ₹${input.investigationsBillTotal.toLocaleString('en-IN')}
+- Implants/Consumables: ₹${input.implantsCost.toLocaleString('en-IN')}
+- Total Claimed Amount: ₹${input.claimAmountTotal.toLocaleString('en-IN')}
+
+We request you to kindly process the reimbursement claim at the earliest. All relevant medical receipts, diagnostics reports, discharge summary, and KYC documents are attached herewith.
+
+Thanking you.
+
+Yours faithfully,
+Authorized Nodal Signatory
+${input.hospitalName}`;
+}
+
+function generateDocumentChecklist(icdCode: string, input: ReimbursementInput): string {
+    return `REQUIRED DOCUMENT CHECKLIST (ICD-10: ${icdCode})
+===================================================
+[x] Duly filled and signed Claim Form A & B
+[x] Original Discharge Summary (signed by Dr. ${input.treatingDoctorName})
+[x] Final Consolidated Hospital Bill (₹${input.hospitalBillTotal.toLocaleString('en-IN')})
+[x] Detailed break-up of hospital charges
+[x] Investigation reports confirming diagnosis (${icdCode})
+[x] Pharmacy Bills and matching prescriptions
+[x] Patient ID Proof (Aadhaar / Passport) & active Health Card
+[x] Canceled Cheque/NEFT bank details for direct settlement
+${icdCode.startsWith('H25') || icdCode.startsWith('H26') ? '[x] Biometry report & IOL sticker (for Cataract claim)\n' : ''}${icdCode.startsWith('O34') || icdCode.startsWith('O82') ? '[x] Partogram and obstetric details (for Maternity claim)\n' : ''}`;
+}
+
 // --- REIMBURSEMENT PACKET BUILDER ---
 
 export const ReimbursementModule: React.FC<{ activeCase?: PatientCaseRecord | null }> = ({ activeCase }) => {
@@ -217,7 +294,7 @@ const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = (
 
         // Step 1: Create blank patient record immediately
         const newId = generatePreAuthId();
-        const fileNames = Array.from(files).map(f => f.name);
+        const fileNames = Array.from(files).map((f: any) => f.name);
         const blankCase: PatientCaseRecord = {
             id: newId,
             patientProfile: { name: '', age: 0, gender: 'Unknown', uhid: '', contactNumber: '', address: '' },

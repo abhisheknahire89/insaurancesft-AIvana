@@ -22,6 +22,11 @@ export interface ExtendedEvidenceReviewReport extends EvidenceReviewReport {
     matched: boolean;
     details: string;
   }>;
+  medicalNecessityScore?: number;
+  overallScore?: number;
+  tpaDecision?: {
+    recommendation: 'APPROVE' | 'DENY' | 'PENDING' | 'QUERY';
+  };
 }
 
 export interface PriorAuthInput {

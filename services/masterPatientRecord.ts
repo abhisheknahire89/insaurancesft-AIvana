@@ -10,14 +10,20 @@ export interface PatientProfile {
     age: number;
     gender: string;
     contact: string;
+    contactNumber?: string;
+    address?: string;
     uhid?: string;
 }
 
 export interface InsuranceDetails {
     insurer: string;
+    insurerName?: string;
     policyNumber: string;
     sumInsured: number;
     TPA: string;
+    policyType?: string;
+    roomRentLimit?: number;
+    icuRentLimit?: number;
 }
 
 export interface EncounterDetails {
@@ -88,7 +94,8 @@ export interface AppealEntry {
 export interface AuditLogEntry {
     timestamp: string;
     action: string;
-    user: string;
+    user?: string;
+    actor?: string;
     details?: any;
 }
 
@@ -101,6 +108,8 @@ export interface TimelineEvent {
 export type CaseStage =
     | 'admission'
     | 'docs_uploaded'
+    | 'documents_uploaded'
+    | 'patient_identified'
     | 'ai_processing'
     | 'hospital_review'
     | 'ready_to_submit'

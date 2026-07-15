@@ -155,6 +155,10 @@ export interface PatientCaseRecord {
     timeline: TimelineEvent[];
     currentStage: CaseStage; // Added workflow stage schema
     
+    // QR self-registration metadata
+    intakeChannel?: 'qr_scan' | 'manual' | 'upload' | string;
+    sessionToken?: string;
+
     // Legacy support field containing full state
     rawPreAuthRecord?: any;
     createdAt: string;

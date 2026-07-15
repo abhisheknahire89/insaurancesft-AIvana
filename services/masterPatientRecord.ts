@@ -9,18 +9,19 @@ export interface PatientProfile {
     name: string;
     age: number;
     gender: string;
-    contact: string;
+    contact?: string;
     contactNumber?: string;
     address?: string;
     uhid?: string;
 }
 
 export interface InsuranceDetails {
-    insurer: string;
+    insurer?: string;
     insurerName?: string;
     policyNumber: string;
     sumInsured: number;
-    TPA: string;
+    TPA?: string;
+    tpaName?: string;
     policyType?: string;
     roomRentLimit?: number;
     icuRentLimit?: number;

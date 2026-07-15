@@ -509,19 +509,26 @@ export async function runPriorAuthWorkflow(input: PriorAuthInput): Promise<Prior
         diagnosis: mappedDx,
         icd10Code: mappedICD,
         icd10Description: 'Confirmed',
+        probability: 90,
+        reasoning: 'Extracted from clinical note via AI parsing.',
         isSelected: true
       }],
       selectedDiagnosisIndex: 0,
       chiefComplaints: input.clinicalNote,
       relevantClinicalFindings: input.clinicalNote,
       proposedLineOfTreatment: {
-        surgical: isSurgical
+        medical: !isSurgical,
+        surgical: isSurgical,
+        intensiveCare: false,
+        investigation: false,
+        nonAllopathic: false
       },
       vitals: {
         spo2: '96',
         temp: '102',
         pulse: '110',
-        bp: '120/80'
+        bp: '120/80',
+        rr: '18'
       }
     },
     admission: {

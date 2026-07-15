@@ -191,16 +191,50 @@ export const VoiceDictationMode: React.FC<VoiceDictationModeProps> = ({
                     </div>
                 )}
 
+                {/* Textarea for typing/pasting note directly */}
+                <div className="text-left space-y-1.5 mt-4">
+                    <label className="text-[10px] font-bold text-opd-primary uppercase tracking-wider font-lora">
+                        Or type / paste patient clinical note directly:
+                    </label>
+                    <textarea
+                        value={transcript}
+                        onChange={e => {
+                            setTranscript(e.target.value);
+                            if (phase === 'error') setPhase('idle');
+                        }}
+                        placeholder="Type or paste doctor's notes (e.g. Ramesh Kumar, 48, Male. Star Health. Admitted for acute appendicitis. Vitals BP 120/80...)"
+                        rows={5}
+                        className="w-full bg-white border border-opd-border text-opd-text-primary text-xs rounded-xl p-3 focus:ring-1 focus:ring-opd-primary focus:border-opd-primary outline-none resize-none font-mono leading-relaxed shadow-sm"
+                    />
+                </div>
+
                 <div className="flex gap-3">
-                    <button onClick={onCancel}
-                        className="btn-secondary flex-1 py-2"
-                        type="button">
-                        ← Back
-                    </button>
-                    <button onClick={startRecording}
-                        className="btn-primary flex-1 py-2 bg-red-700 hover:bg-red-600 text-white font-semibold shadow-sm">
-                        🎙️ Start Recording
-                    </button>
+                    {transcript.trim() ? (
+                        <>
+                            <button onClick={() => setTranscript('')}
+                                className="btn-secondary flex-1 py-2"
+                                type="button">
+                                🗑️ Clear Text
+                            </button>
+                            <button onClick={processWithAI}
+                                className="btn-primary flex-1 py-2 bg-opd-primary text-white font-semibold shadow-sm"
+                                type="button">
+                                🧠 Process with AI
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button onClick={onCancel}
+                                className="btn-secondary flex-1 py-2"
+                                type="button">
+                                ← Back
+                            </button>
+                            <button onClick={startRecording}
+                                className="btn-primary flex-1 py-2 bg-red-700 hover:bg-red-600 text-white font-semibold shadow-sm">
+                                🎙️ Start Recording
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         );

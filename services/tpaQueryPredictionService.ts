@@ -1,5 +1,6 @@
 import { PatientCaseRecord } from './masterPatientRecord';
 import { queryMedGemma, tpaQuerySchema } from './llmClient';
+import { getInsurerPolicyRules } from './policyConfigService';
 
 export interface PredictedQuery {
     category: 'billing' | 'clinical' | 'administrative' | 'policy';
@@ -21,6 +22,7 @@ export async function predictTpaQueries(caseRecord: PatientCaseRecord): Promise<
 
     // Extract values
     const sumInsured = caseRecord.insuranceDetails?.sumInsured || rawRecord.insurance?.sumInsured || 500000;
+    const insurerName = caseRecord.insuranceDetails?.insurer || rawRecord.insurance?.insurerName || '';
     const roomRentPerDay = rawRecord.costEstimate?.roomRentPerDay || 0;
     const roomCategory = (rawRecord.admission?.roomCategory || '').toLowerCase();
     const expectedRoomDays = rawRecord.costEstimate?.expectedRoomDays || rawRecord.admission?.expectedDaysInRoom || 0;
@@ -36,7 +38,13 @@ export async function predictTpaQueries(caseRecord: PatientCaseRecord): Promise<
     // RULE 1: Room Rent Capping & Proportional Deductions
     if (roomRentPerDay > 0 && sumInsured > 0) {
         const isIcu = roomCategory.includes('icu') || roomCategory.includes('iccu') || roomCategory.includes('nicu');
-        const capPercentage = isIcu ? 0.02 : 0.01;
+        
+        // Resolve cap percentages from config
+        const policyRules = getInsurerPolicyRules();
+        const matchedRule = policyRules.find(r => insurerName.toLowerCase().includes(r.insurerName.toLowerCase())) || 
+                            { wardCapPercent: 0.01, icuCapPercent: 0.02 };
+                            
+        const capPercentage = isIcu ? matchedRule.icuCapPercent : matchedRule.wardCapPercent;
         const rentCap = sumInsured * capPercentage;
         
         if (roomRentPerDay > rentCap) {

@@ -14,6 +14,8 @@ import { BillingCoderView } from './TpaPlatform/BillingCoderView';
 import { WorkflowOrchestrator } from './TpaPlatform/WorkflowOrchestrator';
 import { DenialQueue } from './PostSubmission/DenialQueue';
 import { simulateInsurerDecision } from '../services/simulatedInsurerService';
+import { getInsurerPolicyRules, saveInsurerPolicyRules, PolicyRuleConfig } from '../services/policyConfigService';
+import { getPMJAYPackagesList, savePMJAYPackagesList, PMJAYPackage } from '../services/pmjayService';
 
 // Import Master Patient Record functions
 import {
@@ -2267,6 +2269,263 @@ const TpaQueryPredictionView: React.FC<{ activeCase: PatientCaseRecord | null }>
     );
 };
 
+const AdminPolicyConfigView: React.FC = () => {
+    const [activeTab, setActiveTab] = useState<'insurer' | 'pmjay' | 'raw'>('insurer');
+    const [policies, setPolicies] = useState<PolicyRuleConfig[]>([]);
+    const [pmjayPkgs, setPmjayPkgs] = useState<PMJAYPackage[]>([]);
+    const [rawJsonText, setRawJsonText] = useState('');
+    const [jsonType, setJsonType] = useState<'insurer' | 'pmjay'>('insurer');
+    const [saveStatus, setSaveStatus] = useState('');
+
+    useEffect(() => {
+        setPolicies(getInsurerPolicyRules());
+        setPmjayPkgs(getPMJAYPackagesList());
+    }, []);
+
+    const showSaveSuccess = () => {
+        setSaveStatus('✓ Saved successfully!');
+        setTimeout(() => setSaveStatus(''), 2500);
+    };
+
+    const handleSavePolicies = (updated: PolicyRuleConfig[]) => {
+        setPolicies(updated);
+        saveInsurerPolicyRules(updated);
+        showSaveSuccess();
+    };
+
+    const handleSavePmjay = (updated: PMJAYPackage[]) => {
+        setPmjayPkgs(updated);
+        savePMJAYPackagesList(updated);
+        showSaveSuccess();
+    };
+
+    const handlePolicyChange = (index: number, field: keyof PolicyRuleConfig, val: any) => {
+        const copy = [...policies];
+        copy[index] = { ...copy[index], [field]: val };
+        handleSavePolicies(copy);
+    };
+
+    const handlePmjayChange = (index: number, field: keyof PMJAYPackage, val: any) => {
+        const copy = [...pmjayPkgs];
+        copy[index] = { ...copy[index], [field]: val };
+        handleSavePmjay(copy);
+    };
+
+    const handleJsonCommit = () => {
+        try {
+            const parsed = JSON.parse(rawJsonText);
+            if (jsonType === 'insurer') {
+                const arr = Array.isArray(parsed) ? parsed : parsed.policies;
+                if (!Array.isArray(arr)) throw new Error('Data must be an array of insurer rules');
+                handleSavePolicies(arr);
+            } else {
+                const arr = Array.isArray(parsed) ? parsed : parsed.packages;
+                if (!Array.isArray(arr)) throw new Error('Data must be an array of packages');
+                handleSavePmjay(arr);
+            }
+            alert('JSON committed and applied successfully!');
+            setRawJsonText('');
+        } catch (e: any) {
+            alert('Invalid JSON structure: ' + e.message);
+        }
+    };
+
+    const handleReset = () => {
+        if (confirm('Are you sure you want to clear custom rules and reset to defaults?')) {
+            localStorage.removeItem('aivana_insurer_policies');
+            localStorage.removeItem('aivana_pmjay_packages');
+            setPolicies(getInsurerPolicyRules());
+            setPmjayPkgs(getPMJAYPackagesList());
+            setSaveStatus('Defaults restored!');
+            setTimeout(() => setSaveStatus(''), 2500);
+        }
+    };
+
+    return (
+        <div className="card-premium space-y-6 text-left">
+            <div className="flex justify-between items-center border-b border-opd-border pb-3">
+                <div>
+                    <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 14: Policy & Scheme Configuration</h2>
+                    <p className="text-xs text-opd-text-secondary mt-0.5">Manage insurer rent caps, co-pays, and empanelled government scheme rates.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                    {saveStatus && <span className="text-xs font-bold text-emerald-600 animate-pulse">{saveStatus}</span>}
+                    <button onClick={handleReset} className="text-xs font-bold text-red-700 border border-red-200 px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 transition shadow-sm" type="button">Reset to Defaults</button>
+                </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex bg-opd-input-bg border border-opd-border rounded-xl p-1 gap-1 max-w-md">
+                <button onClick={() => setActiveTab('insurer')} className={`flex-1 text-xs py-2 rounded-lg font-bold transition ${activeTab === 'insurer' ? 'bg-opd-primary text-white shadow' : 'text-opd-text-secondary hover:text-opd-primary'}`} type="button">Private Insurer Rules</button>
+                <button onClick={() => setActiveTab('pmjay')} className={`flex-1 text-xs py-2 rounded-lg font-bold transition ${activeTab === 'pmjay' ? 'bg-opd-primary text-white shadow' : 'text-opd-text-secondary hover:text-opd-primary'}`} type="button">Govt PM-JAY Packages</button>
+                <button onClick={() => setActiveTab('raw')} className={`flex-1 text-xs py-2 rounded-lg font-bold transition ${activeTab === 'raw' ? 'bg-opd-primary text-white shadow' : 'text-opd-text-secondary hover:text-opd-primary'}`} type="button">JSON Upload / Editor</button>
+            </div>
+
+            {/* TAB 1: Insurer Rules */}
+            {activeTab === 'insurer' && (
+                <div className="overflow-x-auto border border-opd-border rounded-2xl bg-white shadow-sm">
+                    <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr className="bg-opd-input-bg text-opd-text-secondary font-bold border-b border-opd-border uppercase tracking-wider text-[9px] font-lora">
+                                <th className="py-3 px-4">Insurance Company</th>
+                                <th className="py-3 px-4">Ward Cap (%)</th>
+                                <th className="py-3 px-4">ICU Cap (%)</th>
+                                <th className="py-3 px-4">Co-Pay (%)</th>
+                                <th className="py-3 px-4">Waiting Period (Mo)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {policies.map((p, idx) => (
+                                <tr key={idx} className="border-b border-opd-border hover:bg-gray-50/55 transition">
+                                    <td className="py-3 px-4 font-semibold text-opd-text-primary">{p.insurerName}</td>
+                                    <td className="py-3 px-4">
+                                        <input
+                                            type="number"
+                                            step="0.001"
+                                            value={p.wardCapPercent}
+                                            onChange={e => handlePolicyChange(idx, 'wardCapPercent', +e.target.value)}
+                                            className="w-16 border rounded p-1 font-mono text-center font-bold bg-gray-50 focus:bg-white"
+                                        />
+                                        <span className="ml-1 text-[10px] text-gray-400">({(p.wardCapPercent * 100).toFixed(1)}%)</span>
+                                    </td>
+                                    <td className="py-3 px-4">
+                                        <input
+                                            type="number"
+                                            step="0.001"
+                                            value={p.icuCapPercent}
+                                            onChange={e => handlePolicyChange(idx, 'icuCapPercent', +e.target.value)}
+                                            className="w-16 border rounded p-1 font-mono text-center font-bold bg-gray-50 focus:bg-white"
+                                        />
+                                        <span className="ml-1 text-[10px] text-gray-400">({(p.icuCapPercent * 100).toFixed(1)}%)</span>
+                                    </td>
+                                    <td className="py-3 px-4">
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            value={p.coPayPercent}
+                                            onChange={e => handlePolicyChange(idx, 'coPayPercent', +e.target.value)}
+                                            className="w-16 border rounded p-1 font-mono text-center font-bold bg-gray-50 focus:bg-white"
+                                        />
+                                        <span className="ml-1 text-[10px] text-gray-400">({(p.coPayPercent * 100).toFixed(0)}%)</span>
+                                    </td>
+                                    <td className="py-3 px-4">
+                                        <input
+                                            type="number"
+                                            value={p.waitingPeriodMonths}
+                                            onChange={e => handlePolicyChange(idx, 'waitingPeriodMonths', +e.target.value)}
+                                            className="w-16 border rounded p-1 font-mono text-center font-bold bg-gray-50 focus:bg-white"
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+
+            {/* TAB 2: PMJAY Packages */}
+            {activeTab === 'pmjay' && (
+                <div className="space-y-3">
+                    <div className="overflow-x-auto border border-opd-border rounded-2xl bg-white shadow-sm max-h-[45vh] overflow-y-auto custom-scrollbar">
+                        <table className="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr className="bg-opd-input-bg text-opd-text-secondary font-bold border-b border-opd-border uppercase tracking-wider text-[9px] font-lora sticky top-0 z-10">
+                                    <th className="py-3 px-4 bg-opd-input-bg">ICD Prefix</th>
+                                    <th className="py-3 px-4 bg-opd-input-bg">HBP Package Code</th>
+                                    <th className="py-3 px-4 bg-opd-input-bg">Package Name</th>
+                                    <th className="py-3 px-4 bg-opd-input-bg">Empanelled Package Rate (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {pmjayPkgs.map((pkg, idx) => (
+                                    <tr key={idx} className="border-b border-opd-border hover:bg-gray-50/55 transition">
+                                        <td className="py-3 px-4 font-mono font-bold text-opd-primary">{pkg.icdPrefix}</td>
+                                        <td className="py-3 px-4 font-mono font-semibold text-opd-text-secondary">{pkg.packageCode}</td>
+                                        <td className="py-3 px-4 text-opd-text-primary font-semibold">{pkg.packageName}</td>
+                                        <td className="py-3 px-4">
+                                            <input
+                                                type="number"
+                                                value={pkg.rate}
+                                                onChange={e => handlePmjayChange(idx, 'rate', +e.target.value)}
+                                                className="w-24 border rounded p-1 font-mono text-right font-bold bg-gray-50 focus:bg-white pr-2 text-emerald-800"
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
+
+            {/* TAB 3: Raw JSON Upload */}
+            {activeTab === 'raw' && (
+                <div className="space-y-4">
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2 text-xs">
+                            <label className="font-bold text-opd-text-primary">Configuration Mode:</label>
+                            <select
+                                value={jsonType}
+                                onChange={e => setJsonType(e.target.value as any)}
+                                className="border rounded-lg p-1.5 bg-gray-50 focus:outline-none focus:border-opd-primary text-xs font-semibold"
+                            >
+                                <option value="insurer">Private Insurer Capping Rules</option>
+                                <option value="pmjay">Government PM-JAY Code Packages</option>
+                            </select>
+                        </div>
+                        
+                        {/* File Upload simulator trigger */}
+                        <div className="flex items-center gap-2">
+                            <label className="btn-secondary px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                                📤 Upload Scheme JSON
+                                <input
+                                    type="file"
+                                    accept=".json"
+                                    className="hidden"
+                                    onChange={e => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onload = (evt) => {
+                                                setRawJsonText(evt.target?.result as string || '');
+                                            };
+                                            reader.readAsText(file);
+                                        }
+                                    }}
+                                />
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Paste or Modify configuration JSON directly:</label>
+                        <textarea
+                            value={rawJsonText}
+                            onChange={e => setRawJsonText(e.target.value)}
+                            placeholder={
+                                jsonType === 'insurer' 
+                                ? '[\n  {\n    "insurerName": "Star Health...",\n    "wardCapPercent": 0.01,\n    "icuCapPercent": 0.02,\n    "coPayPercent": 0.0,\n    "waitingPeriodMonths": 24\n  }\n]'
+                                : '[\n  {\n    "icdPrefix": "H25",\n    "packageCode": "HBP-2.1.1",\n    "packageName": "Cataract Phaco...",\n    "rate": 10000\n  }\n]'
+                            }
+                            rows={12}
+                            className="w-full bg-white border border-opd-border text-opd-text-primary text-xs rounded-xl p-4 focus:ring-1 focus:ring-opd-primary focus:border-opd-primary outline-none font-mono leading-relaxed"
+                        />
+                    </div>
+
+                    <button
+                        onClick={handleJsonCommit}
+                        disabled={!rawJsonText.trim()}
+                        className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 text-white disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
+                        type="button"
+                    >
+                        ✓ Commit Configuration Changes
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+};
+
 const ClaimWorkflowTimelineView: React.FC<{ activeCase: PatientCaseRecord | null }> = ({ activeCase }) => {
     return (
         <div className="card-premium space-y-6 text-left">
@@ -2632,6 +2891,7 @@ export const InsuranceModule: React.FC = () => {
         { id: 11, name: '11. Claim Packet Preview', icon: <FileText className="w-4 h-4" />, type: 'real' },
         { id: 12, name: '12. Analytics & Accuracy', icon: <TrendingUp className="w-4 h-4" />, type: 'real' },
         { id: 13, name: '13. Denial Queue', icon: <AlertCircle className="w-4 h-4" />, type: 'real' },
+        { id: 14, name: '14. Policy & Scheme Config', icon: <Database className="w-4 h-4" />, type: 'real' },
     ];
 
     // Detect ?register=TOKEN in URL → show patient-facing form
@@ -2788,6 +3048,7 @@ export const InsuranceModule: React.FC = () => {
                                 {selectedScreen === 11 && <ClaimPacketPreviewView activeCase={activeCase} />}
                                 {selectedScreen === 12 && <AnalyticsView />}
                                 {selectedScreen === 13 && <DenialQueue />}
+                                {selectedScreen === 14 && <AdminPolicyConfigView />}
                                 {/* ── Next / Prev navigation ── */}
                                 <div className="flex items-center justify-between pt-2 border-t border-opd-border">
                                     <button

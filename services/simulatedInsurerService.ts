@@ -2,6 +2,7 @@ import { PatientCaseRecord, mapCaseToPreAuth } from './masterPatientRecord';
 import { computeReadiness } from '../utils/readinessScore';
 import { checkMandatoryGaps } from '../config/mandatoryItems';
 import { getRequiredDocuments } from '../utils/documentRequirements';
+import { getInsurerPolicyRules } from './policyConfigService';
 
 export interface SimulatedDecision {
   outcome: 'approved' | 'partial_approved' | 'query' | 'denied';
@@ -51,8 +52,15 @@ export function simulateInsurerDecision(
 
   // 2. Room Rent Capping Rules
   const sumInsured = record.insuranceDetails.sumInsured || 500000;
-  const normalCap = sumInsured * 0.01;
-  const icuCap = sumInsured * 0.02;
+  const insurerName = record.insuranceDetails.insurer || '';
+  
+  // Resolve rule from config
+  const policyRules = getInsurerPolicyRules();
+  const matchedRule = policyRules.find(r => insurerName.toLowerCase().includes(r.insurerName.toLowerCase())) || 
+                      { wardCapPercent: 0.01, icuCapPercent: 0.02 };
+                      
+  const normalCap = sumInsured * matchedRule.wardCapPercent;
+  const icuCap = sumInsured * matchedRule.icuCapPercent;
   
   // Get room category
   const wardType = record.encounters[0]?.wardType || preAuth.admission?.roomCategory || 'General Ward';

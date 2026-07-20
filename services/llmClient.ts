@@ -188,6 +188,66 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string, 
   }
 }
 
+export async function queryMultimodalLlm(
+  prompt: string,
+  files: Array<{ base64Data: string; mimeType: string }>,
+  systemInstruction?: string
+): Promise<string> {
+  const qwenUrl = (import.meta as any).env?.VITE_QWEN_ENDPOINT_URL || process.env.VITE_QWEN_ENDPOINT_URL;
+  const endpointUrl = qwenUrl || (import.meta as any).env?.VITE_MEDGEMMA_ENDPOINT_URL || process.env.VITE_MEDGEMMA_ENDPOINT_URL;
+
+  if (endpointUrl) {
+    const qwenModelDefault = 'qwen2.5:7b';
+    const qwenModelOverride = (import.meta as any).env?.VITE_QWEN_MODEL_NAME || process.env.VITE_QWEN_MODEL_NAME;
+    const modelName = qwenUrl
+      ? (qwenModelOverride || qwenModelDefault)
+      : 'medgemma:4b';
+    const qwenApiKey = (import.meta as any).env?.VITE_QWEN_API_KEY || process.env.VITE_QWEN_API_KEY || '';
+
+    // Standard OpenAI multimodal format
+    const contentArray: any[] = [{ type: 'text', text: prompt }];
+    for (const file of files) {
+      let cleanBase64 = file.base64Data;
+      if (cleanBase64.includes(',')) {
+        cleanBase64 = cleanBase64.split(',')[1];
+      }
+      contentArray.push({
+        type: 'image_url',
+        image_url: {
+          url: `data:${file.mimeType};base64,${cleanBase64}`
+        }
+      });
+    }
+
+    try {
+      const response = await axios.post(endpointUrl, {
+        model: modelName,
+        messages: [
+          ...(systemInstruction ? [{ role: 'system', content: systemInstruction }] : []),
+          { role: 'user', content: contentArray }
+        ],
+        temperature: 0.1,
+        stream: false
+      }, {
+        timeout: 600000,
+        ...(qwenApiKey && { headers: { Authorization: `Bearer ${qwenApiKey}` } })
+      });
+
+      if (response.data?.choices?.[0]?.message?.content) {
+        console.log(`[llmClient] Multimodal query served successfully via ${modelName}.`);
+        return response.data.choices[0].message.content.trim();
+      }
+      throw new Error(`Malformed response from multimodal ${modelName} endpoint`);
+    } catch (error: any) {
+      console.error(`[llmClient] Custom multimodal endpoint failed:`, error);
+      throw new Error(`OCR/Multimodal query failed: ${error.message}`);
+    }
+  }
+
+  // Under "no gemini usage in the OCR" instruction, do not fallback to Gemini.
+  throw new Error("OCR/Multimodal endpoint is not configured. Please set VITE_QWEN_ENDPOINT_URL or VITE_MEDGEMMA_ENDPOINT_URL to perform OCR.");
+}
+
 let mockOverride: ((diagnosis: string, admissionType: string, clinicalNarrative: string) => Promise<LlmReasoningOutput>) | null = null;
 
 export function setMockReasoning(fn: typeof mockOverride) {

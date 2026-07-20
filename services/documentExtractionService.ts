@@ -1,7 +1,7 @@
 import { getGoogleGenerativeAIClient, rotateApiKey, getActiveApiKey } from './apiKeys';
 import { MODEL_DOCUMENT } from '../config/modelConfig';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { queryMedGemma } from './llmClient';
+import { queryMedGemma, queryMultimodalLlm } from './llmClient';
 
 // Setup workerSrc
 if (typeof window !== 'undefined') {
@@ -143,22 +143,10 @@ export async function extractTextFromPdf(arrayBuffer: ArrayBuffer): Promise<stri
 
 async function extractPagesFromScannedPdf(arrayBuffer: ArrayBuffer): Promise<string[]> {
     const base64 = arrayBufferToBase64(arrayBuffer);
-    const client = getGoogleGenerativeAIClient();
-    const model = client.getGenerativeModel({ model: MODEL_DOCUMENT });
-    
-    const contents = [
-        {
-            inlineData: {
-                mimeType: 'application/pdf',
-                data: base64
-            }
-        },
-        "Please extract all text from this PDF document. Present it page-by-page, wrapping each page's content strictly between '--- START OF PAGE X ---' and '--- END OF PAGE X ---', where X is the 1-based page number. Do not summarize or add commentary."
-    ];
-    
-    const result = await model.generateContent(contents);
-    const text = result.response.text();
-    
+    const text = await queryMultimodalLlm(
+        "Please extract all text from this PDF document. Present it page-by-page, wrapping each page's content strictly between '--- START OF PAGE X ---' and '--- END OF PAGE X ---', where X is the 1-based page number. Do not summarize or add commentary.",
+        [{ base64Data: base64, mimeType: 'application/pdf' }]
+    );
     const pages: string[] = [];
     const pageMatches = [...text.matchAll(/--- START OF PAGE (\d+) ---([\s\S]*?)--- END OF PAGE \1 ---/gi)];
     for (const match of pageMatches) {
@@ -168,21 +156,11 @@ async function extractPagesFromScannedPdf(arrayBuffer: ArrayBuffer): Promise<str
 }
 
 async function extractTextFromImage(base64: string, mimeType: string): Promise<string> {
-    const client = getGoogleGenerativeAIClient();
-    const model = client.getGenerativeModel({ model: MODEL_DOCUMENT });
-    
-    const contents = [
-        {
-            inlineData: {
-                mimeType,
-                data: base64
-            }
-        },
-        "Extract all text from this image. Keep layout, headings, tables, and list items intact. Do not summarize or add commentary."
-    ];
-    
-    const result = await model.generateContent(contents);
-    return result.response.text().trim();
+    const text = await queryMultimodalLlm(
+        "Extract all text from this image. Keep layout, headings, tables, and list items intact. Do not summarize or add commentary.",
+        [{ base64Data: base64, mimeType }]
+    );
+    return text;
 }
 
 function applyHeuristicFallbacks(data: any, text: string, file?: any): any {

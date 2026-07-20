@@ -73,18 +73,18 @@ export const GeneralTriageForm: React.FC<GeneralTriageFormProps> = ({ onSubmit }
                     {/* Demographics & Complaint */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label htmlFor="age" className="block text-xs font-medium text-gray-300 mb-1">Age</label>
+                            <label htmlFor="age" className="block text-sm font-medium text-gray-300 mb-1">Age</label>
                             <input type="number" name="age" id="age" value={formData.age} onChange={handleChange} className="w-full bg-aivana-dark p-2 rounded-md border border-aivana-light-grey/80 focus:ring-aivana-accent focus:border-aivana-accent" required />
                         </div>
                         <div>
-                            <label htmlFor="sex" className="block text-xs font-medium text-gray-300 mb-1">Sex</label>
+                            <label htmlFor="sex" className="block text-sm font-medium text-gray-300 mb-1">Sex</label>
                             <select name="sex" id="sex" value={formData.sex} onChange={handleChange} className="w-full bg-aivana-dark p-2 rounded-md border border-aivana-light-grey/80 focus:ring-aivana-accent focus:border-aivana-accent">
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
                         </div>
                          <div className="md:col-span-3">
-                            <label htmlFor="chiefComplaint" className="block text-xs font-medium text-gray-300 mb-1">Chief Complaint</label>
+                            <label htmlFor="chiefComplaint" className="block text-sm font-medium text-gray-300 mb-1">Chief Complaint</label>
                             <textarea name="chiefComplaint" id="chiefComplaint" rows={2} value={formData.chiefComplaint} onChange={handleChange} className="w-full bg-aivana-dark p-2 rounded-md border border-aivana-light-grey/80 focus:ring-aivana-accent focus:border-aivana-accent" placeholder="e.g., chest pain radiating to left arm, sudden onset" required />
                         </div>
                     </div>
@@ -94,26 +94,26 @@ export const GeneralTriageForm: React.FC<GeneralTriageFormProps> = ({ onSubmit }
                         <h3 className="text-sm font-semibold text-aivana-accent mb-3">Vital Signs</h3>
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                             <div>
-                                <label className="block text-xs font-medium text-gray-400 mb-1">BP (mmHg)</label>
+                                <label className="block text-sm font-medium text-gray-400 mb-1">BP (mmHg)</label>
                                 <div className="flex gap-1">
                                     <input type="number" name="systolicBP" placeholder="Sys" value={formData.systolicBP} onChange={handleChange} className="w-full bg-aivana-grey p-2 rounded-md focus:ring-aivana-accent" required />
                                     <input type="number" name="diastolicBP" placeholder="Dia" value={formData.diastolicBP} onChange={handleChange} className="w-full bg-aivana-grey p-2 rounded-md focus:ring-aivana-accent" required />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-gray-400 mb-1">HR (bpm)</label>
+                                <label className="block text-sm font-medium text-gray-400 mb-1">HR (bpm)</label>
                                 <input type="number" name="hr" value={formData.hr} onChange={handleChange} className="w-full bg-aivana-grey p-2 rounded-md focus:ring-aivana-accent" required />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-gray-400 mb-1">RR (min)</label>
+                                <label className="block text-sm font-medium text-gray-400 mb-1">RR (min)</label>
                                 <input type="number" name="respiratoryRate" value={formData.respiratoryRate} onChange={handleChange} className="w-full bg-aivana-grey p-2 rounded-md focus:ring-aivana-accent" required />
                             </div>
                              <div>
-                                <label className="block text-xs font-medium text-gray-400 mb-1">Temp (°C)</label>
+                                <label className="block text-sm font-medium text-gray-400 mb-1">Temp (°C)</label>
                                 <input type="number" step="0.1" name="temp" value={formData.temp} onChange={handleChange} className="w-full bg-aivana-grey p-2 rounded-md focus:ring-aivana-accent" required />
                             </div>
                              <div>
-                                <label className="block text-xs font-medium text-gray-400 mb-1">SpO2 (%)</label>
+                                <label className="block text-sm font-medium text-gray-400 mb-1">SpO2 (%)</label>
                                 <input type="number" name="spo2" value={formData.spo2} onChange={handleChange} className="w-full bg-aivana-grey p-2 rounded-md focus:ring-aivana-accent" required />
                             </div>
                         </div>
@@ -121,7 +121,7 @@ export const GeneralTriageForm: React.FC<GeneralTriageFormProps> = ({ onSubmit }
 
                     {/* PMH */}
                     <div>
-                        <label className="block text-xs font-medium text-gray-300 mb-2">Medical History (PMH)</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">Medical History (PMH)</label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             {commonConditions.map(option => (
                                 <label key={option} className="flex items-center space-x-2 p-2 rounded-md hover:bg-aivana-grey cursor-pointer">

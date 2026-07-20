@@ -251,7 +251,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
             <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4 bg-white border border-dashed border-opd-border rounded-3xl p-12 shadow-sm text-opd-text-primary">
                 <Inbox className="w-12 h-12 text-opd-text-muted" />
                 <h3 className="text-sm font-bold font-lora text-opd-primary">No Denied Claims in Queue</h3>
-                <p className="text-xs text-opd-text-secondary max-w-xs text-center leading-relaxed">
+                <p className="text-sm text-opd-text-secondary max-w-xs text-center leading-relaxed">
                     Denied pre-auth records will appear here once a TPA denial response is recorded via the Status Tracker in the Pre-Auth Dashboard.
                 </p>
             </div>
@@ -265,15 +265,15 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-opd-border shadow-sm">
                 <div>
-                    <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
+                    <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
                         <ShieldAlert className="w-3.5 h-3.5" /> Live Denial Queue
                     </div>
                     <h2 className="text-xl font-bold tracking-tight text-opd-text-primary font-lora">Citation-Backed Appeal Generator</h2>
-                    <p className="text-xs text-opd-text-secondary mt-0.5 leading-relaxed">
+                    <p className="text-sm text-opd-text-secondary mt-0.5 leading-relaxed">
                         Appeals cite only evidence already confirmed present in the original pre-auth review — no fabricated citations. Missing evidence is flagged explicitly.
                     </p>
                 </div>
-                <div className="flex items-center gap-4 text-xs font-semibold">
+                <div className="flex items-center gap-4 text-sm font-semibold">
                     <div className="bg-opd-input-bg px-4 py-2.5 rounded-2xl border border-opd-border text-opd-text-primary">
                         <span className="text-opd-text-secondary">Open Denials: </span>
                         <span className="text-opd-text-primary font-bold">{queue.length}</span>
@@ -309,9 +309,9 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                     </div>
 
                     <div className="overflow-x-auto custom-scrollbar">
-                        <table className="w-full text-left text-xs border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
-                                <tr className="text-opd-text-secondary font-semibold border-b border-opd-border uppercase tracking-wider text-[10px] font-lora">
+                                <tr className="text-opd-text-secondary font-semibold border-b border-opd-border uppercase tracking-wider text-sm font-lora">
                                     <th className="py-3 px-2">#</th>
                                     <th className="py-3 px-2">Patient</th>
                                     <th className="py-3 px-2">TPA / Insurer</th>
@@ -335,20 +335,20 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                         </td>
                                         <td className="py-4 px-2">
                                             <div className="font-bold text-opd-text-primary">{entry.record.patient?.patientName ?? '-'}</div>
-                                            <div className="text-[10px] text-opd-text-secondary mt-0.5">
+                                            <div className="text-sm text-opd-text-secondary mt-0.5">
                                                 {entry.record.clinical?.diagnoses?.[entry.record.clinical.selectedDiagnosisIndex ?? 0]?.diagnosis ?? '-'}
                                             </div>
-                                            <div className="text-[10px] text-opd-text-muted font-mono">{entry.record.id}</div>
+                                            <div className="text-sm text-opd-text-muted font-mono">{entry.record.id}</div>
                                         </td>
                                         <td className="py-4 px-2">
                                             <div className="text-opd-text-primary font-semibold">{entry.record.insurance?.tpaName ?? '-'}</div>
-                                            <div className="text-[10px] text-opd-text-secondary mt-0.5">{entry.record.insurance?.insurerName ?? '-'}</div>
+                                            <div className="text-sm text-opd-text-secondary mt-0.5">{entry.record.insurance?.insurerName ?? '-'}</div>
                                         </td>
                                         <td className="py-4 px-2 font-bold font-mono text-opd-text-primary">
                                             ₹{(entry.record.costEstimate?.amountClaimedFromInsurer ?? 0).toLocaleString('en-IN')}
                                         </td>
                                         <td className="py-4 px-2">
-                                            <span className={`text-[10px] font-semibold ${coverageColor(entry)}`}>
+                                            <span className={`text-sm font-semibold ${coverageColor(entry)}`}>
                                                 {coverageLabel(entry)}
                                             </span>
                                         </td>
@@ -373,7 +373,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                     <h3 className="text-sm font-bold text-opd-primary font-lora">
                                         {selected.record.patient?.patientName ?? '-'}
                                     </h3>
-                                    <p className="text-[10px] text-opd-text-secondary mt-0.5">
+                                    <p className="text-sm text-opd-text-secondary mt-0.5">
                                         {selected.record.id} * {selected.record.insurance?.tpaName ?? '-'}
                                     </p>
                                 </div>
@@ -383,8 +383,8 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                             {selected.record.status === 'query_raised' ? (
                                 <div className="space-y-4 text-left">
                                     <div className="space-y-1.5">
-                                        <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">TPA Query Details</span>
-                                        <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-3 text-[11px] font-mono text-opd-text-primary leading-relaxed max-h-28 overflow-y-auto custom-scrollbar">
+                                        <span className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider">TPA Query Details</span>
+                                        <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-3 text-sm font-mono text-opd-text-primary leading-relaxed max-h-28 overflow-y-auto custom-scrollbar">
                                             {selected.record.tpaResponse?.queryDetails || (
                                                 <span className="text-opd-text-muted italic">No query details recorded.</span>
                                             )}
@@ -395,7 +395,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                         <button
                                             onClick={handleGenerateQueryResponse}
                                             disabled={generatingQuery || !selected.record.tpaResponse?.queryDetails}
-                                            className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
+                                            className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-sm font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
                                             type="button"
                                         >
                                             {generatingQuery ? (
@@ -406,15 +406,15 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                         </button>
                                     ) : (
                                         <div className="space-y-3">
-                                            <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Clarification Response Draft</span>
-                                            <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 max-h-52 overflow-y-auto custom-scrollbar font-mono text-[10px] text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
+                                            <span className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider">Clarification Response Draft</span>
+                                            <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 max-h-52 overflow-y-auto custom-scrollbar font-mono text-sm text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
                                                 {queryResponseText}
                                             </div>
                                             <button
                                                 onClick={() => {
                                                     navigator.clipboard.writeText(queryResponseText);
                                                 }}
-                                                className="text-[10px] text-opd-primary hover:text-opd-primary/80 font-bold transition underline"
+                                                className="text-sm text-opd-primary hover:text-opd-primary/80 font-bold transition underline"
                                                 type="button"
                                             >
                                                 Copy to clipboard
@@ -423,7 +423,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                                 <button
                                                     onClick={handleSubmitQueryResponse}
                                                     disabled={saving}
-                                                    className="w-full py-2.5 bg-opd-primary hover:bg-opd-primary/95 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
+                                                    className="w-full py-2.5 bg-opd-primary hover:bg-opd-primary/95 text-white text-sm font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
                                                     type="button"
                                                 >
                                                     <Send className="w-3.5 h-3.5" /> Submit Response to TPA
@@ -431,7 +431,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                             </div>
                                             <button
                                                 onClick={() => setQueryResponseText(null)}
-                                                className="w-full py-2 rounded-xl text-[10px] font-bold text-opd-text-secondary hover:text-opd-primary border border-opd-border hover:bg-gray-50 transition"
+                                                className="w-full py-2 rounded-xl text-sm font-bold text-opd-text-secondary hover:text-opd-primary border border-opd-border hover:bg-gray-50 transition"
                                                 type="button"
                                             >
                                                 ↺ Regenerate Clarification
@@ -443,8 +443,8 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                 <>
                                     {/* Denial reason block */}
                                     <div className="space-y-1.5 text-left">
-                                        <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">TPA Denial Reason</span>
-                                        <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-3 text-[11px] font-mono text-opd-text-primary leading-relaxed max-h-28 overflow-y-auto custom-scrollbar">
+                                        <span className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider">TPA Denial Reason</span>
+                                        <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-3 text-sm font-mono text-opd-text-primary leading-relaxed max-h-28 overflow-y-auto custom-scrollbar">
                                             {selected.record.tpaResponse?.denialReason || (
                                                 <span className="text-opd-text-muted italic">No denial reason recorded. Update the Status Tracker to record the TPA denial text.</span>
                                             )}
@@ -455,8 +455,8 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                     {selected.appeal && (
                                         <div className="space-y-3 text-left">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Evidence Coverage</span>
-                                                <span className={`text-[10px] font-black ${coverageColor(selected)}`}>
+                                                <span className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider">Evidence Coverage</span>
+                                                <span className={`text-sm font-black ${coverageColor(selected)}`}>
                                                     {selected.appeal.addressedCount} of {selected.appeal.totalReasons} denial reasons addressed with existing evidence
                                                 </span>
                                             </div>
@@ -468,7 +468,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                                     return (
                                                         <div
                                                             key={idx}
-                                                            className={`p-3 rounded-2xl border text-[11px] leading-relaxed ${cited.length > 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}
+                                                            className={`p-3 rounded-2xl border text-sm leading-relaxed ${cited.length > 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}
                                                         >
                                                             <div className="flex items-start gap-2">
                                                                 {cited.length > 0
@@ -484,11 +484,11 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                                                             <span className="text-[9px] font-bold uppercase text-emerald-700 tracking-wider">
                                                                                 {ce.source} evidence cited:
                                                                             </span>
-                                                                            <p className="text-opd-text-secondary text-[10px] mt-0.5">"{ce.evidenceItem}"</p>
+                                                                            <p className="text-opd-text-secondary text-sm mt-0.5">"{ce.evidenceItem}"</p>
                                                                         </div>
                                                                     ))}
                                                                     {isMissing && (
-                                                                        <p className="text-[10px] text-red-700 mt-1 font-medium">
+                                                                        <p className="text-sm text-red-700 mt-1 font-medium">
                                                                             [!] Still missing - no confirmed evidence in existing report
                                                                         </p>
                                                                     )}
@@ -510,7 +510,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                                 onChange={e => setIncludeHindi(e.target.checked)}
                                                 className="accent-opd-primary w-3.5 h-3.5"
                                             />
-                                            <span className="text-xs text-opd-text-secondary font-medium">Include Hindi translation</span>
+                                            <span className="text-sm text-opd-text-secondary font-medium">Include Hindi translation</span>
                                             <span className="text-[9px] text-amber-600 font-semibold">(machine-translated, not official)</span>
                                         </label>
                                     )}
@@ -520,7 +520,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                         <button
                                             onClick={handleGenerate}
                                             disabled={generating || !selected.record.tpaResponse?.denialReason}
-                                            className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
+                                            className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-sm font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
                                             type="button"
                                         >
                                             {generating ? (
@@ -538,7 +538,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                             <div className="flex items-center gap-2">
                                                 <button
                                                     onClick={() => setActiveTab('english')}
-                                                    className={`px-3 py-1 rounded-lg text-[10px] font-bold transition ${activeTab === 'english' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
+                                                    className={`px-3 py-1 rounded-lg text-sm font-bold transition ${activeTab === 'english' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
                                                     type="button"
                                                 >
                                                     English
@@ -546,7 +546,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                                 {selected.appeal.hindiTranslation && (
                                                     <button
                                                         onClick={() => setActiveTab('hindi')}
-                                                        className={`px-3 py-1 rounded-lg text-[10px] font-bold transition ${activeTab === 'hindi' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
+                                                        className={`px-3 py-1 rounded-lg text-sm font-bold transition ${activeTab === 'hindi' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
                                                         type="button"
                                                     >
                                                         हिंदी
@@ -558,13 +558,13 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                             {activeTab === 'hindi' && selected.appeal.machineTranslatedWarning && (
                                                 <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
                                                     <Languages className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
-                                                    <p className="text-[10px] text-amber-800 font-medium leading-relaxed">
+                                                    <p className="text-sm text-amber-800 font-medium leading-relaxed">
                                                         <strong>Machine-translated only</strong> — This Hindi version is AI-generated and has NOT been reviewed by a qualified translator. Do not present it as a certified or official translation.
                                                     </p>
                                                 </div>
                                             )}
 
-                                            <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 max-h-52 overflow-y-auto custom-scrollbar font-mono text-[10px] text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
+                                            <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 max-h-52 overflow-y-auto custom-scrollbar font-mono text-sm text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
                                                 {activeTab === 'english'
                                                     ? selected.appeal.appealText
                                                     : selected.appeal.hindiTranslation}
@@ -576,7 +576,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                                     const txt = activeTab === 'english' ? selected.appeal!.appealText : (selected.appeal!.hindiTranslation ?? '');
                                                     navigator.clipboard.writeText(txt);
                                                 }}
-                                                className="text-[10px] text-opd-primary hover:text-opd-primary/80 font-bold transition underline"
+                                                className="text-sm text-opd-primary hover:text-opd-primary/80 font-bold transition underline"
                                                 type="button"
                                             >
                                                 Copy to clipboard
@@ -584,7 +584,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
 
                                             {/* Status actions */}
                                             {submissionError && (
-                                                <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-[10px] text-red-800 font-semibold leading-normal">
+                                                <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-800 font-semibold leading-normal">
                                                     ⚠️ Submission unconfirmed — retry. Error: {submissionError}
                                                 </div>
                                             )}
@@ -592,7 +592,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                                 <button
                                                     onClick={() => handleStatusChange('submitted')}
                                                     disabled={saving || selected.appeal.appealStatus === 'submitted' || selected.appeal.appealStatus === 'resolved'}
-                                                    className="btn-secondary py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold"
+                                                    className="btn-secondary py-2.5 flex items-center justify-center gap-1.5 text-sm font-bold"
                                                     type="button"
                                                 >
                                                     <Send className="w-3.5 h-3.5" /> Mark Submitted
@@ -600,7 +600,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                                 <button
                                                     onClick={() => handleStatusChange('resolved')}
                                                     disabled={saving || selected.appeal.appealStatus === 'resolved'}
-                                                    className="btn-secondary py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-900"
+                                                    className="btn-secondary py-2.5 flex items-center justify-center gap-1.5 text-sm font-bold text-emerald-800 hover:text-emerald-900"
                                                     type="button"
                                                 >
                                                     <CheckCircle className="w-3.5 h-3.5" /> Mark Resolved
@@ -611,7 +611,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                                                 onClick={() => {
                                                     setSelected(prev => prev ? { ...prev, appeal: null } : prev);
                                                 }}
-                                                className="w-full py-2 rounded-xl text-[10px] font-bold text-opd-text-secondary hover:text-opd-primary border border-opd-border hover:bg-gray-50 transition"
+                                                className="w-full py-2 rounded-xl text-sm font-bold text-opd-text-secondary hover:text-opd-primary border border-opd-border hover:bg-gray-50 transition"
                                                 type="button"
                                             >
                                                 ↺ Regenerate Appeal
@@ -626,7 +626,7 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
                         <div className="bg-white border border-dashed border-opd-border rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px] shadow-sm">
                             <ChevronRight className="w-12 h-12 text-opd-text-muted mb-3" />
                             <h3 className="text-sm font-bold font-lora text-opd-primary">Select a Denied Claim</h3>
-                            <p className="text-xs text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">
+                            <p className="text-sm text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">
                                 Click any row in the denial queue to open the citation-backed appeal generator.
                             </p>
                         </div>

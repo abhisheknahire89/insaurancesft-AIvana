@@ -54,7 +54,7 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({ currentStep, onS
                     key={step.n}
                     onClick={() => onStepClick && done && onStepClick(step.n as any)}
                     disabled={!done}
-                    className={`flex-1 flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg text-sm font-semibold transition-all ${
                         active 
                             ? 'bg-opd-primary text-white shadow-sm font-bold' 
                             : done 
@@ -64,7 +64,7 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({ currentStep, onS
                     type="button"
                 >
                     {done ? (
-                        <span className="text-xs font-bold text-opd-primary">✓</span>
+                        <span className="text-sm font-bold text-opd-primary">✓</span>
                     ) : (
                         <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-white' : 'bg-opd-border'}`}></span>
                     )}

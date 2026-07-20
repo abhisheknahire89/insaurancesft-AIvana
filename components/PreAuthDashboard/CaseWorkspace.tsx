@@ -78,7 +78,7 @@ const HighlightCard: React.FC<HighlightCardProps> = ({ excerpt, relatedRule, sou
                 </span>
                 <span className="text-[9px] font-mono text-opd-text-secondary truncate max-w-[160px]">{sourceDocument}</span>
             </div>
-            <blockquote className="text-xs italic text-opd-text-secondary bg-opd-input-bg border border-opd-border rounded-lg px-3 py-2 leading-relaxed">
+            <blockquote className="text-sm italic text-opd-text-secondary bg-opd-input-bg border border-opd-border rounded-lg px-3 py-2 leading-relaxed">
                 "{excerpt}"
             </blockquote>
             <div className="text-[9px] text-opd-text-secondary font-semibold flex items-center gap-1">
@@ -108,8 +108,8 @@ const IcdTag: React.FC<IcdTagProps> = ({ code, description, estimatedCost, confi
     return (
         <div className="flex items-center justify-between gap-2 rounded-lg border border-opd-border bg-white px-3 py-2 shadow-sm">
             <div className="flex items-center gap-2 min-w-0">
-                <span className="font-mono text-[10px] font-bold text-opd-primary shrink-0">{code}</span>
-                <span className="text-[10px] text-opd-text-secondary truncate">{description}</span>
+                <span className="font-mono text-sm font-bold text-opd-primary shrink-0">{code}</span>
+                <span className="text-sm text-opd-text-secondary truncate">{description}</span>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
                 {estimatedCost != null && (
@@ -346,7 +346,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                 <button
                     type="button"
                     onClick={onBack}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-opd-text-secondary hover:text-opd-primary transition-all px-3 py-1.5 rounded-lg border border-opd-border bg-opd-input-bg"
+                    className="flex items-center gap-1.5 text-sm font-semibold text-opd-text-secondary hover:text-opd-primary transition-all px-3 py-1.5 rounded-lg border border-opd-border bg-opd-input-bg"
                 >
                     <svg className="w-3 h-3 text-opd-text-secondary" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -358,12 +358,12 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                 {/* Case meta */}
                 <div className="flex items-center gap-3 flex-1 flex-wrap min-w-0">
-                    <span className="font-mono text-[10px] text-opd-primary font-bold shrink-0">{record.id}</span>
+                    <span className="font-mono text-sm text-opd-primary font-bold shrink-0">{record.id}</span>
                     <span className="text-sm font-semibold text-opd-text-primary truncate">{record.patient?.patientName || '—'}</span>
                     <div className="w-px h-3 bg-opd-border shrink-0" />
-                    <span className="text-xs text-opd-text-secondary truncate max-w-[200px]">{diagnosisText}</span>
+                    <span className="text-sm text-opd-text-secondary truncate max-w-[200px]">{diagnosisText}</span>
                     {icdCode && !hasInvalidICD && (
-                        <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 shrink-0">
+                        <span className="font-mono text-sm px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 shrink-0">
                             {icdCode}
                         </span>
                     )}
@@ -381,11 +381,11 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                     {/* Uploaded documents */}
                     <section>
-                        <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2 mb-3">
+                        <div className="text-sm font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2 mb-3">
                             Uploaded Documents ({record.uploadedDocuments?.length ?? 0})
                         </div>
                         {(record.uploadedDocuments?.length ?? 0) === 0 ? (
-                            <div className="text-xs text-opd-text-muted font-medium py-4 text-center border border-dashed border-opd-border rounded-xl bg-white">
+                            <div className="text-sm text-opd-text-muted font-medium py-4 text-center border border-dashed border-opd-border rounded-xl bg-white">
                                 No documents uploaded
                             </div>
                         ) : (
@@ -395,7 +395,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                         className="flex items-center gap-3 rounded-xl border border-opd-border bg-white px-3 py-2.5 shadow-sm text-opd-text-primary">
                                         <span className="text-base shrink-0">{doc.fileType === 'pdf' ? '📄' : '🖼️'}</span>
                                         <div className="flex-1 min-w-0">
-                                            <div className="text-xs font-semibold text-opd-text-primary truncate">{doc.fileName}</div>
+                                            <div className="text-sm font-semibold text-opd-text-primary truncate">{doc.fileName}</div>
                                             <div className="text-[9px] text-opd-text-secondary font-medium">{doc.documentCategory.replace(/_/g, ' ')} · {doc.fileSizeDisplay}</div>
                                             {doc.duplicateWarning && (
                                                 <div className="text-[9px] text-opd-error font-bold mt-0.5">{doc.duplicateWarning}</div>
@@ -426,7 +426,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                     {/* Evidence highlights */}
                     <section>
-                        <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2 mb-3">
+                        <div className="text-sm font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2 mb-3">
                             Evidence Highlights
                             {tpaLoading && (
                                 <span className="ml-2 text-opd-text-muted normal-case font-normal">— running review…</span>
@@ -440,10 +440,10 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                         <span key={i} className="pulse-dot inline-block w-1 h-1 rounded-full bg-opd-primary" />
                                     ))}
                                 </div>
-                                <span className="text-xs text-opd-text-secondary font-medium">Running Aivana review…</span>
+                                <span className="text-sm text-opd-text-secondary font-medium">Running Aivana review…</span>
                             </div>
                         ) : evidenceHighlights.length === 0 ? (
-                            <div className="text-xs text-opd-text-muted font-medium py-4 text-center border border-dashed border-opd-border rounded-xl bg-white">
+                            <div className="text-sm text-opd-text-muted font-medium py-4 text-center border border-dashed border-opd-border rounded-xl bg-white">
                                 {record.uploadedDocuments?.length
                                     ? 'No evidence highlights extracted. Upload richer documents to see verbatim excerpts.'
                                     : 'Upload documents for AI evidence extraction.'}
@@ -479,13 +479,13 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                     {/* ── Enhancement Ledger ── */}
                     {caseRecord && (
                         <section className="bg-white border border-opd-border rounded-2xl p-4 space-y-4 shadow-sm text-left">
-                            <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2.5 flex justify-between items-center">
+                            <div className="text-sm font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2.5 flex justify-between items-center">
                                 <span>Enhancements Ledger ({caseRecord.enhancements?.length || 0})</span>
                                 {(record.status === 'submitted' || record.status === 'approved' || record.status === 'query_raised' || record.status === 'query_received' || record.status === 'enhancement_requested') && (
                                     <button
                                         type="button"
                                         onClick={() => setShowEnhanceDialog(true)}
-                                        className="px-2.5 py-1.5 bg-opd-primary text-white text-[10px] font-bold rounded-lg hover:bg-opd-primary/95 transition border uppercase tracking-wider"
+                                        className="px-2.5 py-1.5 bg-opd-primary text-white text-sm font-bold rounded-lg hover:bg-opd-primary/95 transition border uppercase tracking-wider"
                                     >
                                         + Request Enhancement
                                     </button>
@@ -493,15 +493,15 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                             </div>
                             
                             {(!caseRecord.enhancements || caseRecord.enhancements.length === 0) ? (
-                                <p className="text-xs text-opd-text-muted italic py-3 text-center bg-gray-50/50 rounded-xl border border-dashed">
+                                <p className="text-sm text-opd-text-muted italic py-3 text-center bg-gray-50/50 rounded-xl border border-dashed">
                                     No enhancements requested for this case.
                                 </p>
                             ) : (
                                 <div className="space-y-3">
                                     {caseRecord.enhancements.map(enh => (
-                                        <div key={enh.id} className="border border-opd-border rounded-xl p-3 bg-gray-50/50 space-y-2 text-xs">
+                                        <div key={enh.id} className="border border-opd-border rounded-xl p-3 bg-gray-50/50 space-y-2 text-sm">
                                             <div className="flex justify-between items-center">
-                                                <span className="font-bold text-opd-primary font-mono text-[10px]">{enh.id}</span>
+                                                <span className="font-bold text-opd-primary font-mono text-sm">{enh.id}</span>
                                                 <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase border tracking-wide ${
                                                     enh.status === 'approved' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
                                                     enh.status === 'partial_approved' ? 'bg-amber-50 border-amber-200 text-amber-700' :
@@ -510,7 +510,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                                     {enh.status}
                                                 </span>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-2 text-[10px]">
+                                            <div className="grid grid-cols-2 gap-2 text-sm">
                                                 <div>
                                                     <span className="text-gray-400 font-bold uppercase tracking-wider text-[8px]">Trigger Type:</span>{' '}
                                                     <span className="font-bold text-opd-text-primary capitalize">{enh.trigger.replace(/_/g, ' ')}</span>
@@ -521,7 +521,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                                 </div>
                                             </div>
                                             {enh.details?.reason && (
-                                                <div className="bg-white border border-opd-border p-2 rounded-lg italic text-[11px] text-opd-text-secondary leading-normal">
+                                                <div className="bg-white border border-opd-border p-2 rounded-lg italic text-sm text-opd-text-secondary leading-normal">
                                                     "{enh.details.reason}"
                                                 </div>
                                             )}
@@ -538,7 +538,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                     {/* (a) Readiness score */}
                     <section>
-                        <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
+                        <div className="text-sm font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
                             Claim Readiness
                         </div>
                         <div className="rounded-xl p-4 bg-opd-input-bg border border-opd-border flex flex-col items-center gap-2.5 shadow-sm">
@@ -546,7 +546,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                             <span className={`text-[9px] font-bold px-2.5 py-0.5 rounded uppercase tracking-wider border ${colors.bg} ${colors.text} ${colors.border}`}>
                                 {colors.label}
                             </span>
-                            <p className="text-[10px] text-center font-medium text-opd-text-secondary leading-normal max-w-[200px]">
+                            <p className="text-sm text-center font-medium text-opd-text-secondary leading-normal max-w-[200px]">
                                 {statusLine}
                             </p>
                             {/* Quick chips */}
@@ -572,7 +572,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                     {/* (b) Missing items checklist */}
                     {missingItems.length > 0 && (
                         <section>
-                            <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
+                            <div className="text-sm font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
                                 What to Fix ({missingItems.length})
                             </div>
                             <div className="flex flex-col gap-1.5 max-h-[220px] overflow-y-auto custom-scrollbar pr-0.5">
@@ -581,7 +581,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                         className="flex items-start gap-2 rounded-lg p-2.5 border border-opd-border bg-white shadow-sm">
                                         <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 mt-1.5" />
                                         <div className="flex-1 min-w-0">
-                                            <div className="text-xs font-semibold text-opd-text-secondary leading-normal">{item.text}</div>
+                                            <div className="text-sm font-semibold text-opd-text-secondary leading-normal">{item.text}</div>
                                         </div>
                                         <span className="text-[9px] font-extrabold text-red-700 bg-red-50 border border-red-200 px-1 py-0.5 rounded shrink-0">
                                             -{item.deduction}
@@ -589,7 +589,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                     </div>
                                 ))}
                                 {missingItems.length > 8 && (
-                                    <p className="text-[10px] text-center text-opd-text-muted font-medium">
+                                    <p className="text-sm text-center text-opd-text-muted font-medium">
                                         +{missingItems.length - 8} more to address
                                     </p>
                                 )}
@@ -599,7 +599,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                     {/* (c) Suggested ICD codes with cost */}
                     <section>
-                        <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
+                        <div className="text-sm font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
                             Billing Codes & Cost
                         </div>
                         {billingLoading ? (
@@ -609,10 +609,10 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                         <span key={i} className="pulse-dot inline-block w-1 h-1 rounded-full bg-opd-primary" />
                                     ))}
                                 </div>
-                                <span className="text-xs text-opd-text-secondary font-medium">Running billing coder…</span>
+                                <span className="text-sm text-opd-text-secondary font-medium">Running billing coder…</span>
                             </div>
                         ) : suggestedCodes.length === 0 ? (
-                            <div className="text-xs text-opd-text-muted font-medium py-3 text-center border border-dashed border-opd-border rounded-xl bg-white">
+                            <div className="text-sm text-opd-text-muted font-medium py-3 text-center border border-dashed border-opd-border rounded-xl bg-white">
                                 No codes available — add a diagnosis to generate billing suggestions.
                             </div>
                         ) : (
@@ -624,7 +624,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                 {billingOutput?.cashlessApproved != null && (
                                     <div className="mt-2 rounded-lg border border-opd-border bg-opd-input-bg px-3 py-2.5 flex justify-between items-center shadow-sm">
                                         <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-secondary">Cashless Approved Est.</span>
-                                        <span className="font-mono text-xs font-bold text-emerald-700">
+                                        <span className="font-mono text-sm font-bold text-emerald-700">
                                             ₹{billingOutput.cashlessApproved.toLocaleString('en-IN')}
                                         </span>
                                     </div>
@@ -632,7 +632,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                                 {billingOutput?.patientShare != null && (
                                     <div className="rounded-lg border border-opd-border bg-opd-input-bg px-3 py-2.5 flex justify-between items-center shadow-sm">
                                         <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-secondary">Patient Share Est.</span>
-                                        <span className="font-mono text-xs font-bold text-amber-700">
+                                        <span className="font-mono text-sm font-bold text-amber-700">
                                             ₹{billingOutput.patientShare.toLocaleString('en-IN')}
                                         </span>
                                     </div>
@@ -653,15 +653,15 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
 
                     {/* (d) Eligibility indicator */}
                     <section>
-                        <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
+                        <div className="text-sm font-bold font-lora uppercase tracking-wider text-opd-text-secondary pb-2.5 border-b border-opd-border mb-3">
                             Eligibility Status
                         </div>
                         <div className={`rounded-xl border px-4 py-3.5 flex items-center gap-3 shadow-sm ${eligCfg.bg} ${eligCfg.border}`}>
-                            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border ${eligCfg.text} ${eligCfg.border}`}>
+                            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold border ${eligCfg.text} ${eligCfg.border}`}>
                                 {eligCfg.icon}
                             </span>
                             <div>
-                                <div className={`text-xs font-bold ${eligCfg.text}`}>{eligCfg.label}</div>
+                                <div className={`text-sm font-bold ${eligCfg.text}`}>{eligCfg.label}</div>
                                 <div className="text-[9px] text-opd-text-secondary font-medium mt-0.5">
                                     {eligibility === 'cashless'
                                         ? 'Claim can be processed as cashless'
@@ -691,11 +691,11 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                             </button>
                         </div>
                         
-                        <div className="space-y-3.5 text-xs">
+                        <div className="space-y-3.5 text-sm">
                             <div className="flex flex-col gap-1">
-                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Trigger Type</label>
+                                <label className="text-sm font-bold text-gray-500 uppercase tracking-wider">Trigger Type</label>
                                 <select
-                                    className="border border-opd-border rounded-lg px-3 py-2 bg-white text-xs focus:outline-none focus:border-opd-primary"
+                                    className="border border-opd-border rounded-lg px-3 py-2 bg-white text-sm focus:outline-none focus:border-opd-primary"
                                     value={enhanceTrigger}
                                     onChange={e => setEnhanceTrigger(e.target.value as any)}
                                 >
@@ -706,29 +706,29 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record, onBack }) 
                             </div>
                             
                             <div className="flex flex-col gap-1">
-                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Additional Requested Amount (₹)</label>
+                                <label className="text-sm font-bold text-gray-500 uppercase tracking-wider">Additional Requested Amount (₹)</label>
                                 <input
                                     type="number"
                                     placeholder="e.g. 80000"
-                                    className="border border-opd-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-opd-primary font-mono font-semibold"
+                                    className="border border-opd-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-opd-primary font-mono font-semibold"
                                     value={enhanceAmount || ''}
                                     onChange={e => setEnhanceAmount(+e.target.value)}
                                 />
                             </div>
                             
                             <div className="flex flex-col gap-1">
-                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Clinical Justification</label>
+                                <label className="text-sm font-bold text-gray-500 uppercase tracking-wider">Clinical Justification</label>
                                 <textarea
                                     rows={3}
                                     placeholder="Explain the clinical complication or stay extension details..."
-                                    className="border border-opd-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-opd-primary resize-none"
+                                    className="border border-opd-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-opd-primary resize-none"
                                     value={enhanceReason}
                                     onChange={e => setEnhanceReason(e.target.value)}
                                 />
                             </div>
                         </div>
                         
-                        <div className="flex justify-end gap-2 pt-3 border-t border-opd-border text-xs">
+                        <div className="flex justify-end gap-2 pt-3 border-t border-opd-border text-sm">
                             <button
                                 type="button"
                                 onClick={() => setShowEnhanceDialog(false)}

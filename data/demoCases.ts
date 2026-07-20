@@ -366,3 +366,104 @@ export const APPENDICITIS_DEMO_RECORD: Partial<PreAuthRecord> = {
   declarations: baseDeclarations,
   outputs: {}
 };
+
+export const DENGUE_APPROVED_RECORD: Partial<PreAuthRecord> = {
+  id: 'PA-DEMO-004',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  status: 'approved',
+  version: 1,
+  createdBy: 'Insurance Desk',
+  patient: {
+    patientName: 'Ramesh Sharma',
+    age: 34,
+    gender: 'Male',
+    contactNumber: '9988771122',
+    email: 'ramesh.sharma@example.com'
+  },
+  insurance: {
+    insurerName: 'Care Health Insurance',
+    policyNumber: 'POL-11223344',
+    tpaName: 'Care Health',
+    sumInsured: 500000,
+    policyType: 'Individual Health',
+    dataSource: 'manual'
+  },
+  clinical: {
+    dataSource: 'manual_entry',
+    diagnoses: [
+      {
+        diagnosis: 'Dengue fever, unspecified',
+        icd10Code: 'A90',
+        icd10Description: 'Dengue fever [classical dengue]',
+        probability: 0.98,
+        reasoning: 'Positive Dengue NS1 antigen test. High fever, thrombocytopenia.',
+        isSelected: true
+      }
+    ],
+    selectedDiagnosisIndex: 0,
+    chiefComplaints: 'High fever for 4 days, severe body ache, retro-orbital pain.',
+    historyOfPresentIllness: 'Fever started 4 days ago. Platelet count dropping.',
+    relevantClinicalFindings: 'Platelet count: 80,000. NS1 Positive. Hematocrit increased.',
+    vitals: {
+      bp: '110/70',
+      pulse: '102',
+      temp: '102.5',
+      spo2: '98',
+      rr: '20'
+    },
+    durationOfPresentAilment: '4 days',
+    natureOfIllness: 'Acute',
+    proposedLineOfTreatment: {
+      medical: true,
+      surgical: false,
+      intensiveCare: false,
+      investigation: true,
+      nonAllopathic: false
+    },
+    treatmentTakenSoFar: 'Paracetamol',
+    reasonForHospitalisation: 'Requires IV hydration, close monitoring of platelets, and symptomatic management to prevent Dengue Hemorrhagic Fever.',
+    additionalClinicalNotes: 'Admitted under general physician.'
+  },
+  admission: {
+    admissionType: 'Emergency',
+    dateOfAdmission: new Date().toISOString().split('T')[0],
+    timeOfAdmission: '10:00',
+    roomCategory: 'General Ward',
+    expectedLengthOfStay: 3,
+    expectedDaysInICU: 0,
+    expectedDaysInRoom: 3,
+    pastMedicalHistory: {
+      diabetes: { present: false },
+      hypertension: { present: false },
+      heartDisease: { present: false },
+      asthma: { present: false },
+      epilepsy: { present: false },
+      cancer: { present: false },
+      kidney: { present: false },
+      liver: { present: false },
+      hiv: { present: false },
+      alcoholism: { present: false },
+      smoking: { present: false },
+      anyOther: { present: false }
+    },
+    previousHospitalization: { wasHospitalizedBefore: false }
+  },
+  costEstimate: {
+    totalEstimatedCost: 45000,
+    amountClaimedFromInsurer: 45000,
+    isPackageRate: false,
+    roomRentPerDay: 4000,
+    breakdown: {
+      roomRent: 12000,
+      nursingCharges: 3000,
+      investigations: 12000,
+      medicines: 8000,
+      consultation: 5000,
+      miscellaneous: 5000
+    }
+  },
+  uploadedDocuments: [],
+  declarations: baseDeclarations,
+  outputs: {}
+};

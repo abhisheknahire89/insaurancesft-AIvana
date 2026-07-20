@@ -48,7 +48,7 @@ export const LicenseVerificationModal: React.FC<LicenseVerificationModalProps> =
             </p>
 
             <form onSubmit={handleVerify}>
-                <label htmlFor="licenseNumber" className="block text-xs font-medium text-gray-300 mb-2">
+                <label htmlFor="licenseNumber" className="block text-sm font-medium text-gray-300 mb-2">
                     Medical License Number (e.g., MCI/12/34567)
                 </label>
                 <input
@@ -75,7 +75,7 @@ export const LicenseVerificationModal: React.FC<LicenseVerificationModalProps> =
                     )}
                 </button>
             </form>
-            <p className="text-xs text-center text-gray-500 mt-4">
+            <p className="text-sm text-center text-gray-500 mt-4">
                 This is a simulated verification for demonstration purposes.
             </p>
         </div>

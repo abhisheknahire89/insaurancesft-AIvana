@@ -16,7 +16,7 @@ const Citations: React.FC<{ citations: NonNullable<Message['citations']> }> = ({
 
     return (
         <div className="mt-4 pt-3 border-t border-gray-500/50">
-            <h4 className="text-xs font-semibold text-gray-300 mb-2">Sources</h4>
+            <h4 className="text-sm font-semibold text-gray-300 mb-2">Sources</h4>
             <div className="flex flex-wrap gap-2">
                 {citations.map((citation, index) => (
                     <a
@@ -24,7 +24,7 @@ const Citations: React.FC<{ citations: NonNullable<Message['citations']> }> = ({
                         href={citation.uri}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs bg-gray-600/50 hover:bg-gray-600 text-gray-200 rounded-full px-2 py-1 transition-colors truncate max-w-xs"
+                        className="text-sm bg-gray-600/50 hover:bg-gray-600 text-gray-200 rounded-full px-2 py-1 transition-colors truncate max-w-xs"
                         title={citation.title}
                     >
                         {index + 1}. {citation.title}
@@ -56,7 +56,7 @@ const RenderDdx: React.FC<{ items: DdxItem[] }> = ({ items }) => {
 
     const renderSection = (title: string, items: DdxItem[], colorClass: string, bgClass: string, badgeClass: string) => (
         <div className="mb-4 last:mb-0">
-             <h5 className={`text-[10px] font-bold ${colorClass} uppercase tracking-wider mb-2 flex items-center gap-2`}>
+             <h5 className={`text-sm font-bold ${colorClass} uppercase tracking-wider mb-2 flex items-center gap-2`}>
                 <span className={`w-2 h-2 rounded-full ${bgClass}`}></span>
                 {title}
             </h5>
@@ -65,11 +65,11 @@ const RenderDdx: React.FC<{ items: DdxItem[] }> = ({ items }) => {
                     <div key={i} className="bg-[#18181b] border border-white/10 rounded-lg p-3">
                         <div className="flex justify-between items-start mb-1.5 gap-3">
                             <span className="font-bold text-gray-200 text-sm">{item.diagnosis}</span>
-                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${badgeClass} uppercase whitespace-nowrap`}>
+                            <span className={`text-sm font-bold px-1.5 py-0.5 rounded border ${badgeClass} uppercase whitespace-nowrap`}>
                                 {normalizeConfidence(item.confidence)}
                             </span>
                         </div>
-                        <p className="text-xs text-gray-400 leading-relaxed">
+                        <p className="text-sm text-gray-400 leading-relaxed">
                             {item.rationale}
                         </p>
                     </div>
@@ -107,7 +107,7 @@ const RenderLabAnalysis: React.FC<{ analysis: LabResultAnalysis }> = ({ analysis
     return (
         <div className="mt-4 pt-3 border-t border-aivana-light-grey/80">
             <h4 className="text-sm font-semibold text-gray-200 mb-2">Lab Result Analysis</h4>
-            <p className="text-xs text-gray-300 mb-4 italic">"{analysis.overallInterpretation}"</p>
+            <p className="text-sm text-gray-300 mb-4 italic">"{analysis.overallInterpretation}"</p>
             <div className="space-y-2">
                 {analysis.results.map((param, index) => (
                     <div key={index} className={`p-2.5 bg-aivana-grey/50 rounded-lg border-l-2 ${getUrgencyClass(param.urgency)}`}>
@@ -115,11 +115,11 @@ const RenderLabAnalysis: React.FC<{ analysis: LabResultAnalysis }> = ({ analysis
                             <span className="font-semibold text-white text-sm">{param.parameter}</span>
                             <span className="font-mono text-sm">{param.value}</span>
                         </div>
-                        <div className="text-xs text-gray-400 flex justify-between items-center mt-1">
+                        <div className="text-sm text-gray-400 flex justify-between items-center mt-1">
                              <span>Ref: {param.referenceRange}</span>
                              <span className={`font-semibold ${param.urgency !== 'Normal' ? 'text-white' : ''}`}>{param.urgency}</span>
                         </div>
-                        <p className="text-xs text-gray-300 mt-2">{param.interpretation}</p>
+                        <p className="text-sm text-gray-300 mt-2">{param.interpretation}</p>
                     </div>
                 ))}
             </div>
@@ -130,7 +130,7 @@ const RenderLabAnalysis: React.FC<{ analysis: LabResultAnalysis }> = ({ analysis
 const RenderMedicalCodes: React.FC<{ result: MedicalCodeResult }> = ({ result }) => (
     <div className="mt-4 pt-3 border-t border-aivana-light-grey/80">
         <h4 className="text-sm font-semibold text-gray-200 mb-2">Medical Coding Suggestions</h4>
-        <p className="text-xs text-gray-400 mb-3">For query: "{result.query}"</p>
+        <p className="text-sm text-gray-400 mb-3">For query: "{result.query}"</p>
         <div className="space-y-2">
             {result.codes.map((code, index) => (
                 <div key={index} className="flex items-start gap-3 p-2 bg-aivana-grey/50 rounded-lg">
@@ -155,7 +155,7 @@ const RenderPatientHandout: React.FC<{ handout: PatientHandout }> = ({ handout }
                     </div>
                 ))}
             </div>
-            <p className="text-xs text-gray-500 mt-6 pt-3 border-t border-aivana-light-grey">{handout.disclaimer}</p>
+            <p className="text-sm text-gray-500 mt-6 pt-3 border-t border-aivana-light-grey">{handout.disclaimer}</p>
         </div>
     </div>
 );
@@ -173,13 +173,13 @@ const RenderRiskAssessment: React.FC<{ assessment: RiskAssessmentResult }> = ({ 
         <div className="mt-4 pt-3 border-t border-aivana-light-grey/80">
             <h4 className="text-sm font-semibold text-gray-200 mb-3">Risk Assessment Result</h4>
             <div className={`p-3 rounded-lg border-l-4 ${getRiskLevelClass(assessment.riskLevel)}`}>
-                <p className="text-xs font-medium uppercase tracking-wider">Risk Level</p>
+                <p className="text-sm font-medium uppercase tracking-wider">Risk Level</p>
                 <p className="text-2xl font-bold text-white">{assessment.riskLevel}</p>
             </div>
             
             <div className="mt-4">
                 <h5 className="font-semibold text-white mb-2 text-sm">Contributing Risk Factors</h5>
-                <ul className="list-disc list-inside space-y-1 text-xs text-gray-300">
+                <ul className="list-disc list-inside space-y-1 text-sm text-gray-300">
                     {assessment.riskFactors.map((factor, index) => (
                         <li key={index}>{factor}</li>
                     ))}
@@ -188,7 +188,7 @@ const RenderRiskAssessment: React.FC<{ assessment: RiskAssessmentResult }> = ({ 
             
             <div className="mt-4">
                 <h5 className="font-semibold text-white mb-2 text-sm">Management Recommendations</h5>
-                <ul className="list-disc list-inside space-y-1 text-xs text-gray-300">
+                <ul className="list-disc list-inside space-y-1 text-sm text-gray-300">
                     {assessment.recommendations.map((rec, index) => (
                         <li key={index}>{rec}</li>
                     ))}
@@ -225,10 +225,10 @@ const SafetyHeader: React.FC<{ message: Message }> = ({ message }) => {
   const colorClass = isConfirmationRequired ? 'bg-yellow-500/20 text-yellow-300' : 'bg-blue-500/20 text-blue-300';
 
   return (
-    <div className={`text-xs px-3 py-1.5 border-b border-aivana-light-grey/50 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 ${colorClass}`}>
+    <div className={`text-sm px-3 py-1.5 border-b border-aivana-light-grey/50 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 ${colorClass}`}>
         <div className="flex items-center gap-2">
             <span className="font-semibold">SOURCE:</span>
-            <span className="font-mono text-xs bg-black/20 px-1.5 py-0.5 rounded">{message.source_protocol_id || 'General AI Knowledge'}</span>
+            <span className="font-mono text-sm bg-black/20 px-1.5 py-0.5 rounded">{message.source_protocol_id || 'General AI Knowledge'}</span>
             {message.source_protocol_last_reviewed && (
                  <span className="font-semibold">(Reviewed: {message.source_protocol_last_reviewed})</span>
             )}

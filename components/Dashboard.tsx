@@ -25,7 +25,7 @@ const StatsCard: React.FC<{
         </div>
         <div>
             <div className="text-3xl font-bold text-opd-text-primary mb-1">{value}</div>
-            <div className="text-xs text-opd-text-muted">{subLabel}</div>
+            <div className="text-sm text-opd-text-muted">{subLabel}</div>
         </div>
     </div>
 );
@@ -79,25 +79,25 @@ export const Dashboard: React.FC<DashboardProps> = ({ doctorProfile, onStartSess
                         </div>
                         <div>
                             <h1 className="text-base font-bold text-opd-text-primary leading-tight">OPD Platform</h1>
-                            <p className="text-[10px] text-opd-text-secondary font-medium tracking-wide uppercase">AI-Powered Medical Scribe</p>
+                            <p className="text-sm text-opd-text-secondary font-medium tracking-wide uppercase">AI-Powered Medical Scribe</p>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-6">
                         <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-opd-bg rounded-full border border-opd-border">
                             <Gem className="w-3.5 h-3.5 text-opd-primary" />
-                            <span className="text-xs font-semibold text-opd-text-secondary">Free Plan</span>
+                            <span className="text-sm font-semibold text-opd-text-secondary">Free Plan</span>
                         </div>
 
                         <div className="flex items-center gap-3">
                             <div className="text-right hidden md:block">
                                 <div className="text-sm font-bold text-opd-text-primary">{doctorName}</div>
-                                <div className="text-[10px] text-opd-text-secondary uppercase font-bold tracking-wider">{doctorProfile.qualification} • General Medicine</div>
+                                <div className="text-sm text-opd-text-secondary uppercase font-bold tracking-wider">{doctorProfile.qualification} • General Medicine</div>
                             </div>
                             <div className="w-10 h-10 bg-opd-primary/10 rounded-full flex items-center justify-center text-opd-primary font-bold text-sm border-2 border-white shadow-sm">
                                 {doctorName.split(' ').map(n => n[0]).join('').substring(0, 2)}
                             </div>
-                            <button onClick={logout} className="text-xs text-opd-text-muted hover:text-opd-accent font-medium ml-2 transition-colors">
+                            <button onClick={logout} className="text-sm text-opd-text-muted hover:text-opd-accent font-medium ml-2 transition-colors">
                                 Logout
                             </button>
                         </div>
@@ -170,7 +170,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ doctorProfile, onStartSess
                                 Start Veda Session
                             </button>
 
-                            <p className="text-[10px] text-opd-text-muted font-bold tracking-widest uppercase mt-4">Akash Clinic</p>
+                            <p className="text-sm text-opd-text-muted font-bold tracking-widest uppercase mt-4">Akash Clinic</p>
                         </div>
                     </div>
                 </section>

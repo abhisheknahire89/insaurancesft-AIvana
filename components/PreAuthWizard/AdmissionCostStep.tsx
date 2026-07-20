@@ -189,10 +189,10 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
 
             {/* Admission Details */}
             <div className="card-premium space-y-4">
-                <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 font-lora">🏥 Admission Details</h3>
+                <h3 className="font-semibold text-opd-primary text-sm uppercase tracking-wider border-b border-opd-border pb-2 font-lora">🏥 Admission Details</h3>
                 <div className="flex gap-4">
                     {['Emergency', 'Planned'].map(type => (
-                        <label key={type} className="flex items-center gap-2.5 cursor-pointer bg-white border border-opd-border hover:border-opd-primary rounded-lg px-4 py-2 text-xs text-opd-text-secondary transition-all select-none shadow-sm">
+                        <label key={type} className="flex items-center gap-2.5 cursor-pointer bg-white border border-opd-border hover:border-opd-primary rounded-lg px-4 py-2 text-sm text-opd-text-secondary transition-all select-none shadow-sm">
                             <input type="radio" name="admType" value={type}
                                 checked={admission.admissionType === type}
                                 onChange={() => updateField({ admissionType: type as any })} className="accent-opd-primary w-3.5 h-3.5" />
@@ -213,11 +213,11 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
                     </div>
                 </div>
                 <div>
-                    <label className="block text-[10px] text-opd-text-secondary font-semibold uppercase tracking-wider mb-2">Room Category</label>
+                    <label className="block text-sm text-opd-text-secondary font-semibold uppercase tracking-wider mb-2">Room Category</label>
                     <div className="flex flex-wrap gap-2">
                         {ROOM_CATEGORIES.map(cat => (
                             <button key={cat} onClick={() => handleRoomCategory(cat)}
-                                className={`px-2.5 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider border transition-all ${admission.roomCategory === cat ? 'bg-opd-primary border-opd-primary text-white shadow-sm' : 'bg-white border-opd-border text-opd-text-secondary hover:text-opd-primary'}`}
+                                className={`px-2.5 py-1.5 rounded text-sm font-bold uppercase tracking-wider border transition-all ${admission.roomCategory === cat ? 'bg-opd-primary border-opd-primary text-white shadow-sm' : 'bg-white border-opd-border text-opd-text-secondary hover:text-opd-primary'}`}
                                 type="button">
                                 {cat}
                             </button>
@@ -238,7 +238,7 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
                     <div>
                         <label className="form-label uppercase tracking-wider text-[9px] mb-1">Total Length of Stay</label>
                         <input readOnly value={`${(admission.expectedLengthOfStay ?? 0)} days`}
-                            className="w-full bg-opd-input-bg border border-opd-border rounded-lg px-3 py-1.5 text-xs text-opd-text-muted select-none outline-none font-semibold" />
+                            className="w-full bg-opd-input-bg border border-opd-border rounded-lg px-3 py-1.5 text-sm text-opd-text-muted select-none outline-none font-semibold" />
                     </div>
                 </div>
             </div>
@@ -252,19 +252,19 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
                     <div className="relative z-10">
                         <div className="flex justify-between items-start">
                             <div>
-                                <h3 className="font-bold text-opd-primary text-xs flex items-center gap-2 uppercase tracking-wider font-lora">
-                                    <span className="bg-primary-tint px-2 py-0.5 rounded text-[10px] border border-opd-primary/10 font-bold font-sans">HBP 2.0</span>
+                                <h3 className="font-bold text-opd-primary text-sm flex items-center gap-2 uppercase tracking-wider font-lora">
+                                    <span className="bg-primary-tint px-2 py-0.5 rounded text-sm border border-opd-primary/10 font-bold font-sans">HBP 2.0</span>
                                     PMJAY Package Available
                                 </h3>
-                                <p className="text-opd-text-secondary text-xs mt-1">Diagnosis matches <span className="text-opd-text-primary font-semibold">{matchedPackage.condition_name}</span></p>
+                                <p className="text-opd-text-secondary text-sm mt-1">Diagnosis matches <span className="text-opd-text-primary font-semibold">{matchedPackage.condition_name}</span></p>
                             </div>
                         </div>
 
                         <div className="mt-3.5 bg-white border border-opd-border rounded-xl p-4 shadow-sm">
                             <div className="flex justify-between items-center mb-3">
                                 <div>
-                                    <div className="text-opd-text-primary text-xs font-semibold">{matchedPackage.package_name}</div>
-                                    <div className="text-opd-primary text-[10px] font-mono font-bold mt-0.5">{matchedPackage.hbp_code}</div>
+                                    <div className="text-opd-text-primary text-sm font-semibold">{matchedPackage.package_name}</div>
+                                    <div className="text-opd-primary text-sm font-mono font-bold mt-0.5">{matchedPackage.hbp_code}</div>
                                 </div>
                                 <div className="text-right">
                                     <div className="text-opd-primary font-bold text-base font-mono">{formatCostDisplay(matchedPackage.package_rate_inr)}</div>
@@ -280,7 +280,7 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
                                         {Object.entries(matchedPackage.private_tpa_rates as Record<string, { min: number, max: number }>).map(([tpa, limits]) => (
                                             <div key={tpa} className="bg-opd-input-bg rounded-lg px-3 py-1.5 border border-opd-border text-center shadow-sm">
                                                 <div className="text-[9px] text-opd-text-secondary font-medium capitalize">{tpa.replace('_', ' ')}</div>
-                                                <div className="text-xs text-opd-primary font-bold mt-0.5 font-mono">₹{(limits.min / 1000).toFixed(0)}k - {(limits.max / 1000).toFixed(0)}k</div>
+                                                <div className="text-sm text-opd-primary font-bold mt-0.5 font-mono">₹{(limits.min / 1000).toFixed(0)}k - {(limits.max / 1000).toFixed(0)}k</div>
                                             </div>
                                         ))}
                                     </div>
@@ -290,7 +290,7 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
                             <div className="mt-4 flex gap-2">
                                 <button
                                     onClick={() => applyPackage({ package_rate_inr: matchedPackage.package_rate_inr, package_name: matchedPackage.package_name, hbp_code: matchedPackage.hbp_code })}
-                                    className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all border ${cost.isPackageRate && cost.packageCode === matchedPackage.hbp_code ? 'bg-emerald-700 text-white border-emerald-700 shadow-sm' : 'bg-emerald-50 hover:bg-emerald-100/50 text-emerald-800 border-emerald-200'}`}
+                                    className={`flex-1 py-1.5 text-sm font-bold rounded-lg transition-all border ${cost.isPackageRate && cost.packageCode === matchedPackage.hbp_code ? 'bg-emerald-700 text-white border-emerald-700 shadow-sm' : 'bg-emerald-50 hover:bg-emerald-100/50 text-emerald-800 border-emerald-200'}`}
                                     type="button"
                                 >
                                     {cost.isPackageRate && cost.packageCode === matchedPackage.hbp_code ? '✓ Selected Govt Package' : 'Apply Govt Package'}
@@ -298,7 +298,7 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
                                 {matchedPackage.private_tpa_rates?.medi_assist && (
                                     <button
                                         onClick={() => applyPackage({ package_rate_inr: matchedPackage.private_tpa_rates.medi_assist.min, package_name: matchedPackage.package_name + ' (Private)', hbp_code: '' })}
-                                        className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all border ${cost.isPackageRate && cost.packageAmount === matchedPackage.private_tpa_rates.medi_assist.min ? 'bg-opd-primary text-white border-opd-primary shadow-sm' : 'bg-primary-tint hover:bg-primary-tint/80 text-opd-primary border-opd-primary/10'}`}
+                                        className={`flex-1 py-1.5 text-sm font-bold rounded-lg transition-all border ${cost.isPackageRate && cost.packageAmount === matchedPackage.private_tpa_rates.medi_assist.min ? 'bg-opd-primary text-white border-opd-primary shadow-sm' : 'bg-primary-tint hover:bg-primary-tint/80 text-opd-primary border-opd-primary/10'}`}
                                         type="button"
                                     >
                                         Apply TPA Base Rate
@@ -317,10 +317,10 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
 
             {/* Past Medical History */}
             <div className="card-premium space-y-4">
-                <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 font-lora">📋 Past Medical History</h3>
+                <h3 className="font-semibold text-opd-primary text-sm uppercase tracking-wider border-b border-opd-border pb-2 font-lora">📋 Past Medical History</h3>
                 <div className="grid grid-cols-2 gap-3">
                     {PAST_CONDITIONS.map(([key, label]) => (
-                        <div key={key} className="flex items-center gap-3 bg-white border border-opd-border hover:border-opd-primary rounded-lg px-4 py-2.5 text-xs text-opd-text-secondary transition-all select-none shadow-sm">
+                        <div key={key} className="flex items-center gap-3 bg-white border border-opd-border hover:border-opd-primary rounded-lg px-4 py-2.5 text-sm text-opd-text-secondary transition-all select-none shadow-sm">
                             <input type="checkbox"
                                 checked={pmh[key]?.present ?? false}
                                 onChange={e => onAdmissionChange({ ...admission, pastMedicalHistory: { ...pmh, [key]: { ...pmh[key], present: e.target.checked } } })}
@@ -329,13 +329,13 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
                             {pmh[key]?.present && (
                                 <input value={pmh[key]?.duration ?? ''} placeholder="Duration..."
                                     onChange={e => onAdmissionChange({ ...admission, pastMedicalHistory: { ...pmh, [key]: { ...pmh[key], duration: e.target.value } } })}
-                                    className="w-24 bg-opd-input-bg border border-opd-border rounded px-2 py-1 text-xs text-opd-text-primary focus:outline-none transition-all placeholder-opd-text-muted" />
+                                    className="w-24 bg-opd-input-bg border border-opd-border rounded px-2 py-1 text-sm text-opd-text-primary focus:outline-none transition-all placeholder-opd-text-muted" />
                             )}
                         </div>
                     ))}
                 </div>
                 <div className="pt-2 border-t border-opd-border">
-                    <label className="flex items-center gap-2.5 cursor-pointer bg-white border border-opd-border hover:border-opd-primary rounded-lg px-4 py-3 text-xs text-opd-text-secondary transition-all select-none shadow-sm">
+                    <label className="flex items-center gap-2.5 cursor-pointer bg-white border border-opd-border hover:border-opd-primary rounded-lg px-4 py-3 text-sm text-opd-text-secondary transition-all select-none shadow-sm">
                         <input type="checkbox" checked={admission.previousHospitalization?.wasHospitalizedBefore ?? false}
                             onChange={e => updateField({ previousHospitalization: { wasHospitalizedBefore: e.target.checked } })} className="accent-opd-primary w-3.5 h-3.5 rounded" />
                         <span className="font-semibold">Previously hospitalized?</span>
@@ -356,7 +356,7 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
             {/* Cost Estimation */}
             <div className="card-premium space-y-4">
                 <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 w-full flex justify-between items-center font-lora">
+                    <h3 className="font-semibold text-opd-primary text-sm uppercase tracking-wider border-b border-opd-border pb-2 w-full flex justify-between items-center font-lora">
                         <span>💰 Estimated Cost Break-up</span>
                         <span className="text-opd-text-secondary font-normal normal-case italic">
                             {cost.isPackageRate ? 'Package Rate Applied' : 'Rate card defaults — adjust as needed'}
@@ -368,31 +368,31 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
                     <div className="bg-primary-tint/20 rounded-xl p-4 border border-opd-primary/20 shadow-sm text-opd-text-primary">
                         <div className="flex justify-between items-center">
                             <div>
-                                <div className="text-xs font-semibold text-opd-primary">{cost.packageName || 'Procedure Package'}</div>
+                                <div className="text-sm font-semibold text-opd-primary">{cost.packageName || 'Procedure Package'}</div>
                                 {cost.packageCode && <div className="text-[9px] text-opd-text-secondary font-mono font-bold mt-1">{cost.packageCode}</div>}
                             </div>
                             <div className="text-right">
                                 <label className="block text-[9px] text-opd-text-secondary font-bold uppercase tracking-wider mb-1">Package Amount</label>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-opd-text-secondary font-bold text-xs">₹</span>
+                                    <span className="text-opd-text-secondary font-bold text-sm">₹</span>
                                     <input
                                         type="number"
                                         value={cost.packageAmount ?? 0}
                                         onChange={e => updateCost({ packageAmount: +e.target.value })}
-                                        className="form-input text-right w-32 font-bold font-mono text-xs"
+                                        className="form-input text-right w-32 font-bold font-mono text-sm"
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="text-[10px] text-opd-text-secondary mt-3 flex items-start gap-1.5 leading-normal">
+                        <div className="text-sm text-opd-text-secondary mt-3 flex items-start gap-1.5 leading-normal">
                             <span>ℹ</span>
                             <span>When a package is applied, individual line items below are zeroed out automatically to prevent double billing. Adjust 'Package Amount' directly.</span>
                         </div>
                     </div>
                 ) : (
                     <div className="border border-opd-border rounded-lg overflow-hidden bg-white shadow-sm">
-                        <table className="w-full text-xs text-left">
+                        <table className="w-full text-sm text-left">
                             <thead>
                                 <tr className="text-[9px] text-opd-text-secondary uppercase tracking-wider bg-opd-input-bg border-b border-opd-border">
                                     <th className="px-4 py-2 font-bold">Billing Head</th>
@@ -403,17 +403,17 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
                             <tbody className="divide-y divide-opd-border font-semibold text-opd-text-primary">
                                 <tr>
                                     <td className="px-4 py-2">Room Rent (Daily)</td>
-                                    <td className="px-4 py-2 text-right text-opd-text-secondary text-[10px]">₹{cost.roomRentPerDay ?? 0} × {cost.expectedRoomDays ?? 0} days</td>
+                                    <td className="px-4 py-2 text-right text-opd-text-secondary text-sm">₹{cost.roomRentPerDay ?? 0} × {cost.expectedRoomDays ?? 0} days</td>
                                     <td className="px-4 py-2 text-right text-opd-text-primary font-mono">{(cost.roomRentPerDay ?? 0) * (cost.expectedRoomDays ?? 0)}</td>
                                 </tr>
                                 <tr>
                                     <td className="px-4 py-2">Nursing Charges (Daily)</td>
-                                    <td className="px-4 py-2 text-right text-opd-text-secondary text-[10px]">₹{cost.nursingChargesPerDay ?? 0} × {cost.expectedRoomDays ?? 0} days</td>
+                                    <td className="px-4 py-2 text-right text-opd-text-secondary text-sm">₹{cost.nursingChargesPerDay ?? 0} × {cost.expectedRoomDays ?? 0} days</td>
                                     <td className="px-4 py-2 text-right text-opd-text-primary font-mono">{(cost.nursingChargesPerDay ?? 0) * (cost.expectedRoomDays ?? 0)}</td>
                                 </tr>
                                 <tr>
                                     <td className="px-4 py-2">ICU Charges (Daily)</td>
-                                    <td className="px-4 py-2 text-right text-opd-text-secondary text-[10px]">₹{cost.icuChargesPerDay ?? 0} × {cost.expectedIcuDays ?? 0} days</td>
+                                    <td className="px-4 py-2 text-right text-opd-text-secondary text-sm">₹{cost.icuChargesPerDay ?? 0} × {cost.expectedIcuDays ?? 0} days</td>
                                     <td className="px-4 py-2 text-right text-opd-text-primary font-mono">{(cost.icuChargesPerDay ?? 0) * (cost.expectedIcuDays ?? 0)}</td>
                                 </tr>
                                 {[
@@ -444,11 +444,11 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
 
                 {/* Totals */}
                 <div className={`rounded-xl p-4 border transition-all shadow-sm ${totals.exceedsSumInsured ? 'bg-red-50 border-red-200 text-red-800' : 'bg-primary-tint/20 border-opd-primary/20 text-opd-primary'}`}>
-                    <div className="flex justify-between items-center text-xs font-bold font-lora">
+                    <div className="flex justify-between items-center text-sm font-bold font-lora">
                         <span className="text-opd-text-primary uppercase tracking-wider">Total Estimated Cost</span>
                         <span className="text-opd-primary text-sm font-mono">{formatCostDisplay(totals.totalEstimatedCost)}</span>
                     </div>
-                    <div className="flex justify-between items-center text-xs mt-3">
+                    <div className="flex justify-between items-center text-sm mt-3">
                         <span className="text-opd-text-secondary font-semibold">Amount Claimed from Insurer</span>
                         <div className="flex items-center gap-2">
                             <span className="text-opd-text-secondary">₹</span>
@@ -457,17 +457,17 @@ export const AdmissionCostStep: React.FC<AdmissionCostStepProps> = ({
                                 className="form-input w-32 text-right font-mono" />
                         </div>
                     </div>
-                    <div className="flex justify-between items-center text-xs mt-3 border-t border-opd-border pt-3">
+                    <div className="flex justify-between items-center text-sm mt-3 border-t border-opd-border pt-3">
                         <span className="text-opd-text-secondary font-semibold">Patient Co-pay Responsibility</span>
                         <span className="text-opd-text-primary font-mono font-bold">{formatCostDisplay(totals.patientResponsibility)}</span>
                     </div>
                     {totals.exceedsSumInsured && (
-                        <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-3 text-red-800 text-xs font-semibold leading-relaxed shadow-sm">
+                        <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-3 text-red-800 text-sm font-semibold leading-relaxed shadow-sm">
                             ⚠️ Estimated cost exceeds sum insured of {formatCostDisplay(sumInsured)} by {formatCostDisplay(totals.excessAmount)}. Patient is responsible for difference.
                         </div>
                     )}
                     {!totals.exceedsSumInsured && sumInsured > 0 && (
-                        <div className="mt-3 text-emerald-700 text-xs font-bold flex items-center gap-1.5">
+                        <div className="mt-3 text-emerald-700 text-sm font-bold flex items-center gap-1.5">
                             <span>✓</span>
                             <span>Within policy sum insured ({formatCostDisplay(sumInsured)})</span>
                         </div>

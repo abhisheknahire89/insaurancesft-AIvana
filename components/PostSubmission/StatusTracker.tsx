@@ -85,10 +85,10 @@ export const StatusTracker: React.FC<StatusTrackerProps> = ({ record, onClose, o
                     {/* Summary */}
                     <div className="bg-opd-input-bg border border-opd-border rounded-xl p-4 space-y-2 text-sm shadow-sm">
                         <div className="flex justify-between items-center">
-                            <span className="font-mono text-opd-primary text-xs font-bold">{record.id}</span>
+                            <span className="font-mono text-opd-primary text-sm font-bold">{record.id}</span>
                             <StatusBadge status={record.status} />
                         </div>
-                        <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-xs text-opd-text-secondary pt-1">
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm text-opd-text-secondary pt-1">
                             <div>Patient: <span className="text-opd-text-primary font-semibold">{record.patient?.patientName}</span></div>
                             <div>Age/Sex: <span className="text-opd-text-primary font-semibold">{record.patient?.age}{record.patient?.ageUnit === 'months' ? 'M' : 'Y'} · {record.patient?.gender}</span></div>
                             <div>Diagnosis: <span className="text-opd-text-primary font-semibold">{selectedDx?.diagnosis ?? '-'}</span></div>
@@ -139,20 +139,20 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
                         };
                         return (
                             <div className="space-y-2 text-left">
-                                <h3 className="text-xs font-semibold text-opd-text-secondary uppercase tracking-wide">IRDAI Pre-Auth Document</h3>
+                                <h3 className="text-sm font-semibold text-opd-text-secondary uppercase tracking-wide">IRDAI Pre-Auth Document</h3>
                                 <div className="grid grid-cols-3 gap-2">
                                     <button onClick={() => navigator.clipboard.writeText(record.outputs.irdaiText!)}
-                                        className="btn-secondary py-2 font-semibold text-xs flex items-center justify-center gap-1"
+                                        className="btn-secondary py-2 font-semibold text-sm flex items-center justify-center gap-1"
                                         type="button">
                                         📋 Copy
                                     </button>
                                     <button onClick={openPrint}
-                                        className="btn-secondary py-2 font-semibold text-xs text-opd-primary border-opd-primary/30 flex items-center justify-center gap-1"
+                                        className="btn-secondary py-2 font-semibold text-sm text-opd-primary border-opd-primary/30 flex items-center justify-center gap-1"
                                         type="button">
                                         🖨️ Print
                                     </button>
                                     <button onClick={openPrint}
-                                        className="btn-primary py-2 font-semibold text-xs bg-opd-primary text-white flex items-center justify-center gap-1"
+                                        className="btn-primary py-2 font-semibold text-sm bg-opd-primary text-white flex items-center justify-center gap-1"
                                         type="button">
                                         📄 PDF
                                     </button>
@@ -178,21 +178,21 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
                             </div>
                             {(tpaStatus === 'approved' || tpaStatus === 'partial_approved') && (
                                 <div className="space-y-1">
-                                    <label className="block text-xs text-opd-text-secondary mb-1">Approved Amount (₹)</label>
+                                    <label className="block text-sm text-opd-text-secondary mb-1">Approved Amount (₹)</label>
                                     <input type="number" value={approvedAmount} onChange={e => setApprovedAmount(+e.target.value)}
                                         className="form-input" />
                                 </div>
                             )}
                             {tpaStatus === 'denied' && (
                                 <div className="space-y-1">
-                                    <label className="block text-xs text-opd-text-secondary mb-1">Denial Reason</label>
+                                    <label className="block text-sm text-opd-text-secondary mb-1">Denial Reason</label>
                                     <textarea value={denialReason} onChange={e => setDenialReason(e.target.value)} rows={3}
                                         className="form-input" />
                                 </div>
                             )}
                             {tpaStatus === 'query' && (
                                 <div className="space-y-1">
-                                    <label className="block text-xs text-opd-text-secondary mb-1">TPA Query Details</label>
+                                    <label className="block text-sm text-opd-text-secondary mb-1">TPA Query Details</label>
                                     <textarea value={queryDetails} onChange={e => setQueryDetails(e.target.value)} rows={3}
                                         className="form-input" />
                                 </div>
@@ -209,7 +209,7 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
                     {(record.status === 'ready_to_submit' || record.status === 'draft') && (
                         <div className="space-y-2">
                             {submissionError && (
-                                <div className="bg-red-50 border border-red-200 rounded-xl p-3.5 text-xs text-red-800 font-semibold leading-normal shadow-sm">
+                                <div className="bg-red-50 border border-red-200 rounded-xl p-3.5 text-sm text-red-800 font-semibold leading-normal shadow-sm">
                                     ⚠️ Submission unconfirmed — retry. Error: {submissionError}
                                 </div>
                             )}
@@ -268,7 +268,7 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
                         }`}>
                             <h3 className="font-semibold text-sm text-opd-primary font-lora">⚖️ Appeal Status</h3>
                             {existingAppeal ? (
-                                <div className="space-y-1 text-xs">
+                                <div className="space-y-1 text-sm">
                                     <div className="flex items-center gap-2">
                                         <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase border ${
                                             existingAppeal.appealStatus === 'resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
@@ -281,12 +281,12 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9.5pt;lin
                                             {existingAppeal.addressedCount} of {existingAppeal.totalReasons} denial reasons addressed with existing evidence
                                         </span>
                                     </div>
-                                    <p className="text-[10px] text-opd-text-muted mt-1 leading-relaxed">
+                                    <p className="text-sm text-opd-text-muted mt-1 leading-relaxed">
                                         Generated: {new Date(existingAppeal.generatedAt).toLocaleDateString('en-IN')} · Open the Denial Queue to edit or submit.
                                     </p>
                                 </div>
                             ) : (
-                                <p className="text-xs text-opd-text-secondary leading-relaxed">
+                                <p className="text-sm text-opd-text-secondary leading-relaxed">
                                     No appeal generated yet. Use the <strong>Denial Queue</strong> tab in the TPA Center to generate a citation-backed appeal.
                                 </p>
                             )}

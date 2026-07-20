@@ -138,7 +138,7 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                         </div>
                         <div>
                             <h1 className="font-bold text-lg text-opd-text-primary font-lora leading-tight">Case Queue</h1>
-                            <p className="text-xs text-opd-text-secondary">
+                            <p className="text-sm text-opd-text-secondary">
                                 Aivana — {records.length} case{records.length !== 1 ? 's' : ''} · {urgentCount} urgent
                             </p>
                         </div>
@@ -169,7 +169,7 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                             <div key={chip.label}
                                 className={`rounded-xl px-4 py-2.5 border flex flex-col gap-0.5 bg-white shadow-sm ${chip.bg}`}>
                                 <span className={`text-xl font-bold tabular-nums ${chip.text}`}>{chip.value}</span>
-                                <span className="text-[10px] text-opd-text-muted font-semibold uppercase tracking-wider">{chip.label}</span>
+                                <span className="text-sm text-opd-text-muted font-semibold uppercase tracking-wider">{chip.label}</span>
                             </div>
                         ))}
                     </div>
@@ -198,7 +198,7 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                         key={opt.value}
                                         type="button"
                                         onClick={() => setStatusFilter(opt.value as any)}
-                                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all shadow-sm"
+                                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold transition-all shadow-sm"
                                         style={{
                                             background: isActive ? '#187A6B' : '#FFFFFF',
                                             border: isActive ? '1px solid #187A6B' : '1px solid #E1E7E6',
@@ -249,7 +249,7 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                     <thead>
                                         <tr className="bg-opd-input-bg border-b border-opd-border text-opd-text-secondary font-lora font-semibold">
                                             {['', 'Ref ID', 'Patient', 'Diagnosis / ICD', 'Insurer / TPA', 'Amount', 'Readiness', 'Updated', 'Status', ''].map((h, i) => (
-                                                <th key={i} className="px-4 py-3 text-xs uppercase tracking-wider text-opd-text-secondary">
+                                                <th key={i} className="px-4 py-3 text-sm uppercase tracking-wider text-opd-text-secondary">
                                                     {h}
                                                 </th>
                                             ))}
@@ -281,26 +281,26 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                                     </td>
 
                                                     <td className="px-4 py-4">
-                                                        <span className="font-mono text-xs text-opd-primary font-semibold">{rec.id}</span>
+                                                        <span className="font-mono text-sm text-opd-primary font-semibold">{rec.id}</span>
                                                     </td>
 
                                                     <td className="px-4 py-4">
                                                         <div className="font-medium text-sm text-opd-text-primary">{rec.patient?.patientName ?? '—'}</div>
-                                                        <div className="text-xs text-opd-text-secondary">
+                                                        <div className="text-sm text-opd-text-secondary">
                                                             {rec.patient?.age ? `${rec.patient.age}${rec.patient.ageUnit === 'months' ? 'M' : 'Y'}` : ''} {rec.patient?.gender ?? ''}
                                                         </div>
                                                     </td>
 
                                                     <td className="px-4 py-4">
                                                         <div className="text-sm text-opd-text-primary font-medium">{dx?.diagnosis ?? '—'}</div>
-                                                        <div className="font-mono text-xs text-opd-text-muted">
+                                                        <div className="font-mono text-sm text-opd-text-muted">
                                                             {dx?.icd10Code ?? ''}
                                                         </div>
                                                     </td>
 
                                                     <td className="px-4 py-4">
                                                         <div className="text-sm text-opd-text-primary">{rec.insurance?.insurerName ?? '—'}</div>
-                                                        <div className="text-xs text-opd-text-secondary">
+                                                        <div className="text-sm text-opd-text-secondary">
                                                             {rec.insurance?.tpaName ?? ''}
                                                         </div>
                                                     </td>
@@ -310,12 +310,12 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                                     </td>
 
                                                     <td className="px-4 py-4">
-                                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border inline-block ${colors.bg} ${colors.border} ${colors.text}`}>
+                                                        <span className={`text-sm font-bold px-2 py-0.5 rounded border inline-block ${colors.bg} ${colors.border} ${colors.text}`}>
                                                             {score}%
                                                         </span>
                                                     </td>
 
-                                                    <td className="px-4 py-4 text-xs text-opd-text-secondary whitespace-nowrap">
+                                                    <td className="px-4 py-4 text-sm text-opd-text-secondary whitespace-nowrap">
                                                         {formatDateTime(rec.updatedAt)}
                                                     </td>
 

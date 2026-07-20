@@ -41,7 +41,7 @@ const ProtocolPrintCard: React.FC<{ protocol: ClinicalProtocol }> = ({ protocol 
 
                 <section>
                     <h2 className="text-lg font-bold uppercase tracking-wide bg-gray-200 p-2 text-center mb-2">Critical Dosing Information</h2>
-                    <table className="w-full text-left text-xs border-collapse">
+                    <table className="w-full text-left text-sm border-collapse">
                         <thead>
                             <tr className="bg-gray-100">
                                 <th className="border p-1 font-bold">Drug</th>
@@ -73,7 +73,7 @@ const ProtocolPrintCard: React.FC<{ protocol: ClinicalProtocol }> = ({ protocol 
                 </section>
             </main>
             
-            <footer className="mt-6 pt-2 border-t border-gray-400 text-center text-xs text-gray-500">
+            <footer className="mt-6 pt-2 border-t border-gray-400 text-center text-sm text-gray-500">
                 <p>This is a summary for quick reference. Always refer to the full, most recent clinical guidelines. Clinician judgment is paramount.</p>
             </footer>
         </div>

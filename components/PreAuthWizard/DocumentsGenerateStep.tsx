@@ -445,15 +445,15 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
         <div className="space-y-4">
             <div className="flex justify-between items-center bg-[#0D121F] border border-white/5 rounded-xl p-4 shadow-sm">
                 <div>
-                    <h3 className="text-xs font-bold text-blue-400 flex items-center gap-1.5 uppercase tracking-wider">
+                    <h3 className="text-sm font-bold text-blue-400 flex items-center gap-1.5 uppercase tracking-wider">
                         <span>✨</span> AI Suggest-and-Confirm
                     </h3>
-                    <p className="text-[10px] text-gray-500 mt-0.5 font-semibold">Review evidence-derived values or fill silent fields.</p>
+                    <p className="text-sm text-gray-500 mt-0.5 font-semibold">Review evidence-derived values or fill silent fields.</p>
                 </div>
                 {suggestions && suggestions.length > 0 && (
                     <button
                         onClick={handleAcceptAllSuggestions}
-                        className="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all"
+                        className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all"
                         type="button"
                     >
                         Accept All
@@ -475,7 +475,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                             }`}>
                                 <div className="flex-1 space-y-2">
                                     <div className="flex items-center justify-between">
-                                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{fLabel}</div>
+                                        <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">{fLabel}</div>
                                         <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider ${
                                             isApplied ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
                                         }`}>
@@ -490,13 +490,13 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                     value={currentVal}
                                                     onChange={e => updateFieldValue(fKey, e.target.value)}
                                                     rows={3}
-                                                    className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 transition-all resize-none"
+                                                    className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all resize-none"
                                                 />
                                             ) : fType === 'select' ? (
                                                 <select
                                                     value={currentVal}
                                                     onChange={e => updateFieldValue(fKey, e.target.value)}
-                                                    className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 transition-all"
+                                                    className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
                                                 >
                                                     <option value="" className="bg-[#0B0F19]">-- Select --</option>
                                                     {fOpts?.map(opt => <option key={opt} value={opt} className="bg-[#0B0F19]">{opt}</option>)}
@@ -506,21 +506,21 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                     type="date"
                                                     value={currentVal}
                                                     onChange={e => updateFieldValue(fKey, e.target.value)}
-                                                    className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 transition-all"
+                                                    className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
                                                 />
                                             ) : (
                                                 <input
                                                     type="text"
                                                     value={currentVal}
                                                     onChange={e => updateFieldValue(fKey, e.target.value)}
-                                                    className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 transition-all"
+                                                    className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
                                                 />
                                             )}
                                         </div>
                                     ) : (
                                         <div className="space-y-2">
-                                            <div className="text-xs text-white font-semibold bg-black/20 px-3 py-2 rounded-lg border border-white/[0.02]">{sug.suggestedValue}</div>
-                                            <div className="bg-blue-950/10 border-l-2 border-blue-500/40 rounded-r-lg p-2.5 text-[10px] text-blue-200/70 font-mono italic">
+                                            <div className="text-sm text-white font-semibold bg-black/20 px-3 py-2 rounded-lg border border-white/[0.02]">{sug.suggestedValue}</div>
+                                            <div className="bg-blue-950/10 border-l-2 border-blue-500/40 rounded-r-lg p-2.5 text-sm text-blue-200/70 font-mono italic">
                                                 "{sug.sourceSnippet}"
                                             </div>
                                         </div>
@@ -529,7 +529,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                 {!isApplied && (
                                     <button
                                         onClick={() => updateFieldValue(fKey, sug.suggestedValue)}
-                                        className="shrink-0 px-3 py-1.5 mt-5 rounded-lg text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 shadow-sm transition-all"
+                                        className="shrink-0 px-3 py-1.5 mt-5 rounded-lg text-sm font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 shadow-sm transition-all"
                                         type="button"
                                     >
                                         Accept
@@ -545,7 +545,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                             isSilentFieldFilled ? 'bg-[#0D121F]/60 border-white/10' : 'bg-rose-500/[0.01] border-rose-500/15'
                         }`}>
                             <div className="flex items-center justify-between">
-                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{fLabel}</div>
+                                <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">{fLabel}</div>
                                 <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider ${
                                     isSilentFieldFilled ? 'bg-slate-500/10 text-slate-300 border-slate-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
                                 }`}>
@@ -560,13 +560,13 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                         onChange={e => updateFieldValue(fKey, e.target.value)}
                                         rows={3}
                                         placeholder={`Not found in evidence. Please type ${fLabel.toLowerCase()} manually...`}
-                                        className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 placeholder-slate-600 transition-all resize-none"
+                                        className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 placeholder-slate-600 transition-all resize-none"
                                     />
                                 ) : fType === 'select' ? (
                                     <select
                                         value={currentVal}
                                         onChange={e => updateFieldValue(fKey, e.target.value)}
-                                        className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 transition-all"
+                                        className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
                                     >
                                         <option value="" className="bg-[#0B0F19]">-- Select --</option>
                                         {fOpts?.map(opt => <option key={opt} value={opt} className="bg-[#0B0F19]">{opt}</option>)}
@@ -576,7 +576,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                         type="date"
                                         value={currentVal}
                                         onChange={e => updateFieldValue(fKey, e.target.value)}
-                                        className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 transition-all"
+                                        className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
                                     />
                                 ) : (
                                     <input
@@ -584,7 +584,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                         value={currentVal}
                                         onChange={e => updateFieldValue(fKey, e.target.value)}
                                         placeholder={`Enter ${fLabel.toLowerCase()}...`}
-                                        className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 placeholder-slate-600 transition-all"
+                                        className="w-full bg-[#080B11]/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 placeholder-slate-600 transition-all"
                                     />
                                 )}
                             </div>
@@ -607,7 +607,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                 }`}>
                     <div className="text-3xl">✨</div>
                     <h2 className="text-lg font-bold font-lora text-opd-text-primary">Pre-Auth Document Ready</h2>
-                    <div className={`font-mono text-xs px-2.5 py-1 rounded-md inline-block border ${
+                    <div className={`font-mono text-sm px-2.5 py-1 rounded-md inline-block border ${
                         isComplete
                             ? 'bg-white border-emerald-200 text-emerald-700'
                             : 'bg-white border-amber-200 text-amber-700'
@@ -616,7 +616,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                     {/* Dynamic submittability badge */}
                     <div className="pt-1.5">
                         {partCOutput && (
-                            <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold border shadow-sm ${
+                            <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold border shadow-sm ${
                                 isComplete
                                     ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
                                     : 'bg-amber-50 border-amber-200 text-amber-700'
@@ -630,7 +630,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                         )}
                     </div>
                     {missingDocs.length > 0 && (
-                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-amber-800 text-xs font-semibold max-w-md mx-auto shadow-sm">
+                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-amber-800 text-sm font-semibold max-w-md mx-auto shadow-sm">
                             ⚠️ {missingDocs.length} required document(s) missing — flagged PENDING DOCUMENTS
                         </div>
                     )}
@@ -653,7 +653,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                         </button>
                         <button
                             onClick={handleDownloadPDF}
-                            className={`flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold transition-all active:scale-[0.98] ${
+                            className={`flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-bold transition-all active:scale-[0.98] ${
                                 isComplete
                                     ? 'bg-emerald-700 hover:bg-emerald-600 shadow-sm text-white'
                                     : 'bg-opd-primary hover:bg-opd-primary/95 shadow-sm text-white'
@@ -666,10 +666,10 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
 
                 <div className="flex flex-col items-center gap-2">
                     <div className="w-full max-w-3xl flex justify-between items-center px-1">
-                        <span className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider font-lora">Generated Pre-Authorization Request Form</span>
+                        <span className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider font-lora">Generated Pre-Authorization Request Form</span>
                         <span className="text-[9px] text-opd-text-muted font-mono uppercase tracking-wider font-bold">Format: IRDAI PART C</span>
                     </div>
-                    <pre className="w-full max-w-3xl bg-opd-input-bg border border-opd-border rounded-xl p-6 text-xs font-mono text-opd-text-primary overflow-x-auto overflow-y-auto whitespace-pre-wrap leading-relaxed max-h-[500px] shadow-sm select-all">
+                    <pre className="w-full max-w-3xl bg-opd-input-bg border border-opd-border rounded-xl p-6 text-sm font-mono text-opd-text-primary overflow-x-auto overflow-y-auto whitespace-pre-wrap leading-relaxed max-h-[500px] shadow-sm select-all">
                         {irdaiText}
                     </pre>
                 </div>
@@ -687,14 +687,14 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
             <div className="rounded-xl px-4 py-3 flex items-center gap-4 flex-wrap bg-opd-input-bg border border-opd-border shadow-sm">
                 <div className="flex items-center gap-2 min-w-0">
                     <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-muted">Patient</span>
-                    <span className="text-xs font-semibold text-opd-text-primary truncate">{record.patient?.patientName || '-'}</span>
+                    <span className="text-sm font-semibold text-opd-text-primary truncate">{record.patient?.patientName || '-'}</span>
                 </div>
                 <div className="w-px h-3 bg-opd-border" />
                 <div className="flex items-center gap-2 min-w-0">
                     <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-muted">Dx</span>
-                    <span className="text-xs font-medium truncate text-opd-text-secondary">{diagnosisText || 'Pending'}</span>
+                    <span className="text-sm font-medium truncate text-opd-text-secondary">{diagnosisText || 'Pending'}</span>
                     {icdCode && !hasInvalidICD && (
-                        <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="font-mono text-sm px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                             {icdCode}
                         </span>
                     )}
@@ -702,12 +702,12 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                 <div className="w-px h-3 bg-opd-border" />
                 <div className="flex items-center gap-2">
                     <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-muted">Cost</span>
-                    <span className="text-xs font-bold font-mono text-opd-text-primary">Rs. {(record.costEstimate?.totalEstimatedCost ?? 0).toLocaleString('en-IN')}</span>
+                    <span className="text-sm font-bold font-mono text-opd-text-primary">Rs. {(record.costEstimate?.totalEstimatedCost ?? 0).toLocaleString('en-IN')}</span>
                 </div>
                 <div className="w-px h-3 bg-opd-border" />
                 <div className="flex items-center gap-2">
                     <span className="text-[9px] font-bold uppercase tracking-wider text-opd-text-muted">TPA</span>
-                    <span className="text-xs truncate text-opd-text-secondary">{record.insurance?.tpaName || record.insurance?.insurerName || '-'}</span>
+                    <span className="text-sm truncate text-opd-text-secondary">{record.insurance?.tpaName || record.insurance?.insurerName || '-'}</span>
                 </div>
             </div>
 
@@ -715,7 +715,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
             <div className="flex gap-1 bg-opd-input-bg border border-opd-border rounded-xl p-1 select-none shadow-sm">
                 {TABS.map(tab => (
                     <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                        className={`flex-1 py-2 rounded-lg text-xs transition-all ${activeTab === tab.id ? 'bg-opd-primary text-white font-bold shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary font-semibold hover:bg-white/5'}`}
+                        className={`flex-1 py-2 rounded-lg text-sm transition-all ${activeTab === tab.id ? 'bg-opd-primary text-white font-bold shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary font-semibold hover:bg-white/5'}`}
                         type="button">
                         {tab.label}
                     </button>
@@ -725,10 +725,10 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
             {/* Validation Blocker Alert */}
             {hasBlockers && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-2 shadow-sm text-red-800">
-                    <div className="flex items-center gap-2 text-red-700 font-bold text-xs uppercase tracking-wider font-lora">
+                    <div className="flex items-center gap-2 text-red-700 font-bold text-sm uppercase tracking-wider font-lora">
                         <span>[-]</span> Submission Blocked - Required Data Missing
                     </div>
-                    <ul className="list-disc list-inside space-y-1 text-xs text-red-800 font-medium leading-relaxed">
+                    <ul className="list-disc list-inside space-y-1 text-sm text-red-800 font-medium leading-relaxed">
                         {blockingGaps.map((bg, idx) => <li key={idx}>{bg}</li>)}
                     </ul>
                 </div>
@@ -737,10 +737,10 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
             {/* Consistency Warnings Alert */}
             {!hasBlockers && currentPartC?.warnings && currentPartC.warnings.length > 0 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2 shadow-sm text-amber-800">
-                    <div className="flex items-center gap-2 text-amber-700 font-semibold text-xs uppercase tracking-wider font-lora">
+                    <div className="flex items-center gap-2 text-amber-700 font-semibold text-sm uppercase tracking-wider font-lora">
                         <span>[!]</span> Internal Consistency Warnings
                     </div>
-                    <ul className="list-disc list-inside space-y-1 text-xs text-amber-800 font-medium leading-relaxed">
+                    <ul className="list-disc list-inside space-y-1 text-sm text-amber-800 font-medium leading-relaxed">
                         {currentPartC.warnings.map((w, idx) => <li key={idx}>{w}</li>)}
                     </ul>
                 </div>
@@ -754,13 +754,13 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                         {/* Missing Evidence Alert */}
                         {missingDocs.length > 0 && (
                             <div className="bg-red-50 border border-red-200 rounded-2xl p-4 space-y-2 shadow-sm">
-                                <div className="flex items-center gap-2 text-red-700 font-bold text-xs uppercase tracking-wider font-lora">
+                                <div className="flex items-center gap-2 text-red-700 font-bold text-sm uppercase tracking-wider font-lora">
                                     <span>[📂]</span> Missing Diagnostic Evidence ({missingDocs.length})
                                 </div>
-                                <p className="text-opd-text-secondary text-xs font-medium">Required documents according to clinical guidelines for <strong>{diagnosisText}</strong>:</p>
+                                <p className="text-opd-text-secondary text-sm font-medium">Required documents according to clinical guidelines for <strong>{diagnosisText}</strong>:</p>
                                 <ul className="space-y-1">
                                     {missingDocs.map(d => (
-                                        <li key={d.category} className="flex items-center gap-2 text-xs text-red-800 font-semibold">
+                                        <li key={d.category} className="flex items-center gap-2 text-sm text-red-800 font-semibold">
                                             <span className="text-red-700 font-bold">x</span>
                                             <strong>{d.displayName}</strong> - {d.description}
                                         </li>
@@ -775,12 +775,12 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                         <div className="space-y-4">
                                             {requiredDocs.length > 0 && (
                                                 <div className="bg-[#0D121F] border border-white/5 rounded-xl p-5 space-y-3 shadow-sm shadow-black/10">
-                                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Required for: {diagnosisText}</h3>
+                                                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Required for: {diagnosisText}</h3>
                                                     <div className="space-y-2">
                                                         {requiredDocs.map(req => {
                                                             const uploaded = docs.find(d => d.documentCategory === req.category);
                                                             return (
-                                                                <div key={req.category} className="flex items-center gap-3 text-xs bg-white/[0.02] border border-white/5 rounded-lg px-4 py-2.5 font-medium">
+                                                                <div key={req.category} className="flex items-center gap-3 text-sm bg-white/[0.02] border border-white/5 rounded-lg px-4 py-2.5 font-medium">
                                                                     <span className={uploaded ? 'text-emerald-400' : req.isRequired ? 'text-rose-400' : 'text-gray-500'}>
                                                                         {uploaded ? '✓' : req.isRequired ? '⚠' : '○'}
                                                                     </span>
@@ -796,7 +796,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                             {compressingProgress ? (
                                                 <div className="border border-dashed border-emerald-500/30 rounded-xl p-6 text-center bg-emerald-500/[0.02] flex flex-col items-center justify-center gap-2.5 min-h-[110px] select-none">
                                                     <div className="w-5 h-5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
-                                                    <div className="text-emerald-400 font-bold text-xs uppercase tracking-wider">{compressingProgress}</div>
+                                                    <div className="text-emerald-400 font-bold text-sm uppercase tracking-wider">{compressingProgress}</div>
                                                     <div className="text-[9px] text-gray-500">Optimizing PDF size in browser for Gemini...</div>
                                                 </div>
                                             ) : (
@@ -805,19 +805,19 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                     className="border border-dashed border-white/10 hover:border-blue-500/40 rounded-xl p-6 text-center bg-white/[0.01] hover:bg-blue-500/5 cursor-pointer transition-all duration-200 group"
                                                 >
                                                     <div className="text-xl transition-transform duration-200 group-hover:scale-110">📁</div>
-                                                    <div className="text-white font-semibold mt-2 text-xs uppercase tracking-wider">Drop files here or click to upload</div>
-                                                    <div className="text-[10px] text-gray-500 mt-1">PDF (auto-optimized), JPG, PNG — any file size</div>
+                                                    <div className="text-white font-semibold mt-2 text-sm uppercase tracking-wider">Drop files here or click to upload</div>
+                                                    <div className="text-sm text-gray-500 mt-1">PDF (auto-optimized), JPG, PNG — any file size</div>
                                                 </div>
                                             )}
                                             <input ref={fileRef} type="file" accept="image/*,.pdf" className="hidden" onChange={e => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
 
                                             <div className="space-y-2">
                                                 {docs.map(doc => (
-                                                    <div key={doc.id} className="flex items-center gap-3 bg-white/[0.02] border border-white/5 hover:border-white/10 rounded-lg px-4 py-3 text-xs text-gray-300 transition-colors">
+                                                    <div key={doc.id} className="flex items-center gap-3 bg-white/[0.02] border border-white/5 hover:border-white/10 rounded-lg px-4 py-3 text-sm text-gray-300 transition-colors">
                                                         <span className="text-lg">{doc.fileType === 'pdf' ? '📄' : '🖼️'}</span>
                                                         <div className="flex-1 min-w-0">
-                                                            <div className="text-xs font-semibold text-white truncate">{doc.fileName}</div>
-                                                            <div className="text-[10px] text-gray-500 mt-0.5">{doc.fileSizeDisplay}</div>
+                                                            <div className="text-sm font-semibold text-white truncate">{doc.fileName}</div>
+                                                            <div className="text-sm text-gray-500 mt-0.5">{doc.fileSizeDisplay}</div>
                                                             {doc.duplicateWarning && <div className="text-[9px] text-rose-400 font-bold mt-0.5">{doc.duplicateWarning}</div>}
                                                             {doc.expiryWarning && <div className="text-[9px] text-rose-400 font-bold mt-0.5">{doc.expiryWarning}</div>}
                                                             {doc.readabilityWarning && <div className="text-[9px] text-amber-400 font-bold mt-0.5">{doc.readabilityWarning}</div>}
@@ -836,7 +836,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                             )}
                                                         </div>
                                                         <select value={doc.documentCategory} onChange={e => updateDocCategory(doc.id, e.target.value as WizardDocCategory)}
-                                                            className="bg-[#0D121F] border border-white/10 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
+                                                            className="bg-[#0D121F] border border-white/10 rounded-lg px-2.5 py-1 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
                                                             {DOC_CAT_OPTIONS.map(o => <option key={o.value} value={o.value} className="bg-[#0B0F19]">{o.label}</option>)}
                                                         </select>
                                                         <button onClick={() => removeDoc(doc.id)} className="text-gray-500 hover:text-rose-400 p-1.5 hover:bg-white/5 rounded-lg transition-all" type="button">
@@ -854,7 +854,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                             {suggestionsLoading ? (
                                                 <div className="flex flex-col items-center justify-center py-20 gap-3 text-center bg-[#0D121F] border border-white/5 rounded-2xl h-full min-h-[300px]">
                                                     <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                                                    <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Analyzing documents for Part C fields...</p>
+                                                    <p className="text-gray-400 text-sm font-semibold uppercase tracking-wider">Analyzing documents for Part C fields...</p>
                                                 </div>
                                             ) : (
                                                 suggestionsPanel
@@ -866,8 +866,8 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                          {compressingProgress ? (
                                              <div className="border border-dashed border-emerald-500/30 rounded-xl p-12 text-center bg-emerald-500/[0.02] flex flex-col items-center justify-center gap-3 min-h-[180px] select-none">
                                                  <div className="w-7 h-7 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
-                                                 <div className="text-emerald-400 font-bold text-xs uppercase tracking-wider">{compressingProgress}</div>
-                                                 <div className="text-[10px] text-gray-500 mt-1">Optimizing PDF size in browser for Gemini...</div>
+                                                 <div className="text-emerald-400 font-bold text-sm uppercase tracking-wider">{compressingProgress}</div>
+                                                 <div className="text-sm text-gray-500 mt-1">Optimizing PDF size in browser for Gemini...</div>
                                              </div>
                                          ) : (
                                              <div
@@ -875,18 +875,18 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                  className="border-2 border-dashed border-white/10 hover:border-blue-500/40 rounded-xl p-12 text-center bg-white/[0.01] hover:bg-blue-500/5 cursor-pointer transition-all duration-200 group"
                                              >
                                                  <div className="text-3xl transition-transform duration-200 group-hover:scale-110">📁</div>
-                                                 <div className="text-white font-semibold mt-3 text-xs uppercase tracking-wider">Drop files here or click to upload</div>
-                                                 <div className="text-[10px] text-gray-500 mt-1">PDF (auto-optimized), JPG, PNG — any file size</div>
+                                                 <div className="text-white font-semibold mt-3 text-sm uppercase tracking-wider">Drop files here or click to upload</div>
+                                                 <div className="text-sm text-gray-500 mt-1">PDF (auto-optimized), JPG, PNG — any file size</div>
                                              </div>
                                          )}
                                          <input ref={fileRef} type="file" accept="image/*,.pdf" className="hidden" onChange={e => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
 
                                         {requiredDocs.length > 0 && (
                                             <div className="bg-[#0D121F] border border-white/5 rounded-xl p-5 space-y-3 shadow-sm shadow-black/10">
-                                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Required for: {diagnosisText}</h3>
+                                                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Required for: {diagnosisText}</h3>
                                                 <div className="space-y-2">
                                                     {requiredDocs.map(req => (
-                                                        <div key={req.category} className="flex items-center gap-3 text-xs bg-white/[0.02] border border-white/5 rounded-lg px-4 py-2.5 font-medium">
+                                                        <div key={req.category} className="flex items-center gap-3 text-sm bg-white/[0.02] border border-white/5 rounded-lg px-4 py-2.5 font-medium">
                                                             <span className="text-rose-400 font-bold">⚠</span>
                                                             <span className="flex-1 text-white font-semibold">{req.displayName}</span>
                                                             <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/10 text-rose-400">Required</span>
@@ -904,31 +904,31 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                         {activeTab === 'necessity' && (
                             <div className="space-y-4">
                                 <div className={`flex items-center justify-between p-3.5 rounded-lg border ${strCfg.color.includes('green') ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400' : strCfg.color.includes('blue') ? 'bg-blue-500/5 border-blue-500/20 text-blue-400' : 'bg-rose-500/5 border-rose-500/20 text-rose-400'}`}>
-                                    <span className="font-bold text-xs uppercase tracking-wider">Necessity Strength: {strCfg.icon} {strCfg.label}</span>
-                                    <button onClick={() => { setEditText(necessity?.generatedText ?? ''); setIsEditing(!isEditing); }} className="text-xs font-bold hover:underline transition-all text-blue-400 hover:text-blue-300" type="button">
+                                    <span className="font-bold text-sm uppercase tracking-wider">Necessity Strength: {strCfg.icon} {strCfg.label}</span>
+                                    <button onClick={() => { setEditText(necessity?.generatedText ?? ''); setIsEditing(!isEditing); }} className="text-sm font-bold hover:underline transition-all text-blue-400 hover:text-blue-300" type="button">
                                         {isEditing ? 'Preview' : '✏️ Edit Description'}
                                     </button>
                                 </div>
-                                <div className="text-[10px] text-gray-400 space-y-1.5 font-medium leading-relaxed bg-white/[0.01] border border-white/5 rounded-lg p-3.5">
+                                <div className="text-sm text-gray-400 space-y-1.5 font-medium leading-relaxed bg-white/[0.01] border border-white/5 rounded-lg p-3.5">
                                     {reasons.map((r, i) => <div key={i} className="flex items-start gap-1.5"><span>•</span><span>{r}</span></div>)}
                                 </div>
                                 {isEditing ? (
                                     <textarea value={editText} onChange={e => setEditText(e.target.value)} rows={15}
-                                        className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-3 text-xs font-mono text-gray-300 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none" />
+                                        className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-3 text-sm font-mono text-gray-300 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none" />
                                 ) : (
-                                    <div className="bg-white/[0.03] border border-white/10 rounded-lg px-4 py-3 text-xs font-mono text-gray-300 whitespace-pre-wrap max-h-80 overflow-y-auto leading-relaxed custom-scrollbar">
+                                    <div className="bg-white/[0.03] border border-white/10 rounded-lg px-4 py-3 text-sm font-mono text-gray-300 whitespace-pre-wrap max-h-80 overflow-y-auto leading-relaxed custom-scrollbar">
                                         {necessity?.generatedText ?? 'Generating necessity text...'}
                                     </div>
                                 )}
                                 <div className="flex justify-end pt-1">
-                                    <button onClick={generateNecessity} className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors" type="button">↺ Regenerate from clinical details</button>
+                                    <button onClick={generateNecessity} className="text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors" type="button">↺ Regenerate from clinical details</button>
                                 </div>
                             </div>
                         )}
 
                         {/* Summary Tab */}
                         {activeTab === 'summary' && (
-                            <div className="bg-white/[0.01] border border-white/5 rounded-xl p-5 space-y-3.5 text-xs shadow-sm shadow-black/10">
+                            <div className="bg-white/[0.01] border border-white/5 rounded-xl p-5 space-y-3.5 text-sm shadow-sm shadow-black/10">
                                 <h3 className="font-bold text-gray-300 uppercase tracking-wider border-b border-white/5 pb-2">Pre-Authorization Summary</h3>
                                 {[
                                     ['Patient Details', `${record.patient?.patientName ?? '—'}, ${record.patient?.age ?? '?'}${record.patient?.ageUnit === 'months' ? 'M' : 'Y'} ${record.patient?.gender ?? ''}`],
@@ -954,8 +954,8 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                             <div className="space-y-5">
                                 {/* Patient */}
                                 <div className="bg-white/[0.01] border border-white/5 rounded-xl p-5 space-y-4 shadow-sm shadow-black/10">
-                                    <h3 className="font-semibold text-gray-300 text-[10px] uppercase tracking-wider border-b border-white/5 pb-2">Patient / Insured Declaration</h3>
-                                    <p className="text-xs text-gray-400 leading-relaxed font-medium">I hereby declare that the information furnished is true and correct. I authorize the hospital and TPA to share my medical records for claim processing.</p>
+                                    <h3 className="font-semibold text-gray-300 text-sm uppercase tracking-wider border-b border-white/5 pb-2">Patient / Insured Declaration</h3>
+                                    <p className="text-sm text-gray-400 leading-relaxed font-medium">I hereby declare that the information furnished is true and correct. I authorize the hospital and TPA to share my medical records for claim processing.</p>
                                     <div className="space-y-3 pt-1">
                                         {[
                                             ['agreedToTerms', 'Patient/attendant has been informed and consents to terms'],
@@ -966,64 +966,64 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                 <input type="checkbox" checked={(docDecl as any)[key] ?? false}
                                                     onChange={e => updateDecl({ patient: { ...docDecl, [key]: e.target.checked } })}
                                                     className="accent-blue-500 w-3.5 h-3.5 rounded mt-0.5" />
-                                                <span className="text-xs text-gray-300 font-semibold">{label}</span>
+                                                <span className="text-sm text-gray-300 font-semibold">{label}</span>
                                             </label>
                                         ))}
                                         <div className="pt-2">
-                                            <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Captured by (insurance desk person name) *</label>
+                                            <label className="block text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">Captured by (insurance desk person name) *</label>
                                             <input value={docDecl.capturedBy ?? ''} onChange={e => updateDecl({ patient: { ...docDecl, capturedBy: e.target.value } })}
-                                                className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" placeholder="Enter your full name" />
+                                                className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" placeholder="Enter your full name" />
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Doctor */}
                                 <div className="bg-white/[0.01] border border-white/5 rounded-xl p-5 space-y-4 shadow-sm shadow-black/10">
-                                    <h3 className="font-semibold text-gray-300 text-[10px] uppercase tracking-wider border-b border-white/5 pb-2">Treating Doctor's Declaration</h3>
+                                    <h3 className="font-semibold text-gray-300 text-sm uppercase tracking-wider border-b border-white/5 pb-2">Treating Doctor's Declaration</h3>
                                     <div>
-                                        <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Select Treating Doctor *</label>
+                                        <label className="block text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">Select Treating Doctor *</label>
                                         <select value={drDecl.doctorId ?? ''} onChange={e => {
                                             const dr = DEFAULT_DOCTORS.find(d => d.id === e.target.value);
                                             if (dr) updateDecl({ doctor: { doctorId: dr.id, doctorName: dr.name, doctorQualification: dr.qualification, doctorRegistrationNumber: dr.registrationNumber, registrationCouncil: dr.registrationCouncil, confirmed: false, confirmationMethod: 'in_app' } });
-                                        }} className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
+                                        }} className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
                                             <option value="" className="bg-[#0B0F19]">Select Doctor</option>
                                             {DEFAULT_DOCTORS.map(d => <option key={d.id} value={d.id} className="bg-[#0B0F19]">{d.name} — {d.qualification}</option>)}
                                         </select>
                                     </div>
                                     {drDecl.doctorName && (
-                                        <div className="bg-black/30 border border-white/5 rounded-lg p-3 text-xs text-gray-400 leading-normal font-semibold">
+                                        <div className="bg-black/30 border border-white/5 rounded-lg p-3 text-sm text-gray-400 leading-normal font-semibold">
                                             <div>Registration No: <span className="text-white">{drDecl.doctorRegistrationNumber}</span></div>
-                                            <div className="text-[10px] text-gray-500 mt-0.5">{drDecl.registrationCouncil}</div>
+                                            <div className="text-sm text-gray-500 mt-0.5">{drDecl.registrationCouncil}</div>
                                         </div>
                                     )}
                                     <label className="flex items-start gap-2.5 cursor-pointer select-none">
                                         <input type="checkbox" checked={drDecl.confirmed ?? false} disabled={!drDecl.doctorId}
                                             onChange={e => updateDecl({ doctor: { ...drDecl, confirmed: e.target.checked, confirmationMethod: 'in_app' } })}
                                             className="accent-blue-500 w-3.5 h-3.5 rounded mt-0.5 disabled:opacity-50" />
-                                        <span className="text-xs text-gray-300 font-semibold">Doctor confirms the above clinical information is accurate</span>
+                                        <span className="text-sm text-gray-300 font-semibold">Doctor confirms the above clinical information is accurate</span>
                                     </label>
                                 </div>
 
                                 {/* Hospital */}
                                 <div className="bg-white/[0.01] border border-white/5 rounded-xl p-5 space-y-4 shadow-sm shadow-black/10">
-                                    <h3 className="font-semibold text-gray-300 text-[10px] uppercase tracking-wider border-b border-white/5 pb-2">Hospital Declaration</h3>
+                                    <h3 className="font-semibold text-gray-300 text-sm uppercase tracking-wider border-b border-white/5 pb-2">Hospital Declaration</h3>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Authorized Signatory</label>
+                                            <label className="block text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">Authorized Signatory</label>
                                             <input value={hospDecl.authorizedSignatoryName ?? ''} onChange={e => updateDecl({ hospital: { ...hospDecl, authorizedSignatoryName: e.target.value } })}
-                                                className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" />
+                                                className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" />
                                         </div>
                                         <div>
-                                            <label className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Designation</label>
+                                            <label className="block text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">Designation</label>
                                             <input value={hospDecl.designation ?? ''} onChange={e => updateDecl({ hospital: { ...hospDecl, designation: e.target.value } })}
-                                                className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" />
+                                                className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-gray-600 transition-all" />
                                         </div>
                                     </div>
                                     <label className="flex items-center gap-2.5 cursor-pointer select-none">
                                         <input type="checkbox" checked={hospDecl.hospitalSealApplied ?? false}
                                             onChange={e => updateDecl({ hospital: { ...hospDecl, hospitalSealApplied: e.target.checked } })}
                                             className="accent-blue-500 w-3.5 h-3.5 rounded" />
-                                        <span className="text-xs text-gray-300 font-semibold">Hospital seal will be applied on printed copy</span>
+                                        <span className="text-sm text-gray-300 font-semibold">Hospital seal will be applied on printed copy</span>
                                     </label>
                                 </div>
                             </div>
@@ -1035,31 +1035,31 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                 {isDemo && (
                                     <div className="bg-blue-950/20 border border-blue-500/10 rounded-2xl p-5 space-y-3.5 shadow-[inset_0_0_15px_rgba(59,130,246,0.02)]">
                                         <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                                            <h3 className="text-xs font-bold uppercase tracking-wider text-blue-400 flex items-center gap-2">
+                                            <h3 className="text-sm font-bold uppercase tracking-wider text-blue-400 flex items-center gap-2">
                                                 <span>⚡</span> Aivana Demo Walkthrough
                                             </h3>
                                             {onResetDemo && (
-                                                <button onClick={onResetDemo} className="text-xs px-3 py-1 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-300 rounded-xl transition-all font-bold" type="button">
+                                                <button onClick={onResetDemo} className="text-sm px-3 py-1 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-300 rounded-xl transition-all font-bold" type="button">
                                                     Reset Demo
                                                 </button>
                                             )}
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
                                             <div className="p-3.5 rounded-xl bg-blue-950/10 border border-blue-500/10 space-y-1">
-                                                <div className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">1. Checklist: COMPLETE ✓</div>
-                                                <p className="text-[11px] text-gray-400 leading-relaxed font-medium">
+                                                <div className="text-sm font-bold text-blue-400 uppercase tracking-wider">1. Checklist: COMPLETE ✓</div>
+                                                <p className="text-sm text-gray-400 leading-relaxed font-medium">
                                                     Every required document is attached and Part C fields are filled. Standard form-checkers mark this <strong>"ready to submit"</strong>.
                                                 </p>
                                             </div>
                                             <div className="p-3.5 rounded-xl bg-blue-950/10 border border-blue-500/10 space-y-1">
-                                                <div className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">2. Aivana Engine Review</div>
-                                                <p className="text-[11px] text-gray-400 leading-relaxed font-medium">
+                                                <div className="text-sm font-bold text-blue-400 uppercase tracking-wider">2. Aivana Engine Review</div>
+                                                <p className="text-sm text-gray-400 leading-relaxed font-medium">
                                                     Aivana reads the clinical narrative for actual medical history/necessity logic, not just document presence check.
                                                 </p>
                                             </div>
                                             <div className="p-3.5 rounded-xl bg-blue-950/10 border border-blue-500/10 space-y-1">
-                                                <div className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">3. The Jolt ⚡</div>
-                                                <p className="text-[11px] text-gray-400 leading-relaxed font-medium">
+                                                <div className="text-sm font-bold text-blue-400 uppercase tracking-wider">3. The Jolt ⚡</div>
+                                                <p className="text-sm text-gray-400 leading-relaxed font-medium">
                                                     Aivana flags it <strong>INSUFFICIENT</strong>, anticipating the exact pre-existing condition query a real TPA reviewer would raise.
                                                 </p>
                                             </div>
@@ -1074,7 +1074,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                             <h2 className="text-base font-semibold text-white/95 leading-tight flex items-center gap-2">
                                                 <span>{record.patient?.patientName || '—'}</span>
                                                 {record.complexity && (
-                                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                                                    <span className={`text-sm font-bold px-2 py-0.5 rounded border ${
                                                         record.complexity === 'Low' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
                                                         record.complexity === 'Medium' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' :
                                                         'bg-rose-500/10 border-rose-500/20 text-rose-400'
@@ -1083,32 +1083,32 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                     </span>
                                                 )}
                                             </h2>
-                                            <p className="text-xs text-slate-500 mt-1">Ref ID: <span className="font-mono text-slate-400 select-all">{record.id}</span></p>
+                                            <p className="text-sm text-slate-500 mt-1">Ref ID: <span className="font-mono text-slate-400 select-all">{record.id}</span></p>
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                         <div className="space-y-1">
-                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Demographics</div>
+                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Demographics</div>
                                             <div className="text-slate-300 font-semibold">{record.patient?.age ? `${record.patient.age}${record.patient.ageUnit === 'months' ? 'M' : 'Y'}` : ''} {record.patient?.gender ?? ''}</div>
-                                            <div className="text-[10px] text-slate-500">UHID: {record.patient?.uhid || '—'}</div>
+                                            <div className="text-sm text-slate-500">UHID: {record.patient?.uhid || '—'}</div>
                                         </div>
                                         <div className="space-y-1">
-                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Diagnosis</div>
+                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Diagnosis</div>
                                             <div className="text-slate-300 font-semibold truncate" title={diagnosisText}>{diagnosisText || '—'}</div>
                                             {icdCode && (
                                                 <div className="font-mono text-[9px] text-emerald-400 font-bold">ICD: {icdCode}</div>
                                             )}
                                         </div>
                                         <div className="space-y-1">
-                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Insurer / TPA</div>
+                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Insurer / TPA</div>
                                             <div className="text-slate-300 font-semibold truncate">{record.insurance?.insurerName || '—'}</div>
-                                            <div className="text-[10px] text-slate-500">TPA: {record.insurance?.tpaName || '—'}</div>
+                                            <div className="text-sm text-slate-500">TPA: {record.insurance?.tpaName || '—'}</div>
                                         </div>
                                         <div className="space-y-1">
-                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Sum Insured</div>
+                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Sum Insured</div>
                                             <div className="text-slate-300 font-semibold">₹{(record.insurance?.sumInsured ?? 0).toLocaleString('en-IN')}</div>
-                                            <div className="text-[10px] text-slate-500">Policy: {record.insurance?.policyNumber || '—'}</div>
+                                            <div className="text-sm text-slate-500">Policy: {record.insurance?.policyNumber || '—'}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -1120,7 +1120,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                 <span key={i} className="pulse-dot inline-block w-1.5 h-1.5 rounded-full bg-slate-400" />
                                             ))}
                                         </div>
-                                        <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Running Aivana audit review...</p>
+                                        <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider">Running Aivana audit review...</p>
                                     </div>
                                 ) : tpaReport ? (
                                     <div className="space-y-6">
@@ -1137,7 +1137,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                     {(tpaReport as any).decision === 'APPROVE' ? '✓' : (tpaReport as any).decision === 'DENY' ? '✗' : '⚠️'}
                                                 </div>
                                                 <div>
-                                                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Prior Auth AI Recommendation</h3>
+                                                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">Prior Auth AI Recommendation</h3>
                                                     <p className={`text-sm font-bold mt-0.5 ${
                                                         (tpaReport as any).decision === 'APPROVE' ? 'text-emerald-400' :
                                                         (tpaReport as any).decision === 'DENY' ? 'text-rose-400' :
@@ -1149,7 +1149,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                     </p>
                                                 </div>
                                             </div>
-                                            <p className="text-xs text-slate-400 leading-normal font-medium">
+                                            <p className="text-sm text-slate-400 leading-normal font-medium">
                                                 {(tpaReport as any).justification || (tpaReport.status === 'sufficient'
                                                     ? 'The clinical narrative details provide strong backing. Anticipated queries are highly unlikely.'
                                                     : 'Aivana identified critical evidence gaps that are likely to trigger TPA rejections or query letters.')}
@@ -1160,8 +1160,8 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                         {(tpaReport as any).evidenceHighlights && (tpaReport as any).evidenceHighlights.length > 0 && (
                                             <div className="bg-slate-900/15 border border-white/5 rounded-2xl p-5 space-y-4 shadow-sm">
                                                 <div className="border-b border-white/5 pb-2.5">
-                                                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">Policy & Clinical Evidence Highlights</h3>
-                                                     <p className="text-[10px] text-slate-500 mt-0.5">Verbatim excerpts extracted from uploaded files matching underwriting rules.</p>
+                                                     <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300">Policy & Clinical Evidence Highlights</h3>
+                                                     <p className="text-sm text-slate-500 mt-0.5">Verbatim excerpts extracted from uploaded files matching underwriting rules.</p>
                                                 </div>
                                                 <div className="space-y-3">
                                                     {(tpaReport as any).evidenceHighlights.map((highlight: any, idx: number) => {
@@ -1178,10 +1178,10 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                                     </span>
                                                                     <span className="text-[9px] font-mono text-slate-400 truncate max-w-xs">{highlight.sourceDocument}</span>
                                                                 </div>
-                                                                <div className="text-xs font-bold text-white bg-black/20 border border-white/5 rounded-lg p-3 italic leading-relaxed">
+                                                                <div className="text-sm font-bold text-white bg-black/20 border border-white/5 rounded-lg p-3 italic leading-relaxed">
                                                                     "{highlight.excerpt}"
                                                                 </div>
-                                                                <div className="text-[10px] text-slate-400 font-semibold flex items-center gap-1.5">
+                                                                <div className="text-sm text-slate-400 font-semibold flex items-center gap-1.5">
                                                                     <span className="text-slate-500">Rule:</span>
                                                                     <span className="text-slate-300 font-bold">{highlight.relatedRule}</span>
                                                                 </div>
@@ -1195,22 +1195,22 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                         {/* Gaps & Queries (The Visible Hero Section) */}
                                         <div className="bg-slate-900/15 border border-white/5 rounded-2xl p-5 space-y-5 shadow-sm">
                                             <div className="border-b border-white/5 pb-2.5">
-                                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">Anticipated Audit Queries</h3>
-                                                <p className="text-[10px] text-slate-500 mt-0.5">Prioritized list of predicted reviewer questions and corresponding clinical fixes.</p>
+                                                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300">Anticipated Audit Queries</h3>
+                                                <p className="text-sm text-slate-500 mt-0.5">Prioritized list of predicted reviewer questions and corresponding clinical fixes.</p>
                                             </div>
 
                                             {/* Gaps Checklist */}
                                             {tpaReport.insufficientEvidence && tpaReport.insufficientEvidence.length > 0 && (
                                                 <div className="space-y-2.5">
-                                                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-rose-400">Missing Narrative Gaps</h4>
+                                                    <h4 className="text-sm font-bold uppercase tracking-wider text-rose-400">Missing Narrative Gaps</h4>
                                                     <div className="grid grid-cols-1 gap-2 bg-rose-500/[0.01] border border-rose-500/10 rounded-xl p-3.5">
                                                         {tpaReport.insufficientEvidence.map((gap, idx) => (
-                                                            <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-300 leading-relaxed font-semibold">
+                                                            <div key={idx} className="flex items-start gap-2.5 text-sm text-slate-300 leading-relaxed font-semibold">
                                                                 <span className="text-rose-500 text-sm leading-none">✗</span>
                                                                 <div className="flex-1">
                                                                     <span>Requires details: "{gap}"</span>
                                                                     {onJumpToStep && (
-                                                                        <button onClick={() => onJumpToStep(2)} className="text-[10px] font-bold text-blue-400 hover:text-blue-300 ml-2 hover:underline inline-block">
+                                                                        <button onClick={() => onJumpToStep(2)} className="text-sm font-bold text-blue-400 hover:text-blue-300 ml-2 hover:underline inline-block">
                                                                             Fix in Step 2 (Clinical) →
                                                                         </button>
                                                                     )}
@@ -1224,7 +1224,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                             {/* Rule Challenges */}
                                             {tpaReport.anticipatedQueries.filter(q => q.source === 'rule').length > 0 && (
                                                 <div className="space-y-3">
-                                                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Anticipated TPA Challenges</h4>
+                                                    <h4 className="text-sm font-bold uppercase tracking-wider text-amber-400">Anticipated TPA Challenges</h4>
                                                     <div className="space-y-3">
                                                         {tpaReport.anticipatedQueries.filter(q => q.source === 'rule').map((q, idx) => {
                                                             const isHigh = q.severity === 'high';
@@ -1240,20 +1240,20 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                                         </span>
                                                                         <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">{q.relatedChallenge}</span>
                                                                     </div>
-                                                                    <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider bg-white/[0.02] border border-white/5 px-2.5 py-0.5 rounded inline-block">
+                                                                    <div className="text-sm text-slate-400 font-bold uppercase tracking-wider bg-white/[0.02] border border-white/5 px-2.5 py-0.5 rounded inline-block">
                                                                         Reviewer Question:
                                                                     </div>
-                                                                    <div className="text-xs font-bold text-white leading-normal">
+                                                                    <div className="text-sm font-bold text-white leading-normal">
                                                                         "{q.query}"
                                                                     </div>
                                                                     {q.reason && (
-                                                                        <div className="bg-black/20 rounded-lg p-3 border border-white/[0.03] space-y-1 text-xs">
+                                                                        <div className="bg-black/20 rounded-lg p-3 border border-white/[0.03] space-y-1 text-sm">
                                                                             <div className="text-[9px] font-bold text-blue-400 uppercase tracking-wider">Required Fix / Reasoning</div>
                                                                             <p className="text-slate-300 font-semibold leading-relaxed">{q.reason}</p>
                                                                         </div>
                                                                     )}
                                                                     {onJumpToStep && (
-                                                                        <button onClick={() => onJumpToStep(2)} className="text-[10px] font-bold text-blue-400 hover:text-blue-300 hover:underline">
+                                                                        <button onClick={() => onJumpToStep(2)} className="text-sm font-bold text-blue-400 hover:text-blue-300 hover:underline">
                                                                             Update Clinical Scribe (Step 2) →
                                                                         </button>
                                                                     )}
@@ -1267,7 +1267,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                             {/* Clinical Suggestions */}
                                             {tpaReport.anticipatedQueries.filter(q => q.source === 'suggestion').length > 0 && (
                                                 <div className="space-y-3">
-                                                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-blue-400">Clinical Evidence Suggestions</h4>
+                                                    <h4 className="text-sm font-bold uppercase tracking-wider text-blue-400">Clinical Evidence Suggestions</h4>
                                                     <div className="space-y-3">
                                                         {tpaReport.anticipatedQueries.filter(q => q.source === 'suggestion').map((q, idx) => (
                                                             <div key={idx} className="border border-white/5 rounded-xl p-4 space-y-3 border-l-4 border-l-blue-500 bg-blue-500/[0.01]">
@@ -1277,17 +1277,17 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                                     </span>
                                                                     <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">{q.relatedChallenge}</span>
                                                                 </div>
-                                                                <div className="text-xs font-bold text-white leading-normal">
+                                                                <div className="text-sm font-bold text-white leading-normal">
                                                                     "{q.query}"
                                                                 </div>
                                                                 {q.reason && (
-                                                                    <div className="bg-black/20 rounded-lg p-3 border border-white/[0.03] space-y-1 text-xs">
+                                                                    <div className="bg-black/20 rounded-lg p-3 border border-white/[0.03] space-y-1 text-sm">
                                                                         <div className="text-[9px] font-bold text-blue-400 uppercase tracking-wider">Clinical Guidance</div>
                                                                         <p className="text-slate-300 font-semibold leading-relaxed">{q.reason}</p>
                                                                     </div>
                                                                 )}
                                                                 {onJumpToStep && (
-                                                                    <button onClick={() => onJumpToStep(2)} className="text-[10px] font-bold text-blue-400 hover:text-blue-300 hover:underline">
+                                                                    <button onClick={() => onJumpToStep(2)} className="text-sm font-bold text-blue-400 hover:text-blue-300 hover:underline">
                                                                         Update Narrative (Step 2) →
                                                                     </button>
                                                                 )}
@@ -1300,12 +1300,12 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                             {/* Policy Verifications */}
                                             {tpaReport.policyChecks && tpaReport.policyChecks.length > 0 && (
                                                 <div className="space-y-3">
-                                                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Manual Policy Verifications</h4>
+                                                    <h4 className="text-sm font-bold uppercase tracking-wider text-amber-400">Manual Policy Verifications</h4>
                                                     <div className="bg-amber-500/[0.01] border border-amber-500/10 rounded-xl p-4 space-y-3">
-                                                        <p className="text-slate-300 text-xs font-semibold leading-relaxed">The following policy boundary checks must be verified manually by the coordinator:</p>
+                                                        <p className="text-slate-300 text-sm font-semibold leading-relaxed">The following policy boundary checks must be verified manually by the coordinator:</p>
                                                         <div className="space-y-2">
                                                             {tpaReport.policyChecks.map((pc, idx) => (
-                                                                <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-300 bg-white/[0.01] border border-white/5 rounded-lg px-3 py-2 font-semibold">
+                                                                <div key={idx} className="flex items-start gap-2.5 text-sm text-slate-300 bg-white/[0.01] border border-white/5 rounded-lg px-3 py-2 font-semibold">
                                                                     <span className="text-slate-500 select-none">📋</span>
                                                                     <div className="flex-1">
                                                                         <span>{pc}</span>
@@ -1328,15 +1328,15 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                             {/* Clinical Profile */}
                                             <div className="bg-slate-900/15 border border-white/5 rounded-2xl p-5 space-y-4 shadow-sm">
                                                 <div className="border-b border-white/5 pb-2.5">
-                                                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">Clinical Facts Profile</h3>
+                                                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300">Clinical Facts Profile</h3>
                                                 </div>
 
-                                                <div className="space-y-3.5 text-xs">
+                                                <div className="space-y-3.5 text-sm">
                                                     <div>
-                                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Chief Complaints</div>
+                                                        <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Chief Complaints</div>
                                                         <p className="text-slate-300 font-semibold mt-0.5">{record.clinical?.chiefComplaints || '—'}</p>
                                                         {record.clinical?.durationOfPresentAilment && (
-                                                            <span className="inline-block mt-1 text-[10px] font-bold px-1.5 py-0.5 bg-white/5 text-slate-400 rounded">
+                                                            <span className="inline-block mt-1 text-sm font-bold px-1.5 py-0.5 bg-white/5 text-slate-400 rounded">
                                                                 Duration: {record.clinical.durationOfPresentAilment}
                                                             </span>
                                                         )}
@@ -1344,14 +1344,14 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
 
                                                     {record.clinical?.natureOfIllness && (
                                                         <div>
-                                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Nature of Illness</div>
+                                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Nature of Illness</div>
                                                             <p className="text-slate-300 font-semibold mt-0.5">{record.clinical.natureOfIllness}</p>
                                                         </div>
                                                     )}
 
                                                     {record.clinical?.historyOfPresentIllness && (
                                                         <div>
-                                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">HPI (History of Present Illness)</div>
+                                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">HPI (History of Present Illness)</div>
                                                             <p className="text-slate-300 font-semibold mt-0.5 leading-relaxed truncate-3-lines" title={record.clinical.historyOfPresentIllness}>
                                                                 {record.clinical.historyOfPresentIllness}
                                                             </p>
@@ -1360,7 +1360,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
 
                                                     {record.clinical?.relevantClinicalFindings && (
                                                         <div>
-                                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Relevant Clinical Findings</div>
+                                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Relevant Clinical Findings</div>
                                                             <p className="text-slate-300 font-semibold mt-0.5 leading-relaxed">{record.clinical.relevantClinicalFindings}</p>
                                                         </div>
                                                     )}
@@ -1368,27 +1368,27 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                     {/* Vitals */}
                                                     {record.clinical?.vitals && (
                                                         <div>
-                                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Patient Vitals</div>
+                                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">Patient Vitals</div>
                                                             <div className="grid grid-cols-5 gap-2 text-center">
                                                                 <div className="bg-white/5 border border-white/5 rounded p-1.5">
                                                                     <div className="text-[8px] font-bold text-slate-500 uppercase">BP</div>
-                                                                    <div className="font-mono text-xs font-semibold text-white mt-0.5">{record.clinical.vitals.bp || '—'}</div>
+                                                                    <div className="font-mono text-sm font-semibold text-white mt-0.5">{record.clinical.vitals.bp || '—'}</div>
                                                                 </div>
                                                                 <div className="bg-white/5 border border-white/5 rounded p-1.5">
                                                                     <div className="text-[8px] font-bold text-slate-500 uppercase">Pulse</div>
-                                                                    <div className="font-mono text-xs font-semibold text-white mt-0.5">{record.clinical.vitals.pulse || '—'}</div>
+                                                                    <div className="font-mono text-sm font-semibold text-white mt-0.5">{record.clinical.vitals.pulse || '—'}</div>
                                                                 </div>
                                                                 <div className="bg-white/5 border border-white/5 rounded p-1.5">
                                                                     <div className="text-[8px] font-bold text-slate-500 uppercase">Temp</div>
-                                                                    <div className="font-mono text-xs font-semibold text-white mt-0.5">{record.clinical.vitals.temp || '—'}</div>
+                                                                    <div className="font-mono text-sm font-semibold text-white mt-0.5">{record.clinical.vitals.temp || '—'}</div>
                                                                 </div>
                                                                 <div className="bg-white/5 border border-white/5 rounded p-1.5">
                                                                     <div className="text-[8px] font-bold text-slate-500 uppercase">SpO2</div>
-                                                                    <div className="font-mono text-xs font-semibold text-white mt-0.5">{record.clinical.vitals.spo2 || '—'}</div>
+                                                                    <div className="font-mono text-sm font-semibold text-white mt-0.5">{record.clinical.vitals.spo2 || '—'}</div>
                                                                 </div>
                                                                 <div className="bg-white/5 border border-white/5 rounded p-1.5">
                                                                     <div className="text-[8px] font-bold text-slate-500 uppercase">RR</div>
-                                                                    <div className="font-mono text-xs font-semibold text-white mt-0.5">{record.clinical.vitals.rr || '—'}</div>
+                                                                    <div className="font-mono text-sm font-semibold text-white mt-0.5">{record.clinical.vitals.rr || '—'}</div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1397,7 +1397,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                     {/* Proposed Line of Treatment */}
                                                     {record.clinical?.proposedLineOfTreatment && (
                                                         <div>
-                                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Proposed Line of Treatment</div>
+                                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Proposed Line of Treatment</div>
                                                             <div className="flex flex-wrap gap-1.5">
                                                                 {Object.entries(record.clinical.proposedLineOfTreatment)
                                                                     .filter(([_, val]) => val === true)
@@ -1418,26 +1418,26 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                             {/* Cost & Admission Profile */}
                                             <div className="bg-slate-900/15 border border-white/5 rounded-2xl p-5 space-y-4 shadow-sm">
                                                 <div className="border-b border-white/5 pb-2.5">
-                                                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">Admission & Cost Profile</h3>
+                                                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300">Admission & Cost Profile</h3>
                                                 </div>
 
-                                                <div className="space-y-3.5 text-xs">
+                                                <div className="space-y-3.5 text-sm">
                                                     <div className="grid grid-cols-2 gap-3.5">
                                                         <div>
-                                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Admission Date & Type</div>
+                                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Admission Date & Type</div>
                                                             <p className="text-slate-300 font-semibold mt-0.5">{record.admission?.dateOfAdmission || '—'}</p>
-                                                            <div className="text-[10px] text-slate-500">Type: {record.admission?.admissionType || '—'}</div>
+                                                            <div className="text-sm text-slate-500">Type: {record.admission?.admissionType || '—'}</div>
                                                         </div>
                                                         <div>
-                                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Room Category</div>
+                                                            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Room Category</div>
                                                             <p className="text-slate-300 font-semibold mt-0.5">{record.admission?.roomCategory || '—'}</p>
-                                                            <div className="text-[10px] text-slate-500">Stay: {record.admission?.expectedLengthOfStay || 0} Days (Ward: {record.admission?.expectedDaysInRoom || 0}, ICU: {record.admission?.expectedDaysInICU || 0})</div>
+                                                            <div className="text-sm text-slate-500">Stay: {record.admission?.expectedLengthOfStay || 0} Days (Ward: {record.admission?.expectedDaysInRoom || 0}, ICU: {record.admission?.expectedDaysInICU || 0})</div>
                                                         </div>
                                                     </div>
 
                                                     {/* Pre-Existing History */}
                                                     <div>
-                                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Pre-Existing Conditions</div>
+                                                        <div className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Pre-Existing Conditions</div>
                                                         <div className="flex flex-wrap gap-1.5">
                                                             {(() => {
                                                                 const pmh = record.admission?.pastMedicalHistory ?? {};
@@ -1448,7 +1448,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                                         return key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
                                                                     });
                                                                 if (active.length === 0) {
-                                                                    return <span className="text-slate-500 font-medium text-xs">No pre-existing conditions reported.</span>;
+                                                                    return <span className="text-slate-500 font-medium text-sm">No pre-existing conditions reported.</span>;
                                                                 }
                                                                 return active.map(name => (
                                                                     <span key={name} className="text-[9px] font-bold px-2 py-0.5 bg-slate-900 border border-white/5 text-amber-400 rounded">
@@ -1461,7 +1461,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
 
                                                     {/* Cost Estimate details */}
                                                     <div>
-                                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Cost Breakdown Details</div>
+                                                        <div className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Cost Breakdown Details</div>
                                                         {(() => {
                                                             const cost = record.costEstimate ?? {};
                                                             return (
@@ -1509,7 +1509,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                                                         <span className="font-mono text-white">₹{(cost.totalEstimatedCost ?? 0).toLocaleString('en-IN')}</span>
                                                                     </div>
                                                                     {cost.exceedsSumInsured && (
-                                                                        <div className="text-[10px] text-rose-400 font-bold bg-rose-500/5 px-2 py-1 rounded mt-1.5 border border-rose-500/10">
+                                                                        <div className="text-sm text-rose-400 font-bold bg-rose-500/5 px-2 py-1 rounded mt-1.5 border border-rose-500/10">
                                                                             ⚠️ Exceeds Sum Insured! Excess patient responsibility: ₹{(cost.excessAmount ?? 0).toLocaleString('en-IN')}
                                                                         </div>
                                                                     )}
@@ -1523,11 +1523,11 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
 
                                         {/* Reasoning Trace */}
                                         <details className="group bg-white/[0.01] border border-white/5 rounded-xl p-3">
-                                            <summary className="flex items-center justify-between text-xs text-slate-400 cursor-pointer list-none select-none px-1 font-semibold">
+                                            <summary className="flex items-center justify-between text-sm text-slate-400 cursor-pointer list-none select-none px-1 font-semibold">
                                                 <span className="font-bold uppercase tracking-wider text-[9px]">Evidence Reasoning Trace</span>
-                                                <span className="transition-transform group-open:rotate-180 text-[10px]">▼</span>
+                                                <span className="transition-transform group-open:rotate-180 text-sm">▼</span>
                                             </summary>
-                                            <div className="mt-3.5 space-y-1 font-mono text-[10px] text-slate-400 bg-black/40 border border-white/5 p-3 rounded-lg overflow-x-auto leading-relaxed custom-scrollbar">
+                                            <div className="mt-3.5 space-y-1 font-mono text-sm text-slate-400 bg-black/40 border border-white/5 p-3 rounded-lg overflow-x-auto leading-relaxed custom-scrollbar">
                                                 {tpaReport.reasoningTrace.map((line, i) => (
                                                     <div key={i}>{line}</div>
                                                 ))}
@@ -1537,8 +1537,8 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-16 gap-3 text-center bg-slate-900/10 border border-white/5 rounded-2xl">
                                         <div className="text-3xl text-slate-600">◎</div>
-                                        <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Evidence review runs automatically</p>
-                                        <p className="text-slate-500 text-[10px]">Ensure patient & diagnosis details are populated to begin auditing.</p>
+                                        <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider">Evidence review runs automatically</p>
+                                        <p className="text-slate-500 text-sm">Ensure patient & diagnosis details are populated to begin auditing.</p>
                                     </div>
                                 )}
                             </div>
@@ -1549,7 +1549,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                                 {suggestionsLoading ? (
                                     <div className="flex flex-col items-center justify-center py-12 gap-3 text-center bg-[#0D121F] border border-white/5 rounded-2xl h-full min-h-[300px]">
                                         <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                                        <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Analyzing documents for Part C fields...</p>
+                                        <p className="text-gray-400 text-sm font-semibold uppercase tracking-wider">Analyzing documents for Part C fields...</p>
                                     </div>
                                 ) : (
                                     suggestionsPanel
@@ -1560,11 +1560,11 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
 
                     {/* Bottom Action Buttons */}
                     <div className="grid grid-cols-2 gap-3 pt-2">
-                        <button onClick={onBack} className="py-2 rounded-lg font-semibold text-xs bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-150 active:scale-[0.98]" type="button">
+                        <button onClick={onBack} className="py-2 rounded-lg font-semibold text-sm bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-150 active:scale-[0.98]" type="button">
                             ← Back
                         </button>
                         <button onClick={handleGenerate} disabled={generating || hasBlockers} type="button"
-                            className={`py-2 rounded-lg font-semibold text-xs text-white transition-all duration-150 flex items-center justify-center gap-2 active:scale-[0.98] ${
+                            className={`py-2 rounded-lg font-semibold text-sm text-white transition-all duration-150 flex items-center justify-center gap-2 active:scale-[0.98] ${
                                 generating
                                     ? 'bg-white/5 border border-white/5 cursor-not-allowed text-gray-500'
                                     : hasBlockers
@@ -1590,7 +1590,7 @@ export const DocumentsGenerateStep: React.FC<DocGenerateStepProps> = ({
                         </button>
                     </div>
                     {missingDocs.length > 0 && (
-                        <p className="text-xs text-amber-500 font-semibold text-center mt-2 leading-relaxed">⚠️ {missingDocs.length} required documents missing — pre-auth will be marked PENDING DOCUMENTS</p>
+                        <p className="text-sm text-amber-500 font-semibold text-center mt-2 leading-relaxed">⚠️ {missingDocs.length} required documents missing — pre-auth will be marked PENDING DOCUMENTS</p>
                     )}
         </div>
     );

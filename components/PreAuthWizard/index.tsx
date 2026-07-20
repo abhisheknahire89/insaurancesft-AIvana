@@ -292,11 +292,11 @@ export const PreAuthWizard: React.FC<PreAuthWizardProps> = ({
                     <div className="flex items-center justify-between px-6 py-4 border-b border-opd-border bg-opd-input-bg">
                         <div className="flex items-center gap-3">
                             <span className="font-bold text-sm text-opd-text-primary font-lora">Voice Dictation</span>
-                            <span className="font-mono text-xs px-2 py-0.5 bg-white border border-opd-border text-opd-text-secondary rounded-md select-all">{record.id}</span>
+                            <span className="font-mono text-sm px-2 py-0.5 bg-white border border-opd-border text-opd-text-secondary rounded-md select-all">{record.id}</span>
                         </div>
                         <div className="flex items-center gap-4">
                             {saving && (
-                                <span className="text-[11px] text-opd-text-secondary flex items-center gap-1.5">
+                                <span className="text-sm text-opd-text-secondary flex items-center gap-1.5">
                                     <svg className="w-3.5 h-3.5 animate-spin text-opd-primary" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -329,9 +329,9 @@ export const PreAuthWizard: React.FC<PreAuthWizardProps> = ({
                 <div className="flex items-center justify-between px-6 py-4 border-b border-opd-border bg-opd-input-bg text-opd-text-primary">
                     <div className="flex items-center gap-3">
                         <span className="font-bold text-sm text-opd-primary font-lora">New Pre-Authorization</span>
-                        <span className="font-mono text-[10px] px-2 py-0.5 bg-white border border-opd-border text-opd-text-secondary rounded-md select-all">{record.id}</span>
+                        <span className="font-mono text-sm px-2 py-0.5 bg-white border border-opd-border text-opd-text-secondary rounded-md select-all">{record.id}</span>
                         {record.complexity && (
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                            <span className={`text-sm font-bold px-2 py-0.5 rounded-md border ${
                                 record.complexity === 'Low' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
                                 record.complexity === 'Medium' ? 'bg-sky-50 border-sky-200 text-sky-700' :
                                 'bg-rose-50 border-rose-200 text-rose-700'
@@ -342,7 +342,7 @@ export const PreAuthWizard: React.FC<PreAuthWizardProps> = ({
                     </div>
                     <div className="flex items-center gap-4">
                         {saving && (
-                            <span className="text-[10px] text-opd-text-secondary flex items-center gap-1.5 font-medium">
+                            <span className="text-sm text-opd-text-secondary flex items-center gap-1.5 font-medium">
                                 <svg className="w-3 h-3 animate-spin text-opd-primary" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -368,11 +368,11 @@ export const PreAuthWizard: React.FC<PreAuthWizardProps> = ({
                                 </svg>
                             </div>
                             <div>
-                                <div className="text-xs font-bold text-opd-primary flex items-center gap-1.5 font-lora">
+                                <div className="text-sm font-bold text-opd-primary flex items-center gap-1.5 font-lora">
                                     Voice Dictation
                                     <span className="text-[9px] uppercase tracking-wider bg-primary-tint text-opd-primary px-1.5 py-0.5 rounded font-extrabold font-sans border border-opd-primary/20">AI-Assistant</span>
                                 </div>
-                                <div className="text-[11px] text-opd-text-secondary mt-0.5">Speak patient notes to automatically populate clinical fields.</div>
+                                <div className="text-sm text-opd-text-secondary mt-0.5">Speak patient notes to automatically populate clinical fields.</div>
                             </div>
                         </div>
                         <button

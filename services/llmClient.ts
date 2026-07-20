@@ -204,13 +204,15 @@ export async function getReasoningFromMedGemma(
   }
 
   const lowerDx = diagnosis.toLowerCase();
-  let demoKey: 'diabetes' | 'pneumonia' | 'appendicitis' | null = null;
+  let demoKey: 'diabetes' | 'pneumonia' | 'appendicitis' | 'dengue' | null = null;
   if (lowerDx.includes('diabetes')) {
     demoKey = 'diabetes';
   } else if (lowerDx.includes('pneumonia')) {
     demoKey = 'pneumonia';
   } else if (lowerDx.includes('appendicitis')) {
     demoKey = 'appendicitis';
+  } else if (lowerDx.includes('dengue')) {
+    demoKey = 'dengue';
   }
 
   const isDemoMode = (typeof window !== 'undefined' && (window as any).VITE_DEMO_MODE === true) || (import.meta as any).env?.VITE_DEMO_MODE === 'true' || process.env.VITE_DEMO_MODE === 'true';

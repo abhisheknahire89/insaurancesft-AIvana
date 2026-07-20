@@ -89,7 +89,7 @@ export const InsuranceStepCost: React.FC<CostEstimationStepProps> = ({ formData,
                 <h3 className="font-semibold text-white mb-3">Room & Nursing Charges</h3>
                 <div className="grid grid-cols-3 gap-4">
                     <div>
-                        <label className="block text-xs text-gray-400 mb-1">Room Type</label>
+                        <label className="block text-sm text-gray-400 mb-1">Room Type</label>
                         <select className="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white text-sm">
                             <option>General Ward</option>
                             <option>Semi-Private</option>
@@ -99,7 +99,7 @@ export const InsuranceStepCost: React.FC<CostEstimationStepProps> = ({ formData,
                         </select>
                     </div>
                     <div>
-                        <label className="block text-xs text-gray-400 mb-1">Rate/Day (₹)</label>
+                        <label className="block text-sm text-gray-400 mb-1">Rate/Day (₹)</label>
                         <input
                             type="number"
                             value={formData.section6_CostEstimate?.roomRentPerDay || ''}
@@ -109,7 +109,7 @@ export const InsuranceStepCost: React.FC<CostEstimationStepProps> = ({ formData,
                         />
                     </div>
                     <div>
-                        <label className="block text-xs text-gray-400 mb-1">Expected Days</label>
+                        <label className="block text-sm text-gray-400 mb-1">Expected Days</label>
                         <input
                             type="number"
                             value={formData.section6_CostEstimate?.expectedRoomDays || ''}
@@ -126,7 +126,7 @@ export const InsuranceStepCost: React.FC<CostEstimationStepProps> = ({ formData,
                 <h3 className="font-semibold text-white mb-3">Professional Fees</h3>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-xs text-gray-400 mb-1">Surgeon Fee (₹)</label>
+                        <label className="block text-sm text-gray-400 mb-1">Surgeon Fee (₹)</label>
                         <input
                             type="number"
                             value={formData.section6_CostEstimate?.professionalFees?.surgeonFee || ''}
@@ -136,7 +136,7 @@ export const InsuranceStepCost: React.FC<CostEstimationStepProps> = ({ formData,
                         />
                     </div>
                     <div>
-                        <label className="block text-xs text-gray-400 mb-1">Anesthetist Fee (₹)</label>
+                        <label className="block text-sm text-gray-400 mb-1">Anesthetist Fee (₹)</label>
                         <input
                             type="number"
                             value={formData.section6_CostEstimate?.professionalFees?.anesthetistFee || ''}
@@ -146,7 +146,7 @@ export const InsuranceStepCost: React.FC<CostEstimationStepProps> = ({ formData,
                         />
                     </div>
                     <div>
-                        <label className="block text-xs text-gray-400 mb-1">Consultant Fee (₹)</label>
+                        <label className="block text-sm text-gray-400 mb-1">Consultant Fee (₹)</label>
                         <input
                             type="number"
                             value={formData.section6_CostEstimate?.professionalFees?.consultantFee || ''}
@@ -156,7 +156,7 @@ export const InsuranceStepCost: React.FC<CostEstimationStepProps> = ({ formData,
                         />
                     </div>
                     <div>
-                        <label className="block text-xs text-gray-400 mb-1">OT Charges (₹)</label>
+                        <label className="block text-sm text-gray-400 mb-1">OT Charges (₹)</label>
                         <input
                             type="number"
                             value={formData.section6_CostEstimate?.otCharges || ''}
@@ -173,7 +173,7 @@ export const InsuranceStepCost: React.FC<CostEstimationStepProps> = ({ formData,
                 <h3 className="font-semibold text-white mb-3">Medicines & Consumables</h3>
                 <div className="grid grid-cols-3 gap-4">
                     <div>
-                        <label className="block text-xs text-gray-400 mb-1">Medicines (₹)</label>
+                        <label className="block text-sm text-gray-400 mb-1">Medicines (₹)</label>
                         <input
                             type="number"
                             value={formData.section6_CostEstimate?.medicinesEstimate || ''}
@@ -183,7 +183,7 @@ export const InsuranceStepCost: React.FC<CostEstimationStepProps> = ({ formData,
                         />
                     </div>
                     <div>
-                        <label className="block text-xs text-gray-400 mb-1">Consumables (₹)</label>
+                        <label className="block text-sm text-gray-400 mb-1">Consumables (₹)</label>
                         <input
                             type="number"
                             value={formData.section6_CostEstimate?.consumablesEstimate || ''}
@@ -193,7 +193,7 @@ export const InsuranceStepCost: React.FC<CostEstimationStepProps> = ({ formData,
                         />
                     </div>
                     <div>
-                        <label className="block text-xs text-gray-400 mb-1">Investigations (₹)</label>
+                        <label className="block text-sm text-gray-400 mb-1">Investigations (₹)</label>
                         <input
                             type="number"
                             value={formData.section6_CostEstimate?.investigationsEstimate || ''}

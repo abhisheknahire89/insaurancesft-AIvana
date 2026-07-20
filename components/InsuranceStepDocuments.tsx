@@ -55,10 +55,10 @@ export const InsuranceStepDocuments: React.FC<InsuranceStepDocumentsProps> = ({
                             </p>
                             <ul className="list-disc list-inside text-sm text-red-200 mt-2 font-medium">
                                 {missingMandatoryDocs.map((doc, i) => (
-                                    <li key={i}>{doc.displayName} <span className="text-xs text-red-300/70 font-normal">({doc.description})</span></li>
+                                    <li key={i}>{doc.displayName} <span className="text-sm text-red-300/70 font-normal">({doc.description})</span></li>
                                 ))}
                             </ul>
-                            <p className="text-xs text-red-300/80 mt-3 font-semibold">
+                            <p className="text-sm text-red-300/80 mt-3 font-semibold">
                                 Please upload these mandatory attachments below to prevent rejection.
                             </p>
                         </div>
@@ -105,7 +105,7 @@ export const InsuranceStepDocuments: React.FC<InsuranceStepDocumentsProps> = ({
                                                             onLinkDocument(doc.id, result.testName);
                                                             setActiveTestToLink(null);
                                                         }}
-                                                        className="text-xs bg-gray-800 hover:bg-gray-600 px-3 py-2 rounded border border-gray-600 truncate max-w-[150px]"
+                                                        className="text-sm bg-gray-800 hover:bg-gray-600 px-3 py-2 rounded border border-gray-600 truncate max-w-[150px]"
                                                         title={doc.fileName}
                                                     >
                                                         {doc.fileName}
@@ -144,7 +144,7 @@ export const InsuranceStepDocuments: React.FC<InsuranceStepDocumentsProps> = ({
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                         </svg>
                         <p className="mb-1 text-sm text-gray-300"><span className="font-medium text-purple-400">Click to upload</span> or drag and drop</p>
-                        <p className="text-xs text-gray-500">PDF, JPG, PNG up to 10MB</p>
+                        <p className="text-sm text-gray-500">PDF, JPG, PNG up to 10MB</p>
                     </div>
                     <input type="file" className="hidden" onChange={handleFileChange} />
                 </label>
@@ -157,13 +157,13 @@ export const InsuranceStepDocuments: React.FC<InsuranceStepDocumentsProps> = ({
                                 <li key={idx} className="flex items-center justify-between text-sm bg-gray-800 p-2 rounded border border-gray-700">
                                     <div className="flex items-center gap-3">
                                         <span className="text-gray-300">{doc.fileName}</span>
-                                        <span className="text-xs text-gray-500">({doc.fileSize})</span>
+                                        <span className="text-sm text-gray-500">({doc.fileSize})</span>
                                         {doc.linkedToTest ? (
-                                            <span className="text-xs bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded">
+                                            <span className="text-sm bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded">
                                                 Linked: {doc.linkedToTest}
                                             </span>
                                         ) : (
-                                            <span className="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded">
+                                            <span className="text-sm bg-gray-700 text-gray-300 px-2 py-0.5 rounded">
                                                 General
                                             </span>
                                         )}

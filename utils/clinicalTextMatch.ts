@@ -3,6 +3,8 @@ import { CLINICAL_SYNONYMS } from '../config/clinicalSynonyms';
 import { getGoogleGenAIClient } from '../services/apiKeys';
 import { MODEL_TEXT } from '../config/modelConfig';
 
+const isDemoMode = (typeof window !== 'undefined' && (window as any).VITE_DEMO_MODE === true) || (import.meta as any).env?.VITE_DEMO_MODE === 'true' || process.env.VITE_DEMO_MODE === 'true';
+
 const stopWords = new Set([
   'the', 'and', 'for', 'was', 'with', 'from', 'but', 'not', 'have', 'been',
   'has', 'that', 'this', 'our', 'are', 'your', 'will', 'about', 'their', 'there'
@@ -148,6 +150,10 @@ export async function clinicalTextMatch(target: string, source: string, context?
 
   // Ambiguous case: score is between 0.1 and 0.5 (or sync matches but is low-confidence)
   // Fallback to a single small Gemini call to check semantic overlap
+  if (isDemoMode) {
+      return { matches: true, score: 0.8 }; // Mock match for demo
+  }
+  
   try {
     const ai = getGoogleGenAIClient();
     const prompt = `

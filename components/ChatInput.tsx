@@ -85,7 +85,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     return (
         <div className="space-y-3">
              {sttError && (
-                <div className="text-red-400 text-xs text-center p-2 bg-red-900/30 border border-red-500/30 rounded-lg" role="alert">
+                <div className="text-red-400 text-sm text-center p-2 bg-red-900/30 border border-red-500/30 rounded-lg" role="alert">
                     {sttError}
                 </div>
             )}

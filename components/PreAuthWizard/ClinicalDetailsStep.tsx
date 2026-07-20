@@ -104,8 +104,8 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
                         <div className="text-4xl">🎙️</div>
                         <div>
                             <div className="font-bold text-sm text-opd-text-primary font-lora">Import from Voice Scribe</div>
-                            <div className="text-xs text-opd-text-secondary mt-1">Auto-fill from today's consultation recording</div>
-                            <div className="mt-2 text-xs text-opd-primary font-bold">⚡ Recommended</div>
+                            <div className="text-sm text-opd-text-secondary mt-1">Auto-fill from today's consultation recording</div>
+                            <div className="mt-2 text-sm text-opd-primary font-bold">⚡ Recommended</div>
                         </div>
                     </button>
                     <button onClick={() => setDataSource('manual_entry')}
@@ -113,14 +113,14 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
                         <div className="text-4xl">✏️</div>
                         <div>
                             <div className="font-bold text-sm text-opd-text-primary font-lora">Enter Manually</div>
-                            <div className="text-xs text-opd-text-secondary mt-1">Type clinical details into structured form</div>
+                            <div className="text-sm text-opd-text-secondary mt-1">Type clinical details into structured form</div>
                         </div>
                     </button>
                 </div>
                 {dataSource === 'voice_scribe' && (
                     <div className="bg-primary-tint/30 border border-opd-primary/20 rounded-xl p-4 text-opd-primary shadow-sm">
                         <p className="text-sm font-semibold">No active voice session found. Continuing in manual entry mode.</p>
-                        <button className="mt-2 text-xs text-opd-primary hover:text-opd-primary-dark underline font-bold" onClick={() => setDataSource('manual_entry')}>Continue with manual entry →</button>
+                        <button className="mt-2 text-sm text-opd-primary hover:text-opd-primary-dark underline font-bold" onClick={() => setDataSource('manual_entry')}>Continue with manual entry →</button>
                     </div>
                 )}
             </div>
@@ -131,12 +131,12 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
         <div className="space-y-5 text-opd-text-primary">
             <div className="flex items-center justify-between">
                 <h2 className="text-base font-bold font-lora text-opd-primary">Clinical Details</h2>
-                <button onClick={() => setDataSource(null)} className="text-xs text-opd-text-secondary hover:text-opd-primary transition-colors underline" type="button">Change source</button>
+                <button onClick={() => setDataSource(null)} className="text-sm text-opd-text-secondary hover:text-opd-primary transition-colors underline" type="button">Change source</button>
             </div>
 
             {/* Presenting Illness */}
             <div className="card-premium space-y-4">
-                <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 font-lora">🩺 Presenting Illness</h3>
+                <h3 className="font-semibold text-opd-primary text-sm uppercase tracking-wider border-b border-opd-border pb-2 font-lora">🩺 Presenting Illness</h3>
                 <div>
                     <label className="form-label uppercase tracking-wider text-[9px] mb-1">Chief Complaints *</label>
                     <textarea value={c.chiefComplaints ?? ''} onChange={e => update({ chiefComplaints: e.target.value })} rows={2}
@@ -163,7 +163,7 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
                         <button
                             type="button"
                             onClick={() => setShowOptionalFields(!showOptionalFields)}
-                            className="w-full flex items-center justify-between text-[10px] font-bold text-opd-text-secondary hover:text-opd-primary uppercase tracking-wider transition-colors"
+                            className="w-full flex items-center justify-between text-sm font-bold text-opd-text-secondary hover:text-opd-primary uppercase tracking-wider transition-colors"
                         >
                             <span>📂 Optional Clinical Fields ({showOptionalFields ? 'Expanded' : 'Collapsed'})</span>
                             <span>{showOptionalFields ? '▲' : '▼'}</span>
@@ -217,7 +217,7 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
 
             {/* Vitals */}
             <div className="card-premium space-y-4">
-                <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 font-lora">💊 Vitals at Presentation</h3>
+                <h3 className="font-semibold text-opd-primary text-sm uppercase tracking-wider border-b border-opd-border pb-2 font-lora">💊 Vitals at Presentation</h3>
                 <div className="grid grid-cols-5 gap-3">
                     {([['bp', 'BP (mmHg)', '130/80'], ['pulse', 'Pulse (/min)', '80'], ['temp', 'Temp (°F)', '98.6'], ['spo2', 'SpO2 (%)', '98'], ['rr', 'RR (/min)', '16']] as [keyof WizardVitals, string, string][]).map(([f, label, ph]) => {
                         let alertClass = 'border-opd-border focus:border-opd-primary';
@@ -226,7 +226,7 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
                         else if (f === 'pulse' && vitals.pulse && (parseInt(vitals.pulse) > 100 || parseInt(vitals.pulse) < 60)) alertClass = 'border-amber-300 text-amber-700 bg-amber-50 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20';
                         return (
                             <div key={f}>
-                                <label className="block text-[10px] text-opd-text-secondary font-semibold mb-1">{label}</label>
+                                <label className="block text-sm text-opd-text-secondary font-semibold mb-1">{label}</label>
                                 <input value={vitals[f] ?? ''} onChange={e => handleVitalChange(f, e.target.value)}
                                     className={`form-input ${alertClass}`}
                                     placeholder={ph} />
@@ -235,7 +235,7 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
                     })}
                 </div>
                 {spo2Val < 94 && vitals.spo2 && (
-                    <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-red-800 text-xs font-semibold leading-relaxed shadow-sm">
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-red-800 text-sm font-semibold leading-relaxed shadow-sm">
                         ⚠️ SpO2 {vitals.spo2}% — Hypoxia detected. This strongly supports inpatient medical necessity.
                     </div>
                 )}
@@ -243,7 +243,7 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
 
             {/* Diagnosis */}
             <div className="card-premium space-y-4">
-                <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 font-lora">🔬 Diagnosis</h3>
+                <h3 className="font-semibold text-opd-primary text-sm uppercase tracking-wider border-b border-opd-border pb-2 font-lora">🔬 Diagnosis</h3>
                 <div className="relative">
                     <input value={icdQuery} onChange={e => handleIcdSearch(e.target.value)}
                         className="form-input"
@@ -252,10 +252,10 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
                         <div className="absolute z-20 w-full bg-white border border-opd-border rounded-lg mt-1 shadow-xl max-h-56 overflow-y-auto divide-y divide-opd-border">
                             {icdResults.map(r => (
                                 <button key={r.code} onClick={() => addDiagnosis(r)}
-                                    className="w-full px-4 py-2.5 text-left hover:bg-opd-bg text-xs flex justify-between items-center transition-all text-opd-text-primary"
+                                    className="w-full px-4 py-2.5 text-left hover:bg-opd-bg text-sm flex justify-between items-center transition-all text-opd-text-primary"
                                     type="button">
                                     <span className="font-semibold">{r.commonName ?? r.description}</span>
-                                    <span className="font-mono text-[10px] bg-primary-tint border border-opd-primary/10 text-opd-primary px-2 py-0.5 rounded font-bold">{r.code}</span>
+                                    <span className="font-mono text-sm bg-primary-tint border border-opd-primary/10 text-opd-primary px-2 py-0.5 rounded font-bold">{r.code}</span>
                                 </button>
                             ))}
                         </div>
@@ -270,8 +270,8 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
                                     {dx.isSelected && <div className="w-1.5 h-1.5 rounded-full bg-opd-primary" />}
                                 </div>
                                 <div className="flex-1">
-                                    <div className="text-xs font-semibold text-opd-text-primary">{dx.diagnosis}</div>
-                                    <div className="text-[10px] text-opd-text-secondary mt-0.5">
+                                    <div className="text-sm font-semibold text-opd-text-primary">{dx.diagnosis}</div>
+                                    <div className="text-sm text-opd-text-secondary mt-0.5">
                                         {dx.icd10Code.includes('Pending') ? (
                                             <span className="text-amber-700 font-bold">⚠️ {dx.icd10Code} — {dx.icd10Description}</span>
                                         ) : (
@@ -289,7 +289,7 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
                         ))}
                     </div>
                 )}
-                {(c.diagnoses ?? []).length === 0 && <p className="text-opd-text-muted text-xs text-center py-4">Search and add the primary diagnosis above *</p>}
+                {(c.diagnoses ?? []).length === 0 && <p className="text-opd-text-muted text-sm text-center py-4">Search and add the primary diagnosis above *</p>}
 
                 {/* Render ICD Picker for the selected (primary) diagnosis */}
                 {c.diagnoses && c.diagnoses.length > 0 && (() => {
@@ -328,12 +328,12 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
 
             {/* Treatment Plan */}
             <div className="card-premium space-y-4">
-                <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 font-lora">📋 Proposed Treatment Plan</h3>
+                <h3 className="font-semibold text-opd-primary text-sm uppercase tracking-wider border-b border-opd-border pb-2 font-lora">📋 Proposed Treatment Plan</h3>
                 <div>
-                    <label className="block text-[10px] text-opd-text-secondary font-semibold uppercase tracking-wider mb-2">Line of Treatment *</label>
+                    <label className="block text-sm text-opd-text-secondary font-semibold uppercase tracking-wider mb-2">Line of Treatment *</label>
                     <div className="flex flex-wrap gap-2.5">
                         {([['medical', 'Medical Management'], ['surgical', 'Surgical Management'], ['intensiveCare', 'Intensive Care'], ['investigation', 'Investigation Only'], ['nonAllopathic', 'Non-Allopathic']] as const).map(([key, label]) => (
-                            <label key={key} className="flex items-center gap-2 cursor-pointer bg-white border border-opd-border hover:border-opd-primary hover:bg-primary-tint/5 rounded-lg px-3.5 py-2 text-xs text-opd-text-secondary transition-all select-none shadow-sm">
+                            <label key={key} className="flex items-center gap-2 cursor-pointer bg-white border border-opd-border hover:border-opd-primary hover:bg-primary-tint/5 rounded-lg px-3.5 py-2 text-sm text-opd-text-secondary transition-all select-none shadow-sm">
                                 <input type="checkbox"
                                     checked={c.proposedLineOfTreatment?.[key] ?? false}
                                     onChange={e => update({ proposedLineOfTreatment: { ...{ medical: false, surgical: false, intensiveCare: false, investigation: false, nonAllopathic: false }, ...c.proposedLineOfTreatment, [key]: e.target.checked } })}
@@ -354,8 +354,8 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
 
                 {/* Conditional Panels */}
                 <div className="space-y-3 pt-2">
-                    <button onClick={() => setShowInjury(p => !p)} className="text-xs text-opd-primary hover:text-opd-primary-dark font-semibold flex items-center gap-1 transition-colors underline" type="button">
-                        <span className="text-[10px]">{showInjury ? '▼' : '▶'}</span> Is this an injury/accident case?
+                    <button onClick={() => setShowInjury(p => !p)} className="text-sm text-opd-primary hover:text-opd-primary-dark font-semibold flex items-center gap-1 transition-colors underline" type="button">
+                        <span className="text-sm">{showInjury ? '▼' : '▶'}</span> Is this an injury/accident case?
                     </button>
                     {showInjury && (
                         <div className="bg-opd-input-bg border border-opd-border rounded-xl p-4 grid grid-cols-2 gap-4 shadow-sm">
@@ -372,14 +372,14 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
                             <div className="col-span-2 flex items-center mt-1">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="checkbox" checked={c.injuryDetails?.isMLC ?? false} onChange={e => update({ injuryDetails: { ...c.injuryDetails as any, isInjury: true, isMLC: e.target.checked } })} className="accent-opd-primary w-3.5 h-3.5 rounded" />
-                                    <span className="text-xs text-opd-text-secondary font-medium select-none">Medico-Legal Case (MLC)</span>
+                                    <span className="text-sm text-opd-text-secondary font-medium select-none">Medico-Legal Case (MLC)</span>
                                 </label>
                             </div>
                         </div>
                     )}
 
-                    <button onClick={() => setShowSurgery(p => !p)} className="text-xs text-opd-primary hover:text-opd-primary-dark font-semibold flex items-center gap-1 transition-colors underline" type="button">
-                        <span className="text-[10px]">{showSurgery ? '▼' : '▶'}</span> Add surgery details
+                    <button onClick={() => setShowSurgery(p => !p)} className="text-sm text-opd-primary hover:text-opd-primary-dark font-semibold flex items-center gap-1 transition-colors underline" type="button">
+                        <span className="text-sm">{showSurgery ? '▼' : '▶'}</span> Add surgery details
                     </button>
                     {showSurgery && (
                         <div className="bg-opd-input-bg border border-opd-border rounded-xl p-4 grid grid-cols-2 gap-4 shadow-sm">
@@ -409,7 +409,7 @@ export const ClinicalDetailsStep: React.FC<ClinicalDetailsStepProps> = ({
                     Continue to Admission & Cost
                 </button>
             </div>
-            {!isValid && <p className="text-[10px] text-amber-600 font-semibold text-center mt-1">Add diagnosis (with confirmed ICD-10 code), treatment line, and OPD justification to continue</p>}
+            {!isValid && <p className="text-sm text-amber-600 font-semibold text-center mt-1">Add diagnosis (with confirmed ICD-10 code), treatment line, and OPD justification to continue</p>}
         </div>
     );
 };

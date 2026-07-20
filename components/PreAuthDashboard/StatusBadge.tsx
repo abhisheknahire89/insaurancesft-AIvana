@@ -23,7 +23,7 @@ const STATUS_CONFIG: Record<PreAuthStatus, { label: string; color: string; icon:
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className = '' }) => {
     const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.draft;
     return (
-        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${cfg.color} ${className}`}>
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-semibold border ${cfg.color} ${className}`}>
             <span>{cfg.icon}</span>
             {cfg.label}
         </span>

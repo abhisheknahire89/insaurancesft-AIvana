@@ -37,19 +37,19 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
 
                 <div className="p-3 bg-purple-900/30 border border-purple-500/50 rounded-lg">
                     <h3 className="font-semibold text-white mb-2">Powered by the Veda Engine</h3>
-                    <p className="text-xs">
+                    <p className="text-sm">
                         Documentation is operationalized via <strong>Veda</strong>, an expert clinical reasoning and transcription engine that integrates parallel segmented acoustic analysis for high-accuracy speaker segregation.
                     </p>
                 </div>
                 
                 <div className="p-3 bg-red-900/30 border border-red-500/50 rounded-lg">
                     <h3 className="font-semibold text-white mb-2">CRITICAL CLINICAL DISCLAIMER</h3>
-                    <p className="text-xs">
+                    <p className="text-sm">
                         This tool is intended for professional clinician use only. It is <strong className="text-white">NOT</strong> a substitute for independent clinical judgment. All automated notes and summaries must be verified before inclusion in medical records.
                     </p>
                 </div>
 
-                <p className="text-xs text-center text-gray-500 pt-2">
+                <p className="text-sm text-center text-gray-500 pt-2">
                     Platform Version: {appVersion}
                 </p>
             </div>

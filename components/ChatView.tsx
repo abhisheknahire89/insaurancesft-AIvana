@@ -86,15 +86,15 @@ const LabResultForm: React.FC<{ onSubmit: (params: LabParameterInput[]) => void 
                     {/* Parameter Input Fields */}
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end p-3 bg-aivana-dark rounded-lg">
                         <div className="md:col-span-2">
-                            <label htmlFor="name" className="block text-xs font-medium text-gray-300 mb-1">Parameter Name</label>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">Parameter Name</label>
                             <input type="text" name="name" id="name" value={currentParam.name} onChange={handleInputChange} className="w-full bg-aivana-grey p-2 rounded-md border border-aivana-light-grey/80 focus:ring-aivana-accent focus:border-aivana-accent" placeholder="e.g., Sodium" />
                         </div>
                         <div>
-                            <label htmlFor="value" className="block text-xs font-medium text-gray-300 mb-1">Value</label>
+                            <label htmlFor="value" className="block text-sm font-medium text-gray-300 mb-1">Value</label>
                             <input type="text" name="value" id="value" value={currentParam.value} onChange={handleInputChange} className="w-full bg-aivana-grey p-2 rounded-md border border-aivana-light-grey/80 focus:ring-aivana-accent focus:border-aivana-accent" placeholder="e.g., 145" />
                         </div>
                         <div>
-                            <label htmlFor="units" className="block text-xs font-medium text-gray-300 mb-1">Units</label>
+                            <label htmlFor="units" className="block text-sm font-medium text-gray-300 mb-1">Units</label>
                             <input type="text" name="units" id="units" value={currentParam.units} onChange={handleInputChange} className="w-full bg-aivana-grey p-2 rounded-md border border-aivana-light-grey/80 focus:ring-aivana-accent focus:border-aivana-accent" placeholder="e.g., mEq/L" />
                         </div>
                         <button type="button" onClick={handleAddParam} disabled={!canAdd} className="w-full bg-aivana-accent/80 hover:bg-aivana-accent text-white font-semibold py-2 px-3 rounded-md transition-colors flex items-center justify-center gap-2 disabled:bg-aivana-light-grey/50 disabled:cursor-not-allowed">
@@ -109,7 +109,7 @@ const LabResultForm: React.FC<{ onSubmit: (params: LabParameterInput[]) => void 
                                 <div key={index} className="flex items-center justify-between p-2 bg-aivana-dark rounded-md text-sm">
                                     <span className="font-semibold text-white">{param.name}:</span>
                                     <span className="text-gray-300">{param.value} {param.units}</span>
-                                    <span className="text-gray-400 text-xs">(Ref: {param.referenceRange || 'N/A'})</span>
+                                    <span className="text-gray-400 text-sm">(Ref: {param.referenceRange || 'N/A'})</span>
                                     <button onClick={() => handleRemoveParam(index)} className="p-1 text-red-400 hover:text-red-300"><Icon name="close" className="w-4 h-4"/></button>
                                 </div>
                             ))}

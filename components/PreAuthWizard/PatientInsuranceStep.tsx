@@ -254,8 +254,8 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                             {opt.icon}
                             <div className="space-y-1">
                                 <div className="font-bold text-sm text-opd-text-primary font-lora">{opt.title}</div>
-                                <div className="text-[11px] text-opd-text-secondary leading-normal">{opt.desc}</div>
-                                {opt.badge && <div className="mt-2 inline-block text-[10px] bg-primary-tint text-opd-primary px-2 py-0.5 rounded-full border border-opd-primary/10 font-bold">{opt.badge}</div>}
+                                <div className="text-sm text-opd-text-secondary leading-normal">{opt.desc}</div>
+                                {opt.badge && <div className="mt-2 inline-block text-sm bg-primary-tint text-opd-primary px-2 py-0.5 rounded-full border border-opd-primary/10 font-bold">{opt.badge}</div>}
                             </div>
                         </button>
                     ))}
@@ -267,7 +267,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
     if (entryPath === 'search_existing') {
         return (
             <div className="space-y-6 text-opd-text-primary bg-white p-6 rounded-2xl border border-opd-border shadow-sm">
-                <button onClick={() => setEntryPath(null)} className="btn-secondary px-3 py-1.5 text-xs flex items-center gap-1.5" type="button">
+                <button onClick={() => setEntryPath(null)} className="btn-secondary px-3 py-1.5 text-sm flex items-center gap-1.5" type="button">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
@@ -308,7 +308,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                                 >
                                     <div>
                                         <div className="font-bold text-sm text-opd-text-primary font-lora">{p.patientName}</div>
-                                        <div className="text-xs text-opd-text-secondary mt-1 flex gap-3 font-mono">
+                                        <div className="text-sm text-opd-text-secondary mt-1 flex gap-3 font-mono">
                                             <span>UHID: {p.uhid || 'N/A'}</span>
                                             <span>Phone: {p.mobileNumber}</span>
                                             <span>{p.gender}, {p.age}{p.ageUnit === 'months' ? 'm' : 'y'}</span>
@@ -316,7 +316,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                                     </div>
                                     {p.lastKnownPolicyNumber && (
                                         <div className="text-right">
-                                            <span className="text-[10px] uppercase font-bold tracking-wider text-opd-primary bg-primary-tint px-2 py-0.5 rounded border border-opd-primary/10 block">
+                                            <span className="text-sm uppercase font-bold tracking-wider text-opd-primary bg-primary-tint px-2 py-0.5 rounded border border-opd-primary/10 block">
                                                 {p.lastKnownInsurer || 'Has Policy'}
                                             </span>
                                             <span className="text-[9px] text-opd-text-muted font-mono block mt-1">Pol: {p.lastKnownPolicyNumber}</span>
@@ -326,7 +326,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                             ))}
                         </div>
                     ) : searchQuery.trim().length > 1 ? (
-                        <p className="text-xs text-opd-text-muted text-center py-6">No matching patient records found.</p>
+                        <p className="text-sm text-opd-text-muted text-center py-6">No matching patient records found.</p>
                     ) : null}
                 </div>
             </div>
@@ -336,7 +336,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
     if (entryPath === 'scan_card' && !ocrDone) {
         return (
             <div className="space-y-6 bg-white p-6 rounded-2xl border border-opd-border shadow-sm text-opd-text-primary">
-                <button onClick={() => setEntryPath(null)} className="btn-secondary px-3 py-1.5 text-xs flex items-center gap-1.5">
+                <button onClick={() => setEntryPath(null)} className="btn-secondary px-3 py-1.5 text-sm flex items-center gap-1.5">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
@@ -349,8 +349,8 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                     <div className="flex items-center gap-3.5 p-5 bg-primary-tint/30 rounded-2xl border border-opd-primary/20">
                       <div className="w-5 h-5 border-2 border-opd-primary border-t-transparent rounded-full animate-spin"></div>
                       <div>
-                        <p className="font-bold text-xs text-opd-primary uppercase tracking-wider font-lora">Scanning & Classifying Document...</p>
-                        <p className="text-[11px] text-opd-text-secondary mt-0.5">Current Stage: <span className="font-semibold text-opd-primary">{
+                        <p className="font-bold text-sm text-opd-primary uppercase tracking-wider font-lora">Scanning & Classifying Document...</p>
+                        <p className="text-sm text-opd-text-secondary mt-0.5">Current Stage: <span className="font-semibold text-opd-primary">{
                           extractionStage === 'reading' ? 'Reading File' :
                           extractionStage === 'ocr' ? 'Google Vision OCR' :
                           extractionStage === 'classifying' ? 'Document Classification' :
@@ -360,7 +360,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                     </div>
 
                     {/* OCR Status Check & Engine Status */}
-                    <div className="grid grid-cols-2 gap-3.5 text-[11px] bg-slate-50 border border-slate-200/60 p-3.5 rounded-xl font-mono">
+                    <div className="grid grid-cols-2 gap-3.5 text-sm bg-slate-50 border border-slate-200/60 p-3.5 rounded-xl font-mono">
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span className="text-slate-500">Google Vision Engine:</span>
@@ -374,7 +374,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                     </div>
 
                     {/* Real-time OCR Terminal Logs */}
-                    <div className="bg-slate-950 text-emerald-400 font-mono text-[10px] p-4 rounded-xl border border-slate-800 shadow-inner max-h-40 overflow-y-auto space-y-1 scrollbar-thin">
+                    <div className="bg-slate-950 text-emerald-400 font-mono text-sm p-4 rounded-xl border border-slate-800 shadow-inner max-h-40 overflow-y-auto space-y-1 scrollbar-thin">
                       {ocrLogs.map((logLine, idx) => (
                         <div key={idx} className="whitespace-pre-wrap leading-relaxed border-l-2 border-emerald-500/20 pl-2">
                           {logLine}
@@ -394,15 +394,15 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                                 </svg>
                             </div>
                             <div className="text-sm text-opd-text-primary font-bold font-lora">Drop PDF or Image here, or click to upload</div>
-                            <div className="text-opd-text-secondary text-[11px] max-w-sm mx-auto leading-normal">Upload Hospital Registration PDF, TPA Card, ID Card, or Policy Document</div>
-                            {extractionException && <div className="text-opd-error mt-3 text-xs font-semibold">{extractionException}</div>}
+                            <div className="text-opd-text-secondary text-sm max-w-sm mx-auto leading-normal">Upload Hospital Registration PDF, TPA Card, ID Card, or Policy Document</div>
+                            {extractionException && <div className="text-opd-error mt-3 text-sm font-semibold">{extractionException}</div>}
                         </div>
                   </div>
                 )}
 
                 <input ref={fileRef} type="file" accept="image/*,.pdf" className="hidden"
                     onChange={e => e.target.files?.[0] && handleDocumentUpload(e.target.files[0])} />
-                <button onClick={() => setEntryPath('manual')} className="text-xs text-opd-text-secondary hover:text-opd-primary transition-colors underline block">Skip Extraction — enter manually instead</button>
+                <button onClick={() => setEntryPath('manual')} className="text-sm text-opd-text-secondary hover:text-opd-primary transition-colors underline block">Skip Extraction — enter manually instead</button>
             </div>
         );
     }
@@ -413,7 +413,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                 <div>
                     <h2 className="text-sm font-semibold text-opd-primary font-lora uppercase tracking-wider">Patient & Insurance Details</h2>
                 </div>
-                <button onClick={() => setEntryPath(null)} className="text-xs text-opd-primary hover:text-opd-primary-dark font-semibold transition-colors underline" type="button">Change Entry Method</button>
+                <button onClick={() => setEntryPath(null)} className="text-sm text-opd-primary hover:text-opd-primary-dark font-semibold transition-colors underline" type="button">Change Entry Method</button>
             </div>
 
             {/* Extraction Results Summary */}
@@ -422,18 +422,18 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                     <div className="flex gap-3 mb-4 items-center">
                         <div className="w-8 h-8 rounded-lg bg-primary-tint text-opd-primary flex items-center justify-center text-sm font-bold">✨</div>
                         <div>
-                            <h3 className="text-opd-primary font-bold text-xs uppercase tracking-wider font-lora">Extraction Complete</h3>
-                            <p className="text-opd-text-secondary text-xs mt-0.5">Aivana OCR parsed registration details</p>
+                            <h3 className="text-opd-primary font-bold text-sm uppercase tracking-wider font-lora">Extraction Complete</h3>
+                            <p className="text-opd-text-secondary text-sm mt-0.5">Aivana OCR parsed registration details</p>
                         </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-opd-border shadow-sm">
                         <div>
-                            <div className="text-emerald-700 text-xs font-bold flex items-center gap-1.5 mb-2">
+                            <div className="text-emerald-700 text-sm font-bold flex items-center gap-1.5 mb-2">
                                 <span>✓</span>
                                 <span>Auto-filled fields:</span>
                             </div>
-                            <ul className="text-emerald-700/80 text-[11px] space-y-1 ml-5 list-disc leading-relaxed font-semibold">
+                            <ul className="text-emerald-700/80 text-sm space-y-1 ml-5 list-disc leading-relaxed font-semibold">
                                 {extractionResult.filled.length > 0 ? (
                                     extractionResult.filled.map(f => (<li key={f}>{f}</li>))
                                 ) : (
@@ -442,11 +442,11 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                             </ul>
                         </div>
                         <div>
-                            <div className="text-amber-700 text-xs font-bold flex items-center gap-1.5 mb-2">
+                            <div className="text-amber-700 text-sm font-bold flex items-center gap-1.5 mb-2">
                                 <span>ℹ</span>
                                 <span>Fill manually:</span>
                             </div>
-                            <ul className="text-amber-700/80 text-[11px] space-y-1 ml-5 list-disc leading-relaxed font-semibold">
+                            <ul className="text-amber-700/80 text-sm space-y-1 ml-5 list-disc leading-relaxed font-semibold">
                                 {extractionResult.pending.length > 0 ? (
                                     extractionResult.pending.map(f => (<li key={f}>{f}</li>))
                                 ) : (
@@ -460,7 +460,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
 
             {/* Patient Demographics */}
             <div className="card-premium space-y-4">
-                <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 font-lora">👤 Patient Demographics</h3>
+                <h3 className="font-semibold text-opd-primary text-sm uppercase tracking-wider border-b border-opd-border pb-2 font-lora">👤 Patient Demographics</h3>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-2">
                         <label className="form-label uppercase tracking-wider text-[9px] mb-1">Full Name *</label>
@@ -528,7 +528,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
 
             {/* Insurance Details */}
             <div className="card-premium space-y-4">
-                <h3 className="font-semibold text-opd-primary text-[10px] uppercase tracking-wider border-b border-opd-border pb-2 font-lora">🛡️ Insurance & Policy Details</h3>
+                <h3 className="font-semibold text-opd-primary text-sm uppercase tracking-wider border-b border-opd-border pb-2 font-lora">🛡️ Insurance & Policy Details</h3>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label className="form-label uppercase tracking-wider text-[9px] mb-1">Insurance Company *</label>
@@ -575,7 +575,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                         <label className="form-label uppercase tracking-wider text-[9px] mb-1">Policy End Date</label>
                         <input type="date" value={insurance.policyEndDate ?? ''} onChange={e => handlePolicyEndDate(e.target.value)}
                             className="form-input" />
-                        {policyDateWarning && <p className="text-opd-error text-[11px] font-semibold mt-1.5">{policyDateWarning}</p>}
+                        {policyDateWarning && <p className="text-opd-error text-sm font-semibold mt-1.5">{policyDateWarning}</p>}
                     </div>
                     <div>
                         <label className="form-label uppercase tracking-wider text-[9px] mb-1">Proposer Name</label>
@@ -596,7 +596,7 @@ export const PatientInsuranceStep: React.FC<PatientInsuranceStepProps> = ({
                 className="w-full btn-primary py-2.5">
                 Continue to Clinical Details
             </button>
-            {!isValid && <p className="text-[10px] text-amber-600 font-semibold text-center mt-1">Fill all required (*) fields to continue</p>}
+            {!isValid && <p className="text-sm text-amber-600 font-semibold text-center mt-1">Fill all required (*) fields to continue</p>}
         </div>
     );
 };

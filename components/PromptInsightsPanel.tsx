@@ -49,7 +49,7 @@ export const PromptInsightsPanel: React.FC<PromptInsightsPanelProps> = ({ isOpen
                     <div className="flex items-center justify-center h-32">
                         <div className="flex flex-col items-center text-gray-400">
                              <div className="w-8 h-8 border-4 border-t-transparent border-aivana-accent rounded-full animate-spin mb-4"></div>
-                             <span className="text-xs font-bold uppercase tracking-widest">Analyzing Dialogue...</span>
+                             <span className="text-sm font-bold uppercase tracking-widest">Analyzing Dialogue...</span>
                         </div>
                     </div>
                 )}
@@ -59,7 +59,7 @@ export const PromptInsightsPanel: React.FC<PromptInsightsPanelProps> = ({ isOpen
                     <InsightSection title="Suggested Follow-ups" icon="chatHistory" isPriority>
                         <ul className="space-y-2">
                             {insights.followUps.map((q, i) => (
-                                <li key={i} className="flex gap-2 text-xs leading-relaxed group cursor-pointer hover:text-white transition-colors">
+                                <li key={i} className="flex gap-2 text-sm leading-relaxed group cursor-pointer hover:text-white transition-colors">
                                     <span className="text-aivana-accent font-bold">•</span>
                                     {q}
                                 </li>
@@ -73,7 +73,7 @@ export const PromptInsightsPanel: React.FC<PromptInsightsPanelProps> = ({ isOpen
                     <InsightSection title="Questions to Ask Patient" icon="help" isPriority>
                         <ul className="space-y-2">
                             {currentQuestions.map((q, i) => (
-                                <li key={i} className="text-xs text-gray-300 p-2.5 bg-black/40 rounded-lg border border-white/5 flex gap-2">
+                                <li key={i} className="text-sm text-gray-300 p-2.5 bg-black/40 rounded-lg border border-white/5 flex gap-2">
                                     <span className="text-aivana-accent font-bold">?</span>
                                     {q}
                                 </li>
@@ -89,20 +89,20 @@ export const PromptInsightsPanel: React.FC<PromptInsightsPanelProps> = ({ isOpen
                             {insights.keyTerms.length > 0 ? (
                                 <div className="flex flex-wrap gap-2">
                                     {insights.keyTerms.map((term, i) => (
-                                        <span key={i} className="px-2 py-1 bg-aivana-grey rounded text-[10px] font-mono border border-white/5">
+                                        <span key={i} className="px-2 py-1 bg-aivana-grey rounded text-sm font-mono border border-white/5">
                                             {term}
                                         </span>
                                     ))}
                                 </div>
-                            ) : <p className="text-gray-500 italic text-xs">No terms identified.</p>}
+                            ) : <p className="text-gray-500 italic text-sm">No terms identified.</p>}
                         </InsightSection>
                         
                         <InsightSection title="Refinement Suggestions" icon="sparkles">
                              {insights.suggestions.length > 0 ? (
-                                <ul className="list-disc list-inside space-y-1 text-xs text-gray-400">
+                                <ul className="list-disc list-inside space-y-1 text-sm text-gray-400">
                                     {insights.suggestions.map((s, i) => <li key={i}>{s}</li>)}
                                 </ul>
-                            ) : <p className="text-gray-500 italic text-xs">Prompt precision is optimal.</p>}
+                            ) : <p className="text-gray-500 italic text-sm">Prompt precision is optimal.</p>}
                         </InsightSection>
                     </div>
                 )}
@@ -111,7 +111,7 @@ export const PromptInsightsPanel: React.FC<PromptInsightsPanelProps> = ({ isOpen
                      <div className="flex items-center justify-center h-64">
                         <div className="text-center text-gray-600 p-4">
                              <Icon name="diagnosis" className="w-10 h-10 mx-auto mb-3 opacity-10"/>
-                             <p className="text-[10px] uppercase font-bold tracking-widest">Awaiting Clinical Signal</p>
+                             <p className="text-sm uppercase font-bold tracking-widest">Awaiting Clinical Signal</p>
                         </div>
                     </div>
                 )}

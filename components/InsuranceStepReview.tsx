@@ -65,7 +65,7 @@ export const InsuranceStepReview: React.FC<InsuranceStepReviewProps> = ({
                                         <h4 className={`font-semibold ${selectedDiagnosisIndex === idx ? 'text-blue-400' : 'text-gray-200'}`}>
                                             {dx.diagnosis}
                                         </h4>
-                                        <span className={`text-xs px-2 py-1 rounded-full ${dx.confidence === 'High' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                                        <span className={`text-sm px-2 py-1 rounded-full ${dx.confidence === 'High' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
                                                 dx.confidence === 'Medium' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
                                                     'bg-red-500/20 text-red-400 border border-red-500/30'
                                             }`}>

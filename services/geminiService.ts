@@ -1,6 +1,7 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { MODEL_TEXT, MODEL_DOCUMENT } from '../config/modelConfig';
+const isDemoMode = (typeof window !== 'undefined' && (window as any).VITE_DEMO_MODE === true) || (import.meta as any).env?.VITE_DEMO_MODE === 'true' || process.env.VITE_DEMO_MODE === 'true';
+
 import { getDescription } from './icdService';
 import {
   Message,
@@ -855,6 +856,22 @@ export const extractBillingCodesAI = async (
 ): Promise<BillingCodingOutput> => {
     if (mockBillingCodesFn) {
         return mockBillingCodesFn(clinicalNote, insurerName, sumInsured, wardType, requestedAmount, resolvedICD10);
+    }
+    if (isDemoMode) {
+        return {
+            primaryICD10: resolvedICD10 || "E11.9",
+            primaryDescription: "Type 2 diabetes mellitus without complications",
+            secondaryICD10: [],
+            suggestedCPT: [{ code: "82947", description: "Glucose; quantitative, blood (except reagent strip)", estimatedRate: 150 }],
+            validationWarnings: [],
+            scrubbingStatus: "Clean",
+            copayDeductions: 0,
+            cashlessApproved: requestedAmount * 0.9,
+            patientShare: requestedAmount * 0.1,
+            copayPercentage: 0,
+            nonMedicalDeduction: requestedAmount * 0.1,
+            roomRentDeduction: 0
+        };
     }
     const systemInstruction = `You are an expert Medical Coder and Claim Auditor specializing in India-adapted ICD-10 and procedure coding (CPT/PM-JAY package codes).
     Analyze the clinical note and generate:

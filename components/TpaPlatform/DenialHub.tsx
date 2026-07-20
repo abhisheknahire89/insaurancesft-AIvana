@@ -113,13 +113,13 @@ export const DenialHub: React.FC = () => {
             {/* Header banner */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-opd-border shadow-sm text-left">
                 <div>
-                    <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
+                    <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
                         <ShieldAlert className="w-3.5 h-3.5" /> Aegis Style Appeal Engine
                     </div>
                     <h2 className="text-xl font-bold tracking-tight text-opd-text-primary font-lora">Automated Denial Ingestion & Grievance Appeal Builder</h2>
-                    <p className="text-xs text-opd-text-secondary mt-0.5 leading-relaxed">Scoring claim denials by financial loss, clinical urgency, and overturn probability, with compliant IRDAI appeal packet generation.</p>
+                    <p className="text-sm text-opd-text-secondary mt-0.5 leading-relaxed">Scoring claim denials by financial loss, clinical urgency, and overturn probability, with compliant IRDAI appeal packet generation.</p>
                 </div>
-                <div className="flex items-center gap-4 text-xs font-semibold">
+                <div className="flex items-center gap-4 text-sm font-semibold">
                     <div className="bg-opd-input-bg px-4 py-2.5 rounded-2xl border border-opd-border shadow-sm">
                         <span className="text-opd-text-secondary font-medium">Claims Ingested: </span>
                         <span className="text-opd-text-primary font-bold">{denials.length}</span>
@@ -142,9 +142,9 @@ export const DenialHub: React.FC = () => {
                     </div>
 
                     <div className="overflow-x-auto custom-scrollbar">
-                        <table className="w-full text-left text-xs border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
-                                <tr className="text-opd-text-secondary font-semibold border-b border-opd-border uppercase tracking-wider text-[10px]">
+                                <tr className="text-opd-text-secondary font-semibold border-b border-opd-border uppercase tracking-wider text-sm">
                                     <th className="py-3 px-2">Priority Rank</th>
                                     <th className="py-3 px-2">Patient</th>
                                     <th className="py-3 px-2">TPA / Insurer</th>
@@ -161,21 +161,21 @@ export const DenialHub: React.FC = () => {
                                         className={`border-b border-opd-border hover:bg-opd-input-bg/40 transition cursor-pointer ${selectedDenial?.id === denial.id ? 'bg-primary-tint/20 border-opd-primary' : ''}`}
                                     >
                                         <td className="py-4 px-2 font-mono font-bold text-opd-text-primary">
-                                            {index + 1}. <span className="text-[10px] text-opd-text-secondary font-semibold">(Score: {denial.priorityScore ?? '—'})</span>
+                                            {index + 1}. <span className="text-sm text-opd-text-secondary font-semibold">(Score: {denial.priorityScore ?? '—'})</span>
                                         </td>
                                         <td className="py-4 px-2">
                                             <div className="font-bold text-opd-text-primary">{denial.patientName}</div>
-                                            <div className="text-[10px] text-opd-text-secondary mt-0.5">Policy: {denial.policyNumber}</div>
+                                            <div className="text-sm text-opd-text-secondary mt-0.5">Policy: {denial.policyNumber}</div>
                                         </td>
                                         <td className="py-4 px-2">
                                             <div className="text-opd-text-primary font-semibold">{denial.tpaName}</div>
-                                            <div className="text-[10px] text-opd-text-secondary mt-0.5">{denial.insurerName}</div>
+                                            <div className="text-sm text-opd-text-secondary mt-0.5">{denial.insurerName}</div>
                                         </td>
                                         <td className="py-4 px-2 font-bold font-mono text-opd-text-primary">
                                             ₹{denial.claimAmount.toLocaleString('en-IN')}
                                         </td>
                                         <td className="py-4 px-2 text-center">
-                                            <span className={`px-2 py-0.5 rounded text-[10px] font-black border ${
+                                            <span className={`px-2 py-0.5 rounded text-sm font-black border ${
                                                 (denial.analysis?.overturnProbability || 0) >= 0.7 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                                                 (denial.analysis?.overturnProbability || 0) >= 0.5 ? 'bg-amber-50 text-amber-700 border-amber-200' :
                                                 'bg-red-50 text-red-750 border-red-200'
@@ -207,9 +207,9 @@ export const DenialHub: React.FC = () => {
                             <div className="flex justify-between items-start border-b border-opd-border pb-3">
                                 <div>
                                     <h3 className="text-sm font-bold text-opd-text-primary font-lora">Ingested Case Audit: {selectedDenial.patientName}</h3>
-                                    <p className="text-[10px] text-opd-text-secondary mt-0.5">Denial Ref: {selectedDenial.id}</p>
+                                    <p className="text-sm text-opd-text-secondary mt-0.5">Denial Ref: {selectedDenial.id}</p>
                                 </div>
-                                <span className={`text-[10px] font-black px-2 py-0.5 rounded border uppercase tracking-wider ${
+                                <span className={`text-sm font-black px-2 py-0.5 rounded border uppercase tracking-wider ${
                                     selectedDenial.analysis?.category === 'Clinical Necessity' ? 'bg-blue-50 text-blue-700 border-blue-200' :
                                     selectedDenial.analysis?.category === 'Pre-Existing Disease' ? 'bg-purple-50 text-purple-700 border-purple-200' :
                                     'bg-amber-50 text-amber-700 border-amber-200'
@@ -219,21 +219,21 @@ export const DenialHub: React.FC = () => {
                             </div>
 
                             {/* Denial Details & Impact */}
-                            <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 space-y-3 text-xs shadow-sm">
+                            <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 space-y-3 text-sm shadow-sm">
                                 <div>
-                                    <span className="text-[10px] text-opd-text-secondary font-bold uppercase tracking-wider">TPA Denial Clause / EOB Reason</span>
-                                    <p className="text-opd-text-primary mt-1 leading-relaxed font-mono text-[11px] bg-white p-2.5 rounded border border-opd-border max-h-32 overflow-y-auto custom-scrollbar shadow-sm">
+                                    <span className="text-sm text-opd-text-secondary font-bold uppercase tracking-wider">TPA Denial Clause / EOB Reason</span>
+                                    <p className="text-opd-text-primary mt-1 leading-relaxed font-mono text-sm bg-white p-2.5 rounded border border-opd-border max-h-32 overflow-y-auto custom-scrollbar shadow-sm">
                                         {selectedDenial.eobText}
                                     </p>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3 border-t border-opd-border pt-3">
                                     <div>
-                                        <span className="text-[10px] text-opd-text-secondary font-bold block">DISALLOWED AMOUNT</span>
+                                        <span className="text-sm text-opd-text-secondary font-bold block">DISALLOWED AMOUNT</span>
                                         <span className="text-red-750 font-mono font-bold text-sm">₹{selectedDenial.claimAmount.toLocaleString('en-IN')}</span>
                                     </div>
                                     <div>
-                                        <span className="text-[10px] text-opd-text-secondary font-bold block">OVERTURN LIKELIHOOD</span>
+                                        <span className="text-sm text-opd-text-secondary font-bold block">OVERTURN LIKELIHOOD</span>
                                         <span className={`font-bold text-sm ${
                                             (selectedDenial.analysis?.overturnProbability || 0) >= 0.7 ? 'text-emerald-700' :
                                             (selectedDenial.analysis?.overturnProbability || 0) >= 0.5 ? 'text-amber-700' :
@@ -247,25 +247,25 @@ export const DenialHub: React.FC = () => {
 
                             {/* Appeal Formulation Form */}
                             <div className="space-y-4">
-                                <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Draft Appeal Parameters</h4>
-                                <div className="space-y-3 text-xs">
+                                <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider">Draft Appeal Parameters</h4>
+                                <div className="space-y-3 text-sm">
                                     <div>
-                                        <label className="text-[10px] text-opd-text-secondary font-bold mb-1 block">Clinical / Administrative Justification (Edit if needed)</label>
+                                        <label className="text-sm text-opd-text-secondary font-bold mb-1 block">Clinical / Administrative Justification (Edit if needed)</label>
                                         <textarea
                                             value={clinicalJustification}
                                             onChange={(e) => setClinicalJustification(e.target.value)}
                                             rows={4}
-                                            className="form-input text-xs text-opd-text-primary"
+                                            className="form-input text-sm text-opd-text-primary"
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">Doctor Name</label>
-                                            <input type="text" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
+                                            <label className="text-sm text-opd-text-secondary font-semibold mb-1 block">Doctor Name</label>
+                                            <input type="text" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                         </div>
                                         <div>
-                                            <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">MCI / SMC Registration</label>
-                                            <input type="text" value={doctorReg} onChange={(e) => setDoctorReg(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
+                                            <label className="text-sm text-opd-text-secondary font-semibold mb-1 block">MCI / SMC Registration</label>
+                                            <input type="text" value={doctorReg} onChange={(e) => setDoctorReg(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                         </div>
                                     </div>
                                 </div>
@@ -273,7 +273,7 @@ export const DenialHub: React.FC = () => {
                                 <button
                                     onClick={handleCreateAppeal}
                                     disabled={generatingAppeal || !clinicalJustification}
-                                    className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-98 shadow-sm"
+                                    className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 disabled:opacity-40 text-white text-sm font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-98 shadow-sm"
                                     type="button"
                                 >
                                     {generatingAppeal ? (
@@ -294,26 +294,26 @@ export const DenialHub: React.FC = () => {
                             {appealPackage && (
                                 <div className="space-y-4 border-t border-opd-border pt-4 animate-fadeInUp">
                                     <div className="flex justify-between items-center">
-                                        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Appeal Letter Draft Ready</h4>
+                                        <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider">Appeal Letter Draft Ready</h4>
                                         <button
                                             onClick={() => setShowPreviewModal(true)}
-                                            className="text-[10px] text-opd-primary hover:underline font-bold transition uppercase"
+                                            className="text-sm text-opd-primary hover:underline font-bold transition uppercase"
                                             type="button"
                                         >
                                             Fullscreen Preview
                                         </button>
                                     </div>
 
-                                    <div className="bg-opd-input-bg p-4 border border-opd-border rounded-2xl max-h-52 overflow-y-auto custom-scrollbar font-mono text-[10px] text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
+                                    <div className="bg-opd-input-bg p-4 border border-opd-border rounded-2xl max-h-52 overflow-y-auto custom-scrollbar font-mono text-sm text-opd-text-primary whitespace-pre-wrap leading-relaxed shadow-sm">
                                         {appealPackage.letterContent}
                                     </div>
 
                                     {/* Checklist attachments */}
-                                    <div className="space-y-2 text-xs">
-                                        <span className="text-[10px] text-opd-text-secondary font-bold uppercase tracking-wider">Mandatory Attachment Pack</span>
+                                    <div className="space-y-2 text-sm">
+                                        <span className="text-sm text-opd-text-secondary font-bold uppercase tracking-wider">Mandatory Attachment Pack</span>
                                         <div className="space-y-1 bg-opd-input-bg p-3 rounded-2xl border border-opd-border shadow-sm">
                                             {appealPackage.suggestedAttachments.map((att, index) => (
-                                                <label key={index} className="flex items-center space-x-2 text-[11px] text-opd-text-primary font-medium py-0.5 cursor-pointer select-none">
+                                                <label key={index} className="flex items-center space-x-2 text-sm text-opd-text-primary font-medium py-0.5 cursor-pointer select-none">
                                                     <input type="checkbox" defaultChecked className="rounded border-opd-border accent-opd-primary" />
                                                     <span>📎 {att}</span>
                                                 </label>
@@ -325,7 +325,7 @@ export const DenialHub: React.FC = () => {
                                     <button
                                         onClick={handleSimulateSubmission}
                                         disabled={submittingAppeal}
-                                        className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 active:scale-98 shadow-sm"
+                                        className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition flex items-center justify-center gap-1.5 active:scale-98 shadow-sm"
                                         type="button"
                                     >
                                         {submittingAppeal ? (
@@ -358,7 +358,7 @@ export const DenialHub: React.FC = () => {
                         <div className="bg-white border border-dashed border-opd-border rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px] shadow-sm text-opd-text-primary">
                             <HelpCircle className="w-12 h-12 text-opd-text-muted mb-3" />
                             <h3 className="text-sm font-bold font-lora text-opd-primary">Select Ingested Denial</h3>
-                            <p className="text-xs text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">Select any claim denial item from the prioritized backlog queue on the left to analyze and appeal.</p>
+                            <p className="text-sm text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">Select any claim denial item from the prioritized backlog queue on the left to analyze and appeal.</p>
                         </div>
                     )}
                 </div>
@@ -373,13 +373,13 @@ export const DenialHub: React.FC = () => {
                             <h3 className="text-sm font-bold text-opd-primary font-lora">Formal Appeal Grievance Letter Draft</h3>
                             <button
                                 onClick={() => setShowPreviewModal(false)}
-                                className="text-xs text-opd-text-secondary hover:text-opd-primary transition font-bold"
+                                className="text-sm text-opd-text-secondary hover:text-opd-primary transition font-bold"
                                 type="button"
                             >
                                 CLOSE ✕
                             </button>
                         </div>
-                        <div className="p-6 overflow-y-auto max-h-[70vh] custom-scrollbar bg-opd-input-bg font-mono text-xs text-opd-text-primary whitespace-pre-wrap leading-relaxed border-b border-opd-border">
+                        <div className="p-6 overflow-y-auto max-h-[70vh] custom-scrollbar bg-opd-input-bg font-mono text-sm text-opd-text-primary whitespace-pre-wrap leading-relaxed border-b border-opd-border">
                             {appealPackage.letterContent}
                         </div>
                         <div className="p-4 bg-opd-input-bg flex justify-end gap-3">
@@ -388,14 +388,14 @@ export const DenialHub: React.FC = () => {
                                     navigator.clipboard.writeText(appealPackage.letterContent);
                                     alert("Appeal letter copied to clipboard!");
                                 }}
-                                className="px-4 py-2 bg-white hover:bg-gray-50 font-bold text-xs text-opd-text-primary rounded-xl transition border border-opd-border shadow-sm"
+                                className="px-4 py-2 bg-white hover:bg-gray-50 font-bold text-sm text-opd-text-primary rounded-xl transition border border-opd-border shadow-sm"
                                 type="button"
                             >
                                 Copy to Clipboard
                             </button>
                             <button
                                 onClick={() => setShowPreviewModal(false)}
-                                className="px-5 py-2 bg-opd-primary hover:bg-opd-primary/95 font-bold text-xs text-white rounded-xl transition shadow-sm"
+                                className="px-5 py-2 bg-opd-primary hover:bg-opd-primary/95 font-bold text-sm text-white rounded-xl transition shadow-sm"
                                 type="button"
                             >
                                 Done

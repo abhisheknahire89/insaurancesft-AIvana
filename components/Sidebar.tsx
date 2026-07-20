@@ -40,7 +40,7 @@ const DoctorProfileSwitcher: React.FC<{
 
     return (
         <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-opd-text-secondary mb-2 font-lora">
+            <label className="block text-sm font-bold uppercase tracking-wider text-opd-text-secondary mb-2 font-lora">
                 Clinician Profile
             </label>
             <div className="flex bg-opd-input-bg border border-opd-border rounded-lg p-1 gap-1">
@@ -48,7 +48,7 @@ const DoctorProfileSwitcher: React.FC<{
                     <button
                         key={p.qualification}
                         onClick={() => setProfile(p)}
-                        className={`flex-1 text-xs px-2 py-1.5 rounded-md transition-colors ${profile.qualification === p.qualification ? 'bg-opd-primary text-white font-semibold shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary hover:bg-white/50'}`}
+                        className={`flex-1 text-sm px-2 py-1.5 rounded-md transition-colors ${profile.qualification === p.qualification ? 'bg-opd-primary text-white font-semibold shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary hover:bg-white/50'}`}
                     >
                         {p.qualification}
                     </button>
@@ -60,7 +60,7 @@ const DoctorProfileSwitcher: React.FC<{
 
 const LanguageSelector: React.FC<{ language: string; setLanguage: (lang: string) => void }> = ({ language, setLanguage }) => (
     <div className="mt-4">
-        <label className="block text-xs font-bold uppercase tracking-wider text-opd-text-secondary mb-2 font-lora">
+        <label className="block text-sm font-bold uppercase tracking-wider text-opd-text-secondary mb-2 font-lora">
             Response Language
         </label>
         <div className="relative">
@@ -113,7 +113,7 @@ const UserMenu: React.FC<{ onShowAuthModal?: () => void }> = ({ onShowAuthModal 
             {showMenu && (
                 <div className="absolute bottom-full left-0 right-0 mb-2 bg-white border border-opd-border rounded-lg shadow-lg overflow-hidden text-opd-text-primary z-50">
                     <div className="px-3 py-2 border-b border-opd-border">
-                        <p className="text-xs text-opd-text-muted">Signed in as</p>
+                        <p className="text-sm text-opd-text-muted">Signed in as</p>
                         <p className="text-sm font-semibold truncate text-opd-text-primary">{user.email}</p>
                     </div>
                     <button
@@ -242,7 +242,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                     {/* Explore Section */}
                     <div>
-                        <h3 className="text-xs font-bold text-opd-primary uppercase tracking-wider mb-2 px-2 font-lora">Explore</h3>
+                        <h3 className="text-sm font-bold text-opd-primary uppercase tracking-wider mb-2 px-2 font-lora">Explore</h3>
                         <div className="space-y-1">
                             {displayedGpts.slice(0, 5).map((gpt) => {
                                 const isActive = activeChatId && chats.find(c => c.id === activeChatId)?.gptId === gpt.id;

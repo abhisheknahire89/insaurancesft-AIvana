@@ -353,22 +353,61 @@ export function mapCaseToPreAuth(caseRecord: PatientCaseRecord): PreAuthRecord {
     };
 }
 
+// --- BACKEND SYNC SETTINGS ---
+const BACKEND_URL = 'http://localhost:3001/api/patients';
+
 // --- CORE FUNCTION EXPORTS ---
 
 export async function getPatientRecord(id: string): Promise<PatientCaseRecord | undefined> {
+    try {
+        const response = await fetch(`${BACKEND_URL}/${id}`);
+        if (response.ok) {
+            const data = await response.json();
+            await db.patientCases.put(data); // Sync local IndexedDB
+            return data;
+        }
+    } catch (err) {
+        console.warn(`[Offline Mode] Backend unreachable for getPatientRecord(${id}), falling back to IndexedDB.`, err);
+    }
     return db.patientCases.get(id);
 }
 
 export async function savePatientRecord(record: PatientCaseRecord): Promise<void> {
-    await db.patientCases.put(record);
+    await db.patientCases.put(record); // Always save to local IndexedDB first for offline capabilities
+    try {
+        await fetch(BACKEND_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+        });
+    } catch (err) {
+        console.warn(`[Offline Mode] Backend unreachable for savePatientRecord(${record.id}), saved to IndexedDB only.`, err);
+    }
 }
 
 export async function getAllPatientRecords(): Promise<PatientCaseRecord[]> {
+    try {
+        const response = await fetch(BACKEND_URL);
+        if (response.ok) {
+            const data: PatientCaseRecord[] = await response.json();
+            if (data && data.length > 0) {
+                await db.patientCases.bulkPut(data); // Bulk sync local IndexedDB
+            }
+            return data;
+        }
+    } catch (err) {
+        console.warn('[Offline Mode] Backend unreachable for getAllPatientRecords, falling back to IndexedDB.', err);
+    }
     return db.patientCases.toArray();
 }
 
 export async function deletePatientRecord(id: string): Promise<void> {
-    await db.patientCases.delete(id);
+    await db.patientCases.delete(id); // Delete from local IndexedDB first
+    try {
+        await fetch(`${BACKEND_URL}/${id}`, { method: 'DELETE' });
+    } catch (err) {
+        console.warn(`[Offline Mode] Backend unreachable for deletePatientRecord(${id}), deleted from IndexedDB only.`, err);
+    }
 }
 
 export async function saveEncounter(patientId: string, encounter: EncounterDetails): Promise<void> {

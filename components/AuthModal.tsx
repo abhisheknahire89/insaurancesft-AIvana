@@ -65,7 +65,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                         <h2 className="text-2xl font-bold font-lora text-opd-primary">
                             {activeTab === 'login' ? 'Welcome Back' : 'Get Started'}
                         </h2>
-                        <p className="text-xs text-opd-text-secondary mt-1">
+                        <p className="text-sm text-opd-text-secondary mt-1">
                             {activeTab === 'login' 
                                 ? 'Access the prior authorization desk and medical coding pipeline' 
                                 : 'Create your cashless desk account to start automating pre-auths'}
@@ -80,7 +80,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                                 setActiveTab('login');
                                 setError('');
                             }}
-                            className={`flex-1 py-2 px-4 rounded-xl font-bold text-xs transition-all ${
+                            className={`flex-1 py-2 px-4 rounded-xl font-bold text-sm transition-all ${
                                 activeTab === 'login'
                                     ? 'bg-white text-opd-primary shadow-sm'
                                     : 'text-opd-text-secondary hover:text-opd-primary'
@@ -94,7 +94,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                                 setActiveTab('signup');
                                 setError('');
                             }}
-                            className={`flex-1 py-2 px-4 rounded-xl font-bold text-xs transition-all ${
+                            className={`flex-1 py-2 px-4 rounded-xl font-bold text-sm transition-all ${
                                 activeTab === 'signup'
                                     ? 'bg-white text-opd-primary shadow-sm'
                                     : 'text-opd-text-secondary hover:text-opd-primary'
@@ -105,7 +105,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                     </div>
 
                     {error && (
-                        <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-2xl text-red-800 text-xs font-semibold leading-relaxed flex gap-2 items-start">
+                        <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-2xl text-red-800 text-sm font-semibold leading-relaxed flex gap-2 items-start">
                             <span>⚠️</span>
                             <span>{error}</span>
                         </div>
@@ -115,7 +115,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                         {activeTab === 'signup' && (
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-[10px] font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
+                                    <label className="block text-sm font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
                                         First Name
                                     </label>
                                     <div className="relative">
@@ -133,7 +133,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
+                                    <label className="block text-sm font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
                                         Last Name
                                     </label>
                                     <div className="relative">
@@ -154,7 +154,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                         )}
 
                         <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
+                            <label className="block text-sm font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
                                 Email Address
                             </label>
                             <div className="relative">
@@ -174,7 +174,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
 
                         {activeTab === 'signup' && (
                             <div>
-                                <label className="block text-[10px] font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
+                                <label className="block text-sm font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
                                     Phone Number (Optional)
                                 </label>
                                 <div className="relative">
@@ -193,7 +193,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                         )}
 
                         <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
+                            <label className="block text-sm font-bold uppercase tracking-wider text-opd-text-secondary mb-1">
                                 Password
                             </label>
                             <div className="relative">
@@ -218,7 +218,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                                 </button>
                             </div>
                             {activeTab === 'signup' && (
-                                <p className="text-[10px] text-opd-text-muted mt-1 font-semibold uppercase tracking-wider">
+                                <p className="text-sm text-opd-text-muted mt-1 font-semibold uppercase tracking-wider">
                                     Minimum 6 characters
                                 </p>
                             )}
@@ -227,7 +227,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3.5 bg-opd-primary hover:bg-opd-primary-dark disabled:opacity-40 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm mt-6"
+                            className="w-full py-3.5 bg-opd-primary hover:bg-opd-primary-dark disabled:opacity-40 text-white text-sm font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm mt-6"
                         >
                             {loading ? 'Please wait...' : activeTab === 'login' ? 'Login to Portal' : 'Create Account'}
                         </button>
@@ -236,7 +236,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                     {/* Divider */}
                     <div className="flex items-center gap-3 my-4">
                         <div className="flex-1 h-px bg-opd-border" />
-                        <span className="text-[10px] text-opd-text-muted font-semibold uppercase tracking-widest">or</span>
+                        <span className="text-sm text-opd-text-muted font-semibold uppercase tracking-widest">or</span>
                         <div className="flex-1 h-px bg-opd-border" />
                     </div>
 
@@ -244,17 +244,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTa
                     <button
                         type="button"
                         onClick={() => { loginAsGuest(); onClose(); }}
-                        className="w-full py-3 border border-opd-border rounded-xl text-xs font-bold text-opd-text-secondary hover:border-opd-primary hover:text-opd-primary hover:bg-primary-tint/40 transition-all flex items-center justify-center gap-2 active:scale-[.98]"
+                        className="w-full py-3 border border-opd-border rounded-xl text-sm font-bold text-opd-text-secondary hover:border-opd-primary hover:text-opd-primary hover:bg-primary-tint/40 transition-all flex items-center justify-center gap-2 active:scale-[.98]"
                     >
                         <User className="w-3.5 h-3.5" />
                         Continue as Guest
                     </button>
-                    <p className="text-[10px] text-opd-text-muted text-center mt-2 font-medium">
+                    <p className="text-sm text-opd-text-muted text-center mt-2 font-medium">
                         Demo access — no account required. Some features may be limited.
                     </p>
 
                     {activeTab === 'signup' && (
-                        <p className="mt-4 text-[10px] text-opd-text-muted text-center font-medium leading-relaxed">
+                        <p className="mt-4 text-sm text-opd-text-muted text-center font-medium leading-relaxed">
                             By signing up, you agree to our Terms of Service and Privacy Policy.
                             You'll get 10 free OPD cases per day.
                         </p>

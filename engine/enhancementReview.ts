@@ -47,6 +47,18 @@ export const reviewEnhancement = async (
   diagnosis: string,
   admissionDate?: string
 ): Promise<EnhancementReviewReport> => {
+  const isDemoMode = (typeof window !== 'undefined' && (window as any).VITE_DEMO_MODE === true) || (import.meta as any).env?.VITE_DEMO_MODE === 'true' || process.env.VITE_DEMO_MODE === 'true';
+  if (isDemoMode) {
+      return {
+          status: 'sufficient',
+          gaps: [],
+          anticipatedQueries: [],
+          requiredEvidence: ['NS1 Antigen or Dengue IgM positive lab report', 'Serial CBC reports showing dropping platelets'],
+          insufficientEvidence: [],
+          reasoningTrace: ['[Demo Mode] Bypassing Gemini API for enhancement review.', 'Clinical severity markers (dropping platelets) justify inpatient extension.'],
+          reviewedAt: new Date().toISOString()
+      };
+  }
   const gaps: string[] = [];
   const anticipatedQueries: any[] = [];
   const trace: string[] = [];

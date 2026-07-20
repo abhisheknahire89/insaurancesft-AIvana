@@ -70,9 +70,9 @@ export const WorkflowOrchestrator: React.FC = () => {
                 {/* Metric 1 */}
                 <div className="bg-white border border-opd-border rounded-3xl p-5 flex items-center justify-between shadow-sm">
                     <div>
-                        <span className="text-[10px] text-opd-text-secondary font-bold uppercase tracking-wider block">Cashless Approval Rate</span>
+                        <span className="text-sm text-opd-text-secondary font-bold uppercase tracking-wider block">Cashless Approval Rate</span>
                         <span className="text-2xl font-black text-emerald-700 mt-1 block">94.8%</span>
-                        <span className="text-[10px] text-opd-text-muted mt-0.5 block">+18% with AI Scrubbing</span>
+                        <span className="text-sm text-opd-text-muted mt-0.5 block">+18% with AI Scrubbing</span>
                     </div>
                     <TrendingUp className="w-8 h-8 text-emerald-600/20" />
                 </div>
@@ -80,9 +80,9 @@ export const WorkflowOrchestrator: React.FC = () => {
                 {/* Metric 2 */}
                 <div className="bg-white border border-opd-border rounded-3xl p-5 flex items-center justify-between shadow-sm">
                     <div>
-                        <span className="text-[10px] text-opd-text-secondary font-bold uppercase tracking-wider block">Average Settlement TAT</span>
+                        <span className="text-sm text-opd-text-secondary font-bold uppercase tracking-wider block">Average Settlement TAT</span>
                         <span className="text-2xl font-black text-opd-primary mt-1 block">38 min</span>
-                        <span className="text-[10px] text-opd-text-muted mt-0.5 block">IRDAI limit: 60 min</span>
+                        <span className="text-sm text-opd-text-muted mt-0.5 block">IRDAI limit: 60 min</span>
                     </div>
                     <Clock className="w-8 h-8 text-opd-primary/20" />
                 </div>
@@ -90,9 +90,9 @@ export const WorkflowOrchestrator: React.FC = () => {
                 {/* Metric 3 */}
                 <div className="bg-white border border-opd-border rounded-3xl p-5 flex items-center justify-between shadow-sm">
                     <div>
-                        <span className="text-[10px] text-opd-text-secondary font-bold uppercase tracking-wider block">Denial Revenue Recovered</span>
+                        <span className="text-sm text-opd-text-secondary font-bold uppercase tracking-wider block">Denial Revenue Recovered</span>
                         <span className="text-2xl font-black text-purple-700 mt-1 block">₹4.8 Lakhs</span>
-                        <span className="text-[10px] text-opd-text-muted mt-0.5 block">82% appeal success rate</span>
+                        <span className="text-sm text-opd-text-muted mt-0.5 block">82% appeal success rate</span>
                     </div>
                     <FileCheck2 className="w-8 h-8 text-purple-600/20" />
                 </div>
@@ -100,9 +100,9 @@ export const WorkflowOrchestrator: React.FC = () => {
                 {/* Metric 4 */}
                 <div className="bg-white border border-opd-border rounded-3xl p-5 flex items-center justify-between shadow-sm">
                     <div>
-                        <span className="text-[10px] text-opd-text-secondary font-bold uppercase tracking-wider block">Anomaly/Fraud Blocked</span>
+                        <span className="text-sm text-opd-text-secondary font-bold uppercase tracking-wider block">Anomaly/Fraud Blocked</span>
                         <span className="text-2xl font-black text-red-700 mt-1 block">12 claims</span>
-                        <span className="text-[10px] text-opd-text-muted mt-0.5 block">Prevented upcoding penalties</span>
+                        <span className="text-sm text-opd-text-muted mt-0.5 block">Prevented upcoding penalties</span>
                     </div>
                     <ShieldAlert className="w-8 h-8 text-red-600/20" />
                 </div>
@@ -110,17 +110,17 @@ export const WorkflowOrchestrator: React.FC = () => {
                 {/* Metric 5: SLA Targets & Latency Trends */}
                 <div className="bg-white border border-opd-border rounded-3xl p-5 shadow-sm md:col-span-4 space-y-3">
                     <div className="flex justify-between items-center border-b border-opd-border pb-2">
-                        <span className="text-xs font-bold text-opd-primary uppercase tracking-wider font-lora flex items-center gap-1.5">
+                        <span className="text-sm font-bold text-opd-primary uppercase tracking-wider font-lora flex items-center gap-1.5">
                             <Clock className="w-4 h-4" /> E2E System Latency & SLA Performance Dashboard
                         </span>
-                        <span className="text-[10px] text-opd-text-muted">Target SLA: 100% compliance</span>
+                        <span className="text-sm text-opd-text-muted">Target SLA: 100% compliance</span>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div>
                             <span className="text-opd-text-secondary block font-semibold mb-1">Stage Latency Trends</span>
                             <div className="space-y-1.5">
                                 <div>
-                                    <div className="flex justify-between text-[10px] text-opd-text-muted mb-0.5">
+                                    <div className="flex justify-between text-sm text-opd-text-muted mb-0.5">
                                         <span>Extraction (Target: 15s)</span>
                                         <span className="font-semibold text-opd-primary">P95: 11.2s | P99: 14.8s</span>
                                     </div>
@@ -129,7 +129,7 @@ export const WorkflowOrchestrator: React.FC = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="flex justify-between text-[10px] text-opd-text-muted mb-0.5">
+                                    <div className="flex justify-between text-sm text-opd-text-muted mb-0.5">
                                         <span>Evidence Review (Target: 30s)</span>
                                         <span className="font-semibold text-opd-primary">P95: 22.4s | P99: 28.1s</span>
                                     </div>
@@ -138,7 +138,7 @@ export const WorkflowOrchestrator: React.FC = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="flex justify-between text-[10px] text-opd-text-muted mb-0.5">
+                                    <div className="flex justify-between text-sm text-opd-text-muted mb-0.5">
                                         <span>Billing Coder (Target: 5s)</span>
                                         <span className="font-semibold text-opd-primary">P95: 3.8s | P99: 4.9s</span>
                                     </div>
@@ -151,7 +151,7 @@ export const WorkflowOrchestrator: React.FC = () => {
 
                         <div className="border-l border-opd-border pl-4 space-y-2">
                             <span className="text-opd-text-secondary block font-semibold">Active Run SLA Audit</span>
-                            <div className="grid grid-cols-2 gap-2 text-[10px]">
+                            <div className="grid grid-cols-2 gap-2 text-sm">
                                 <div className="bg-opd-input-bg p-2 rounded-xl border border-opd-border">
                                     <span className="block text-opd-text-secondary">E2E Elapsed</span>
                                     <span className="font-mono font-bold text-sm text-opd-text-primary">24.5s</span>
@@ -165,7 +165,7 @@ export const WorkflowOrchestrator: React.FC = () => {
 
                         <div className="border-l border-opd-border pl-4 space-y-2">
                             <span className="text-opd-text-secondary block font-semibold">CI Quality Gate Criteria</span>
-                            <ul className="text-[10px] space-y-1 text-opd-text-secondary list-disc pl-4">
+                            <ul className="text-sm space-y-1 text-opd-text-secondary list-disc pl-4">
                                 <li>Accuracy (Success Rate): <span className="text-emerald-700 font-bold">94.8%</span> / 90.0% min</li>
                                 <li>Average Latency: <span className="text-emerald-700 font-bold">12.4s</span> / 15.0s max</li>
                                 <li>Critical SLA Breaches: <span className="text-emerald-700 font-bold">0</span> / 0 allowed</li>
@@ -182,7 +182,7 @@ export const WorkflowOrchestrator: React.FC = () => {
                     <h3 className="text-sm font-bold text-opd-primary tracking-wide uppercase font-lora">Patient Claims Journey Simulator</h3>
                     <button
                         onClick={resetSimulation}
-                        className="text-[10px] text-opd-text-secondary hover:text-opd-primary transition uppercase font-semibold border border-opd-border px-2.5 py-1 rounded-xl hover:bg-gray-50"
+                        className="text-sm text-opd-text-secondary hover:text-opd-primary transition uppercase font-semibold border border-opd-border px-2.5 py-1 rounded-xl hover:bg-gray-50"
                         type="button"
                     >
                         Reset Simulator
@@ -200,8 +200,8 @@ export const WorkflowOrchestrator: React.FC = () => {
                         }`}
                     >
                         <span className="text-[9px] text-opd-primary font-black uppercase tracking-widest">Step 1</span>
-                        <span className="text-xs font-bold text-opd-text-primary block mt-1">Pre-Visit Eligibility</span>
-                        <span className="text-[10px] text-opd-text-secondary truncate mt-1">Status: Active</span>
+                        <span className="text-sm font-bold text-opd-text-primary block mt-1">Pre-Visit Eligibility</span>
+                        <span className="text-sm text-opd-text-secondary truncate mt-1">Status: Active</span>
                     </div>
 
                     {/* Step 2 */}
@@ -212,8 +212,8 @@ export const WorkflowOrchestrator: React.FC = () => {
                         }`}
                     >
                         <span className="text-[9px] text-opd-primary font-black uppercase tracking-widest">Step 2</span>
-                        <span className="text-xs font-bold text-opd-text-primary block mt-1">Pre-Auth (Fairway)</span>
-                        <span className="text-[10px] text-opd-text-secondary truncate mt-1">{currentStep >= 2 ? 'Authorized' : 'Pending'}</span>
+                        <span className="text-sm font-bold text-opd-text-primary block mt-1">Pre-Auth (Fairway)</span>
+                        <span className="text-sm text-opd-text-secondary truncate mt-1">{currentStep >= 2 ? 'Authorized' : 'Pending'}</span>
                     </div>
 
                     {/* Step 3 */}
@@ -224,8 +224,8 @@ export const WorkflowOrchestrator: React.FC = () => {
                         }`}
                     >
                         <span className="text-[9px] text-opd-primary font-black uppercase tracking-widest">Step 3</span>
-                        <span className="text-xs font-bold text-opd-text-primary block mt-1">Coding (Taiga)</span>
-                        <span className="text-[10px] text-opd-text-secondary truncate mt-1">{currentStep >= 3 ? 'Scrubbed Clean' : 'Pending'}</span>
+                        <span className="text-sm font-bold text-opd-text-primary block mt-1">Coding (Taiga)</span>
+                        <span className="text-sm text-opd-text-secondary truncate mt-1">{currentStep >= 3 ? 'Scrubbed Clean' : 'Pending'}</span>
                     </div>
 
                     {/* Step 4 */}
@@ -236,8 +236,8 @@ export const WorkflowOrchestrator: React.FC = () => {
                         }`}
                     >
                         <span className="text-[9px] text-opd-primary font-black uppercase tracking-widest">Step 4</span>
-                        <span className="text-xs font-bold text-opd-text-primary block mt-1">TPA Settlement</span>
-                        <span className="text-[10px] text-opd-text-secondary truncate mt-1">{currentStep >= 4 ? 'Settled with Cuts' : 'Pending'}</span>
+                        <span className="text-sm font-bold text-opd-text-primary block mt-1">TPA Settlement</span>
+                        <span className="text-sm text-opd-text-secondary truncate mt-1">{currentStep >= 4 ? 'Settled with Cuts' : 'Pending'}</span>
                     </div>
 
                     {/* Step 5 */}
@@ -248,8 +248,8 @@ export const WorkflowOrchestrator: React.FC = () => {
                         }`}
                     >
                         <span className="text-[9px] text-opd-primary font-black uppercase tracking-widest">Step 5</span>
-                        <span className="text-xs font-bold text-opd-text-primary block mt-1">Appeals (Aegis)</span>
-                        <span className="text-[10px] text-opd-text-secondary truncate mt-1">{currentStep >= 5 ? 'Appeal Sent' : 'Pending'}</span>
+                        <span className="text-sm font-bold text-opd-text-primary block mt-1">Appeals (Aegis)</span>
+                        <span className="text-sm text-opd-text-secondary truncate mt-1">{currentStep >= 5 ? 'Appeal Sent' : 'Pending'}</span>
                     </div>
 
                 </div>
@@ -259,8 +259,8 @@ export const WorkflowOrchestrator: React.FC = () => {
                     
                     {/* Live simulator log console */}
                     <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 space-y-2 text-left shadow-sm">
-                        <h4 className="text-[10px] font-bold text-opd-primary uppercase tracking-wider font-lora">Live System Logs</h4>
-                        <div className="space-y-1.5 max-h-48 overflow-y-auto custom-scrollbar font-mono text-[10px] leading-relaxed text-opd-text-secondary">
+                        <h4 className="text-sm font-bold text-opd-primary uppercase tracking-wider font-lora">Live System Logs</h4>
+                        <div className="space-y-1.5 max-h-48 overflow-y-auto custom-scrollbar font-mono text-sm leading-relaxed text-opd-text-secondary">
                             {simulationLog.map((log, index) => (
                                 <div key={index} className="flex gap-2">
                                     <span className="text-opd-primary font-bold">»</span>
@@ -271,8 +271,8 @@ export const WorkflowOrchestrator: React.FC = () => {
                     </div>
 
                     {/* Active Step Details */}
-                    <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 text-xs space-y-3 shadow-sm text-left">
-                        <h4 className="text-[10px] font-bold text-opd-primary uppercase tracking-wider border-b border-opd-border pb-2 font-lora">Journey Details</h4>
+                    <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 text-sm space-y-3 shadow-sm text-left">
+                        <h4 className="text-sm font-bold text-opd-primary uppercase tracking-wider border-b border-opd-border pb-2 font-lora">Journey Details</h4>
                         
                         {currentStep === 1 && (
                             <div className="space-y-2">
@@ -290,7 +290,7 @@ export const WorkflowOrchestrator: React.FC = () => {
                                 </div>
                                 <button
                                     onClick={() => advanceSimulation(2)}
-                                    className="w-full btn-primary mt-2 py-2 bg-opd-primary text-white font-bold text-[10px] rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5"
+                                    className="w-full btn-primary mt-2 py-2 bg-opd-primary text-white font-bold text-sm rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5"
                                     type="button"
                                 >
                                     <span>Advance to Admission & Pre-Auth</span> <ArrowRight className="w-3 h-3" />
@@ -314,7 +314,7 @@ export const WorkflowOrchestrator: React.FC = () => {
                                 </div>
                                 <button
                                     onClick={() => advanceSimulation(3)}
-                                    className="w-full btn-primary mt-2 py-2 bg-opd-primary text-white font-bold text-[10px] rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5"
+                                    className="w-full btn-primary mt-2 py-2 bg-opd-primary text-white font-bold text-sm rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5"
                                     type="button"
                                 >
                                     <span>Advance to Discharge Coding</span> <ArrowRight className="w-3 h-3" />
@@ -334,7 +334,7 @@ export const WorkflowOrchestrator: React.FC = () => {
                                 </div>
                                 <button
                                     onClick={() => advanceSimulation(4)}
-                                    className="w-full btn-primary mt-2 py-2 bg-opd-primary text-white font-bold text-[10px] rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5"
+                                    className="w-full btn-primary mt-2 py-2 bg-opd-primary text-white font-bold text-sm rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5"
                                     type="button"
                                 >
                                     <span>Advance to TPA Cashless Settlement</span> <ArrowRight className="w-3 h-3" />
@@ -354,7 +354,7 @@ export const WorkflowOrchestrator: React.FC = () => {
                                 </div>
                                 <button
                                     onClick={() => advanceSimulation(5)}
-                                    className="w-full btn-primary mt-2 py-2 bg-opd-primary text-white font-bold text-[10px] rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5"
+                                    className="w-full btn-primary mt-2 py-2 bg-opd-primary text-white font-bold text-sm rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5"
                                     type="button"
                                 >
                                     <span>Advance to Grievance Appeal</span> <ArrowRight className="w-3 h-3" />
@@ -372,7 +372,7 @@ export const WorkflowOrchestrator: React.FC = () => {
                                     <span className="text-opd-text-secondary">Aegis Status:</span>
                                     <span className="text-opd-primary font-semibold">{patientJourney.appealStatus}</span>
                                 </div>
-                                <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-xl text-[11px] leading-relaxed font-semibold">
+                                <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-xl text-sm leading-relaxed font-semibold">
                                     ✓ Simulated TPA Portal has accepted the appeal package and scheduled review under IRDAI section-45.
                                 </div>
                             </div>
@@ -389,12 +389,12 @@ export const WorkflowOrchestrator: React.FC = () => {
                 
                 {/* Simulated Payer Portal */}
                 <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-4 shadow-sm">
-                    <h3 className="text-xs font-bold text-opd-primary tracking-wide uppercase border-b border-opd-border pb-2 flex items-center gap-1.5 font-lora">
+                    <h3 className="text-sm font-bold text-opd-primary tracking-wide uppercase border-b border-opd-border pb-2 flex items-center gap-1.5 font-lora">
                         <Building2 className="w-4 h-4 text-opd-primary" /> TPA Auditor / Payer Review Console
                     </h3>
-                    <p className="text-[11px] text-opd-text-secondary leading-relaxed">This panel simulates what the insurance company's medical officer observes. Aivana pre-emptively answers their queries to prevent claims bouncing.</p>
+                    <p className="text-sm text-opd-text-secondary leading-relaxed">This panel simulates what the insurance company's medical officer observes. Aivana pre-emptively answers their queries to prevent claims bouncing.</p>
                     
-                    <div className="space-y-3 text-xs bg-opd-input-bg p-4 rounded-2xl border border-opd-border shadow-sm">
+                    <div className="space-y-3 text-sm bg-opd-input-bg p-4 rounded-2xl border border-opd-border shadow-sm">
                         <div className="border-b border-opd-border pb-2">
                             <span className="font-bold text-opd-text-primary">Expected TPA Audit Query:</span>
                             <p className="text-opd-text-secondary mt-1 italic">"Please clarify history of diabetes and provide first consult prescription to rule out PED clause exclusions."</p>
@@ -408,25 +408,25 @@ export const WorkflowOrchestrator: React.FC = () => {
 
                 {/* Fraud & Anomaly Detections */}
                 <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-4 shadow-sm">
-                    <h3 className="text-xs font-bold text-opd-primary tracking-wide uppercase border-b border-opd-border pb-2 flex items-center gap-1.5 font-lora">
+                    <h3 className="text-sm font-bold text-opd-primary tracking-wide uppercase border-b border-opd-border pb-2 flex items-center gap-1.5 font-lora">
                         <ShieldAlert className="w-4 h-4 text-red-700" /> Fraud / Anomaly & Compliance Flags
                     </h3>
-                    <p className="text-[11px] text-opd-text-secondary leading-relaxed">Automatic validation layers screening for compliance, over-coding, upcoding, and billing anomalies before submitting to TPAs.</p>
+                    <p className="text-sm text-opd-text-secondary leading-relaxed">Automatic validation layers screening for compliance, over-coding, upcoding, and billing anomalies before submitting to TPAs.</p>
                     
                     <div className="space-y-2">
-                        <div className="flex gap-3 bg-red-50 border border-red-200 p-3.5 rounded-2xl text-xs text-red-800 shadow-sm">
+                        <div className="flex gap-3 bg-red-50 border border-red-200 p-3.5 rounded-2xl text-sm text-red-800 shadow-sm">
                             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                             <div>
                                 <span className="font-bold block">Abnormal Length of Stay (ALOS) Alert</span>
-                                <span className="text-[11px] text-opd-text-secondary mt-0.5 block">Cholecystectomy empanelled package standard is 2 days. The chart requests 4 general ward days. stay extension must be justified in Step 2.</span>
+                                <span className="text-sm text-opd-text-secondary mt-0.5 block">Cholecystectomy empanelled package standard is 2 days. The chart requests 4 general ward days. stay extension must be justified in Step 2.</span>
                             </div>
                         </div>
 
-                        <div className="flex gap-3 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-800 shadow-sm">
+                        <div className="flex gap-3 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-sm text-amber-800 shadow-sm">
                             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                             <div>
                                 <span className="font-bold block">Upcoding Risk Indicator</span>
-                                <span className="text-[11px] text-opd-text-secondary mt-0.5 block">CPT procedure codes list major laparoscopic intervention, but ward monitoring charts show only mild conservative treatment records. Checked for synchronization.</span>
+                                <span className="text-sm text-opd-text-secondary mt-0.5 block">CPT procedure codes list major laparoscopic intervention, but ward monitoring charts show only mild conservative treatment records. Checked for synchronization.</span>
                             </div>
                         </div>
                     </div>

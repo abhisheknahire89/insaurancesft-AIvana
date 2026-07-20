@@ -357,7 +357,7 @@ export const InsurancePreAuthModal: React.FC<InsurancePreAuthModalProps> = ({
                     ].map((step) => (
                         <div
                             key={step.num}
-                            className={`flex-1 py-3 px-2 md:px-4 text-center text-xs md:text-sm font-medium border-b-2 transition-colors
+                            className={`flex-1 py-3 px-2 md:px-4 text-center text-sm md:text-sm font-medium border-b-2 transition-colors
                                 ${currentStep === step.num
                                     ? 'border-opd-primary text-opd-primary bg-primary-tint/15'
                                     : currentStep > step.num

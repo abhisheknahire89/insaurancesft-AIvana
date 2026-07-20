@@ -43,11 +43,11 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
             {/* Header Banner */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-opd-border shadow-sm text-left">
                 <div>
-                    <div className="inline-flex items-center gap-2 bg-purple-50 border border-purple-200 text-purple-700 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
+                    <div className="inline-flex items-center gap-2 bg-purple-50 border border-purple-200 text-purple-700 text-sm font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
                         <Sparkles className="w-3.5 h-3.5" /> Taiga Style Billing Coder
                     </div>
                     <h2 className="text-xl font-bold tracking-tight text-opd-text-primary font-lora">AI-Powered ICD-10/CPT Medical Coding & Scrubbing</h2>
-                    <p className="text-xs text-opd-text-secondary mt-0.5 leading-relaxed">Scrubbing claim documentation against CCI unbundling edits and room rent caps, dynamically formulating approved cashless ledgers.</p>
+                    <p className="text-sm text-opd-text-secondary mt-0.5 leading-relaxed">Scrubbing claim documentation against CCI unbundling edits and room rent caps, dynamically formulating approved cashless ledgers.</p>
                 </div>
             </div>
 
@@ -61,7 +61,7 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                             <h3 className="text-sm font-bold text-opd-primary font-lora tracking-wide uppercase">Discharge Notes & Consumables Checklist</h3>
                             <button
                                 onClick={() => setClinicalNote('')}
-                                className="text-[10px] text-opd-text-secondary hover:text-opd-primary transition uppercase font-semibold"
+                                className="text-sm text-opd-text-secondary hover:text-opd-primary transition uppercase font-semibold"
                                 type="button"
                             >
                                 Clear Notes
@@ -72,22 +72,22 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                             value={clinicalNote}
                             onChange={(e) => setClinicalNote(e.target.value)}
                             rows={10}
-                            className="form-input font-mono text-xs text-opd-text-primary"
+                            className="form-input font-mono text-sm text-opd-text-primary"
                         />
 
                         {/* Financial and Policy Parameters */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs border-t border-opd-border pt-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm border-t border-opd-border pt-4">
                             <div>
-                                <label className="text-[10px] text-opd-text-secondary font-bold mb-1 block">Insurer Name</label>
-                                <input type="text" value={insurerName} onChange={(e) => setInsurerName(e.target.value)} className="w-full p-2.5 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
+                                <label className="text-sm text-opd-text-secondary font-bold mb-1 block">Insurer Name</label>
+                                <input type="text" value={insurerName} onChange={(e) => setInsurerName(e.target.value)} className="w-full p-2.5 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                             </div>
                             <div>
-                                <label className="text-[10px] text-opd-text-secondary font-bold mb-1 block">Sum Insured (₹)</label>
-                                <input type="number" value={sumInsured} onChange={(e) => setSumInsured(Number(e.target.value))} className="w-full p-2.5 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
+                                <label className="text-sm text-opd-text-secondary font-bold mb-1 block">Sum Insured (₹)</label>
+                                <input type="number" value={sumInsured} onChange={(e) => setSumInsured(Number(e.target.value))} className="w-full p-2.5 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                             </div>
                             <div>
-                                <label className="text-[10px] text-opd-text-secondary font-bold mb-1 block">Ward Capping Class</label>
-                                <select value={wardType} onChange={(e) => setWardType(e.target.value as any)} className="w-full p-2.5 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
+                                <label className="text-sm text-opd-text-secondary font-bold mb-1 block">Ward Capping Class</label>
+                                <select value={wardType} onChange={(e) => setWardType(e.target.value as any)} className="w-full p-2.5 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
                                     <option value="General">General (1% limit)</option>
                                     <option value="Semi-Private">Semi-Private</option>
                                     <option value="Private">Private</option>
@@ -95,8 +95,8 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                                 </select>
                             </div>
                             <div>
-                                <label className="text-[10px] text-opd-text-secondary font-bold mb-1 block">Invoice Bill Total (₹)</label>
-                                <input type="number" value={requestedAmount} onChange={(e) => setRequestedAmount(Number(e.target.value))} className="w-full p-2.5 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-purple-700 font-bold focus:outline-none focus:border-opd-primary transition" />
+                                <label className="text-sm text-opd-text-secondary font-bold mb-1 block">Invoice Bill Total (₹)</label>
+                                <input type="number" value={requestedAmount} onChange={(e) => setRequestedAmount(Number(e.target.value))} className="w-full p-2.5 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-purple-700 font-bold focus:outline-none focus:border-opd-primary transition" />
                             </div>
                         </div>
 
@@ -127,7 +127,7 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                             {/* Header Status */}
                             <div className="flex items-center justify-between border-b border-opd-border pb-4">
                                 <h3 className="text-sm font-bold text-opd-text-primary font-lora tracking-wide uppercase">Claim Scrubbing Report</h3>
-                                <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-xl tracking-wider border ${
+                                <span className={`text-sm font-black uppercase px-2.5 py-1 rounded-xl tracking-wider border ${
                                     result.scrubbingStatus === 'Clean' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                                     result.scrubbingStatus === 'Failed' ? 'bg-red-50 text-red-755 border-red-200' :
                                     'bg-amber-50 text-amber-700 border-amber-200'
@@ -140,7 +140,7 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                                 <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center space-y-4 shadow-sm">
                                     <AlertTriangle className="w-12 h-12 text-red-750 mx-auto" />
                                     <h4 className="text-base font-bold text-red-800">Manual Intervention Required</h4>
-                                    <p className="text-xs text-opd-text-secondary leading-relaxed">
+                                    <p className="text-sm text-opd-text-secondary leading-relaxed">
                                         Automated extraction, coding, and scrubbing could not be completed safely. No automated clinical or billing suggestions are available. Please perform manual coding and TPA auditing.
                                     </p>
                                 </div>
@@ -148,10 +148,10 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                                 <>
                                     {/* Coded Diagnoses (ICD-10) */}
                                     <div className="space-y-3">
-                                        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                        <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
                                             <FileText className="w-3.5 h-3.5 text-purple-700" /> Coded ICD-10 Diagnoses
                                         </h4>
-                                        <div className="space-y-2 bg-opd-input-bg p-4 rounded-2xl border border-opd-border text-xs shadow-sm">
+                                        <div className="space-y-2 bg-opd-input-bg p-4 rounded-2xl border border-opd-border text-sm shadow-sm">
                                             <div className="flex justify-between items-start gap-3 text-left">
                                                 <span className="font-mono font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">{result.primaryICD10}</span>
                                                 <div className="text-right">
@@ -163,7 +163,7 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                                                 <div className="border-t border-opd-border pt-2.5 mt-2.5 space-y-2">
                                                     <span className="text-[9px] text-opd-text-secondary font-bold block uppercase tracking-wider">Secondary / Comorbidities</span>
                                                     {result.secondaryICD10.map((sec, idx) => (
-                                                        <div key={idx} className="flex justify-between items-center text-[11px] text-left">
+                                                        <div key={idx} className="flex justify-between items-center text-sm text-left">
                                                             <span className="font-mono text-opd-text-secondary bg-white px-1.5 py-0.5 rounded border border-opd-border shadow-sm">{sec.code}</span>
                                                             <span className="text-opd-text-primary ml-2">{sec.description}</span>
                                                         </div>
@@ -175,15 +175,15 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
 
                                     {/* Suggested Procedures (CPT) */}
                                     <div className="space-y-3">
-                                        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                        <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
                                             <Layers className="w-3.5 h-3.5 text-indigo-700" /> Coded CPT Procedures & Rates
                                         </h4>
-                                        <div className="space-y-2 bg-opd-input-bg p-4 rounded-2xl border border-opd-border text-xs shadow-sm">
+                                        <div className="space-y-2 bg-opd-input-bg p-4 rounded-2xl border border-opd-border text-sm shadow-sm">
                                             {result.suggestedCPT.map((cpt, idx) => (
                                                 <div key={idx} className="flex justify-between items-center py-1.5 border-b border-opd-border last:border-b-0 last:pb-0 first:pt-0">
                                                     <div className="text-left flex items-center">
-                                                        <span className="font-mono text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px] font-bold mr-2">{cpt.code}</span>
-                                                        <span className="text-opd-text-primary text-[11px]">{cpt.description}</span>
+                                                        <span className="font-mono text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-sm font-bold mr-2">{cpt.code}</span>
+                                                        <span className="text-opd-text-primary text-sm">{cpt.description}</span>
                                                     </div>
                                                     <span className="font-mono text-opd-text-primary font-bold">₹{cpt.estimatedRate.toLocaleString('en-IN')}</span>
                                                 </div>
@@ -193,18 +193,18 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
 
                                     {/* Claim Scrubbing Warnings */}
                                     <div className="space-y-3">
-                                        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                        <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
                                             <AlertTriangle className="w-3.5 h-3.5 text-amber-600" /> CCI Edits & Validation Warnings
                                         </h4>
                                         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-2 shadow-sm">
                                             {result.validationWarnings.length > 0 ? (
-                                                <ul className="list-disc pl-4 space-y-1.5 text-xs text-amber-800 font-medium text-left">
+                                                <ul className="list-disc pl-4 space-y-1.5 text-sm text-amber-800 font-medium text-left">
                                                     {result.validationWarnings.map((warning, idx) => (
                                                         <li key={idx} className="leading-relaxed">{warning}</li>
                                                     ))}
                                                 </ul>
                                             ) : (
-                                                <div className="flex items-center gap-2 text-emerald-700 text-xs font-bold text-left">
+                                                <div className="flex items-center gap-2 text-emerald-700 text-sm font-bold text-left">
                                                     <CheckCircle className="w-4 h-4" /> Claim is clean. No CCI unbundling or double billing detected.
                                                 </div>
                                             )}
@@ -213,10 +213,10 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
 
                                     {/* Cashless Approval Ledger */}
                                     <div className="space-y-3">
-                                        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                        <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
                                             <CreditCard className="w-3.5 h-3.5 text-emerald-700" /> Final Cashless Billing Ledger
                                         </h4>
-                                        <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 space-y-2.5 text-xs shadow-sm">
+                                        <div className="bg-opd-input-bg border border-opd-border rounded-2xl p-4 space-y-2.5 text-sm shadow-sm">
                                             <div className="flex justify-between items-center text-opd-text-secondary">
                                                 <span>Total Invoiced Bill:</span>
                                                 <span className="font-mono text-opd-text-primary">₹{requestedAmount.toLocaleString('en-IN')}</span>
@@ -243,7 +243,7 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                                             </div>
                                             <div className="flex justify-between items-center font-bold text-opd-text-secondary">
                                                 <span>Patient Co-pay/Share:</span>
-                                                <span className="font-mono text-amber-700 text-xs">₹{result.patientShare.toLocaleString('en-IN')}</span>
+                                                <span className="font-mono text-amber-700 text-sm">₹{result.patientShare.toLocaleString('en-IN')}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -254,7 +254,7 @@ Billing request: Total surgery package, private ward stay (INR 8,000/day for 4 d
                         <div className="bg-white border border-dashed border-opd-border rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px] shadow-sm text-opd-text-primary">
                             <Layers className="w-12 h-12 text-opd-text-muted mb-3" />
                             <h3 className="text-sm font-bold font-lora text-opd-primary">Awaiting Coding Report</h3>
-                            <p className="text-xs text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">Click the button on the left to extract ICD-10 codes, suggest CPT listings, and audit the billing ledger.</p>
+                            <p className="text-sm text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">Click the button on the left to extract ICD-10 codes, suggest CPT listings, and audit the billing ledger.</p>
                         </div>
                     )}
                 </div>

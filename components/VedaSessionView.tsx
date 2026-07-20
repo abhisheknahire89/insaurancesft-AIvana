@@ -72,7 +72,7 @@ const TranscriptBubble: React.FC<{ entry: TranscriptEntry }> = ({ entry }) => (
             ? 'bg-opd-primary/10 border-opd-primary/20 text-opd-text-primary rounded-tr-none'
             : 'bg-white border-opd-border text-opd-text-secondary rounded-tl-none'
             }`}>
-            <div className="text-[10px] font-bold uppercase tracking-wider mb-1 opacity-70">
+            <div className="text-sm font-bold uppercase tracking-wider mb-1 opacity-70">
                 {entry.speaker}
             </div>
             {entry.text}
@@ -90,7 +90,7 @@ const PrescriptionTemplate: React.FC<{ patient: PatientDemographics; clinicalNot
     };
 
     const containerClass = "w-full bg-white text-black p-8 relative shadow-card min-h-[800px] border border-gray-100";
-    // const baseFontSize = isPreview ? 'text-[10px]' : 'text-[12.5px]'; // Removed unused const
+    // const baseFontSize = isPreview ? 'text-sm' : 'text-[12.5px]'; // Removed unused const
 
     return (
         <div className={containerClass}>
@@ -98,42 +98,42 @@ const PrescriptionTemplate: React.FC<{ patient: PatientDemographics; clinicalNot
             <div className="flex justify-between items-start mb-6 border-b-2 border-opd-primary pb-4">
                 <div>
                     <h2 className="text-xl font-bold uppercase text-opd-text-primary">Medical Prescription</h2>
-                    <p className="text-xs text-gray-500 mt-1">Reg No: 12345678</p>
+                    <p className="text-sm text-gray-500 mt-1">Reg No: 12345678</p>
                 </div>
                 <div className="text-right">
                     <h3 className="font-bold text-lg text-opd-primary">OPD PLATFORM CLINIC</h3>
-                    <p className="text-xs text-gray-500">Mumbai, India</p>
-                    <p className="text-xs text-gray-500">{new Date().toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-500">Mumbai, India</p>
+                    <p className="text-sm text-gray-500">{new Date().toLocaleDateString()}</p>
                 </div>
             </div>
 
             {/* Patient Details */}
             <div className="bg-gray-50 p-4 rounded-lg flex justify-between items-center text-sm border border-gray-100 mb-8">
-                <div><span className="font-bold text-gray-500 uppercase text-xs mr-2">Name:</span> {patient.name}</div>
-                <div><span className="font-bold text-gray-500 uppercase text-xs mr-2">Age/Sex:</span> {patient.age} / {patient.sex}</div>
-                <div><span className="font-bold text-gray-500 uppercase text-xs mr-2">ID:</span> #OPD-2026-X</div>
+                <div><span className="font-bold text-gray-500 uppercase text-sm mr-2">Name:</span> {patient.name}</div>
+                <div><span className="font-bold text-gray-500 uppercase text-sm mr-2">Age/Sex:</span> {patient.age} / {patient.sex}</div>
+                <div><span className="font-bold text-gray-500 uppercase text-sm mr-2">ID:</span> #OPD-2026-X</div>
             </div>
 
             {/* Clinical Sections */}
             <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-6">
                     <div className="p-4 border border-gray-200 rounded-xl bg-blue-50/50">
-                        <h4 className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Chief Complaint</h4>
+                        <h4 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-2">Chief Complaint</h4>
                         <p className="text-sm text-gray-700 whitespace-pre-wrap">{getSectionContent('Subjective') || 'None recorded'}</p>
                     </div>
                     <div className="p-4 border border-gray-200 rounded-xl bg-blue-50/50">
-                        <h4 className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Clinical Findings</h4>
+                        <h4 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-2">Clinical Findings</h4>
                         <p className="text-sm text-gray-700 whitespace-pre-wrap">{getSectionContent('Objective') || 'None recorded'}</p>
                     </div>
                 </div>
 
                 <div>
-                    <h4 className="text-xs font-bold text-red-500 uppercase tracking-wider mb-2 bg-red-50 p-2 rounded-md inline-block">Diagnosis</h4>
+                    <h4 className="text-sm font-bold text-red-500 uppercase tracking-wider mb-2 bg-red-50 p-2 rounded-md inline-block">Diagnosis</h4>
                     <p className="text-sm font-medium text-gray-900 border-l-4 border-red-200 pl-4 py-1">{getSectionContent('Assessment') || 'Pending...'}</p>
                 </div>
 
                 <div>
-                    <h4 className="text-xs font-bold text-green-600 uppercase tracking-wider mb-2">Rx / Medicines</h4>
+                    <h4 className="text-sm font-bold text-green-600 uppercase tracking-wider mb-2">Rx / Medicines</h4>
                     <div className="border border-gray-200 rounded-lg overflow-hidden">
                         <table className="w-full text-sm text-left">
                             <thead className="bg-green-50 text-gray-600 font-medium">
@@ -159,7 +159,7 @@ const PrescriptionTemplate: React.FC<{ patient: PatientDemographics; clinicalNot
                             </tbody>
                         </table>
                         {(!getSectionContent('Plan') || !getSectionContent('Plan').includes('|')) && (
-                            <div className="p-8 text-center text-gray-400 text-xs italic">No medicines prescribed yet.</div>
+                            <div className="p-8 text-center text-gray-400 text-sm italic">No medicines prescribed yet.</div>
                         )}
                     </div>
                 </div>
@@ -167,7 +167,7 @@ const PrescriptionTemplate: React.FC<{ patient: PatientDemographics; clinicalNot
                 <div className="mt-8 pt-8 border-t border-dashed border-gray-200 flex justify-end">
                     <div className="text-center">
                         <div className="h-12"></div>
-                        <div className="border-t border-gray-400 w-48 pt-2 text-xs font-bold uppercase text-gray-500">Doctor's Signature</div>
+                        <div className="border-t border-gray-400 w-48 pt-2 text-sm font-bold uppercase text-gray-500">Doctor's Signature</div>
                     </div>
                 </div>
             </div>
@@ -375,14 +375,14 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
                     </div>
 
                     <div className="bg-opd-bg p-4 rounded-xl border border-opd-border">
-                        <div className="text-[10px] font-bold text-opd-text-muted uppercase tracking-wider mb-2">Doctor Profile</div>
+                        <div className="text-sm font-bold text-opd-text-muted uppercase tracking-wider mb-2">Doctor Profile</div>
                         <div className="font-bold text-opd-text-primary text-sm mb-1">Dr. Sharma</div>
-                        <div className="text-xs text-opd-text-secondary">General Medicine</div>
+                        <div className="text-sm text-opd-text-secondary">General Medicine</div>
                     </div>
                 </div>
 
                 <div className="p-6 flex-1">
-                    <div className="mb-2 flex justify-between items-center text-xs font-bold uppercase tracking-wider text-opd-primary">
+                    <div className="mb-2 flex justify-between items-center text-sm font-bold uppercase tracking-wider text-opd-primary">
                         <span>Session Progress</span>
                         <span>{progress}%</span>
                     </div>
@@ -393,7 +393,7 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
                 </div>
 
                 <div className="p-4 bg-gray-50 border-t border-opd-border">
-                    <div className="flex items-center gap-2 text-opd-success text-xs font-bold uppercase tracking-wider">
+                    <div className="flex items-center gap-2 text-opd-success text-sm font-bold uppercase tracking-wider">
                         <Wifi className="w-4 h-4" />
                         <span>System Connected</span>
                     </div>
@@ -404,7 +404,7 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
             <main className="flex-1 flex flex-col relative min-w-0">
                 {/* Header Strip */}
                 <header className="h-16 bg-white border-b border-opd-border flex justify-between items-center px-6 shadow-sm z-10">
-                    <div className="text-xs font-bold uppercase tracking-widest text-opd-text-secondary">
+                    <div className="text-sm font-bold uppercase tracking-widest text-opd-text-secondary">
                         {phase === 'active' ? 'Live Transcript' : 'Review Consultation'}
                     </div>
 
@@ -412,14 +412,14 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
                         {phase === 'active' && (
                             <div className="flex items-center gap-2 bg-red-50 text-red-600 px-3 py-1.5 rounded-full border border-red-100 animate-pulse">
                                 <div className="w-2 h-2 rounded-full bg-red-600"></div>
-                                <span className="text-xs font-bold uppercase tracking-wider">REC</span>
-                                <span className="text-xs font-mono w-12 text-center">{formatTime(duration)}</span>
+                                <span className="text-sm font-bold uppercase tracking-wider">REC</span>
+                                <span className="text-sm font-mono w-12 text-center">{formatTime(duration)}</span>
                             </div>
                         )}
                         {phase === 'active' && (
                             <button
                                 onClick={handleStopSession}
-                                className="bg-opd-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider shadow-lg shadow-red-200 transition-all active:scale-95"
+                                className="bg-opd-accent hover:bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-bold uppercase tracking-wider shadow-lg shadow-red-200 transition-all active:scale-95"
                             >
                                 Stop Session
                             </button>
@@ -429,16 +429,16 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
                                 <button
                                     onClick={handleAdmitPatient}
                                     disabled={isAdmitting}
-                                    className="flex items-center gap-2 px-4 py-2 border-2 border-opd-accent text-opd-accent rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-opd-accent hover:text-white transition-colors"
+                                    className="flex items-center gap-2 px-4 py-2 border-2 border-opd-accent text-opd-accent rounded-lg text-sm font-bold uppercase tracking-wider hover:bg-opd-accent hover:text-white transition-colors"
                                 >
                                     {isAdmitting ? 'Creating...' : <><BedDouble className="w-4 h-4" /> Admit Patient</>}
                                 </button>
-                                <button className="flex items-center gap-2 px-4 py-2 border border-opd-primary text-opd-primary rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-opd-primary/5 transition-colors">
+                                <button className="flex items-center gap-2 px-4 py-2 border border-opd-primary text-opd-primary rounded-lg text-sm font-bold uppercase tracking-wider hover:bg-opd-primary/5 transition-colors">
                                     <Mic className="w-4 h-4" /> Voice Edit
                                 </button>
                                 <button
                                     onClick={() => setShowPdfModal(true)}
-                                    className="flex items-center gap-2 px-4 py-2 bg-opd-primary text-white rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-opd-primary-dark transition-colors shadow-lg shadow-blue-200"
+                                    className="flex items-center gap-2 px-4 py-2 bg-opd-primary text-white rounded-lg text-sm font-bold uppercase tracking-wider hover:bg-opd-primary-dark transition-colors shadow-lg shadow-blue-200"
                                 >
                                     <FileText className="w-4 h-4" /> PDF
                                 </button>
@@ -465,7 +465,7 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
                         });
                         setShowInsuranceModal(true);
                     }}
-                    className="fixed bottom-4 left-4 z-50 bg-red-500 text-white p-2 text-xs opacity-50 hover:opacity-100"
+                    className="fixed bottom-4 left-4 z-50 bg-red-500 text-white p-2 text-sm opacity-50 hover:opacity-100"
                     id="simulate-admit-btn"
                 >
                     Simulate Admission Model
@@ -477,7 +477,7 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
                         <div className="h-48 flex flex-col items-center justify-center border-b border-opd-border bg-white shrink-0">
                             <BreathingWaveform active={true} />
                             <div className="mt-4 text-veda-purple font-bold tracking-widest text-sm animate-pulse">LISTENING...</div>
-                            <div className="text-xs text-gray-400 mt-1">Speak clearly into the microphone</div>
+                            <div className="text-sm text-gray-400 mt-1">Speak clearly into the microphone</div>
                         </div>
                     )}
 
@@ -528,13 +528,13 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
                     // Review Form
                     <div className="flex-1 flex flex-col h-full overflow-hidden">
                         <div className="p-4 bg-gray-50 border-b border-gray-200">
-                            <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div className="grid grid-cols-2 gap-2 text-sm">
                                 <div className="bg-white p-2 rounded border border-gray-100">
-                                    <span className="block text-gray-400 font-bold uppercase text-[10px]">Name</span>
+                                    <span className="block text-gray-400 font-bold uppercase text-sm">Name</span>
                                     {patient.name}
                                 </div>
                                 <div className="bg-white p-2 rounded border border-gray-100">
-                                    <span className="block text-gray-400 font-bold uppercase text-[10px]">Age / Sex</span>
+                                    <span className="block text-gray-400 font-bold uppercase text-sm">Age / Sex</span>
                                     {patient.age} / {patient.sex}
                                 </div>
                             </div>
@@ -544,7 +544,7 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
                             {/* Form Fields matching PDF structure */}
                             <div className="space-y-4">
                                 <div className="p-4 border border-gray-200 rounded-xl bg-white shadow-sm transition-all hover:border-opd-primary/50 group">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block group-focus-within:text-opd-primary">Diagnosis</label>
+                                    <label className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 block group-focus-within:text-opd-primary">Diagnosis</label>
                                     <input
                                         type="text"
                                         className="w-full text-sm font-medium text-gray-900 outline-none placeholder-gray-300"
@@ -554,9 +554,9 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
                                 </div>
 
                                 <div className="p-4 border border-gray-200 rounded-xl bg-white shadow-sm relative">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Full Clinical Note (SOAP)</label>
+                                    <label className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 block">Full Clinical Note (SOAP)</label>
                                     <textarea
-                                        className="w-full text-xs text-gray-700 outline-none resize-none h-48 placeholder-gray-300 border border-gray-50 rounded p-2"
+                                        className="w-full text-sm text-gray-700 outline-none resize-none h-48 placeholder-gray-300 border border-gray-50 rounded p-2"
                                         placeholder="Paste clinical note here for pre-auth extraction..."
                                         value={clinicalNote}
                                         onChange={(e) => setClinicalNote(e.target.value)}
@@ -564,7 +564,7 @@ export const ScribeSessionView: React.FC<ScribeSessionViewProps> = ({ onEndSessi
                                 </div>
 
                                 <div className="p-4 border border-gray-200 rounded-xl bg-white shadow-sm">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Advice</label>
+                                    <label className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 block">Advice</label>
                                     <textarea
                                         className="w-full text-sm text-gray-700 outline-none resize-none h-24 placeholder-gray-300"
                                         placeholder="Instructions for patient..."

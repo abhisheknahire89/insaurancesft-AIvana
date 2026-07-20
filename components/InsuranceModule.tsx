@@ -3,7 +3,7 @@ import { PreAuthWizard } from './PreAuthWizard';
 import { PreAuthDashboard } from './PreAuthDashboard';
 import { getRequiredDocuments } from '../data/icd10DocumentMap';
 import { extractInsurancePreAuthData, extractInsuranceCardData, InsuranceCardExtracted } from '../services/geminiService';
-import { DIABETES_DEMO_RECORD, PNEUMONIA_DEMO_RECORD, APPENDICITIS_DEMO_RECORD } from '../data/demoCases';
+import { DIABETES_DEMO_RECORD, PNEUMONIA_DEMO_RECORD, APPENDICITIS_DEMO_RECORD, DENGUE_APPROVED_RECORD } from '../data/demoCases';
 import { extractFromDocument } from '../services/documentExtractionService';
 import { reviewEnhancement, EnhancementReviewReport, EnhancementInput, EnhancementTrigger } from '../engine/enhancementReview';
 import { priorAuthOrchestrator, ExtendedEvidenceReviewReport } from '../engine/priorAuthWorkflow';
@@ -236,24 +236,24 @@ export const ReimbursementModule: React.FC<{ activeCase?: PatientCaseRecord | nu
     return (
         <div className="card-premium space-y-4 text-left">
             <h2 className="text-base font-bold font-lora text-opd-primary">Final Claim / Reimbursement</h2>
-            <div className="grid grid-cols-2 gap-4 text-xs">
+            <div className="grid grid-cols-2 gap-4 text-sm">
                 <div><label className="block text-gray-500 mb-1 font-semibold">Patient Name</label><input className="w-full p-2 border rounded text-gray-800" value={input.patientName} onChange={e => setInput({ ...input, patientName: e.target.value })} /></div>
                 <div><label className="block text-gray-500 mb-1 font-semibold">ICD-10 Code</label><input className="w-full p-2 border rounded text-gray-800" value={input.finalPrimaryICD10} onChange={e => setInput({ ...input, finalPrimaryICD10: e.target.value })} /></div>
                 <div><label className="block text-gray-500 mb-1 font-semibold">Primary Diagnosis</label><input className="w-full p-2 border rounded text-gray-800" value={input.finalPrimaryDiagnosis} onChange={e => setInput({ ...input, finalPrimaryDiagnosis: e.target.value })} /></div>
                 <div><label className="block text-gray-500 mb-1 font-semibold">Total Claim Amount (₹)</label><input type="number" className="w-full p-2 border rounded text-gray-800" value={input.claimAmountTotal || ''} onChange={e => setInput({ ...input, claimAmountTotal: Number(e.target.value) })} /></div>
             </div>
-            <button onClick={handleGenerate} className="px-4 py-2 bg-opd-primary text-white rounded-lg text-xs font-semibold hover:bg-opd-primary-hover transition">
+            <button onClick={handleGenerate} className="px-4 py-2 bg-opd-primary text-white rounded-lg text-sm font-semibold hover:bg-opd-primary-hover transition">
                 Build Submission Documents
             </button>
 
             {docs.discharge && (
                 <div className="mt-4 border-t border-opd-border pt-4">
                     <div className="flex bg-opd-input-bg border rounded-xl p-1 gap-1">
-                        <button className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition ${activeTab === 'discharge' ? 'bg-opd-primary text-white' : 'text-opd-text-secondary'}`} onClick={() => setActiveTab('discharge')}>Discharge Summary</button>
-                        <button className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition ${activeTab === 'cover' ? 'bg-opd-primary text-white' : 'text-opd-text-secondary'}`} onClick={() => setActiveTab('cover')}>Cover Letter</button>
-                        <button className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition ${activeTab === 'checklist' ? 'bg-opd-primary text-white' : 'text-opd-text-secondary'}`} onClick={() => setActiveTab('checklist')}>Checklist</button>
+                        <button className={`flex-1 py-1.5 rounded-lg text-sm font-bold transition ${activeTab === 'discharge' ? 'bg-opd-primary text-white' : 'text-opd-text-secondary'}`} onClick={() => setActiveTab('discharge')}>Discharge Summary</button>
+                        <button className={`flex-1 py-1.5 rounded-lg text-sm font-bold transition ${activeTab === 'cover' ? 'bg-opd-primary text-white' : 'text-opd-text-secondary'}`} onClick={() => setActiveTab('cover')}>Cover Letter</button>
+                        <button className={`flex-1 py-1.5 rounded-lg text-sm font-bold transition ${activeTab === 'checklist' ? 'bg-opd-primary text-white' : 'text-opd-text-secondary'}`} onClick={() => setActiveTab('checklist')}>Checklist</button>
                     </div>
-                    <pre className="mt-3 p-4 bg-gray-50 border rounded-xl max-h-60 overflow-y-auto text-[11px] font-mono text-opd-text-secondary leading-relaxed">{docs[activeTab]}</pre>
+                    <pre className="mt-3 p-4 bg-gray-50 border rounded-xl max-h-60 overflow-y-auto text-sm font-mono text-opd-text-secondary leading-relaxed">{docs[activeTab]}</pre>
                 </div>
             )}
         </div>
@@ -442,7 +442,7 @@ const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = (
     return (
         <div className="card-premium space-y-6 text-left">
             <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 3: Document Upload &amp; OCR Extraction</h2>
-            <p className="text-xs text-opd-text-secondary">
+            <p className="text-sm text-opd-text-secondary">
                 Upload patient files for real-time AI extraction. Patient profile and insurance fields are populated automatically.
             </p>
 
@@ -452,18 +452,18 @@ const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = (
                 <span className="text-sm font-semibold text-opd-primary">
                     {uploading ? `Extracting ${currentFile}…` : 'Choose files, folder, or drop ZIP here'}
                 </span>
-                <span className="text-xs text-opd-text-muted mt-1">Batch uploader — real OCR runs on every file (max 500MB)</span>
+                <span className="text-sm text-opd-text-muted mt-1">Batch uploader — real OCR runs on every file (max 500MB)</span>
             </div>
 
             {errorMessage && (
-                <div className="p-3 bg-red-50 text-red-800 rounded-xl text-xs font-semibold leading-relaxed border border-red-100 shadow-sm">
+                <div className="p-3 bg-red-50 text-red-800 rounded-xl text-sm font-semibold leading-relaxed border border-red-100 shadow-sm">
                     {errorMessage}
                 </div>
             )}
 
             {/* Real-time extraction log */}
             {extractionLog.length > 0 && (
-                <div className="bg-gray-900 text-green-400 font-mono text-[10px] rounded-xl p-4 space-y-0.5 max-h-48 overflow-y-auto">
+                <div className="bg-gray-900 text-green-400 font-mono text-sm rounded-xl p-4 space-y-0.5 max-h-48 overflow-y-auto">
                     {extractionLog.map((line, i) => (
                         <div key={i}>{line}</div>
                     ))}
@@ -471,7 +471,7 @@ const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = (
                 </div>
             )}
 
-            <div className="p-3 bg-blue-50/50 border border-blue-500/10 rounded-xl text-[11px] text-blue-900 leading-normal flex items-start gap-2">
+            <div className="p-3 bg-blue-50/50 border border-blue-500/10 rounded-xl text-sm text-blue-900 leading-normal flex items-start gap-2">
                 <Info className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
                 <span>
                     <strong>Live OCR Pipeline:</strong> Each file is sent to Gemini Vision for extraction. Patient name, gender, age, insurer,
@@ -482,7 +482,7 @@ const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = (
 
             {/* Progress bar */}
             {progress !== 'idle' && (
-                <div className="bg-opd-input-bg p-4 rounded-xl space-y-3 text-xs">
+                <div className="bg-opd-input-bg p-4 rounded-xl space-y-3 text-sm">
                     <div className="flex justify-between font-bold text-opd-primary">
                         <span>Pipeline: {fileCount} file(s) ({totalSizeDisplay})</span>
                         <span className="capitalize text-blue-700 animate-pulse">
@@ -500,19 +500,23 @@ const UploadIngestionView: React.FC<{ onCaseCreated: (id: string) => void }> = (
             )}
 
             <div className="border-t border-opd-border pt-4 space-y-3">
-                <h3 className="text-xs font-bold text-opd-primary uppercase tracking-wider">Fast Track: Load Pre-Seeded Cases</h3>
-                <div className="grid grid-cols-3 gap-3">
-                    <button onClick={() => loadScenario(DIABETES_DEMO_RECORD)} className="p-3 border rounded-xl hover:border-opd-primary text-xs font-semibold bg-white text-left transition hover:scale-[1.01]">
-                        <span className="block text-red-600 font-bold text-[10px] uppercase">Diabetes Profile</span>
+                <h3 className="text-sm font-bold text-opd-primary uppercase tracking-wider">Fast Track: Load Pre-Seeded Cases</h3>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <button onClick={() => loadScenario(DIABETES_DEMO_RECORD)} className="p-3 border rounded-xl hover:border-opd-primary text-sm font-semibold bg-white text-left transition hover:scale-[1.01]">
+                        <span className="block text-red-600 font-bold text-sm uppercase">Diabetes Profile</span>
                         Type 2 Diabetes Mellitus
                     </button>
-                    <button onClick={() => loadScenario(PNEUMONIA_DEMO_RECORD)} className="p-3 border rounded-xl hover:border-opd-primary text-xs font-semibold bg-white text-left transition hover:scale-[1.01]">
-                        <span className="block text-amber-600 font-bold text-[10px] uppercase">Pneumonia Profile</span>
+                    <button onClick={() => loadScenario(PNEUMONIA_DEMO_RECORD)} className="p-3 border rounded-xl hover:border-opd-primary text-sm font-semibold bg-white text-left transition hover:scale-[1.01]">
+                        <span className="block text-amber-600 font-bold text-sm uppercase">Pneumonia Profile</span>
                         Community-Acquired Pneumonia
                     </button>
-                    <button onClick={() => loadScenario(APPENDICITIS_DEMO_RECORD)} className="p-3 border rounded-xl hover:border-opd-primary text-xs font-semibold bg-white text-left transition hover:scale-[1.01]">
-                        <span className="block text-emerald-600 font-bold text-[10px] uppercase">Appendicitis Profile</span>
+                    <button onClick={() => loadScenario(APPENDICITIS_DEMO_RECORD)} className="p-3 border rounded-xl hover:border-opd-primary text-sm font-semibold bg-white text-left transition hover:scale-[1.01]">
+                        <span className="block text-emerald-600 font-bold text-sm uppercase">Appendicitis Profile</span>
                         Acute Appendicitis (Clean)
+                    </button>
+                    <button onClick={() => loadScenario(DENGUE_APPROVED_RECORD)} className="p-3 border rounded-xl hover:border-opd-primary text-sm font-semibold bg-white text-left transition hover:scale-[1.01]">
+                        <span className="block text-blue-600 font-bold text-sm uppercase">Dengue (Approved)</span>
+                        Ready for Enhancement Demo
                     </button>
                 </div>
             </div>
@@ -736,7 +740,7 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
         c.id.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const inputCls = "w-full border border-opd-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-opd-primary";
+    const inputCls = "w-full border border-opd-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-opd-primary";
 
     return (
         <div className="space-y-5">
@@ -746,11 +750,11 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                 <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 1: Patient QR Intake Workflow</h2>
-                        <p className="text-xs text-opd-text-secondary">Generate a unique QR per session. Patient scans → self-registers → case auto-created in TPA system.</p>
+                        <p className="text-sm text-opd-text-secondary">Generate a unique QR per session. Patient scans → self-registers → case auto-created in TPA system.</p>
                     </div>
                     <button
                         onClick={() => { setShowRegModal(true); setSuccessId(''); }}
-                        className="btn-primary text-xs flex items-center gap-1.5"
+                        className="btn-primary text-sm flex items-center gap-1.5"
                     >
                         <QrCode className="w-3.5 h-3.5" /> Simulate Patient Scan
                     </button>
@@ -760,11 +764,11 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                 <div className="mt-4 flex items-center gap-0">
                     {INTAKE_STAGES.map((s, i) => (
                         <React.Fragment key={s}>
-                            <div className={`flex flex-col items-center text-center flex-1 gap-1 py-2 px-1 rounded-lg text-[10px] font-bold ${
+                            <div className={`flex flex-col items-center text-center flex-1 gap-1 py-2 px-1 rounded-lg text-sm font-bold ${
                                 i === 0 ? 'bg-blue-50 text-blue-700' :
                                 i === 4 ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-50 text-gray-500'
                             }`}>
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black ${
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-black ${
                                     i === 4 ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-600'
                                 }`}>{i + 1}</div>
                                 {s}
@@ -778,7 +782,7 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
             {/* ── QR Panel ── */}
             <div className="grid grid-cols-3 gap-5">
                 <div className="card-premium col-span-1 flex flex-col items-center gap-4">
-                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider">Session QR Code</div>
+                    <div className="text-sm font-bold text-opd-primary uppercase tracking-wider">Session QR Code</div>
                     <div className="p-3 bg-white border-2 border-opd-primary/20 rounded-2xl shadow-sm">
                         <img
                             src={qrImageUrl}
@@ -788,14 +792,14 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                         />
                     </div>
                     <div className="flex flex-col items-center gap-1 w-full">
-                        <span className="text-[10px] font-mono text-gray-500 bg-gray-50 px-3 py-1 rounded-lg border">
+                        <span className="text-sm font-mono text-gray-500 bg-gray-50 px-3 py-1 rounded-lg border">
                             Session: {sessionToken}
                         </span>
                         <div className="flex gap-2 w-full">
-                            <button onClick={downloadQR} className="flex-1 px-2 py-1.5 text-[10px] font-bold border border-opd-border rounded-lg hover:border-opd-primary transition flex items-center justify-center gap-1">
+                            <button onClick={downloadQR} className="flex-1 px-2 py-1.5 text-sm font-bold border border-opd-border rounded-lg hover:border-opd-primary transition flex items-center justify-center gap-1">
                                 <Download className="w-3 h-3" /> Download
                             </button>
-                            <button onClick={copyLink} className={`flex-1 px-2 py-1.5 text-[10px] font-bold rounded-lg transition flex items-center justify-center gap-1 ${
+                            <button onClick={copyLink} className={`flex-1 px-2 py-1.5 text-sm font-bold rounded-lg transition flex items-center justify-center gap-1 ${
                                 copiedLink ? 'bg-emerald-600 text-white border-0' : 'border border-opd-border hover:border-opd-primary'
                             }`}>
                                 {copiedLink ? '✓ Copied!' : 'Copy Link'}
@@ -805,9 +809,9 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                 </div>
 
                 <div className="card-premium col-span-2 space-y-3">
-                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider">Registration Link</div>
+                    <div className="text-sm font-bold text-opd-primary uppercase tracking-wider">Registration Link</div>
                     <div className="flex gap-2">
-                        <input readOnly className="flex-1 p-2 bg-gray-50 border rounded-lg font-mono text-[11px] text-gray-600" value={registrationLink} />
+                        <input readOnly className="flex-1 p-2 bg-gray-50 border rounded-lg font-mono text-sm text-gray-600" value={registrationLink} />
                     </div>
                     <div className="grid grid-cols-3 gap-3 mt-2">
                         {[
@@ -822,7 +826,7 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                         ))}
                     </div>
 
-                    <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl text-[11px] text-blue-800 leading-relaxed">
+                    <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl text-sm text-blue-800 leading-relaxed">
                         <strong>How it works:</strong> Patient scans QR → fills self-registration form on their phone → documents are uploaded → Aivana AI parses them → case is created and appears in the TPA pipeline automatically.
                     </div>
                 </div>
@@ -833,31 +837,31 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                 <div className="flex items-center justify-between">
                     <div>
                         <h3 className="text-sm font-bold font-lora text-opd-primary">Live Patient Waiting Room</h3>
-                        <p className="text-[11px] text-opd-text-secondary">All registered patients. Click a row to load their case into the pipeline.</p>
+                        <p className="text-sm text-opd-text-secondary">All registered patients. Click a row to load their case into the pipeline.</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <input
-                            className="px-3 py-1.5 border border-opd-border rounded-xl text-xs focus:outline-none focus:border-opd-primary"
+                            className="px-3 py-1.5 border border-opd-border rounded-xl text-sm focus:outline-none focus:border-opd-primary"
                             placeholder="Search by name or UHID..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
                         />
-                        <button onClick={refreshList} className="px-3 py-1.5 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">
+                        <button onClick={refreshList} className="px-3 py-1.5 text-sm font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">
                             ↻ Refresh
                         </button>
                     </div>
                 </div>
 
-                <div className="border rounded-xl overflow-hidden text-xs">
+                <div className="border rounded-xl overflow-hidden text-sm">
                     <table className="w-full text-left bg-white">
                         <thead className="bg-gray-50 border-b">
                             <tr>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Patient</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">UHID</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Insurer</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Registered</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Intake Stage</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500">Actions</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500">Patient</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500">UHID</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500">Insurer</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500">Registered</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500">Intake Stage</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -876,15 +880,15 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                                         <tr key={c.id} className="border-b last:border-0 hover:bg-gray-50/60 transition">
                                             <td className="p-3">
                                                 <div className="font-semibold text-opd-primary">{c.patientProfile.name || '—'}</div>
-                                                <div className="text-[10px] text-gray-400 font-mono">{c.id}</div>
+                                                <div className="text-sm text-gray-400 font-mono">{c.id}</div>
                                             </td>
                                             <td className="p-3 font-mono text-gray-500">{c.patientProfile.uhid || '—'}</td>
                                             <td className="p-3 text-gray-600">{(c.insuranceDetails as any)?.insurerName || (c.insuranceDetails as any)?.insurer || '—'}</td>
-                                            <td className="p-3 text-gray-400 text-[10px]">
+                                            <td className="p-3 text-gray-400 text-sm">
                                                 {c.createdAt ? new Date(c.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '—'}
                                             </td>
                                             <td className="p-3">
-                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${stageColor(stage)}`}>
+                                                <span className={`px-2 py-0.5 rounded text-sm font-bold uppercase border ${stageColor(stage)}`}>
                                                     {stage}
                                                 </span>
                                             </td>
@@ -893,14 +897,14 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                                                     {!isReady && (
                                                         <button
                                                             onClick={() => advanceStage(c.id)}
-                                                            className="px-2 py-1 text-[10px] font-bold border border-gray-200 rounded-lg hover:border-opd-primary hover:text-opd-primary transition"
+                                                            className="px-2 py-1 text-sm font-bold border border-gray-200 rounded-lg hover:border-opd-primary hover:text-opd-primary transition"
                                                         >
                                                             Advance →
                                                         </button>
                                                     )}
                                                     <button
                                                         onClick={() => onCaseSelect(c.id)}
-                                                        className={`px-2 py-1 text-[10px] font-bold rounded-lg transition ${
+                                                        className={`px-2 py-1 text-sm font-bold rounded-lg transition ${
                                                             isReady
                                                                 ? 'bg-opd-primary text-white hover:opacity-90'
                                                                 : 'bg-gray-100 text-gray-600 hover:bg-opd-primary hover:text-white'
@@ -927,7 +931,7 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                         <div className="bg-opd-primary text-white px-6 py-4 flex items-center justify-between">
                             <div>
                                 <div className="font-bold text-sm font-lora">Patient Self-Registration</div>
-                                <div className="text-[10px] opacity-75">Session: {sessionToken} • Aivana India TPA Insurance Copilot</div>
+                                <div className="text-sm opacity-75">Session: {sessionToken} • Aivana India TPA Insurance Copilot</div>
                             </div>
                             <button onClick={() => setShowRegModal(false)} className="w-7 h-7 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center transition">
                                 ✕
@@ -940,20 +944,20 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                                     <CheckSquare className="w-8 h-8 text-emerald-600" />
                                 </div>
                                 <div className="font-bold text-lg text-opd-primary font-lora">Registration Successful!</div>
-                                <div className="text-xs text-gray-500">
+                                <div className="text-sm text-gray-500">
                                     Case ID: <span className="font-mono text-opd-primary font-bold">{successId}</span>
                                 </div>
-                                <p className="text-xs text-gray-500">Your case has been created in the TPA pipeline. The hospital desk has been notified.</p>
+                                <p className="text-sm text-gray-500">Your case has been created in the TPA pipeline. The hospital desk has been notified.</p>
                                 <div className="flex gap-3 justify-center pt-2">
                                     <button
                                         onClick={() => { setShowRegModal(false); onCaseSelect(successId); }}
-                                        className="btn-primary text-xs"
+                                        className="btn-primary text-sm"
                                     >
                                         View in Pipeline →
                                     </button>
                                     <button
                                         onClick={() => { setSuccessId(''); setFormData(EMPTY_FORM); }}
-                                        className="px-4 py-2 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition"
+                                        className="px-4 py-2 text-sm font-bold border border-opd-border rounded-xl hover:border-opd-primary transition"
                                     >
                                         Register Another
                                     </button>
@@ -963,30 +967,30 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                             <div className="p-6 space-y-5 overflow-y-auto max-h-[75vh]">
                                 {/* Patient Details */}
                                 <div>
-                                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <div className="text-sm font-bold text-opd-primary uppercase tracking-wider mb-3 flex items-center gap-2">
                                         <UserCheck className="w-3.5 h-3.5" /> Patient Details
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div className="col-span-2 flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Full Name *</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">Full Name *</label>
                                             <input className={inputCls} placeholder="e.g. Rajesh Kumar" value={formData.name} onChange={e => setField('name', e.target.value)} />
                                         </div>
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Age</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">Age</label>
                                             <input type="number" className={inputCls} placeholder="e.g. 45" value={formData.age} onChange={e => setField('age', e.target.value)} />
                                         </div>
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Gender</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">Gender</label>
                                             <select className={inputCls} value={formData.gender} onChange={e => setField('gender', e.target.value)}>
                                                 <option>Male</option><option>Female</option><option>Other</option>
                                             </select>
                                         </div>
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Mobile</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">Mobile</label>
                                             <input className={inputCls} placeholder="+91 9876543210" value={formData.contact} onChange={e => setField('contact', e.target.value)} />
                                         </div>
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">City / Address</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">City / Address</label>
                                             <input className={inputCls} placeholder="e.g. Mumbai, Maharashtra" value={formData.address} onChange={e => setField('address', e.target.value)} />
                                         </div>
                                     </div>
@@ -995,10 +999,10 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                                 {/* Insurance — Card Scan or Manual */}
                                 <div className="border-t border-opd-border pt-4 space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider flex items-center gap-2">
+                                        <div className="text-sm font-bold text-opd-primary uppercase tracking-wider flex items-center gap-2">
                                             <BookmarkCheck className="w-3.5 h-3.5" /> Insurance Details
                                         </div>
-                                        <span className="text-[10px] text-gray-400">Upload card photo or fill manually</span>
+                                        <span className="text-sm text-gray-400">Upload card photo or fill manually</span>
                                     </div>
 
                                     {/* Card upload zone */}
@@ -1024,15 +1028,15 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                                         ) : (
                                             <div className="space-y-1">
                                                 <BookmarkCheck className="w-6 h-6 text-opd-primary/40 mx-auto" />
-                                                <div className="text-xs font-bold text-opd-primary">Drop insurance card here or click to upload</div>
-                                                <div className="text-[10px] text-gray-400">Accepts JPG, PNG, WebP, PDF • Gemini AI will extract all fields</div>
+                                                <div className="text-sm font-bold text-opd-primary">Drop insurance card here or click to upload</div>
+                                                <div className="text-sm text-gray-400">Accepts JPG, PNG, WebP, PDF • Gemini AI will extract all fields</div>
                                             </div>
                                         )}
                                     </div>
 
                                     {/* Scanning spinner */}
                                     {cardScanning && (
-                                        <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-100 rounded-xl text-xs text-blue-800">
+                                        <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-100 rounded-xl text-sm text-blue-800">
                                             <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin shrink-0" />
                                             <span>Scanning insurance card with Gemini AI...</span>
                                         </div>
@@ -1042,17 +1046,17 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                                     {cardScanResult && !cardScanning && (
                                         <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
                                             <div className="flex items-center justify-between">
-                                                <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">
+                                                <span className="text-sm font-bold text-emerald-800 uppercase tracking-wider">
                                                     ✓ Card Scanned — Confidence {cardScanResult.confidence}%
                                                 </span>
                                                 <button
                                                     onClick={applyCardToForm}
-                                                    className="px-3 py-1 text-[10px] font-bold bg-emerald-700 text-white rounded-lg hover:bg-emerald-800 transition"
+                                                    className="px-3 py-1 text-sm font-bold bg-emerald-700 text-white rounded-lg hover:bg-emerald-800 transition"
                                                 >
                                                     Auto-fill Fields ↓
                                                 </button>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px]">
+                                            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
                                                 {([
                                                     ['Insurer', cardScanResult.insurerName],
                                                     ['TPA', cardScanResult.tpaName],
@@ -1077,19 +1081,19 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
                                     {/* Manual / override fields */}
                                     <div className="grid grid-cols-2 gap-3">
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Insurer</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">Insurer</label>
                                             <input className={inputCls} placeholder="e.g. Star Health" value={formData.insurerName} onChange={e => setField('insurerName', e.target.value)} />
                                         </div>
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">TPA Name</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">TPA Name</label>
                                             <input className={inputCls} placeholder="e.g. MD India TPA" value={formData.tpa} onChange={e => setField('tpa', e.target.value)} />
                                         </div>
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Policy Number</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">Policy Number</label>
                                             <input className={inputCls} placeholder="e.g. SH/2024/00123" value={formData.policyNumber} onChange={e => setField('policyNumber', e.target.value)} />
                                         </div>
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Sum Insured (₹)</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">Sum Insured (₹)</label>
                                             <input type="number" className={inputCls} placeholder="e.g. 500000" value={formData.sumInsured} onChange={e => setField('sumInsured', e.target.value)} />
                                         </div>
                                     </div>
@@ -1098,16 +1102,16 @@ const PatientQRWorkflowView: React.FC<{ onCaseSelect: (id: string) => void }> = 
 
                                 {/* Clinical */}
                                 <div className="border-t border-opd-border pt-4">
-                                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <div className="text-sm font-bold text-opd-primary uppercase tracking-wider mb-3 flex items-center gap-2">
                                         <HeartPulse className="w-3.5 h-3.5" /> Chief Complaints
                                     </div>
                                     <div className="grid grid-cols-1 gap-3">
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Chief Complaints</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">Chief Complaints</label>
                                             <input className={inputCls} placeholder="e.g. High fever, vomiting, body ache since 3 days" value={formData.chiefComplaints} onChange={e => setField('chiefComplaints', e.target.value)} />
                                         </div>
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase">Provisional Diagnosis (if known)</label>
+                                            <label className="text-sm text-gray-500 font-bold uppercase">Provisional Diagnosis (if known)</label>
                                             <input className={inputCls} placeholder="e.g. Dengue Fever (suspected)" value={formData.diagnosis} onChange={e => setField('diagnosis', e.target.value)} />
                                         </div>
                                     </div>
@@ -1161,12 +1165,12 @@ const PatientDetailsView: React.FC<{ activeCase: PatientCaseRecord | null; onSav
         <div className="card-premium space-y-6 text-left">
             <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 2: Patient Details</h2>
-                <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200 rounded-full uppercase tracking-wider">
+                <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-sm font-bold border border-emerald-200 rounded-full uppercase tracking-wider">
                     Auto-Filled from Portal
                 </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 text-xs">
+            <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="p-4 bg-gray-50 rounded-xl space-y-3">
                     <h3 className="font-bold text-opd-primary uppercase tracking-wider">Demographics</h3>
                     <div>
@@ -1299,20 +1303,20 @@ const DocumentIdentificationView: React.FC<{ activeCase: PatientCaseRecord | nul
                 <div className="flex items-center justify-between">
                     <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 4: AI Document Classification</h2>
                     <div className="flex items-center gap-2">
-                        {hasPending && <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">⏳ Some files pending extraction</span>}
-                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">Avg Confidence: {avgConf}%</span>
+                        {hasPending && <span className="text-sm font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">⏳ Some files pending extraction</span>}
+                        <span className="text-sm font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">Avg Confidence: {avgConf}%</span>
                     </div>
                 </div>
 
-                <div className="border rounded-xl overflow-hidden text-xs bg-white">
+                <div className="border rounded-xl overflow-hidden text-sm bg-white">
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b">
                             <tr>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500 text-left">#</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500 text-left">File Name</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500 text-left">AI Document Type</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500 text-left">Confidence</th>
-                                <th className="p-3 text-[10px] uppercase font-bold text-gray-500 text-left">Status</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500 text-left">#</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500 text-left">File Name</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500 text-left">AI Document Type</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500 text-left">Confidence</th>
+                                <th className="p-3 text-sm uppercase font-bold text-gray-500 text-left">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1331,7 +1335,7 @@ const DocumentIdentificationView: React.FC<{ activeCase: PatientCaseRecord | nul
                                             <td className="p-3 text-gray-400 font-mono">{i + 1}</td>
                                             <td className="p-3 font-mono text-opd-primary max-w-[200px] truncate" title={d.name}>{d.name}</td>
                                             <td className="p-3">
-                                                <span className={`px-2 py-0.5 rounded border text-[10px] font-bold capitalize ${badgeCls}`}>
+                                                <span className={`px-2 py-0.5 rounded border text-sm font-bold capitalize ${badgeCls}`}>
                                                     {docType.replace(/_/g, ' ')}
                                                 </span>
                                             </td>
@@ -1342,7 +1346,7 @@ const DocumentIdentificationView: React.FC<{ activeCase: PatientCaseRecord | nul
                                                 }
                                             </td>
                                             <td className="p-3">
-                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                                                <span className={`px-2 py-0.5 rounded text-sm font-bold uppercase ${
                                                     statusOk ? 'bg-emerald-50 text-emerald-700' :
                                                     d.status === 'extraction_failed' ? 'bg-red-50 text-red-700' :
                                                     'bg-amber-50 text-amber-700'
@@ -1359,7 +1363,7 @@ const DocumentIdentificationView: React.FC<{ activeCase: PatientCaseRecord | nul
                 </div>
 
                 {/* Audit summary row */}
-                <div className="grid grid-cols-5 gap-3 text-[10px]">
+                <div className="grid grid-cols-5 gap-3 text-sm">
                     {([
                         ['Documents', docs.length, 'text-opd-primary'],
                         ['Classified', docs.filter((d: any) => d.status === 'extracted').length, 'text-emerald-700'],
@@ -1380,18 +1384,18 @@ const DocumentIdentificationView: React.FC<{ activeCase: PatientCaseRecord | nul
                 <div className="flex items-center justify-between">
                     <div>
                         <h3 className="text-base font-bold font-lora text-opd-primary">Pre-Authorization Form</h3>
-                        <p className="text-[11px] text-opd-text-secondary mt-0.5">Auto-filled from OCR extraction. Review before downloading.</p>
+                        <p className="text-sm text-opd-text-secondary mt-0.5">Auto-filled from OCR extraction. Review before downloading.</p>
                     </div>
                     <div className="flex gap-2">
                         <button
                             onClick={() => setShowPreAuth(!showPreAuth)}
-                            className="px-3 py-1.5 text-xs font-bold border border-opd-primary text-opd-primary rounded-lg hover:bg-opd-primary hover:text-white transition"
+                            className="px-3 py-1.5 text-sm font-bold border border-opd-primary text-opd-primary rounded-lg hover:bg-opd-primary hover:text-white transition"
                         >
                             {showPreAuth ? 'Hide Form' : 'Preview Form'}
                         </button>
                         <button
                             onClick={() => downloadPreAuthForm(activeCase)}
-                            className="px-3 py-1.5 text-xs font-bold bg-opd-primary text-white rounded-lg hover:opacity-90 transition flex items-center gap-1.5"
+                            className="px-3 py-1.5 text-sm font-bold bg-opd-primary text-white rounded-lg hover:opacity-90 transition flex items-center gap-1.5"
                         >
                             ⬇ Download Pre-Auth
                         </button>
@@ -1399,16 +1403,16 @@ const DocumentIdentificationView: React.FC<{ activeCase: PatientCaseRecord | nul
                 </div>
 
                 {showPreAuth && (
-                    <div className="border border-opd-border rounded-2xl overflow-hidden text-xs">
+                    <div className="border border-opd-border rounded-2xl overflow-hidden text-sm">
                         {/* Header */}
                         <div className="bg-opd-primary text-white px-5 py-3">
                             <div className="font-bold text-sm">Pre-Authorization Request</div>
-                            <div className="text-[10px] opacity-75">Aivana India TPA Insurance Copilot | Case: {activeCase.id}</div>
+                            <div className="text-sm opacity-75">Aivana India TPA Insurance Copilot | Case: {activeCase.id}</div>
                         </div>
                         {/* Sections */}
                         <div className="grid grid-cols-2 gap-0 divide-x divide-opd-border">
                             <div className="p-4 space-y-3">
-                                <div className="font-bold text-opd-primary text-[10px] uppercase tracking-wider">Patient Details</div>
+                                <div className="font-bold text-opd-primary text-sm uppercase tracking-wider">Patient Details</div>
                                 {([
                                     ['Name', p.name],
                                     ['Age / Gender', `${p.age || '—'} Yrs / ${p.gender || '—'}`],
@@ -1423,7 +1427,7 @@ const DocumentIdentificationView: React.FC<{ activeCase: PatientCaseRecord | nul
                                 ))}
                             </div>
                             <div className="p-4 space-y-3">
-                                <div className="font-bold text-opd-primary text-[10px] uppercase tracking-wider">Insurance Details</div>
+                                <div className="font-bold text-opd-primary text-sm uppercase tracking-wider">Insurance Details</div>
                                 {([
                                     ['Insurer', ins.insurerName || ins.insurer],
                                     ['TPA', ins.tpaName || ins.TPA],
@@ -1440,7 +1444,7 @@ const DocumentIdentificationView: React.FC<{ activeCase: PatientCaseRecord | nul
                             </div>
                         </div>
                         <div className="border-t border-opd-border p-4 space-y-3">
-                            <div className="font-bold text-opd-primary text-[10px] uppercase tracking-wider">Clinical Details</div>
+                            <div className="font-bold text-opd-primary text-sm uppercase tracking-wider">Clinical Details</div>
                             <div className="grid grid-cols-3 gap-4">
                                 {([
                                     ['Diagnosis', enc?.diagnosis],
@@ -1456,10 +1460,10 @@ const DocumentIdentificationView: React.FC<{ activeCase: PatientCaseRecord | nul
                         </div>
                         {/* Document list */}
                         <div className="border-t border-opd-border p-4">
-                            <div className="font-bold text-opd-primary text-[10px] uppercase tracking-wider mb-2">Documents Submitted ({docs.length})</div>
+                            <div className="font-bold text-opd-primary text-sm uppercase tracking-wider mb-2">Documents Submitted ({docs.length})</div>
                             <div className="flex flex-wrap gap-2">
                                 {docs.map((d: any, i: number) => (
-                                    <span key={i} className="px-2 py-0.5 bg-gray-50 border rounded text-[10px] font-mono">{d.name}</span>
+                                    <span key={i} className="px-2 py-0.5 bg-gray-50 border rounded text-sm font-mono">{d.name}</span>
                                 ))}
                             </div>
                         </div>
@@ -1481,13 +1485,13 @@ const ExtractedInformationView: React.FC<{ activeCase: PatientCaseRecord | null 
         <div className="card-premium grid grid-cols-3 gap-6 text-left">
             <div className="col-span-2 space-y-4">
                 <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 5: Extracted Information</h2>
-                <div className="flex border-b text-xs">
+                <div className="flex border-b text-sm">
                     <button className={`px-4 py-2 border-b-2 font-bold ${subTab === 'profile' ? 'border-opd-primary text-opd-primary' : 'border-transparent text-gray-500'}`} onClick={() => setSubTab('profile')}>Patient &amp; Policy</button>
                     <button className={`px-4 py-2 border-b-2 font-bold ${subTab === 'clinical' ? 'border-opd-primary text-opd-primary' : 'border-transparent text-gray-500'}`} onClick={() => setSubTab('clinical')}>Clinical Info</button>
                     <button className={`px-4 py-2 border-b-2 font-bold ${subTab === 'billing' ? 'border-opd-primary text-opd-primary' : 'border-transparent text-gray-500'}`} onClick={() => setSubTab('billing')}>Billing Info</button>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-xl text-xs space-y-2 font-medium leading-relaxed">
+                <div className="bg-gray-50 p-4 rounded-xl text-sm space-y-2 font-medium leading-relaxed">
                     {subTab === 'profile' && (
                         <>
                             <div>UHID: <span className="text-opd-primary font-mono">{activeCase.patientProfile.uhid || '—'}</span></div>
@@ -1511,12 +1515,12 @@ const ExtractedInformationView: React.FC<{ activeCase: PatientCaseRecord | null 
                 </div>
             </div>
 
-            <div className="col-span-1 p-4 bg-gray-50 border rounded-2xl text-xs space-y-3">
+            <div className="col-span-1 p-4 bg-gray-50 border rounded-2xl text-sm space-y-3">
                 <h3 className="font-bold text-opd-primary uppercase tracking-wider">Source Provenance</h3>
-                <p className="text-[10px] text-opd-text-secondary leading-relaxed">
+                <p className="text-sm text-opd-text-secondary leading-relaxed">
                     Aivana grounds all extracted data to source page snippets. No hallucinations:
                 </p>
-                <div className="p-3 bg-white border rounded-xl leading-relaxed text-[11px] font-mono text-gray-600">
+                <div className="p-3 bg-white border rounded-xl leading-relaxed text-sm font-mono text-gray-600">
                     {subTab === 'clinical' ? (
                         <>
                             <span className="block font-bold text-opd-primary mb-1">Source: Page 2 (Discharge Summary)</span>
@@ -1643,10 +1647,10 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
 
     const field = (label: string, key: string, type: 'text' | 'number' | 'select' = 'text', options?: string[]) => (
         <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{label}</label>
+            <label className="text-sm font-bold text-gray-500 uppercase tracking-wider">{label}</label>
             {type === 'select' && options ? (
                 <select
-                    className="border border-opd-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-opd-primary bg-white"
+                    className="border border-opd-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-opd-primary bg-white"
                     value={pa[key] || ''}
                     onChange={e => setPa((p: any) => ({ ...p, [key]: e.target.value }))}
                 >
@@ -1655,7 +1659,7 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
             ) : (
                 <input
                     type={type}
-                    className="border border-opd-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-opd-primary"
+                    className="border border-opd-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-opd-primary"
                     value={pa[key] ?? ''}
                     onChange={e => setPa((p: any) => ({ ...p, [key]: type === 'number' ? +e.target.value : e.target.value }))}
                 />
@@ -1763,10 +1767,10 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                 <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 6: Prior Authorization Gateway</h2>
-                        <p className="text-xs text-opd-text-secondary mt-0.5">Complete the PA form, run Fairway medical necessity check, then submit.</p>
+                        <p className="text-sm text-opd-text-secondary mt-0.5">Complete the PA form, run Fairway medical necessity check, then submit.</p>
                     </div>
                     {submitted && (
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-xs font-bold">
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm font-bold">
                             <CheckSquare className="w-4 h-4" /> PA Submitted
                         </div>
                     )}
@@ -1785,7 +1789,7 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                         return (
                             <React.Fragment key={stage}>
                                 <div className="flex flex-col items-center gap-1">
-                                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black ${
+                                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-sm font-black ${
                                         isDone ? 'bg-opd-primary text-white' :
                                         isActive ? 'bg-blue-100 border-2 border-opd-primary text-opd-primary' :
                                         'bg-gray-100 text-gray-400'
@@ -1807,7 +1811,7 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                     <button
                         key={t.id}
                         onClick={() => setTab(t.id)}
-                        className={`flex-1 py-2 px-2 rounded-lg text-[11px] font-bold transition ${
+                        className={`flex-1 py-2 px-2 rounded-lg text-sm font-bold transition ${
                             tab === t.id
                                 ? 'bg-opd-primary text-white shadow'
                                 : 'text-gray-500 hover:text-opd-primary hover:bg-white'
@@ -1833,7 +1837,7 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                             {field('UHID / Case ID', 'uhid')}
                         </div>
                         <div className="border-t border-opd-border pt-4">
-                            <h4 className="text-[11px] font-bold text-opd-primary uppercase tracking-wider mb-3">Insurance Details</h4>
+                            <h4 className="text-sm font-bold text-opd-primary uppercase tracking-wider mb-3">Insurance Details</h4>
                             <div className="grid grid-cols-2 gap-4">
                                 {field('Insurer Name', 'insurer')}
                                 {field('TPA Name', 'tpa')}
@@ -1843,7 +1847,7 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                                 {field('ICU Rent Cap / Day (₹)', 'icuRentLimit', 'number')}
                             </div>
                         </div>
-                        <button onClick={() => setTab('clinical')} className="btn-primary text-xs">Next: Clinical Details →</button>
+                        <button onClick={() => setTab('clinical')} className="btn-primary text-sm">Next: Clinical Details →</button>
                     </div>
                 )}
 
@@ -1861,10 +1865,10 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                             {field('History of Present Illness', 'hopi')}
                         </div>
                         <div>
-                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-2">Proposed Line of Treatment</label>
+                            <label className="text-sm font-bold text-gray-500 uppercase tracking-wider block mb-2">Proposed Line of Treatment</label>
                             <div className="flex flex-wrap gap-3">
                                 {['Medical', 'Surgical', 'ICU / Critical Care', 'Investigations Only', 'Non-Allopathic'].map(opt => (
-                                    <label key={opt} className="flex items-center gap-2 text-xs cursor-pointer">
+                                    <label key={opt} className="flex items-center gap-2 text-sm cursor-pointer">
                                         <input type="radio" name="treatmentLine" value={opt}
                                             checked={pa.treatmentLine === opt}
                                             onChange={() => setPa((p: any) => ({ ...p, treatmentLine: opt }))}
@@ -1876,10 +1880,10 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                             </div>
                         </div>
                         <div>
-                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-2">Comorbidities</label>
+                            <label className="text-sm font-bold text-gray-500 uppercase tracking-wider block mb-2">Comorbidities</label>
                             <div className="flex flex-wrap gap-3">
                                 {['Diabetes', 'Hypertension', 'Heart Disease', 'Asthma', 'CKD', 'HIV'].map(opt => (
-                                    <label key={opt} className="flex items-center gap-2 text-xs cursor-pointer">
+                                    <label key={opt} className="flex items-center gap-2 text-sm cursor-pointer">
                                         <input type="checkbox"
                                             checked={(pa.comorbidities || '').includes(opt)}
                                             onChange={e => setPa((p: any) => ({
@@ -1896,8 +1900,8 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                             </div>
                         </div>
                         <div className="flex gap-3">
-                            <button onClick={() => setTab('patient')} className="px-4 py-2 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
-                            <button onClick={() => setTab('billing')} className="btn-primary text-xs">Next: Billing & Stay →</button>
+                            <button onClick={() => setTab('patient')} className="px-4 py-2 text-sm font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
+                            <button onClick={() => setTab('billing')} className="btn-primary text-sm">Next: Billing & Stay →</button>
                         </div>
                     </div>
                 )}
@@ -1913,7 +1917,7 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                             {field('ICU Days', 'icuDays', 'number')}
                         </div>
                         <div className="border-t border-opd-border pt-4">
-                            <h4 className="text-[11px] font-bold text-opd-primary uppercase tracking-wider mb-3">Cost Estimate (₹)</h4>
+                            <h4 className="text-sm font-bold text-opd-primary uppercase tracking-wider mb-3">Cost Estimate (₹)</h4>
                             <div className="grid grid-cols-2 gap-4">
                                 {field('Room Rent Total (₹)', 'roomRent', 'number')}
                                 {field('Surgeon / Procedure Fee (₹)', 'surgeonFee', 'number')}
@@ -1923,7 +1927,7 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
 
                             {/* Room rent cap warning */}
                             {isRoomRentBreached && (
-                                <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs flex items-start gap-2">
+                                <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm flex items-start gap-2">
                                     <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                                     <span className="text-amber-800">
                                         <strong>Room Rent Cap Breach:</strong> Entered room rent ₹{pa.roomRent?.toLocaleString('en-IN')} exceeds
@@ -1934,15 +1938,15 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                             )}
 
                             <div className="mt-3 p-3 bg-opd-primary/5 border border-opd-primary/20 rounded-xl flex justify-between items-center">
-                                <span className="text-xs font-bold text-opd-primary">Estimated Total</span>
+                                <span className="text-sm font-bold text-opd-primary">Estimated Total</span>
                                 <span className="text-lg font-black text-opd-primary">₹{totalCalc.toLocaleString('en-IN')}</span>
                             </div>
                         </div>
                         <div className="flex gap-3">
-                            <button onClick={() => setTab('clinical')} className="px-4 py-2 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
+                            <button onClick={() => setTab('clinical')} className="px-4 py-2 text-sm font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
                             <button
                                 onClick={() => { setPa((p: any) => ({ ...p, totalEstimated: totalCalc })); setTab('necessity'); }}
-                                className="btn-primary text-xs"
+                                className="btn-primary text-sm"
                             >Next: Medical Necessity →</button>
                         </div>
                     </div>
@@ -1954,12 +1958,12 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="font-bold text-sm text-opd-primary font-lora">Medical Necessity Check — Fairway Layer</h3>
-                                <p className="text-xs text-opd-text-secondary">Validates clinical evidence against IRDA medical necessity criteria for the given diagnosis.</p>
+                                <p className="text-sm text-opd-text-secondary">Validates clinical evidence against IRDA medical necessity criteria for the given diagnosis.</p>
                             </div>
                             <button
                                 onClick={runNecessityCheck}
                                 disabled={necessityLoading}
-                                className="px-3 py-1.5 text-xs font-bold bg-opd-primary text-white rounded-xl hover:opacity-90 disabled:opacity-50 transition flex items-center gap-1.5"
+                                className="px-3 py-1.5 text-sm font-bold bg-opd-primary text-white rounded-xl hover:opacity-90 disabled:opacity-50 transition flex items-center gap-1.5"
                             >
                                 <HeartPulse className={`w-3.5 h-3.5 ${necessityLoading ? 'animate-pulse' : ''}`} />
                                 {necessityLoading ? 'Running...' : necessityReport ? 'Re-Run Check' : 'Run Fairway Check'}
@@ -1967,21 +1971,21 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                         </div>
 
                         {necessityError && (
-                            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800">{necessityError}</div>
+                            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-800">{necessityError}</div>
                         )}
 
                         {!necessityReport && !necessityLoading && !necessityError && (
                             <div className="p-8 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
                                 <HeartPulse className="w-8 h-8 text-gray-300 mx-auto mb-3" />
-                                <p className="text-xs text-gray-400">Click "Run Fairway Check" to validate medical necessity.</p>
-                                <p className="text-[10px] text-gray-400 mt-1">Requires a diagnosis in Tab 2.</p>
+                                <p className="text-sm text-gray-400">Click "Run Fairway Check" to validate medical necessity.</p>
+                                <p className="text-sm text-gray-400 mt-1">Requires a diagnosis in Tab 2.</p>
                             </div>
                         )}
 
                         {necessityLoading && (
                             <div className="p-8 text-center bg-gray-50 rounded-2xl border">
                                 <div className="w-10 h-10 border-4 border-opd-primary/20 border-t-opd-primary rounded-full animate-spin mx-auto mb-3" />
-                                <p className="text-xs text-gray-500">Running Fairway clinical evidence review...</p>
+                                <p className="text-sm text-gray-500">Running Fairway clinical evidence review...</p>
                             </div>
                         )}
 
@@ -1997,7 +2001,7 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                                             pa.necessityScore >= 80 ? 'text-emerald-700' :
                                             pa.necessityScore >= 60 ? 'text-amber-700' : 'text-red-700'
                                         }`}>{pa.necessityScore}</div>
-                                        <div className="text-[10px] font-bold text-gray-500 uppercase mt-1">Necessity Score</div>
+                                        <div className="text-sm font-bold text-gray-500 uppercase mt-1">Necessity Score</div>
                                     </div>
                                     <div className={`p-4 rounded-xl border text-center col-span-2 flex flex-col justify-center ${
                                         pa.recommendation === 'APPROVE' ? 'bg-emerald-50 border-emerald-200' :
@@ -2010,16 +2014,16 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                                             {pa.recommendation === 'APPROVE' ? '✓ APPROVED' :
                                              pa.recommendation === 'QUERY' ? '⚠ QUERY RAISED' : '✗ DENY RECOMMENDED'}
                                         </div>
-                                        <div className="text-[10px] text-gray-500 mt-1">TPA Recommendation</div>
+                                        <div className="text-sm text-gray-500 mt-1">TPA Recommendation</div>
                                     </div>
                                 </div>
 
                                 {/* Required evidence checklist */}
                                 {(necessityReport as any).requiredEvidence?.length > 0 && (
                                     <div className="p-4 bg-gray-50 rounded-xl border space-y-2">
-                                        <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider">Required Evidence Checklist</div>
+                                        <div className="text-sm font-bold text-opd-primary uppercase tracking-wider">Required Evidence Checklist</div>
                                         {(necessityReport as any).requiredEvidence.map((e: string, i: number) => (
-                                            <div key={i} className="flex items-start gap-2 text-xs">
+                                            <div key={i} className="flex items-start gap-2 text-sm">
                                                 <span className="text-emerald-500 font-bold shrink-0">✓</span>
                                                 <span>{e}</span>
                                             </div>
@@ -2030,9 +2034,9 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                                 {/* Clinical gaps */}
                                 {(necessityReport as any).clinicalGapList?.length > 0 && (
                                     <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 space-y-2">
-                                        <div className="text-[10px] font-bold text-amber-800 uppercase tracking-wider">⚠ Clinical Gaps</div>
+                                        <div className="text-sm font-bold text-amber-800 uppercase tracking-wider">⚠ Clinical Gaps</div>
                                         {(necessityReport as any).clinicalGapList.map((g: string, i: number) => (
-                                            <div key={i} className="flex items-start gap-2 text-xs text-amber-900">
+                                            <div key={i} className="flex items-start gap-2 text-sm text-amber-900">
                                                 <span className="shrink-0">•</span>
                                                 <span>{g}</span>
                                             </div>
@@ -2043,11 +2047,11 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                         )}
 
                         <div className="flex gap-3 pt-2">
-                            <button onClick={() => setTab('billing')} className="px-4 py-2 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
+                            <button onClick={() => setTab('billing')} className="px-4 py-2 text-sm font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
                             <button
                                 onClick={() => setTab('submit')}
                                 disabled={pa.necessityScore > 0 && pa.necessityScore < 60}
-                                className="btn-primary text-xs disabled:opacity-40"
+                                className="btn-primary text-sm disabled:opacity-40"
                             >Next: Submit Pre-Auth →</button>
                         </div>
                     </div>
@@ -2059,14 +2063,14 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                         <h3 className="font-bold text-sm text-opd-primary font-lora">Submit Prior Authorization</h3>
 
                         {/* Final summary */}
-                        <div className="border border-opd-border rounded-2xl overflow-hidden text-xs">
+                        <div className="border border-opd-border rounded-2xl overflow-hidden text-sm">
                             <div className="bg-opd-primary text-white px-4 py-2.5 flex justify-between items-center">
                                 <span className="font-bold">Prior Authorization — Summary Review</span>
-                                <span className="text-[10px] opacity-75">{pa.caseId}</span>
+                                <span className="text-sm opacity-75">{pa.caseId}</span>
                             </div>
                             <div className="grid grid-cols-2 divide-x divide-opd-border">
                                 <div className="p-4 space-y-2">
-                                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider mb-1">Patient & Policy</div>
+                                    <div className="text-sm font-bold text-opd-primary uppercase tracking-wider mb-1">Patient & Policy</div>
                                     {[['Name', pa.patientName], ['Age/Gender', `${pa.age} Yrs / ${pa.gender}`],
                                       ['Insurer', pa.insurer], ['TPA', pa.tpa], ['Policy No.', pa.policyNumber],
                                       ['Sum Insured', pa.sumInsured ? `₹${(+pa.sumInsured).toLocaleString('en-IN')}` : '—']
@@ -2078,7 +2082,7 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                                     ))}
                                 </div>
                                 <div className="p-4 space-y-2">
-                                    <div className="text-[10px] font-bold text-opd-primary uppercase tracking-wider mb-1">Clinical & Billing</div>
+                                    <div className="text-sm font-bold text-opd-primary uppercase tracking-wider mb-1">Clinical & Billing</div>
                                     {[['Diagnosis', pa.diagnosis], ['ICD-10', pa.icdCode || 'Pending'],
                                       ['Admission', pa.admissionType], ['Room', pa.roomCategory],
                                       ['LOS', `${pa.los} day(s)`], ['Total Est.', `₹${(pa.totalEstimated||0).toLocaleString('en-IN')}`]
@@ -2091,12 +2095,12 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                                 </div>
                             </div>
                             <div className="border-t border-opd-border p-4 flex items-center justify-between">
-                                <div className="text-[10px] text-gray-500">
+                                <div className="text-sm text-gray-500">
                                     Necessity Score: <strong className={pa.necessityScore >= 80 ? 'text-emerald-700' : pa.necessityScore >= 60 ? 'text-amber-700' : 'text-gray-400'}>{pa.necessityScore || 'Not run'}</strong>
                                     {' '}&nbsp;|&nbsp; Recommendation: <strong className="text-opd-primary">{pa.recommendation || 'Not run'}</strong>
                                 </div>
                                 {pa.necessityScore > 0 && pa.necessityScore < 60 && (
-                                    <span className="text-[10px] text-red-700 font-bold">⚠ Low score — submission blocked</span>
+                                    <span className="text-sm text-red-700 font-bold">⚠ Low score — submission blocked</span>
                                 )}
                             </div>
                         </div>
@@ -2105,11 +2109,11 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                             <div className="p-5 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
                                 <CheckSquare className="w-8 h-8 text-emerald-600 mx-auto" />
                                 <div className="font-bold text-emerald-800">Pre-Authorization Submitted Successfully</div>
-                                <div className="text-xs text-emerald-700">The PA form has been saved and downloaded. The case stage has been updated to <strong>Authorization Submitted</strong>.</div>
+                                <div className="text-sm text-emerald-700">The PA form has been saved and downloaded. The case stage has been updated to <strong>Authorization Submitted</strong>.</div>
                             </div>
                         ) : (
                             <div className="flex gap-3 flex-wrap">
-                                <button onClick={() => setTab('necessity')} className="px-4 py-2 text-xs font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
+                                <button onClick={() => setTab('necessity')} className="px-4 py-2 text-sm font-bold border border-opd-border rounded-xl hover:border-opd-primary transition">← Back</button>
                                 <button
                                     onClick={() => {
                                         const html = generatePAHtml(pa);
@@ -2119,14 +2123,14 @@ const ClaimReadinessView: React.FC<{ activeCase: PatientCaseRecord | null; onCas
                                         a.href = url; a.download = `PreAuth_${pa.patientName?.replace(/\s+/g, '_') || 'form'}.html`; a.click();
                                         URL.revokeObjectURL(url);
                                     }}
-                                    className="px-4 py-2 text-xs font-bold border border-opd-primary text-opd-primary rounded-xl hover:bg-opd-primary hover:text-white transition flex items-center gap-1.5"
+                                    className="px-4 py-2 text-sm font-bold border border-opd-primary text-opd-primary rounded-xl hover:bg-opd-primary hover:text-white transition flex items-center gap-1.5"
                                 >
                                     <Download className="w-3.5 h-3.5" /> Download PA Form
                                 </button>
                                 <button
                                     onClick={handleSubmit}
                                     disabled={saving || (pa.necessityScore > 0 && pa.necessityScore < 60)}
-                                    className="btn-primary text-xs flex items-center gap-1.5 disabled:opacity-40"
+                                    className="btn-primary text-sm flex items-center gap-1.5 disabled:opacity-40"
                                 >
                                     {saving ? 'Submitting...' : '🚀 Mark as Submitted to TPA'}
                                 </button>
@@ -2146,7 +2150,7 @@ const EvidenceExplorerView: React.FC<{ activeCase: PatientCaseRecord | null }> =
 
     return (
         <div className="card-premium grid grid-cols-3 gap-6 text-left">
-            <div className="col-span-1 space-y-3 text-xs">
+            <div className="col-span-1 space-y-3 text-sm">
                 <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 7: Evidence Explorer</h2>
                 <div className="p-3 bg-gray-50 border rounded-xl space-y-2">
                     <div>Diagnosis: <span className="font-semibold block">{activeCase.encounters[0]?.diagnosis}</span></div>
@@ -2156,11 +2160,11 @@ const EvidenceExplorerView: React.FC<{ activeCase: PatientCaseRecord | null }> =
             </div>
 
             <div className="col-span-2 p-4 bg-gray-50 border rounded-2xl space-y-3">
-                <div className="flex justify-between items-center text-xs border-b pb-2">
+                <div className="flex justify-between items-center text-sm border-b pb-2">
                     <span className="font-bold text-opd-primary uppercase">Citations Grounding Viewer</span>
-                    <span className="text-[10px] text-gray-500">Document Page: 1 of 2</span>
+                    <span className="text-sm text-gray-500">Document Page: 1 of 2</span>
                 </div>
-                <div className="p-4 bg-white border rounded-xl font-mono text-[11px] leading-relaxed text-gray-600 max-h-60 overflow-y-auto">
+                <div className="p-4 bg-white border rounded-xl font-mono text-sm leading-relaxed text-gray-600 max-h-60 overflow-y-auto">
                     <span className="block font-bold text-emerald-600 mb-2">// CLINICAL PROVENANCE ANCHORS FOUND //</span>
                     "...Patient presenting with acute onset of high grade fever since 3 days, accompanied by severe body ache and dehydration. Provisional diagnosis set to typhoid fever. Plan includes inpatient admission, IV antibiotics, and daily vitals monitoring..."
                 </div>
@@ -2182,13 +2186,13 @@ const PolicyValidationView: React.FC<{ activeCase: PatientCaseRecord | null }> =
     return (
         <div className="card-premium space-y-6 text-left">
             <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 8: Policy &amp; Coverage Validation</h2>
-            <p className="text-xs text-opd-text-secondary font-medium text-amber-700 bg-amber-50 p-2.5 rounded-lg">
+            <p className="text-sm text-opd-text-secondary font-medium text-amber-700 bg-amber-50 p-2.5 rounded-lg">
                 ⚠️ Capping values are calculated deterministically per insurer policy schedules (Arithmetic verified).
             </p>
 
-            <div className="grid grid-cols-2 gap-4 text-xs">
+            <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="p-4 bg-gray-50 rounded-xl space-y-3">
-                    <h3 className="font-bold text-opd-primary uppercase tracking-wider text-[10px]">Room Rent Caps Audit</h3>
+                    <h3 className="font-bold text-opd-primary uppercase tracking-wider text-sm">Room Rent Caps Audit</h3>
                     <div className="flex justify-between border-b pb-1.5">
                         <span>Ward Rent Cap (1% of SI):</span>
                         <span className="font-semibold">₹{normalCap.toLocaleString('en-IN')} / day</span>
@@ -2205,7 +2209,7 @@ const PolicyValidationView: React.FC<{ activeCase: PatientCaseRecord | null }> =
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded-xl space-y-3">
-                    <h3 className="font-bold text-opd-primary uppercase tracking-wider text-[10px]">Audit KPI</h3>
+                    <h3 className="font-bold text-opd-primary uppercase tracking-wider text-sm">Audit KPI</h3>
                     <div className="space-y-1.5">
                         <div>Senior Citizen Co-pay: <span className="font-semibold text-emerald-700">Clear (Age check passed)</span></div>
                         <div>PM-JAY limit caps: <span className="font-semibold text-emerald-700">Clear (Private insurer)</span></div>
@@ -2251,12 +2255,12 @@ const TpaQueryPredictionView: React.FC<{ activeCase: PatientCaseRecord | null }>
             <div className="flex items-center justify-between border-b pb-4">
                 <div>
                     <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 9: TPA Query Prediction Simulation</h2>
-                    <p className="text-xs text-opd-text-secondary">Simulates a TPA senior reviewer audit to predict administrative, billing, and clinical query objections.</p>
+                    <p className="text-sm text-opd-text-secondary">Simulates a TPA senior reviewer audit to predict administrative, billing, and clinical query objections.</p>
                 </div>
                 <button
                     onClick={runPrediction}
                     disabled={loading}
-                    className="px-3 py-1.5 bg-opd-primary text-white font-bold rounded-xl text-xs hover:bg-opd-primary-dark transition disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
+                    className="px-3 py-1.5 bg-opd-primary text-white font-bold rounded-xl text-sm hover:bg-opd-primary-dark transition disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
                 >
                     <Activity className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
                     {loading ? 'Analyzing...' : 'Run Simulation'}
@@ -2268,19 +2272,19 @@ const TpaQueryPredictionView: React.FC<{ activeCase: PatientCaseRecord | null }>
                     <div className="relative w-12 h-12 mx-auto flex items-center justify-center">
                         <div className="absolute inset-0 rounded-full border-4 border-opd-primary/20 border-t-opd-primary animate-spin" />
                     </div>
-                    <p className="text-xs font-medium text-opd-text-secondary tracking-wide animate-pulse">
+                    <p className="text-sm font-medium text-opd-text-secondary tracking-wide animate-pulse">
                         Analyzing room rent limits, stay duration, comorbidities, and generating AI fallback predictions...
                     </p>
                 </div>
             ) : error ? (
-                <div className="p-6 border border-red-200 bg-red-50 text-red-800 text-xs rounded-2xl">
+                <div className="p-6 border border-red-200 bg-red-50 text-red-800 text-sm rounded-2xl">
                     Error running simulation: {error}
                 </div>
             ) : queries.length === 0 ? (
                 <div className="p-8 border border-emerald-200 bg-emerald-50/50 text-center rounded-2xl space-y-3 max-w-lg mx-auto">
                     <CheckSquare className="w-12 h-12 text-emerald-600 mx-auto" />
                     <h3 className="font-bold text-emerald-900 text-sm">Perfect Pre-Auth Score!</h3>
-                    <p className="text-xs text-emerald-800 leading-relaxed">
+                    <p className="text-sm text-emerald-800 leading-relaxed">
                         No predicted query objections detected. This pre-authorization request complies with billing room rent caps, comorbidity waiting periods, and daycare stay guidelines.
                     </p>
                 </div>
@@ -2329,12 +2333,12 @@ const TpaQueryPredictionView: React.FC<{ activeCase: PatientCaseRecord | null }>
                                 <ShieldAlert className={`w-5 h-5 shrink-0 ${q.severity === 'blocking' ? 'text-red-600' : 'text-amber-600'}`} />
                             </div>
 
-                            <div className="text-xs text-gray-600 space-y-1">
+                            <div className="text-sm text-gray-600 space-y-1">
                                 <div className="font-semibold text-gray-500 uppercase text-[9px] tracking-wider">Trigger Rule:</div>
                                 <p>{q.reason}</p>
                             </div>
 
-                            <div className="p-3 bg-white border border-gray-100 rounded-xl space-y-1 text-xs">
+                            <div className="p-3 bg-white border border-gray-100 rounded-xl space-y-1 text-sm">
                                 <div className="font-bold text-opd-primary uppercase text-[9px] tracking-wider">Recommended Pre-emptive Mitigation:</div>
                                 <p className="text-gray-700 font-medium">{q.mitigation}</p>
                             </div>
@@ -2423,25 +2427,25 @@ const AdminPolicyConfigView: React.FC = () => {
             <div className="flex justify-between items-center border-b border-opd-border pb-3">
                 <div>
                     <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 14: Policy & Scheme Configuration</h2>
-                    <p className="text-xs text-opd-text-secondary mt-0.5">Manage insurer rent caps, co-pays, and empanelled government scheme rates.</p>
+                    <p className="text-sm text-opd-text-secondary mt-0.5">Manage insurer rent caps, co-pays, and empanelled government scheme rates.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    {saveStatus && <span className="text-xs font-bold text-emerald-600 animate-pulse">{saveStatus}</span>}
-                    <button onClick={handleReset} className="text-xs font-bold text-red-700 border border-red-200 px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 transition shadow-sm" type="button">Reset to Defaults</button>
+                    {saveStatus && <span className="text-sm font-bold text-emerald-600 animate-pulse">{saveStatus}</span>}
+                    <button onClick={handleReset} className="text-sm font-bold text-red-700 border border-red-200 px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 transition shadow-sm" type="button">Reset to Defaults</button>
                 </div>
             </div>
 
             {/* Tabs */}
             <div className="flex bg-opd-input-bg border border-opd-border rounded-xl p-1 gap-1 max-w-md">
-                <button onClick={() => setActiveTab('insurer')} className={`flex-1 text-xs py-2 rounded-lg font-bold transition ${activeTab === 'insurer' ? 'bg-opd-primary text-white shadow' : 'text-opd-text-secondary hover:text-opd-primary'}`} type="button">Private Insurer Rules</button>
-                <button onClick={() => setActiveTab('pmjay')} className={`flex-1 text-xs py-2 rounded-lg font-bold transition ${activeTab === 'pmjay' ? 'bg-opd-primary text-white shadow' : 'text-opd-text-secondary hover:text-opd-primary'}`} type="button">Govt PM-JAY Packages</button>
-                <button onClick={() => setActiveTab('raw')} className={`flex-1 text-xs py-2 rounded-lg font-bold transition ${activeTab === 'raw' ? 'bg-opd-primary text-white shadow' : 'text-opd-text-secondary hover:text-opd-primary'}`} type="button">JSON Upload / Editor</button>
+                <button onClick={() => setActiveTab('insurer')} className={`flex-1 text-sm py-2 rounded-lg font-bold transition ${activeTab === 'insurer' ? 'bg-opd-primary text-white shadow' : 'text-opd-text-secondary hover:text-opd-primary'}`} type="button">Private Insurer Rules</button>
+                <button onClick={() => setActiveTab('pmjay')} className={`flex-1 text-sm py-2 rounded-lg font-bold transition ${activeTab === 'pmjay' ? 'bg-opd-primary text-white shadow' : 'text-opd-text-secondary hover:text-opd-primary'}`} type="button">Govt PM-JAY Packages</button>
+                <button onClick={() => setActiveTab('raw')} className={`flex-1 text-sm py-2 rounded-lg font-bold transition ${activeTab === 'raw' ? 'bg-opd-primary text-white shadow' : 'text-opd-text-secondary hover:text-opd-primary'}`} type="button">JSON Upload / Editor</button>
             </div>
 
             {/* TAB 1: Insurer Rules */}
             {activeTab === 'insurer' && (
                 <div className="overflow-x-auto border border-opd-border rounded-2xl bg-white shadow-sm">
-                    <table className="w-full text-left text-xs border-collapse">
+                    <table className="w-full text-left text-sm border-collapse">
                         <thead>
                             <tr className="bg-opd-input-bg text-opd-text-secondary font-bold border-b border-opd-border uppercase tracking-wider text-[9px] font-lora">
                                 <th className="py-3 px-4">Insurance Company</th>
@@ -2463,7 +2467,7 @@ const AdminPolicyConfigView: React.FC = () => {
                                             onChange={e => handlePolicyChange(idx, 'wardCapPercent', +e.target.value)}
                                             className="w-16 border rounded p-1 font-mono text-center font-bold bg-gray-50 focus:bg-white"
                                         />
-                                        <span className="ml-1 text-[10px] text-gray-400">({(p.wardCapPercent * 100).toFixed(1)}%)</span>
+                                        <span className="ml-1 text-sm text-gray-400">({(p.wardCapPercent * 100).toFixed(1)}%)</span>
                                     </td>
                                     <td className="py-3 px-4">
                                         <input
@@ -2473,7 +2477,7 @@ const AdminPolicyConfigView: React.FC = () => {
                                             onChange={e => handlePolicyChange(idx, 'icuCapPercent', +e.target.value)}
                                             className="w-16 border rounded p-1 font-mono text-center font-bold bg-gray-50 focus:bg-white"
                                         />
-                                        <span className="ml-1 text-[10px] text-gray-400">({(p.icuCapPercent * 100).toFixed(1)}%)</span>
+                                        <span className="ml-1 text-sm text-gray-400">({(p.icuCapPercent * 100).toFixed(1)}%)</span>
                                     </td>
                                     <td className="py-3 px-4">
                                         <input
@@ -2483,7 +2487,7 @@ const AdminPolicyConfigView: React.FC = () => {
                                             onChange={e => handlePolicyChange(idx, 'coPayPercent', +e.target.value)}
                                             className="w-16 border rounded p-1 font-mono text-center font-bold bg-gray-50 focus:bg-white"
                                         />
-                                        <span className="ml-1 text-[10px] text-gray-400">({(p.coPayPercent * 100).toFixed(0)}%)</span>
+                                        <span className="ml-1 text-sm text-gray-400">({(p.coPayPercent * 100).toFixed(0)}%)</span>
                                     </td>
                                     <td className="py-3 px-4">
                                         <input
@@ -2504,7 +2508,7 @@ const AdminPolicyConfigView: React.FC = () => {
             {activeTab === 'pmjay' && (
                 <div className="space-y-3">
                     <div className="overflow-x-auto border border-opd-border rounded-2xl bg-white shadow-sm max-h-[45vh] overflow-y-auto custom-scrollbar">
-                        <table className="w-full text-left text-xs border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
                                 <tr className="bg-opd-input-bg text-opd-text-secondary font-bold border-b border-opd-border uppercase tracking-wider text-[9px] font-lora sticky top-0 z-10">
                                     <th className="py-3 px-4 bg-opd-input-bg">ICD Prefix</th>
@@ -2539,12 +2543,12 @@ const AdminPolicyConfigView: React.FC = () => {
             {activeTab === 'raw' && (
                 <div className="space-y-4">
                     <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-2 text-xs">
+                        <div className="flex items-center gap-2 text-sm">
                             <label className="font-bold text-opd-text-primary">Configuration Mode:</label>
                             <select
                                 value={jsonType}
                                 onChange={e => setJsonType(e.target.value as any)}
-                                className="border rounded-lg p-1.5 bg-gray-50 focus:outline-none focus:border-opd-primary text-xs font-semibold"
+                                className="border rounded-lg p-1.5 bg-gray-50 focus:outline-none focus:border-opd-primary text-sm font-semibold"
                             >
                                 <option value="insurer">Private Insurer Capping Rules</option>
                                 <option value="pmjay">Government PM-JAY Code Packages</option>
@@ -2553,7 +2557,7 @@ const AdminPolicyConfigView: React.FC = () => {
                         
                         {/* File Upload simulator trigger */}
                         <div className="flex items-center gap-2">
-                            <label className="btn-secondary px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                            <label className="btn-secondary px-3 py-1.5 text-sm font-bold flex items-center gap-1.5 cursor-pointer">
                                 📤 Upload Scheme JSON
                                 <input
                                     type="file"
@@ -2575,7 +2579,7 @@ const AdminPolicyConfigView: React.FC = () => {
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider">Paste or Modify configuration JSON directly:</label>
+                        <label className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider">Paste or Modify configuration JSON directly:</label>
                         <textarea
                             value={rawJsonText}
                             onChange={e => setRawJsonText(e.target.value)}
@@ -2585,14 +2589,14 @@ const AdminPolicyConfigView: React.FC = () => {
                                 : '[\n  {\n    "icdPrefix": "H25",\n    "packageCode": "HBP-2.1.1",\n    "packageName": "Cataract Phaco...",\n    "rate": 10000\n  }\n]'
                             }
                             rows={12}
-                            className="w-full bg-white border border-opd-border text-opd-text-primary text-xs rounded-xl p-4 focus:ring-1 focus:ring-opd-primary focus:border-opd-primary outline-none font-mono leading-relaxed"
+                            className="w-full bg-white border border-opd-border text-opd-text-primary text-sm rounded-xl p-4 focus:ring-1 focus:ring-opd-primary focus:border-opd-primary outline-none font-mono leading-relaxed"
                         />
                     </div>
 
                     <button
                         onClick={handleJsonCommit}
                         disabled={!rawJsonText.trim()}
-                        className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 text-white disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
+                        className="w-full py-3 bg-opd-primary hover:bg-opd-primary/95 text-white disabled:opacity-40 disabled:cursor-not-allowed text-sm font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[.98] shadow-sm"
                         type="button"
                     >
                         ✓ Commit Configuration Changes
@@ -2647,31 +2651,31 @@ const AnalyticsView: React.FC = () => {
         <div className="card-premium space-y-6 text-left">
             <div className="flex justify-between items-start">
                 <h2 className="text-lg font-bold font-lora text-opd-primary">Screen 12: Analytics Dashboard</h2>
-                <div className="px-3 py-1 bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200 rounded-full uppercase tracking-wider">
+                <div className="px-3 py-1 bg-amber-50 text-amber-800 text-sm font-bold border border-amber-200 rounded-full uppercase tracking-wider">
                     Session Local Stats Only
                 </div>
             </div>
 
             <div className="grid grid-cols-4 gap-4">
                 <div className="p-4 bg-gray-50 border rounded-xl text-center">
-                    <span className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Claims</span>
+                    <span className="block text-sm font-bold text-gray-500 uppercase tracking-wider">Total Claims</span>
                     <span className="text-2xl font-bold text-opd-primary">{stats.total}</span>
                 </div>
                 <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-xl text-center">
-                    <span className="block text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Approved</span>
+                    <span className="block text-sm font-bold text-emerald-700 uppercase tracking-wider">Approved</span>
                     <span className="text-2xl font-bold text-emerald-800">{stats.approved}</span>
                 </div>
                 <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-center">
-                    <span className="block text-[10px] font-bold text-red-700 uppercase tracking-wider">Rejected</span>
+                    <span className="block text-sm font-bold text-red-700 uppercase tracking-wider">Rejected</span>
                     <span className="text-2xl font-bold text-red-800">{stats.denied}</span>
                 </div>
                 <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl text-center">
-                    <span className="block text-[10px] font-bold text-blue-700 uppercase tracking-wider">Avg Readiness</span>
+                    <span className="block text-sm font-bold text-blue-700 uppercase tracking-wider">Avg Readiness</span>
                     <span className="text-2xl font-bold text-blue-800">88%</span>
                 </div>
             </div>
             
-            <p className="text-[11px] text-opd-text-muted leading-relaxed">
+            <p className="text-sm text-opd-text-muted leading-relaxed">
                 All numbers shown represent local IndexedDB registrations under this session. Aggregate cross-hospital analytics will activate post-cloud backend synchronization.
             </p>
         </div>
@@ -2766,7 +2770,7 @@ const PatientRegistrationPage: React.FC<{ token: string; onDone: () => void }> =
                 <div className="bg-gray-50 rounded-xl p-4 font-mono text-sm text-emerald-700 font-bold border border-emerald-100">
                     {successId}
                 </div>
-                <p className="text-xs text-gray-400">The hospital staff can now see your information and will begin processing your claim.</p>
+                <p className="text-sm text-gray-400">The hospital staff can now see your information and will begin processing your claim.</p>
                 <button onClick={onDone} className="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition text-sm">
                     Done
                 </button>
@@ -2785,7 +2789,7 @@ const PatientRegistrationPage: React.FC<{ token: string; onDone: () => void }> =
                     </div>
                     <h1 className="text-xl font-bold text-gray-800">Patient Registration</h1>
                     <p className="text-sm text-gray-500">Fill this form to start your cashless claim</p>
-                    <div className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 border border-blue-100 rounded-full text-[11px] text-blue-700 font-mono">
+                    <div className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 border border-blue-100 rounded-full text-sm text-blue-700 font-mono">
                         Session: {token}
                     </div>
                 </div>
@@ -2793,7 +2797,7 @@ const PatientRegistrationPage: React.FC<{ token: string; onDone: () => void }> =
                 <div className="bg-white rounded-3xl shadow-xl p-6 space-y-6">
                     {/* Patient Details */}
                     <div className="space-y-3">
-                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                        <div className="text-sm font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
                             <UserCheck className="w-3.5 h-3.5" /> Your Details
                         </div>
                         <input className={inputCls} placeholder="Full Name *" value={formData.name} onChange={e => setField('name', e.target.value)} />
@@ -2809,7 +2813,7 @@ const PatientRegistrationPage: React.FC<{ token: string; onDone: () => void }> =
 
                     {/* Insurance Card */}
                     <div className="space-y-3 border-t border-gray-100 pt-5">
-                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                        <div className="text-sm font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
                             <BookmarkCheck className="w-3.5 h-3.5" /> Insurance Card
                             <span className="text-gray-300 font-normal normal-case">— upload or type below</span>
                         </div>
@@ -2825,12 +2829,12 @@ const PatientRegistrationPage: React.FC<{ token: string; onDone: () => void }> =
                                 <div className="space-y-1">
                                     <BookmarkCheck className="w-8 h-8 text-emerald-300 mx-auto" />
                                     <div className="text-sm font-semibold text-emerald-600">Tap to photo your insurance card</div>
-                                    <div className="text-xs text-gray-400">AI will read policy number, insurer & sum insured automatically</div>
+                                    <div className="text-sm text-gray-400">AI will read policy number, insurer & sum insured automatically</div>
                                 </div>
                             )}
                         </div>
                         {cardScanning && (
-                            <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl text-xs text-blue-700">
+                            <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl text-sm text-blue-700">
                                 <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
                                 Reading your insurance card...
                             </div>
@@ -2838,10 +2842,10 @@ const PatientRegistrationPage: React.FC<{ token: string; onDone: () => void }> =
                         {cardScanResult && !cardScanning && (
                             <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-xs font-bold text-emerald-700">✓ Card read ({cardScanResult.confidence}% confidence)</span>
-                                    <button onClick={applyCard} className="text-xs px-3 py-1 bg-emerald-600 text-white rounded-lg font-bold">Fill form ↓</button>
+                                    <span className="text-sm font-bold text-emerald-700">✓ Card read ({cardScanResult.confidence}% confidence)</span>
+                                    <button onClick={applyCard} className="text-sm px-3 py-1 bg-emerald-600 text-white rounded-lg font-bold">Fill form ↓</button>
                                 </div>
-                                <div className="text-xs text-emerald-800 grid grid-cols-2 gap-1">
+                                <div className="text-sm text-emerald-800 grid grid-cols-2 gap-1">
                                     {cardScanResult.insurerName && <span>Insurer: <strong>{cardScanResult.insurerName}</strong></span>}
                                     {cardScanResult.policyNumber && <span>Policy: <strong>{cardScanResult.policyNumber}</strong></span>}
                                     {cardScanResult.sumInsured && <span>Sum: <strong>₹{cardScanResult.sumInsured.toLocaleString('en-IN')}</strong></span>}
@@ -2859,7 +2863,7 @@ const PatientRegistrationPage: React.FC<{ token: string; onDone: () => void }> =
 
                     {/* Clinical */}
                     <div className="space-y-3 border-t border-gray-100 pt-5">
-                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                        <div className="text-sm font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
                             <HeartPulse className="w-3.5 h-3.5" /> Symptoms
                         </div>
                         <input className={inputCls} placeholder="Chief complaints (e.g. high fever, vomiting since 3 days)" value={formData.chiefComplaints} onChange={e => setField('chiefComplaints', e.target.value)} />
@@ -2874,7 +2878,7 @@ const PatientRegistrationPage: React.FC<{ token: string; onDone: () => void }> =
                         {registering ? 'Registering...' : '✓ Complete Registration'}
                     </button>
 
-                    <p className="text-center text-[11px] text-gray-400">Your data is stored securely and only shared with the hospital and your insurer.</p>
+                    <p className="text-center text-sm text-gray-400">Your data is stored securely and only shared with the hospital and your insurer.</p>
                 </div>
             </div>
         </div>
@@ -2994,9 +2998,9 @@ export const InsuranceModule: React.FC = () => {
                         
                         {/* Case Selector Dropdown */}
                         <div className="flex items-center gap-2 border-l pl-4 border-opd-border">
-                            <span className="text-xs font-semibold text-gray-500">Active Case:</span>
+                            <span className="text-sm font-semibold text-gray-500">Active Case:</span>
                             <select
-                                className="text-xs p-1.5 border rounded-lg bg-gray-50 font-mono text-opd-primary font-bold focus:outline-none"
+                                className="text-sm p-1.5 border rounded-lg bg-gray-50 font-mono text-opd-primary font-bold focus:outline-none"
                                 value={activeCaseId || ''}
                                 onChange={e => handleCaseSelect(e.target.value)}
                             >
@@ -3016,7 +3020,7 @@ export const InsuranceModule: React.FC = () => {
                                         setSelectedRecord(null);
                                         setShowWizard(true);
                                     }}
-                                    className="ml-2 flex items-center gap-1.5 px-3 py-1.5 bg-opd-primary hover:bg-opd-primary-dark text-white rounded-xl text-[11px] font-bold transition shadow-sm active:scale-95 border border-transparent shrink-0"
+                                    className="ml-2 flex items-center gap-1.5 px-3 py-1.5 bg-opd-primary hover:bg-opd-primary-dark text-white rounded-xl text-sm font-bold transition shadow-sm active:scale-95 border border-transparent shrink-0"
                                 >
                                     <Volume2 className="w-3.5 h-3.5" />
                                     Launch Pre-Auth Scribe
@@ -3027,7 +3031,7 @@ export const InsuranceModule: React.FC = () => {
 
                     <div className="flex items-center gap-2">
                         <div className="flex items-center bg-white border border-opd-border rounded-full px-3 py-1 gap-2 select-none">
-                            <span className="text-[10px] font-bold text-opd-text-secondary tracking-wider">DEMO</span>
+                            <span className="text-sm font-bold text-opd-text-secondary tracking-wider">DEMO</span>
                             <button
                                 onClick={() => {
                                     const val = !isDemoMode;
@@ -3047,14 +3051,14 @@ export const InsuranceModule: React.FC = () => {
                     
                     {/* Left Sidebar */}
                     <div className="col-span-1 bg-white border border-opd-border rounded-2xl p-4 shadow-sm space-y-2">
-                        <div className="text-[10px] font-bold text-gray-400 uppercase px-2 mb-2 tracking-wider">
+                        <div className="text-sm font-bold text-gray-400 uppercase px-2 mb-2 tracking-wider">
                             12-Screen Navigation
                         </div>
                         {SCREENS.map(scr => (
                             <button
                                 key={scr.id}
                                 onClick={() => setSelectedScreen(scr.id)}
-                                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition text-left ${
+                                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition text-left ${
                                     selectedScreen === scr.id
                                         ? 'bg-opd-primary text-white shadow'
                                         : 'text-opd-text-secondary hover:bg-gray-50 hover:text-opd-primary'
@@ -3090,7 +3094,7 @@ export const InsuranceModule: React.FC = () => {
                         ) : isDemoMode ? (
                             <div className="w-full bg-white border border-opd-border rounded-2xl p-6 space-y-6">
                                 <div className="text-center space-y-2">
-                                    <div className="inline-block bg-primary-tint border border-opd-primary/20 text-opd-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                    <div className="inline-block bg-primary-tint border border-opd-primary/20 text-opd-primary text-sm font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                                         ⚡ Presentation Sandbox
                                     </div>
                                     <h3 className="text-xl font-bold font-lora text-opd-primary">Pre-Loaded Demo Scenarios</h3>
@@ -3098,15 +3102,15 @@ export const InsuranceModule: React.FC = () => {
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="p-4 border rounded-xl flex flex-col justify-between space-y-3">
                                         <h4 className="font-bold text-sm">Diabetes Profile</h4>
-                                        <button onClick={() => runDemoCase(DIABETES_DEMO_RECORD)} className="btn-primary py-1.5 text-xs">Run Review</button>
+                                        <button onClick={() => runDemoCase(DIABETES_DEMO_RECORD)} className="btn-primary py-1.5 text-sm">Run Review</button>
                                     </div>
                                     <div className="p-4 border rounded-xl flex flex-col justify-between space-y-3">
                                         <h4 className="font-bold text-sm">Pneumonia Admittance</h4>
-                                        <button onClick={() => runDemoCase(PNEUMONIA_DEMO_RECORD)} className="btn-primary py-1.5 text-xs">Run Review</button>
+                                        <button onClick={() => runDemoCase(PNEUMONIA_DEMO_RECORD)} className="btn-primary py-1.5 text-sm">Run Review</button>
                                     </div>
                                     <div className="p-4 border rounded-xl flex flex-col justify-between space-y-3">
                                         <h4 className="font-bold text-sm">Appendicitis Clean</h4>
-                                        <button onClick={() => runDemoCase(APPENDICITIS_DEMO_RECORD)} className="btn-primary py-1.5 text-xs">Run Review</button>
+                                        <button onClick={() => runDemoCase(APPENDICITIS_DEMO_RECORD)} className="btn-primary py-1.5 text-sm">Run Review</button>
                                     </div>
                                 </div>
                             </div>
@@ -3131,15 +3135,15 @@ export const InsuranceModule: React.FC = () => {
                                     <button
                                         onClick={() => setSelectedScreen(s => Math.max(1, s - 1))}
                                         disabled={selectedScreen === 1}
-                                        className="flex items-center gap-2 px-4 py-2 text-xs font-bold border border-opd-border rounded-xl text-opd-text-secondary hover:border-opd-primary hover:text-opd-primary transition disabled:opacity-30 disabled:cursor-not-allowed"
+                                        className="flex items-center gap-2 px-4 py-2 text-sm font-bold border border-opd-border rounded-xl text-opd-text-secondary hover:border-opd-primary hover:text-opd-primary transition disabled:opacity-30 disabled:cursor-not-allowed"
                                     >
                                         ← Previous
                                     </button>
-                                    <span className="text-[10px] text-gray-400 font-mono">Screen {selectedScreen} of {SCREENS.length}</span>
+                                    <span className="text-sm text-gray-400 font-mono">Screen {selectedScreen} of {SCREENS.length}</span>
                                     <button
                                         onClick={() => setSelectedScreen(s => Math.min(SCREENS.length, s + 1))}
                                         disabled={selectedScreen === SCREENS.length}
-                                        className="flex items-center gap-2 px-4 py-2 text-xs font-bold bg-opd-primary text-white rounded-xl hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                                        className="flex items-center gap-2 px-4 py-2 text-sm font-bold bg-opd-primary text-white rounded-xl hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed"
                                     >
                                         Next →
                                     </button>

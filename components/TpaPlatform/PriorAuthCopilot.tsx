@@ -415,18 +415,18 @@ export const PriorAuthCopilot: React.FC = () => {
             {/* Header section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-opd-border shadow-sm text-left">
                 <div>
-                    <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
+                    <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
                         <Globe className="w-3.5 h-3.5" /> Fairway Style Pre-Auth Copilot
                     </div>
                     <h2 className="text-xl font-bold tracking-tight text-opd-text-primary font-lora">Prior Authorization Audit & Medical Necessity Engine</h2>
-                    <p className="text-xs text-opd-text-secondary mt-0.5 leading-relaxed">Automating medical necessity justifications, evidence matching, and TPA checklist verification using Gemini Multimodal reasoning.</p>
+                    <p className="text-sm text-opd-text-secondary mt-0.5 leading-relaxed">Automating medical necessity justifications, evidence matching, and TPA checklist verification using Gemini Multimodal reasoning.</p>
                 </div>
                 <div className="flex items-center gap-2.5">
                     {DEMO_CHARTS.map(chart => (
                         <button
                             key={chart.id}
                             onClick={() => loadDemoChart(chart.id)}
-                            className="px-3.5 py-2 bg-opd-input-bg hover:bg-gray-50 text-[11px] font-bold text-opd-text-primary rounded-xl transition border border-opd-border active:scale-95 text-left max-w-xs shadow-sm"
+                            className="px-3.5 py-2 bg-opd-input-bg hover:bg-gray-50 text-sm font-bold text-opd-text-primary rounded-xl transition border border-opd-border active:scale-95 text-left max-w-xs shadow-sm"
                             title={chart.description}
                             type="button"
                         >
@@ -446,7 +446,7 @@ export const PriorAuthCopilot: React.FC = () => {
                             <h3 className="text-sm font-bold text-opd-primary tracking-wide uppercase font-lora">Patient Clinical Chart Note</h3>
                             <button
                                 onClick={() => setClinicalNote('')}
-                                className="text-[10px] text-opd-text-secondary hover:text-opd-primary transition uppercase font-semibold"
+                                className="text-sm text-opd-text-secondary hover:text-opd-primary transition uppercase font-semibold"
                                 type="button"
                             >
                                 Clear Note
@@ -465,7 +465,7 @@ export const PriorAuthCopilot: React.FC = () => {
                         {compressingProgress ? (
                             <div className="border-2 border-dashed border-emerald-500/30 rounded-2xl p-6 text-center bg-emerald-500/[0.02] flex flex-col items-center justify-center gap-2.5 min-h-[120px] select-none">
                                 <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
-                                <div className="text-emerald-500 font-bold text-xs uppercase tracking-wider">{compressingProgress}</div>
+                                <div className="text-emerald-500 font-bold text-sm uppercase tracking-wider">{compressingProgress}</div>
                                 <div className="text-[9px] text-gray-500">Optimizing multi-page PDF pages locally for high-capacity Vision processing...</div>
                             </div>
                         ) : (
@@ -487,22 +487,22 @@ export const PriorAuthCopilot: React.FC = () => {
                                     className="hidden"
                                 />
                                 <Upload className="w-8 h-8 text-opd-text-muted mx-auto mb-2" />
-                                <p className="text-xs font-bold text-opd-text-primary">Drag & drop scanned reports, ECGs, or pre-auth forms here</p>
-                                <p className="text-[10px] text-opd-text-secondary mt-1">Supports PDF, JPG, PNG, and XLSX files for vision extraction</p>
+                                <p className="text-sm font-bold text-opd-text-primary">Drag & drop scanned reports, ECGs, or pre-auth forms here</p>
+                                <p className="text-sm text-opd-text-secondary mt-1">Supports PDF, JPG, PNG, and XLSX files for vision extraction</p>
                             </div>
                         )}
 
                         {/* Attachments List */}
                         {attachments.length > 0 && (
                             <div className="space-y-1.5 pt-2">
-                                <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wide">Uploaded Evidentiary Documents ({attachments.length})</h4>
+                                <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wide">Uploaded Evidentiary Documents ({attachments.length})</h4>
                                 <div className="grid grid-cols-2 gap-2">
                                     {attachments.map((file, idx) => (
-                                        <div key={idx} className="flex items-center justify-between p-2.5 bg-opd-input-bg rounded-xl border border-opd-border text-[11px] shadow-sm">
+                                        <div key={idx} className="flex items-center justify-between p-2.5 bg-opd-input-bg rounded-xl border border-opd-border text-sm shadow-sm">
                                             <span className="truncate text-opd-text-primary max-w-[150px] font-medium" title={file.name}>📄 {file.name}</span>
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); removeAttachment(idx); }}
-                                                className="text-red-700 hover:text-red-800 font-bold ml-2 text-xs font-sans"
+                                                className="text-red-700 hover:text-red-800 font-bold ml-2 text-sm font-sans"
                                                 type="button"
                                             >
                                                 ✕
@@ -518,12 +518,12 @@ export const PriorAuthCopilot: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                         {/* Insurance Parameters */}
                         <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-4 shadow-sm text-opd-text-primary">
-                            <h3 className="text-xs font-bold text-opd-primary font-lora border-b border-opd-border pb-2">Insurance Parameters</h3>
-                            <div className="space-y-3 text-xs">
+                            <h3 className="text-sm font-bold text-opd-primary font-lora border-b border-opd-border pb-2">Insurance Parameters</h3>
+                            <div className="space-y-3 text-sm">
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">TPA / Insurer</label>
-                                        <select value={tpaName} onChange={(e) => setTpaName(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
+                                        <label className="text-sm text-opd-text-secondary font-semibold mb-1 block">TPA / Insurer</label>
+                                        <select value={tpaName} onChange={(e) => setTpaName(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
                                             <option value="Medi Assist TPA">Medi Assist TPA</option>
                                             <option value="Paramount Health Services TPA">Paramount TPA</option>
                                             <option value="MDIndia Health Insurance TPA">MDIndia TPA</option>
@@ -531,8 +531,8 @@ export const PriorAuthCopilot: React.FC = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">State Scheme Jurisdiction</label>
-                                        <select value={stateCode} onChange={(e) => setStateCode(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
+                                        <label className="text-sm text-opd-text-secondary font-semibold mb-1 block">State Scheme Jurisdiction</label>
+                                        <select value={stateCode} onChange={(e) => setStateCode(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
                                             <option value="MH">Maharashtra (MJPJAY)</option>
                                             <option value="KA">Karnataka (AB-ArK)</option>
                                             <option value="TN">Tamil Nadu (CMCHIS)</option>
@@ -543,12 +543,12 @@ export const PriorAuthCopilot: React.FC = () => {
                                 </div>
                                 <div className="grid grid-cols-3 gap-2">
                                     <div>
-                                        <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">Sum Insured (₹)</label>
-                                        <input type="number" value={sumInsured} onChange={(e) => setSumInsured(Number(e.target.value))} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
+                                        <label className="text-sm text-opd-text-secondary font-semibold mb-1 block">Sum Insured (₹)</label>
+                                        <input type="number" value={sumInsured} onChange={(e) => setSumInsured(Number(e.target.value))} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">Ward Type</label>
-                                        <select value={wardType} onChange={(e) => setWardType(e.target.value as any)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
+                                        <label className="text-sm text-opd-text-secondary font-semibold mb-1 block">Ward Type</label>
+                                        <select value={wardType} onChange={(e) => setWardType(e.target.value as any)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition">
                                             <option value="General">General</option>
                                             <option value="Semi-Private">Semi-Private</option>
                                             <option value="Private">Private</option>
@@ -556,8 +556,8 @@ export const PriorAuthCopilot: React.FC = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">Room Rent/Day (₹)</label>
-                                        <input type="number" value={roomRent} onChange={(e) => setRoomRent(Number(e.target.value))} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
+                                        <label className="text-sm text-opd-text-secondary font-semibold mb-1 block">Room Rent/Day (₹)</label>
+                                        <input type="number" value={roomRent} onChange={(e) => setRoomRent(Number(e.target.value))} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                     </div>
                                 </div>
                                 <div className="flex items-center pt-2">
@@ -571,15 +571,15 @@ export const PriorAuthCopilot: React.FC = () => {
 
                         {/* Doctor Declarations */}
                         <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-4 shadow-sm text-opd-text-primary">
-                            <h3 className="text-xs font-bold text-opd-primary font-lora border-b border-opd-border pb-2">Medical Declarations & Seals</h3>
-                            <div className="space-y-3 text-xs">
+                            <h3 className="text-sm font-bold text-opd-primary font-lora border-b border-opd-border pb-2">Medical Declarations & Seals</h3>
+                            <div className="space-y-3 text-sm">
                                 <div>
-                                    <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">Doctor Name</label>
-                                    <input type="text" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
+                                    <label className="text-sm text-opd-text-secondary font-semibold mb-1 block">Doctor Name</label>
+                                    <input type="text" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] text-opd-text-secondary font-semibold mb-1 block">MCI / State Medical Council Registration No.</label>
-                                    <input type="text" value={doctorReg} onChange={(e) => setDoctorReg(e.target.value)} placeholder="E.g. MCI-12345" className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-xs text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
+                                    <label className="text-sm text-opd-text-secondary font-semibold mb-1 block">MCI / State Medical Council Registration No.</label>
+                                    <input type="text" value={doctorReg} onChange={(e) => setDoctorReg(e.target.value)} placeholder="E.g. MCI-12345" className="w-full p-2 bg-opd-input-bg border border-opd-border rounded-xl text-sm text-opd-text-primary focus:outline-none focus:border-opd-primary transition" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 pt-1 font-semibold text-opd-text-secondary">
                                     <label className="flex items-center space-x-2 cursor-pointer select-none">
@@ -621,10 +621,10 @@ export const PriorAuthCopilot: React.FC = () => {
                                 <div className="text-center space-y-4">
                                     <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
                                         <div className="w-12 h-12 border-4 border-opd-primary border-t-transparent rounded-full animate-spin"></div>
-                                        <div className="absolute w-6 h-6 bg-primary-tint rounded-full flex items-center justify-center text-opd-primary text-xs font-bold">✨</div>
+                                        <div className="absolute w-6 h-6 bg-primary-tint rounded-full flex items-center justify-center text-opd-primary text-sm font-bold">✨</div>
                                     </div>
                                     <h3 className="text-sm font-bold text-opd-primary font-lora uppercase tracking-wider">Scanning & Classifying Document...</h3>
-                                    <p className="text-[11px] text-opd-text-secondary">Current Stage: <span className="font-semibold text-opd-primary">{
+                                    <p className="text-sm text-opd-text-secondary">Current Stage: <span className="font-semibold text-opd-primary">{
                                         extractionStage === 'reading' ? 'Reading PDF/Image File' :
                                         extractionStage === 'ocr' ? 'Running Vision API OCR' :
                                         extractionStage === 'classifying' ? 'Classifying Layout' :
@@ -635,7 +635,7 @@ export const PriorAuthCopilot: React.FC = () => {
 
                                 {/* Progress Bar */}
                                 <div className="space-y-1.5 max-w-sm mx-auto w-full pt-4">
-                                    <div className="flex justify-between text-[10px] text-opd-text-secondary font-semibold font-mono">
+                                    <div className="flex justify-between text-sm text-opd-text-secondary font-semibold font-mono">
                                         <span>PROGRESS</span>
                                         <span>{
                                             extractionStage === 'reading' ? '15%' :
@@ -667,10 +667,10 @@ export const PriorAuthCopilot: React.FC = () => {
                                     <h4 className="text-[9px] font-bold text-opd-text-secondary uppercase tracking-widest">Live Document Layout Classification</h4>
                                     <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1 custom-scrollbar">
                                         {pageClassifications.map((p, idx) => (
-                                            <div key={idx} className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-150 rounded-xl text-xs">
+                                            <div key={idx} className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-150 rounded-xl text-sm">
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-[9px] font-bold bg-primary-tint text-opd-primary px-1.5 py-0.5 rounded">Page {p.pageNumber}</span>
-                                                    <span className="font-semibold text-opd-text-primary text-[11px]">{p.classification}</span>
+                                                    <span className="font-semibold text-opd-text-primary text-sm">{p.classification}</span>
                                                 </div>
                                                 <span className="text-[8px] font-black text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">CLASSIFIED</span>
                                             </div>
@@ -687,7 +687,7 @@ export const PriorAuthCopilot: React.FC = () => {
                                     <button
                                         onClick={() => setActiveAuditTab('audit')}
                                         disabled={!analysis}
-                                        className={`flex-1 py-2 text-xs font-bold rounded-xl transition ${
+                                        className={`flex-1 py-2 text-sm font-bold rounded-xl transition ${
                                             activeAuditTab === 'audit'
                                                 ? 'bg-white text-opd-primary shadow-sm'
                                                 : 'text-opd-text-secondary hover:text-opd-primary disabled:opacity-40 disabled:pointer-events-none'
@@ -699,7 +699,7 @@ export const PriorAuthCopilot: React.FC = () => {
                                     <button
                                         onClick={() => setActiveAuditTab('classification')}
                                         disabled={pageClassifications.length === 0}
-                                        className={`flex-1 py-2 text-xs font-bold rounded-xl transition ${
+                                        className={`flex-1 py-2 text-sm font-bold rounded-xl transition ${
                                             activeAuditTab === 'classification'
                                                 ? 'bg-white text-opd-primary shadow-sm'
                                                 : 'text-opd-text-secondary hover:text-opd-primary disabled:opacity-40 disabled:pointer-events-none'
@@ -714,7 +714,7 @@ export const PriorAuthCopilot: React.FC = () => {
                             {activeAuditTab === 'classification' && pageClassifications.length > 0 ? (
                                 <div className="bg-white border border-opd-border rounded-3xl p-6 space-y-5 shadow-sm text-left">
                                     <div className="border-b border-opd-border pb-3 flex justify-between items-center">
-                                        <h3 className="text-xs font-bold text-opd-primary font-lora uppercase tracking-wider font-lora">Document Classification List</h3>
+                                        <h3 className="text-sm font-bold text-opd-primary font-lora uppercase tracking-wider font-lora">Document Classification List</h3>
                                         <span className="text-[9px] font-black uppercase bg-emerald-50 text-emerald-700 border border-emerald-250 px-2.5 py-1 rounded-xl tracking-wider select-none">
                                             ✓ Google Vision Verified
                                         </span>
@@ -724,7 +724,7 @@ export const PriorAuthCopilot: React.FC = () => {
                                             <div key={idx} className="p-4 bg-slate-50 border border-slate-200/60 rounded-2xl flex items-center justify-between shadow-sm">
                                                 <div className="space-y-1">
                                                     <span className="text-[9px] font-black text-opd-primary uppercase tracking-widest font-mono">Page {p.pageNumber}</span>
-                                                    <h4 className="text-xs font-bold text-opd-text-primary leading-tight font-lora">{p.classification}</h4>
+                                                    <h4 className="text-sm font-bold text-opd-text-primary leading-tight font-lora">{p.classification}</h4>
                                                     <span className="text-[9px] text-opd-text-secondary block font-medium">Source: {p.fileName}</span>
                                                 </div>
                                                 <span className="text-[8px] font-black text-emerald-750 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl tracking-wider select-none">
@@ -740,7 +740,7 @@ export const PriorAuthCopilot: React.FC = () => {
                                     {/* Top Decision Badge */}
                                     <div className="flex items-center justify-between border-b border-opd-border pb-4">
                                         <h3 className="text-sm font-bold text-opd-primary font-lora tracking-wide uppercase">Audit Report</h3>
-                                        <span className={`text-xs font-black uppercase px-3 py-1.5 rounded-xl tracking-wider border ${
+                                        <span className={`text-sm font-black uppercase px-3 py-1.5 rounded-xl tracking-wider border ${
                                             analysis.decision === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                                             analysis.decision === 'Denied' ? 'bg-red-50 text-red-750 border-red-200' :
                                             'bg-amber-50 text-amber-700 border-amber-200'
@@ -751,17 +751,17 @@ export const PriorAuthCopilot: React.FC = () => {
 
                                     {/* Medical Necessity Reasoning */}
                                     <div className="space-y-2">
-                                        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                        <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
                                             <Award className="w-3.5 h-3.5 text-opd-primary" /> Medical Necessity Verdict
                                         </h4>
-                                        <p className="text-xs text-opd-text-primary leading-relaxed bg-opd-input-bg p-4 rounded-2xl border border-opd-border shadow-sm">
+                                        <p className="text-sm text-opd-text-primary leading-relaxed bg-opd-input-bg p-4 rounded-2xl border border-opd-border shadow-sm">
                                             {analysis.justification}
                                         </p>
                                     </div>
 
                                     {/* Multi-lingual summary tab */}
                                     <div className="border border-opd-border rounded-2xl overflow-hidden shadow-sm">
-                                        <div className="flex bg-opd-input-bg border-b border-opd-border text-[11px] font-bold">
+                                        <div className="flex bg-opd-input-bg border-b border-opd-border text-sm font-bold">
                                             <button
                                                 onClick={() => setLanguageTab('en')}
                                                 className={`flex-1 py-2.5 transition flex items-center justify-center gap-1.5 ${languageTab === 'en' ? 'bg-opd-primary text-white shadow-sm' : 'text-opd-text-secondary hover:text-opd-primary'}`}
@@ -777,7 +777,7 @@ export const PriorAuthCopilot: React.FC = () => {
                                                 हिन्दी सारांश (Hindi)
                                             </button>
                                         </div>
-                                        <div className="p-4 bg-white text-xs leading-relaxed text-opd-text-primary font-medium">
+                                        <div className="p-4 bg-white text-sm leading-relaxed text-opd-text-primary font-medium">
                                             {languageTab === 'en' ? (
                                                 <p>{analysis.englishSummary}</p>
                                             ) : (
@@ -788,14 +788,14 @@ export const PriorAuthCopilot: React.FC = () => {
 
                                     {/* Clinical Evidence Highlights */}
                                     <div className="space-y-3">
-                                        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                        <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
                                             <CheckCircle className="w-3.5 h-3.5 text-emerald-700" /> Highlighted Evidence Ingested
                                         </h4>
                                         <div className="space-y-2 max-h-56 overflow-y-auto custom-scrollbar">
                                             {analysis.evidenceHighlights.map((hl, idx) => (
                                                 <div
                                                     key={idx}
-                                                    className={`p-3 rounded-2xl border text-[11px] leading-relaxed ${
+                                                    className={`p-3 rounded-2xl border text-sm leading-relaxed ${
                                                         hl.severity === 'supportive'
                                                             ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                                                             : 'bg-red-50 border-red-200 text-red-800'
@@ -807,31 +807,31 @@ export const PriorAuthCopilot: React.FC = () => {
                                                     <blockquote className="font-mono bg-opd-input-bg px-2 py-1 rounded border border-opd-border my-1 block text-opd-text-primary">
                                                         "{hl.snippet}"
                                                     </blockquote>
-                                                    <span className="text-[10px] text-opd-text-secondary mt-1 block font-sans">
+                                                    <span className="text-sm text-opd-text-secondary mt-1 block font-sans">
                                                         <strong>Relevance:</strong> {hl.relevance}
                                                     </span>
                                                 </div>
                                             ))}
                                             {analysis.evidenceHighlights.length === 0 && (
-                                                <p className="text-xs text-opd-text-muted italic">No structured highlights detected in notes.</p>
+                                                <p className="text-sm text-opd-text-muted italic">No structured highlights detected in notes.</p>
                                             )}
                                         </div>
                                     </div>
 
                                     {/* Information Gaps and Missing Items */}
                                     <div className="space-y-3">
-                                        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                        <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
                                             <ShieldAlert className="w-3.5 h-3.5 text-amber-600" /> Insufficient Information Gaps
                                         </h4>
                                         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-2 shadow-sm">
                                             {analysis.missingInformation.length > 0 ? (
-                                                <ul className="list-disc pl-4 space-y-1.5 text-xs text-amber-800 font-medium">
+                                                <ul className="list-disc pl-4 space-y-1.5 text-sm text-amber-800 font-medium">
                                                     {analysis.missingInformation.map((gap, idx) => (
                                                         <li key={idx}>{gap}</li>
                                                     ))}
                                                 </ul>
                                             ) : (
-                                                <div className="flex items-center gap-2 text-emerald-705 text-xs font-bold">
+                                                <div className="flex items-center gap-2 text-emerald-705 text-sm font-bold">
                                                     <CheckCircle className="w-4 h-4 text-emerald-650" /> All clinical & mandatory verification gaps resolved.
                                                 </div>
                                             )}
@@ -840,13 +840,13 @@ export const PriorAuthCopilot: React.FC = () => {
 
                                     {/* Policy Citations Card */}
                                     <div className="space-y-3">
-                                        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                                        <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider flex items-center gap-1.5">
                                             <FileText className="w-3.5 h-3.5 text-opd-primary" /> Payer Policy & IRDAI Citations
                                         </h4>
                                         <div className="space-y-2">
                                             {analysis.policyCitations.map((cite, idx) => (
                                                 <div key={idx} className="p-3 bg-opd-input-bg rounded-2xl border border-opd-border flex justify-between items-start gap-4 shadow-sm">
-                                                    <div className="text-[11px]">
+                                                    <div className="text-sm">
                                                         <span className="font-bold text-opd-text-primary block">{cite.clause}</span>
                                                         <span className="text-opd-text-secondary mt-0.5 block">{cite.description}</span>
                                                     </div>
@@ -860,7 +860,7 @@ export const PriorAuthCopilot: React.FC = () => {
                                                 </div>
                                             ))}
                                             {analysis.policyCitations.length === 0 && (
-                                                <p className="text-xs text-opd-text-muted italic">No matching policy clauses cited.</p>
+                                                <p className="text-sm text-opd-text-muted italic">No matching policy clauses cited.</p>
                                             )}
                                         </div>
                                     </div>
@@ -870,7 +870,7 @@ export const PriorAuthCopilot: React.FC = () => {
                                 <div className="bg-white border border-dashed border-opd-border rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px] shadow-sm text-opd-text-primary">
                                     <FileText className="w-12 h-12 text-opd-text-muted mb-3" />
                                     <h3 className="text-sm font-bold font-lora text-opd-primary">Awaiting Clinical Audit Analysis</h3>
-                                    <p className="text-xs text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">Fill out the clinical note or load a pre-seeded demo chart on the left, then trigger the engine audit to view results.</p>
+                                    <p className="text-sm text-opd-text-secondary mt-1 max-w-xs mx-auto leading-relaxed">Fill out the clinical note or load a pre-seeded demo chart on the left, then trigger the engine audit to view results.</p>
                                 </div>
                             )}
                         </div>

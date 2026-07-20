@@ -87,7 +87,7 @@ export const ICDPicker: React.FC<ICDPickerProps> = ({
   return (
     <div className="bg-white border border-opd-border rounded-2xl p-4 space-y-3.5 shadow-sm">
       <div className="flex items-center justify-between">
-        <h4 className="text-[10px] font-bold text-opd-text-secondary uppercase tracking-wider font-lora">ICD-10 Diagnostic Coding (WHO Standard)</h4>
+        <h4 className="text-sm font-bold text-opd-text-secondary uppercase tracking-wider font-lora">ICD-10 Diagnostic Coding (WHO Standard)</h4>
         {confirmed ? (
           <span className="text-[9px] uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">
             Confirmed
@@ -101,20 +101,20 @@ export const ICDPicker: React.FC<ICDPickerProps> = ({
 
       {/* Confirmed Code Display */}
       {confirmed && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 flex justify-between items-start text-xs shadow-sm">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 flex justify-between items-start text-sm shadow-sm">
           <div className="space-y-1">
             <div className="flex items-center gap-2 font-mono text-emerald-700 font-bold text-sm">
               <span>🏷️ Code:</span>
               <span className="bg-white px-2 py-0.5 rounded border border-emerald-200">{confirmed.code}</span>
             </div>
-            <p className="text-opd-text-primary font-semibold text-xs mt-1">{confirmed.desc}</p>
-            <div className="text-[10px] text-opd-text-secondary mt-1">
+            <p className="text-opd-text-primary font-semibold text-sm mt-1">{confirmed.desc}</p>
+            <div className="text-sm text-opd-text-secondary mt-1">
               Assigned via <span className="uppercase text-opd-text-primary font-bold">{confirmed.method.replace('_', ' ')}</span>
             </div>
           </div>
           <button
             onClick={() => setConfirmed(null)}
-            className="text-[10px] text-red-700 hover:text-red-800 font-bold hover:underline transition-colors"
+            className="text-sm text-red-700 hover:text-red-800 font-bold hover:underline transition-colors"
             type="button"
           >
             Reset
@@ -136,7 +136,7 @@ export const ICDPicker: React.FC<ICDPickerProps> = ({
             {query.trim().length > 0 && (
               <button
                 onClick={() => setQuery('')}
-                className="px-2 py-1 text-xs text-opd-text-secondary hover:text-opd-primary transition-colors"
+                className="px-2 py-1 text-sm text-opd-text-secondary hover:text-opd-primary transition-colors"
                 type="button"
               >
                 Clear
@@ -151,7 +151,7 @@ export const ICDPicker: React.FC<ICDPickerProps> = ({
                 <div
                   key={c.code}
                   onClick={() => handleSelect(c)}
-                  className={`p-2.5 text-xs cursor-pointer flex justify-between items-start transition-colors ${
+                  className={`p-2.5 text-sm cursor-pointer flex justify-between items-start transition-colors ${
                     selectedCandidate?.code === c.code
                       ? 'bg-primary-tint/25 hover:bg-primary-tint/35'
                       : 'hover:bg-primary-tint/10'
@@ -162,7 +162,7 @@ export const ICDPicker: React.FC<ICDPickerProps> = ({
                       <span className="font-mono font-bold text-opd-primary">{c.code}</span>
                       <span className="text-opd-text-primary font-medium">{c.description}</span>
                     </div>
-                    {c.note && <span className="text-[10px] text-opd-text-secondary italic">Note: {c.note}</span>}
+                    {c.note && <span className="text-sm text-opd-text-secondary italic">Note: {c.note}</span>}
                   </div>
                   <div className="flex flex-col items-end gap-1">
                     <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase border ${
@@ -182,11 +182,11 @@ export const ICDPicker: React.FC<ICDPickerProps> = ({
           {/* AI Fallback trigger when rules return empty */}
           {candidates.length === 0 && query.trim().length > 2 && (
             <div className="flex items-center justify-between bg-primary-tint/5 rounded-xl p-3 border border-opd-border shadow-sm">
-              <span className="text-xs text-opd-text-secondary">No official matching codes found.</span>
+              <span className="text-sm text-opd-text-secondary">No official matching codes found.</span>
               <button
                 onClick={handleAiFallback}
                 disabled={loadingAi}
-                className="py-1.5 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-opd-primary to-sky-600 hover:from-opd-primary/80 hover:to-sky-500 text-white disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-sm"
+                className="py-1.5 px-3 rounded-lg text-sm font-semibold bg-gradient-to-r from-opd-primary to-sky-600 hover:from-opd-primary/80 hover:to-sky-500 text-white disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-sm"
                 type="button"
               >
                 {loadingAi ? (
@@ -206,20 +206,20 @@ export const ICDPicker: React.FC<ICDPickerProps> = ({
           {/* Selected Candidate Confirmation Details */}
           {selectedCandidate && (
             <div className="bg-primary-tint/20 border border-opd-primary/20 rounded-xl p-3.5 space-y-2.5 shadow-sm">
-              <div className="text-xs text-opd-text-primary">
+              <div className="text-sm text-opd-text-primary">
                 Are you sure you want to select: <strong className="font-mono text-opd-primary font-bold">{selectedCandidate.code}</strong> - <strong>{selectedCandidate.description}</strong>?
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={handleConfirm}
-                  className="flex-1 py-1.5 rounded-lg text-xs font-semibold bg-emerald-700 hover:bg-emerald-600 text-white transition-colors shadow-sm"
+                  className="flex-1 py-1.5 rounded-lg text-sm font-semibold bg-emerald-700 hover:bg-emerald-600 text-white transition-colors shadow-sm"
                   type="button"
                 >
                   ✓ Confirm Selection
                 </button>
                 <button
                   onClick={() => setSelectedCandidate(null)}
-                  className="py-1.5 px-3 rounded-lg text-xs font-semibold bg-white border border-opd-border hover:bg-gray-50 text-opd-text-secondary transition-colors shadow-sm"
+                  className="py-1.5 px-3 rounded-lg text-sm font-semibold bg-white border border-opd-border hover:bg-gray-50 text-opd-text-secondary transition-colors shadow-sm"
                   type="button"
                 >
                   Cancel

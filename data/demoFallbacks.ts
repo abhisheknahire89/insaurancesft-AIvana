@@ -92,6 +92,29 @@ export const DEMO_FALLBACKS: Record<string, DemoFallbackReasoning> = {
         reason: "Radiological or sonographic confirmation is the standard anchor for acute appendicitis — if already documented in the note, this challenge is resolved."
       }
     ]
+  },
+  dengue: {
+    challengesConsidered: [
+      "could this be managed as OPD?",
+      "is the stated diagnosis supported by documented findings?"
+    ],
+    anchors: [
+      "NS1 Antigen or Dengue IgM positive lab report",
+      "Serial CBC reports showing dropping platelets",
+      "Documented vitals (BP) showing hypotension or narrow pulse pressure",
+      "Documented fever history and dehydration severity"
+    ],
+    discriminators: [
+      {
+        challenge: "could this be managed as OPD?",
+        evidence: "Platelets < 50k, or hematocrit rising > 20%, or signs of plasma leakage (ascites, pleural effusion), or clinical instability (hypotension, severe vomiting)",
+        reason: "A reviewer would query why inpatient admission is needed rather than daily OPD CBC monitoring — documented severity markers establish this justification."
+      },
+      {
+        challenge: "is the stated diagnosis supported by documented findings?",
+        evidence: "Positive NS1 Antigen or Dengue IgM antibody test",
+        reason: "The diagnosis of Dengue requires a confirmatory serology test — narrative description of 'viral fever' alone is insufficient for a TPA reviewer."
+      }
+    ]
   }
 };
-

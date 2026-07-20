@@ -36,7 +36,7 @@ export const InsuranceStepConfirm: React.FC<InsuranceStepConfirmProps> = ({
                                     <li key={i}>{doc}</li>
                                 ))}
                             </ul>
-                            <p className="text-xs text-yellow-300/60 mt-3">
+                            <p className="text-sm text-yellow-300/60 mt-3">
                                 You can still submit, but the pre-auth will be marked as "Pending Documents"
                             </p>
                         </div>
@@ -54,7 +54,7 @@ export const InsuranceStepConfirm: React.FC<InsuranceStepConfirmProps> = ({
                     className="w-full bg-opd-input-bg border border-opd-border rounded-lg p-4 text-opd-text-primary h-48 focus:border-opd-primary focus:ring-1 focus:ring-opd-primary transition resize-none custom-scrollbar"
                     placeholder="Generating medical necessity statement..."
                 />
-                <p className="text-xs text-opd-text-secondary mt-2 text-right">
+                <p className="text-sm text-opd-text-secondary mt-2 text-right">
                     You can edit this AI-generated statement before submission.
                 </p>
             </div>

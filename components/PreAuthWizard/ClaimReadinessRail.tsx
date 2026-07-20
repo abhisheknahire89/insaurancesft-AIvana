@@ -109,17 +109,17 @@ const QueryItem: React.FC<QueryItemProps> = ({ query, reason, severity, source }
     }
 
     return (
-        <div className={`border-l-2 rounded-r-lg p-3 text-xs leading-normal ${borderColor} space-y-1.5 shadow-sm`}>
+        <div className={`border-l-2 rounded-r-lg p-3 text-sm leading-normal ${borderColor} space-y-1.5 shadow-sm`}>
             <div className="flex items-center justify-between">
                 <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border ${labelStyle}`}>
                     {labelText}
                 </span>
             </div>
-            <p className="text-xs font-semibold text-opd-text-primary leading-snug">
+            <p className="text-sm font-semibold text-opd-text-primary leading-snug">
                 {query}
             </p>
             {reason && (
-                <div className="text-[10px] text-opd-text-secondary leading-snug pl-1 border-l border-opd-border font-medium">
+                <div className="text-sm text-opd-text-secondary leading-snug pl-1 border-l border-opd-border font-medium">
                     Fix: {reason}
                 </div>
             )}
@@ -199,7 +199,7 @@ export const ClaimReadinessRail: React.FC<ClaimReadinessRailProps> = ({
                     {colors.label}
                 </span>
                 {/* One-line status */}
-                <p className="text-[11px] text-center font-medium text-opd-text-secondary leading-normal max-w-[200px]">
+                <p className="text-sm text-center font-medium text-opd-text-secondary leading-normal max-w-[200px]">
                     {statusLine}
                 </p>
 
@@ -218,7 +218,7 @@ export const ClaimReadinessRail: React.FC<ClaimReadinessRailProps> = ({
 
             {/* ── Queries ─────────────────────────────────────────── */}
             <div className="space-y-2">
-                <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary">
+                <div className="text-sm font-bold font-lora uppercase tracking-wider text-opd-text-secondary">
                     Open Queries {queries.length > 0 && <span className="text-opd-text-muted font-mono text-[9px] ml-1">({queries.length})</span>}
                 </div>
 
@@ -233,13 +233,13 @@ export const ClaimReadinessRail: React.FC<ClaimReadinessRailProps> = ({
                                 />
                             ))}
                         </div>
-                        <span className="text-xs text-opd-text-secondary font-medium">
+                        <span className="text-sm text-opd-text-secondary font-medium">
                             Reviewing case…
                         </span>
                     </div>
                 ) : queries.length === 0 ? (
                     <div
-                        className="rounded-lg p-3.5 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 text-center"
+                        className="rounded-lg p-3.5 text-sm font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 text-center"
                     >
                         ✓ Ready. No open queries anticipated.
                     </div>
@@ -261,7 +261,7 @@ export const ClaimReadinessRail: React.FC<ClaimReadinessRailProps> = ({
             {/* ── Gap Checklist ────────────────────────────────────── */}
             {allMissingItems.length > 0 && (
                 <div className="space-y-2">
-                    <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary">
+                    <div className="text-sm font-bold font-lora uppercase tracking-wider text-opd-text-secondary">
                         What to Fix
                     </div>
                     <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
@@ -274,7 +274,7 @@ export const ClaimReadinessRail: React.FC<ClaimReadinessRailProps> = ({
                             >
                                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0 mt-1.5" />
                                 <div className="flex-1 min-w-0">
-                                    <div className="text-xs font-semibold text-opd-text-secondary group-hover:text-opd-text-primary leading-normal">
+                                    <div className="text-sm font-semibold text-opd-text-secondary group-hover:text-opd-text-primary leading-normal">
                                         {item.text}
                                     </div>
                                     {onJumpToStep && (
@@ -289,7 +289,7 @@ export const ClaimReadinessRail: React.FC<ClaimReadinessRailProps> = ({
                             </button>
                         ))}
                         {allMissingItems.length > 8 && (
-                            <p className="text-[10px] text-center text-opd-text-muted font-medium">
+                            <p className="text-sm text-center text-opd-text-muted font-medium">
                                 +{allMissingItems.length - 8} more items to address
                             </p>
                         )}
@@ -304,7 +304,7 @@ export const ClaimReadinessRail: React.FC<ClaimReadinessRailProps> = ({
             <aside
                 className="hidden lg:flex flex-col overflow-y-auto w-[280px] shrink-0 bg-white border-l border-opd-border py-5 px-4 shadow-sm gap-4 h-full"
             >
-                <div className="text-[10px] font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2.5">
+                <div className="text-sm font-bold font-lora uppercase tracking-wider text-opd-text-secondary border-b border-opd-border pb-2.5">
                     Claim Readiness
                 </div>
                 {railContent}
@@ -323,12 +323,12 @@ export const ClaimReadinessRail: React.FC<ClaimReadinessRailProps> = ({
             >
                 <div className="flex items-center gap-2">
                     <span
-                        className="text-xs font-bold font-mono"
+                        className="text-sm font-bold font-mono"
                         style={{ color: scoreColorClass(finalScore).stroke }}
                     >
                         {finalScore}
                     </span>
-                    <span className="text-xs font-bold text-opd-text-primary font-lora">
+                    <span className="text-sm font-bold text-opd-text-primary font-lora">
                         Claim Readiness
                     </span>
                     {allMissingItems.length > 0 && (
@@ -343,7 +343,7 @@ export const ClaimReadinessRail: React.FC<ClaimReadinessRailProps> = ({
                     )}
                 </div>
                 <span
-                    className="text-[10px] text-opd-text-secondary transition-transform duration-200"
+                    className="text-sm text-opd-text-secondary transition-transform duration-200"
                     style={{ transform: mobileOpen ? 'rotate(180deg)' : 'rotate(0)' }}
                 >
                     ▼

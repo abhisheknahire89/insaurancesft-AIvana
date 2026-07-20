@@ -1,7 +1,6 @@
 import { WizardDocument, EvidenceSuggestion } from '../components/PreAuthWizard/types';
 import { getGoogleGenerativeAIClient, rotateApiKey, getActiveApiKey } from './apiKeys';
 import { MODEL_DOCUMENT } from '../config/modelConfig';
-import { queryMultimodalLlm } from './llmClient';
 
 const EXTRACTION_PROMPT = `
 You are an expert medical billing and coding assistant.
@@ -228,17 +227,31 @@ export const extractSuggestionsFromEvidence = async (
     return Array.from(uniqueFields.values());
   }
 
-  const files = documents.map(doc => ({
-    base64Data: doc.base64Data,
-    mimeType: doc.mimeType
-  }));
+  // Prepare image/pdf parts for upload to Gemini
+  const fileParts = documents.map(doc => {
+    // Remove metadata prefix if present in base64
+    let cleanBase64 = doc.base64Data;
+    if (cleanBase64.includes(',')) {
+      cleanBase64 = cleanBase64.split(',')[1];
+    }
+    return {
+      inlineData: {
+        data: cleanBase64,
+        mimeType: doc.mimeType
+      }
+    };
+  });
 
   let attempts = 3;
   let lastError: any = null;
 
   while (attempts > 0) {
     try {
-      const responseText = await queryMultimodalLlm(EXTRACTION_PROMPT, files);
+      const client = getGoogleGenerativeAIClient();
+      const model = client.getGenerativeModel({ model: MODEL_DOCUMENT });
+
+      const result = await model.generateContent([EXTRACTION_PROMPT, ...fileParts]);
+      const responseText = result.response.text().trim();
 
       let jsonStr = responseText;
       if (jsonStr.startsWith('```json')) {

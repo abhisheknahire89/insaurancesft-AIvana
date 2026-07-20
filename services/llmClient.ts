@@ -121,100 +121,71 @@ export async function queryMedGemma(prompt: string, systemInstruction?: string, 
   }
 
   const qwenUrl = (import.meta as any).env?.VITE_QWEN_ENDPOINT_URL || process.env.VITE_QWEN_ENDPOINT_URL;
-  const medgemmaUrl = (import.meta as any).env?.VITE_MEDGEMMA_ENDPOINT_URL || process.env.VITE_MEDGEMMA_ENDPOINT_URL;
-  const endpointUrl = qwenUrl || medgemmaUrl || 'http://localhost:11434/v1/chat/completions';
-
-  const qwenModelDefault = 'qwen2.5:7b';
-  const qwenModelOverride = (import.meta as any).env?.VITE_QWEN_MODEL_NAME || process.env.VITE_QWEN_MODEL_NAME;
-  const modelName = qwenUrl
-    ? (qwenModelOverride || qwenModelDefault)
-    : 'medgemma:4b';
-  const logPrefix = qwenUrl ? 'qwen_endpoint' : 'medgemma_endpoint';
-  const qwenApiKey = (import.meta as any).env?.VITE_QWEN_API_KEY || process.env.VITE_QWEN_API_KEY || '';
-
-  try {
-    const response = await axios.post(endpointUrl, {
-      model: modelName,
-      messages: [
-        ...(systemInstruction ? [{ role: 'system', content: systemInstruction }] : []),
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.1,
-      stream: false
-    }, {
-      timeout: 600000, // 10 mins
-      ...(qwenApiKey && { headers: { Authorization: `Bearer ${qwenApiKey}` } })
-    });
-
-    if (response.data?.choices?.[0]?.message?.content) {
-      console.log(`[llmClient] [PATH: ${logPrefix}] Query served successfully via custom endpoint.`);
-      return response.data.choices[0].message.content.trim();
-    }
-    throw new Error(`Malformed response structure from ${modelName} endpoint`);
-  } catch (error: any) {
-    console.error(`[llmClient] Custom ${modelName} endpoint call failed:`, error.message);
-    throw new Error(`MedGemma/Qwen custom endpoint call failed: ${error.message}`);
-  }
-}
-
-export async function queryMultimodalLlm(
-  prompt: string,
-  files: Array<{ base64Data: string; mimeType: string }>,
-  systemInstruction?: string
-): Promise<string> {
-  const qwenUrl = (import.meta as any).env?.VITE_QWEN_ENDPOINT_URL || process.env.VITE_QWEN_ENDPOINT_URL;
   const endpointUrl = qwenUrl || (import.meta as any).env?.VITE_MEDGEMMA_ENDPOINT_URL || process.env.VITE_MEDGEMMA_ENDPOINT_URL;
 
   if (endpointUrl) {
+    let attempts = 1;
+    let lastError: any = null;
+    // Brief 3: configurable model name — VITE_QWEN_MODEL_NAME overrides the default
+    // so cloud Cerebras hosts (which use a different model ID) work without breaking local Ollama
     const qwenModelDefault = 'qwen2.5:7b';
     const qwenModelOverride = (import.meta as any).env?.VITE_QWEN_MODEL_NAME || process.env.VITE_QWEN_MODEL_NAME;
     const modelName = qwenUrl
       ? (qwenModelOverride || qwenModelDefault)
       : 'medgemma:4b';
+    const logPrefix = qwenUrl ? 'qwen_endpoint' : 'medgemma_endpoint';
+    // Brief 3: Bearer token for Cerebras (and any other hosted endpoint that requires auth)
+    // Local Ollama does not require Authorization and silently ignores this header
     const qwenApiKey = (import.meta as any).env?.VITE_QWEN_API_KEY || process.env.VITE_QWEN_API_KEY || '';
 
-    // Standard OpenAI multimodal format
-    const contentArray: any[] = [{ type: 'text', text: prompt }];
-    for (const file of files) {
-      let cleanBase64 = file.base64Data;
-      if (cleanBase64.includes(',')) {
-        cleanBase64 = cleanBase64.split(',')[1];
-      }
-      contentArray.push({
-        type: 'image_url',
-        image_url: {
-          url: `data:${file.mimeType};base64,${cleanBase64}`
+    while (attempts > 0) {
+      try {
+        const response = await axios.post(endpointUrl, {
+          model: modelName,
+          messages: [
+            ...(systemInstruction ? [{ role: 'system', content: systemInstruction }] : []),
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.1,
+          stream: false
+        }, {
+          timeout: 600000, // 10 mins
+          ...(qwenApiKey && { headers: { Authorization: `Bearer ${qwenApiKey}` } })
+        });
+
+        if (response.data?.choices?.[0]?.message?.content) {
+          console.log(`[llmClient] [PATH: ${logPrefix}] Query served successfully.`);
+          return response.data.choices[0].message.content.trim();
         }
-      });
-    }
-
-    try {
-      const response = await axios.post(endpointUrl, {
-        model: modelName,
-        messages: [
-          ...(systemInstruction ? [{ role: 'system', content: systemInstruction }] : []),
-          { role: 'user', content: contentArray }
-        ],
-        temperature: 0.1,
-        stream: false
-      }, {
-        timeout: 600000,
-        ...(qwenApiKey && { headers: { Authorization: `Bearer ${qwenApiKey}` } })
-      });
-
-      if (response.data?.choices?.[0]?.message?.content) {
-        console.log(`[llmClient] Multimodal query served successfully via ${modelName}.`);
-        return response.data.choices[0].message.content.trim();
+        throw new Error(`Malformed response structure from ${modelName} endpoint`);
+      } catch (error: any) {
+        attempts--;
+        lastError = error;
+        console.warn(`[llmClient] Custom ${modelName} endpoint call failed (attempts remaining: ${attempts}): ${error.message}`);
       }
-      throw new Error(`Malformed response from multimodal ${modelName} endpoint`);
-    } catch (error: any) {
-      console.error(`[llmClient] Custom multimodal endpoint failed:`, error);
-      throw new Error(`OCR/Multimodal query failed: ${error.message}`);
     }
+    console.warn(`[llmClient] [PATH: gemini_fallback] ${modelName} endpoint failed after attempts. Falling back silently to Gemini.`);
   }
 
-  // Under "no gemini usage in the OCR" instruction, do not fallback to Gemini.
-  throw new Error("OCR/Multimodal endpoint is not configured. Please set VITE_QWEN_ENDPOINT_URL or VITE_MEDGEMMA_ENDPOINT_URL to perform OCR.");
+  // Fall back to Gemini reasoning client if no dedicated MedGemma endpoint is active or it failed
+  try {
+    const ai = getGoogleGenAIClient();
+    const isJson = (systemInstruction?.toLowerCase().includes('json') || prompt.toLowerCase().includes('json') || schema);
+    const response = await ai.models.generateContent({
+      model: MODEL_TEXT,
+      contents: prompt,
+      config: {
+        systemInstruction,
+        ...(isJson && { responseMimeType: 'application/json' }),
+        ...(schema && { responseSchema: schema })
+      }
+    });
+    console.log(`[llmClient] [PATH: gemini_fallback] Query served via Gemini fallback${endpointUrl ? ' after endpoint timeout.' : '.'}`);
+    return response.text || '';
+  } catch (error: any) {
+    console.error("[llmClient] Gemini fallback for MedGemma failed:", error);
+    throw new Error(`MedGemma fallback to Gemini failed: ${error.message}`);
+  }
 }
 
 let mockOverride: ((diagnosis: string, admissionType: string, clinicalNarrative: string) => Promise<LlmReasoningOutput>) | null = null;

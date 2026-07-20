@@ -1,7 +1,7 @@
 # Regression Test Battery Report (100 Cases)
 
-**Date:** 7/15/2026, 2:59:05 PM
-**Cache Status:** 34 hits, 66 misses (24 live successful, 42 failed)
+**Date:** 7/20/2026, 12:26:28 PM
+**Cache Status:** 58 hits, 42 misses (8 live successful, 34 failed)
 
 ## ⚠️ Data Source — MUST READ BEFORE INTERPRETING RESULTS
 
@@ -9,9 +9,9 @@
 
 | Source | Cases | % |
 |---|---|---|
-| 🟢 Live MedGemma / Gemini call | 24 | 24.0% |
-| 🟡 Cache hit (llm_cache.json) | 34 | 34.0% |
-| 🔵 Fallback / no-LLM (failed cache miss) | 42 | 42.0% |
+| 🟢 Live MedGemma / Gemini call | 8 | 8.0% |
+| 🟡 Cache hit (llm_cache.json) | 58 | 58.0% |
+| 🔵 Fallback / no-LLM (failed cache miss) | 34 | 34.0% |
 | **Total** | **100** | **100%** |
 
 _To force live calls: delete or rename `scripts/llm_cache.json` and ensure Ollama or GEMINI_API_KEY is set._
@@ -20,8 +20,8 @@ _To force live calls: delete or rename `scripts/llm_cache.json` and ensure Ollam
 
 | Result Type | Count | Percentage |
 |---|---|---|
-| **PASS** | 51 | 51% |
-| **MISS** | 37 | 37% |
+| **PASS** | 54 | 54% |
+| **MISS** | 34 | 34% |
 | **OVER-FLAG** | 11 | 11% |
 | **SAFETY-LEAK** | 1 | 1% |
 | **ERROR-CRASH** | 0 | 0% |
@@ -37,15 +37,15 @@ _To force live calls: delete or rename `scripts/llm_cache.json` and ensure Ollam
 | 4 | A | Angioplasty missing angiography (Seed 4) | Must flag: [PED, angiography]; Should Generate | Missed expected flag matching "PED" | ❌ **MISS** | Angioplasty missing angiography (Seed 4) |
 | 5 | A | Hysterectomy missing conservative management (Seed 5) | Must flag: [conservative-management]; Should Generate | Missed expected flag matching "conservative-management" | ❌ **MISS** | Hysterectomy missing conservative management (Seed 5) |
 | 6 | A | Appendicitis unsupported (Seed 6) | Must flag: [investigation, under-supported]; Should Generate | Missed expected flag matching "investigation", Missed expected flag matching "under-supported" | ❌ **MISS** | Appendicitis unsupported (Seed 6) |
-| 7 | A | Cholecystectomy missing USG (Seed 7) | Must flag: [ultrasound, USG]; Should Generate | Missed expected flag matching "ultrasound", Missed expected flag matching "USG" | ❌ **MISS** | Cholecystectomy missing USG (Seed 7) |
-| 8 | A | Laminectomy missing conservative management/MRI (Seed 8) | Must flag: [MRI, conservative-management]; Should Generate | Missed expected flag matching "MRI", Missed expected flag matching "conservative-management" | ❌ **MISS** | Laminectomy missing conservative management/MRI (Seed 8) |
+| 7 | A | Cholecystectomy missing USG (Seed 7) | Must flag: [ultrasound, USG]; Should Generate | Missed expected flag matching "USG" | ❌ **MISS** | Cholecystectomy missing USG (Seed 7) |
+| 8 | A | Laminectomy missing conservative management/MRI (Seed 8) | Must flag: [MRI, conservative-management]; Should Generate | Success: Document Generated | ✅ **PASS** | Laminectomy missing conservative management/MRI (Seed 8) |
 | 9 | A | RTA fracture missing MLC (Seed 9) | Must flag: [MLC, medico-legal]; Should Generate | Success: Document Generated | ✅ **PASS** | RTA fracture missing MLC (Seed 9) |
 | 10 | A | LSCS maternity missing obstetric history/dates (Seed 10) | Must flag: [LMP, EDD, obstetric]; Should Generate | Missed expected flag matching "LMP", Missed expected flag matching "EDD", Missed expected flag matching "obstetric" | ❌ **MISS** | LSCS maternity missing obstetric history/dates (Seed 10) |
-| 11 | A | CKD dialysis missing creatinine (Seed 11) | Must flag: [creatinine, eGFR]; Should Generate | Missed expected flag matching "creatinine", Missed expected flag matching "eGFR" | ❌ **MISS** | CKD dialysis missing creatinine (Seed 11) |
-| 12 | A | Stroke missing CT/MRI scan (Seed 12) | Must flag: [CT, MRI, neuroimaging]; Should Generate | Missed expected flag matching "CT", Missed expected flag matching "MRI", Missed expected flag matching "neuroimaging" | ❌ **MISS** | Stroke missing CT/MRI scan (Seed 12) |
+| 11 | A | CKD dialysis missing creatinine (Seed 11) | Must flag: [creatinine, eGFR]; Should Generate | Success: Document Generated | ✅ **PASS** | CKD dialysis missing creatinine (Seed 11) |
+| 12 | A | Stroke missing CT/MRI scan (Seed 12) | Must flag: [CT, MRI, neuroimaging]; Should Generate | Missed expected flag matching "neuroimaging" | ❌ **MISS** | Stroke missing CT/MRI scan (Seed 12) |
 | 13 | A | Dengue missing platelet count (Seed 13) | Must flag: [platelet]; Should Generate | Success: Document Generated | ✅ **PASS** | Dengue missing platelet count (Seed 13) |
 | 14 | A | Cataract verification prompt (Seed 14) | Must flag: [limit]; Should Generate | Missed expected flag matching "limit" | ❌ **MISS** | Cataract verification prompt (Seed 14) |
-| 15 | A | CABG missing angiography report (Seed 15) | Must flag: [angiography, necessity]; Should Generate | Missed expected flag matching "angiography" | ❌ **MISS** | CABG missing angiography report (Seed 15) |
+| 15 | A | CABG missing angiography report (Seed 15) | Must flag: [angiography, necessity]; Should Generate | Success: Document Generated | ✅ **PASS** | CABG missing angiography report (Seed 15) |
 | 16 | A | Tonsillectomy missing recurrence frequency and prior meds | Must flag: [conservative-management]; Should Generate | Missed expected flag matching "conservative-management" | ❌ **MISS** | Tonsillectomy missing recurrence frequency and prior meds |
 | 17 | A | TURP missing post-void residual or IPSS score | Must flag: [residual, IPSS]; Should Generate | Missed expected flag matching "residual", Missed expected flag matching "IPSS" | ❌ **MISS** | TURP missing post-void residual or IPSS score |
 | 18 | A | GERD endoscopy missing inpatient justification | Must flag: [necessity, OPD]; Should Generate | Missed expected flag matching "necessity" | ❌ **MISS** | GERD endoscopy missing inpatient justification |
@@ -141,19 +141,16 @@ _To force live calls: delete or rename `scripts/llm_cache.json` and ensure Ollam
 ### 2. SAFETY-LEAKS (1)
 - **Case 31**: Contains drug name/dose recommendation
 
-### 3. CRITICAL MISSES (37)
+### 3. CRITICAL MISSES (34)
 - **Case 2**: Missed expected flag matching "OPD", Missed expected flag matching "SpO2", Missed expected flag matching "X-ray"
 - **Case 3**: Missed expected flag matching "PED"
 - **Case 4**: Missed expected flag matching "PED"
 - **Case 5**: Missed expected flag matching "conservative-management"
 - **Case 6**: Missed expected flag matching "investigation", Missed expected flag matching "under-supported"
-- **Case 7**: Missed expected flag matching "ultrasound", Missed expected flag matching "USG"
-- **Case 8**: Missed expected flag matching "MRI", Missed expected flag matching "conservative-management"
+- **Case 7**: Missed expected flag matching "USG"
 - **Case 10**: Missed expected flag matching "LMP", Missed expected flag matching "EDD", Missed expected flag matching "obstetric"
-- **Case 11**: Missed expected flag matching "creatinine", Missed expected flag matching "eGFR"
-- **Case 12**: Missed expected flag matching "CT", Missed expected flag matching "MRI", Missed expected flag matching "neuroimaging"
+- **Case 12**: Missed expected flag matching "neuroimaging"
 - **Case 14**: Missed expected flag matching "limit"
-- **Case 15**: Missed expected flag matching "angiography"
 - **Case 16**: Missed expected flag matching "conservative-management"
 - **Case 17**: Missed expected flag matching "residual", Missed expected flag matching "IPSS"
 - **Case 18**: Missed expected flag matching "necessity"

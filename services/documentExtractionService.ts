@@ -1,7 +1,6 @@
 import { getGoogleGenerativeAIClient, rotateApiKey, getActiveApiKey } from './apiKeys';
 import { MODEL_DOCUMENT } from '../config/modelConfig';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { queryMedGemma, queryMultimodalLlm } from './llmClient';
 
 // Setup workerSrc
 if (typeof window !== 'undefined') {
@@ -141,26 +140,111 @@ export async function extractTextFromPdf(arrayBuffer: ArrayBuffer): Promise<stri
     return fullText.trim();
 }
 
-async function extractPagesFromScannedPdf(arrayBuffer: ArrayBuffer): Promise<string[]> {
-    const base64 = arrayBufferToBase64(arrayBuffer);
-    const text = await queryMultimodalLlm(
-        "Please extract all text from this PDF document. Present it page-by-page, wrapping each page's content strictly between '--- START OF PAGE X ---' and '--- END OF PAGE X ---', where X is the 1-based page number. Do not summarize or add commentary.",
-        [{ base64Data: base64, mimeType: 'application/pdf' }]
-    );
-    const pages: string[] = [];
-    const pageMatches = [...text.matchAll(/--- START OF PAGE (\d+) ---([\s\S]*?)--- END OF PAGE \1 ---/gi)];
-    for (const match of pageMatches) {
-        pages.push(match[2].trim());
+async function extractViaSarvam(arrayBuffer: ArrayBuffer, mimeType: string): Promise<string> {
+    const apiKey = typeof window !== 'undefined'
+        ? ((import.meta as any).env?.VITE_SARVAM_API_KEY || (window as any).VITE_SARVAM_API_KEY || (window as any).process?.env?.VITE_SARVAM_API_KEY)
+        : (process.env.VITE_SARVAM_API_KEY || process.env.SARVAM_API_KEY);
+
+    if (!apiKey) {
+        throw new Error('Sarvam API key not configured.');
     }
-    return pages.length > 0 ? pages : [text];
+
+    const formData = new FormData();
+    const blob = new Blob([arrayBuffer], { type: mimeType });
+    formData.append('image', blob, mimeType.includes('pdf') ? 'document.pdf' : 'image.png');
+    formData.append('language', 'en-IN');
+    formData.append('extract_structured', 'true');
+
+    const response = await fetch('https://api.sarvam.ai/v1/vision/document', {
+        method: 'POST',
+        headers: {
+            'api-subscription-key': apiKey
+        },
+        body: formData
+    });
+
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Sarvam API error: ${response.status} - ${errText}`);
+    }
+
+    const resJson = await response.json();
+    const text = resJson.markdown || resJson.text || resJson.content || (typeof resJson === 'string' ? resJson : JSON.stringify(resJson));
+    return text;
+}
+
+async function extractPagesFromScannedPdf(arrayBuffer: ArrayBuffer): Promise<string[]> {
+    try {
+        console.log("[documentExtractionService] Attempting high-fidelity OCR via Sarvam AI...");
+        const text = await extractViaSarvam(arrayBuffer, 'application/pdf');
+        
+        // If the response contains page matches, extract them. Else return the full text.
+        const pages: string[] = [];
+        const pageMatches = [...text.matchAll(/--- START OF PAGE (\d+) ---([\s\S]*?)--- END OF PAGE \1 ---/gi)];
+        if (pageMatches.length > 0) {
+            for (const match of pageMatches) {
+                pages.push(match[2].trim());
+            }
+            return pages;
+        }
+        return [text];
+    } catch (sarvamErr) {
+        console.warn("[documentExtractionService] Sarvam AI OCR failed. Falling back to Gemini Multimodal OCR:", sarvamErr);
+        const base64 = arrayBufferToBase64(arrayBuffer);
+        const client = getGoogleGenerativeAIClient();
+        const model = client.getGenerativeModel({ model: MODEL_DOCUMENT });
+        
+        const contents = [
+            {
+                inlineData: {
+                    mimeType: 'application/pdf',
+                    data: base64
+                }
+            },
+            "Please extract all text from this PDF document. Present it page-by-page, wrapping each page's content strictly between '--- START OF PAGE X ---' and '--- END OF PAGE X ---', where X is the 1-based page number. Do not summarize or add commentary."
+        ];
+        
+        const result = await model.generateContent(contents);
+        const text = result.response.text();
+        
+        const pages: string[] = [];
+        const pageMatches = [...text.matchAll(/--- START OF PAGE (\d+) ---([\s\S]*?)--- END OF PAGE \1 ---/gi)];
+        for (const match of pageMatches) {
+            pages.push(match[2].trim());
+        }
+        return pages.length > 0 ? pages : [text];
+    }
 }
 
 async function extractTextFromImage(base64: string, mimeType: string): Promise<string> {
-    const text = await queryMultimodalLlm(
-        "Extract all text from this image. Keep layout, headings, tables, and list items intact. Do not summarize or add commentary.",
-        [{ base64Data: base64, mimeType }]
-    );
-    return text;
+    try {
+        console.log("[documentExtractionService] Attempting high-fidelity image OCR via Sarvam AI...");
+        const binaryString = atob(base64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        const text = await extractViaSarvam(bytes.buffer, mimeType);
+        return text;
+    } catch (sarvamErr) {
+        console.warn("[documentExtractionService] Sarvam AI Image OCR failed. Falling back to Gemini Multimodal OCR:", sarvamErr);
+        const client = getGoogleGenerativeAIClient();
+        const model = client.getGenerativeModel({ model: MODEL_DOCUMENT });
+        
+        const contents = [
+            {
+                inlineData: {
+                    mimeType,
+                    data: base64
+                }
+            },
+            "Extract all text from this image. Keep layout, headings, tables, and list items intact. Do not summarize or add commentary."
+        ];
+        
+        const result = await model.generateContent(contents);
+        return result.response.text().trim();
+    }
 }
 
 function applyHeuristicFallbacks(data: any, text: string, file?: any): any {
@@ -468,6 +552,8 @@ export const extractFromDocument = async (file: File): Promise<ExtractedPatientD
         let attempts = 3;
         while (attempts > 0) {
             try {
+                const client = getGoogleGenerativeAIClient();
+                const model = client.getGenerativeModel({ model: MODEL_DOCUMENT });
                 const prompt = `You are processing a page Node from a medical record.
 Original PDF Page Reference: Page ${node.metadata.pageNumber} of ${node.metadata.fileName}.
 
@@ -493,7 +579,14 @@ Return strictly a valid JSON object matching this structure:
   ]
 }
 `;
-                const responseText = await queryMedGemma(prompt, "You are a professional medical document classifier.");
+                const response = await model.generateContent({
+                    contents: prompt,
+                    config: {
+                        responseMimeType: 'application/json'
+                    }
+                });
+                
+                const responseText = response.response.text().trim();
                 let cleanJson = responseText;
                 if (cleanJson.startsWith('```json')) {
                     cleanJson = cleanJson.replace(/^```json/, '').replace(/```$/, '').trim();
@@ -531,6 +624,9 @@ Return strictly a valid JSON object matching this structure:
 
     while (attempts > 0) {
         try {
+            const client = getGoogleGenerativeAIClient();
+            const model = client.getGenerativeModel({ model: MODEL_DOCUMENT });
+            
             const prompt = `You are a highly experienced Indian TPA claims and medical data extraction assistant.
 You have the complete text of a medical/insurance document, along with classifications and extracted tables from each page.
 
@@ -594,7 +690,14 @@ Return strictly a valid JSON object matching this structure:
   }
 }
 `;
-            const text = await queryMedGemma(prompt, "You are a highly experienced medical data extraction assistant.");
+            const response = await model.generateContent({
+                contents: prompt,
+                config: {
+                    responseMimeType: 'application/json'
+                }
+            });
+
+            const text = response.response.text().trim();
             let cleanJson = text;
             if (cleanJson.startsWith('```json')) {
                 cleanJson = cleanJson.replace(/^```json/, '').replace(/```$/, '').trim();

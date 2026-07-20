@@ -50,6 +50,7 @@ export const PreAuthDashboard: React.FC<PreAuthDashboardProps> = ({
         <CaseList
             onNewPreAuth={onNewPreAuth}
             onOpenCase={openWorkspace}
+            onOpenPreAuth={onOpenPreAuth}
             onSettings={onSettings}
         />
     );

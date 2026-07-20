@@ -38,7 +38,11 @@ export type AuditEventType =
   | 'tpa_response_received'
   | 'document_uploaded'
   | 'document_removed'
-  | 'enhancement_reviewed';
+  | 'enhancement_reviewed'
+  | 'enhancement_requested'
+  | 'enhancement_resolved'
+  | 'query_response_generated'
+  | 'query_response_sent';
 
 export interface AuditEntry {
   id: string;          // uuid v4, stable across sessions

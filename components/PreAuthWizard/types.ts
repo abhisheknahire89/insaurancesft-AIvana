@@ -480,6 +480,7 @@ export interface PreAuthRecord {
     complexityReason?: string;
     evidenceSuggestions?: EvidenceSuggestion[];
     acceptedSuggestions?: string[]; // Field names list (e.g. ['clinical.relevantClinicalFindings'])
+    enhancements?: any[]; // Phase 2: live enhancements attached for queue sorting
 }
 
 // ============================================

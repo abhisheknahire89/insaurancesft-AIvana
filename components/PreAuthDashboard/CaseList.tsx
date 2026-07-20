@@ -39,15 +39,25 @@ const URGENCY_RANK: Partial<Record<PreAuthStatus, number>> = {
     closed: 10,
 };
 
-function urgencyRank(status: PreAuthStatus): number {
-    return URGENCY_RANK[status] ?? 5;
+function effectiveUrgencyRank(rec: PreAuthRecord): number {
+    // If ANY enhancement is in a query or pending_documents state, bubble it up to rank 0 (highest urgency)
+    const hasPendingEnhancementQuery = rec.enhancements?.some(
+        e => e.status === 'query' || e.status === 'query_raised' || e.status === 'pending_documents'
+    );
+    if (hasPendingEnhancementQuery) {
+        return 0; // Rank 0 (bubble to top)
+    }
+    return URGENCY_RANK[rec.status] ?? 5;
 }
 
 function sortRecords(records: PreAuthRecord[]): PreAuthRecord[] {
     return [...records].sort((a, b) => {
-        const rankDiff = urgencyRank(a.status) - urgencyRank(b.status);
+        const rankDiff = effectiveUrgencyRank(a) - effectiveUrgencyRank(b);
         if (rankDiff !== 0) return rankDiff;
-        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        // Same rank → older cases float up (more days = higher urgency)
+        const daysA = (Date.now() - new Date(a.updatedAt).getTime()) / 86_400_000;
+        const daysB = (Date.now() - new Date(b.updatedAt).getTime()) / 86_400_000;
+        return daysB - daysA;
     });
 }
 
@@ -65,10 +75,11 @@ const STATUS_FILTER_OPTIONS: Array<{ value: PreAuthStatus | 'all' | 'needs_appea
 interface CaseListProps {
     onNewPreAuth: () => void;
     onOpenCase: (record: PreAuthRecord) => void;
+    onOpenPreAuth: (record: PreAuthRecord) => void;
     onSettings: () => void;
 }
 
-export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, onSettings }) => {
+export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, onOpenPreAuth, onSettings }) => {
     const [records, setRecords] = useState<PreAuthRecord[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -270,13 +281,19 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                                     className="cursor-pointer transition-colors hover:bg-opd-bg/25"
                                                     onClick={() => onOpenCase(rec)}
                                                 >
-                                                    {/* Urgency indicator column */}
+                                                    {/* Urgency indicator: 3-tier colour dot */}
                                                     <td className="pl-3 pr-0 py-4 w-2">
-                                                        {isUrgent && (
-                                                            <div
-                                                                title="Urgent — needs action"
-                                                                className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"
-                                                            />
+                                                        {(rec.status === 'query_raised' || rec.status === 'appeal_drafted' || rec.enhancements?.some(e => e.status === 'query' || e.status === 'query_raised' || e.status === 'pending_documents')) && (
+                                                            <div title="Urgent — query, appeal or pending enhancement action"
+                                                                className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                                                        )}
+                                                        {rec.status === 'denied' && (
+                                                            <div title="Denied — generate appeal"
+                                                                className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse" />
+                                                        )}
+                                                        {rec.status === 'pending_documents' && (
+                                                            <div title="Pending documents"
+                                                                className="w-1.5 h-1.5 rounded-full bg-amber-400" />
                                                         )}
                                                     </td>
 
@@ -332,6 +349,13 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                                                 onClick={e => { e.stopPropagation(); onOpenCase(rec); }}
                                                                 title="Open workspace"
                                                             >→</button>
+                                                            {/* Open in Wizard (Edit) */}
+                                                            <button
+                                                                type="button"
+                                                                className="text-sm p-1.5 rounded transition-all text-opd-text-secondary hover:text-opd-primary font-bold"
+                                                                onClick={e => { e.stopPropagation(); onOpenPreAuth(rec); }}
+                                                                title="Open in Wizard (Edit / Details)"
+                                                            >📝</button>
                                                             {/* Delete */}
                                                             <button
                                                                 type="button"

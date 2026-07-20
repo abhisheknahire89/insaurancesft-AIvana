@@ -54,6 +54,8 @@ export interface AuthorizationRecord {
     approvedAmount?: number;
     denialReason?: string;
     queryDetails?: string;
+    queryResponseText?: string;           // Phase 2: text response drafted for query
+    queryRespondedAt?: string;            // Phase 2: timestamp of response
     submittedAt?: string;
     respondedAt?: string;
     tpaReceiptId?: string;
@@ -65,12 +67,34 @@ export interface EnhancementEntry {
     id: string;
     trigger: 'new_procedure' | 'extended_stay' | 'icu_upgrade';
     requestedAmount: number;
+    approvedAmount?: number;              // set when TPA responds approved/partial
+    queryResponseText?: string;           // if TPA raised a query on this enhancement
+    queryRespondedAt?: string;            // Phase 2: timestamp of response
     status: string;
     gaps: string[];
     anticipatedQueries: any[];
     reviewedAt: string;
     details: any;
+    reviewEngineReport?: {                // mirrors EnhancementReviewReport from engine
+        status: 'sufficient' | 'pending_documents';
+        gaps: string[];
+        anticipatedQueries: any[];
+        requiredEvidence: string[];
+        insufficientEvidence: string[];
+        reasoningTrace: string[];
+        reviewedAt: string;
+    };
 }
+
+// ── Audit event type constants ─────────────────────────────────────────────────
+export const AUDIT_EVENTS = {
+    ENHANCEMENT_REQUESTED:    'enhancement_requested',
+    ENHANCEMENT_REVIEWED:     'enhancement_reviewed',
+    ENHANCEMENT_RESOLVED:     'enhancement_resolved',
+    QUERY_RESPONSE_GENERATED: 'query_response_generated',
+    QUERY_RESPONSE_SENT:      'query_response_sent',
+    TPA_RESPONSE_RECEIVED:    'tpa_response_received',
+} as const;
 
 export interface ClaimEntry {
     id: string;
@@ -119,6 +143,21 @@ export type CaseStage =
     | 'approved'
     | 'payment';
 
+/** Higher = more urgent. Used by CaseList sort and triage dot. */
+export const URGENCY_RANK: Record<CaseStage, number> = {
+    tpa_review:          10,
+    submitted_to_tpa:    9,
+    ready_to_submit:     8,
+    hospital_review:     7,
+    ai_processing:       6,
+    docs_uploaded:       5,
+    documents_uploaded:  5,
+    patient_identified:  4,
+    admission:           3,
+    approved:            2,
+    payment:             1,
+};
+
 export function getStageFromStatus(status: string, hasDocs: boolean): CaseStage {
     switch (status) {
         case 'draft':
@@ -153,8 +192,8 @@ export interface PatientCaseRecord {
     appeals: AppealEntry[];
     auditLog: AuditLogEntry[];
     timeline: TimelineEvent[];
-    currentStage: CaseStage; // Added workflow stage schema
-    
+    currentStage: CaseStage;
+
     // QR self-registration metadata
     intakeChannel?: 'qr_scan' | 'manual' | 'upload' | string;
     sessionToken?: string;
@@ -350,6 +389,7 @@ export function mapCaseToPreAuth(caseRecord: PatientCaseRecord): PreAuthRecord {
         documentRequirements: [],
         declarations: { patient: {}, doctor: {}, hospital: {} },
         outputs: {},
+        enhancements: caseRecord.enhancements || [],
     };
 }
 
@@ -494,6 +534,73 @@ export async function updateAppealStatus(patientId: string, status: AppealEntry[
         action: 'update_appeal_status',
         user: 'doctor'
     });
+    await savePatientRecord(caseRecord);
+}
+
+// ── Phase 2: Enhancement & Query Response persistence ─────────────────────────
+
+export async function recordEnhancement(caseId: string, entry: EnhancementEntry): Promise<void> {
+    const caseRecord = await getPatientRecord(caseId);
+    if (!caseRecord) return;
+    const idx = caseRecord.enhancements.findIndex(e => e.id === entry.id);
+    if (idx > -1) {
+        caseRecord.enhancements[idx] = entry;
+    } else {
+        caseRecord.enhancements.push(entry);
+    }
+    caseRecord.timeline.push({
+        timestamp: new Date().toISOString(),
+        event: AUDIT_EVENTS.ENHANCEMENT_REQUESTED,
+        description: `Enhancement ${entry.id} requested (${entry.trigger.replace(/_/g,' ')}) — ₹${entry.requestedAmount.toLocaleString('en-IN')} requested. Engine: ${entry.reviewEngineReport?.status ?? 'not-run'}`
+    });
+    caseRecord.auditLog.push({
+        timestamp: new Date().toISOString(),
+        action: AUDIT_EVENTS.ENHANCEMENT_REQUESTED,
+        details: { id: entry.id, trigger: entry.trigger, requestedAmount: entry.requestedAmount }
+    });
+    caseRecord.updatedAt = new Date().toISOString();
+    await savePatientRecord(caseRecord);
+}
+
+export async function getEnhancements(caseId: string): Promise<EnhancementEntry[]> {
+    const caseRecord = await getPatientRecord(caseId);
+    return caseRecord?.enhancements ?? [];
+}
+
+export async function recordQueryResponse(
+    caseId: string,
+    parentId: string,
+    parentType: 'pre_auth' | 'enhancement',
+    responseText: string
+): Promise<void> {
+    const caseRecord = await getPatientRecord(caseId);
+    if (!caseRecord) return;
+
+    if (parentType === 'pre_auth') {
+        const auth = caseRecord.authorizations.find(a => a.id === parentId) || caseRecord.authorizations[0];
+        if (auth) {
+            auth.queryResponseText = responseText;
+            auth.queryRespondedAt = new Date().toISOString();
+        }
+    } else {
+        const enh = caseRecord.enhancements.find(e => e.id === parentId);
+        if (enh) {
+            enh.queryResponseText = responseText;
+            enh.queryRespondedAt = new Date().toISOString();
+        }
+    }
+
+    caseRecord.timeline.push({
+        timestamp: new Date().toISOString(),
+        event: AUDIT_EVENTS.QUERY_RESPONSE_SENT,
+        description: `Query response submitted for ${parentType} (${parentId}) — ${responseText.slice(0, 80)}…`
+    });
+    caseRecord.auditLog.push({
+        timestamp: new Date().toISOString(),
+        action: AUDIT_EVENTS.QUERY_RESPONSE_SENT,
+        details: { parentId, parentType }
+    });
+    caseRecord.updatedAt = new Date().toISOString();
     await savePatientRecord(caseRecord);
 }
 

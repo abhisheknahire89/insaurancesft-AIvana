@@ -2888,12 +2888,12 @@ const PatientRegistrationPage: React.FC<{ token: string; onDone: () => void }> =
 // --- MAIN INSURANCE COMPONENT ---
 
 export const InsuranceModule: React.FC = () => {
-    const [selectedScreen, setSelectedScreen] = useState<number>(3); // Default to Screen 3
+    const [viewMode, setViewMode] = useState<'command_center' | 'ops_tools'>('command_center');
+    const [selectedScreen, setSelectedScreen] = useState<number>(1);
     const [cases, setCases] = useState<PatientCaseRecord[]>([]);
     const [activeCaseId, setActiveCaseId] = useState<string | null>(null);
     const [activeCase, setActiveCase] = useState<PatientCaseRecord | null>(null);
 
-    // Legacy Wizard controls
     const [prefilledData, setPrefilledData] = useState<any>(null);
     const [selectedRecord, setSelectedRecord] = useState<any>(null);
     const [showWizard, setShowWizard] = useState(false);
@@ -2904,11 +2904,7 @@ export const InsuranceModule: React.FC = () => {
     const refreshCases = useCallback(async () => {
         const list = await getAllPatientRecords();
         setCases(list);
-        
-        if (list.length > 0 && !activeCaseId) {
-            setActiveCaseId(list[list.length - 1].id);
-        }
-    }, [activeCaseId]);
+    }, []);
 
     useEffect(() => {
         refreshCases();
@@ -2916,37 +2912,15 @@ export const InsuranceModule: React.FC = () => {
 
     useEffect(() => {
         if (activeCaseId) {
-            getPatientRecord(activeCaseId).then(rec => {
-                setActiveCase(rec ?? null);
-            });
+            getPatientRecord(activeCaseId).then(rec => setActiveCase(rec ?? null));
         } else {
             setActiveCase(null);
         }
     }, [activeCaseId]);
 
-    const handleCaseSelect = (id: string) => {
-        if (id === 'NEW') {
-            setActiveCaseId(null);
-            setSelectedScreen(1); // Jump to QR workflow to create new
-        } else {
-            setActiveCaseId(id);
-        }
-    };
-
     const handleCaseCreated = (id: string) => {
         refreshCases();
         setActiveCaseId(id);
-        setIsDemoMode(false);
-        setPrefilledData(null);
-        setSelectedRecord(null);
-        setShowWizard(true); // Launch wizard directly for the newly ingested case!
-    };
-
-    const runDemoCase = (record: any) => {
-        setPrefilledData(record);
-        setDemoStartStep(4);
-        setDemoDefaultTab('tpa-review');
-        setIsDemoMode(true);
         setShowWizard(true);
     };
 
@@ -2955,7 +2929,6 @@ export const InsuranceModule: React.FC = () => {
         setIsDemoMode(false);
         setPrefilledData(null);
         setSelectedRecord(null);
-        refreshCases();
     };
 
     const SCREENS = [
@@ -2975,185 +2948,263 @@ export const InsuranceModule: React.FC = () => {
         { id: 14, name: '14. Policy & Scheme Config', icon: <Database className="w-4 h-4" />, type: 'real' },
     ];
 
-    // Detect ?register=TOKEN in URL → show patient-facing form
-    const [registerToken] = React.useState<string | null>(() => {
-        const p = new URLSearchParams(window.location.search);
-        return p.get('register');
-    });
-    const [patientFormDone, setPatientFormDone] = React.useState(false);
+    const [registerToken] = useState<string | null>(() => new URLSearchParams(window.location.search).get('register'));
+    const [patientFormDone, setPatientFormDone] = useState(false);
 
     if (registerToken && !patientFormDone) {
         return <PatientRegistrationPage token={registerToken} onDone={() => setPatientFormDone(true)} />;
     }
+            
+    // ── WIZARD FULL-PAGE TAKEOVER ─────────────────────────────────────────────
+    if (showWizard) {
+        return (
+            <div className="min-h-screen bg-opd-bg text-opd-text-primary">
+                <PreAuthWizard
+                    onClose={resetDemo}
+                    prefilledData={prefilledData}
+                    existingRecord={selectedRecord || (isDemoMode ? (prefilledData as any) : activeCase ? mapCaseToPreAuth(activeCase) : undefined)}
+                    startAtStep={isDemoMode ? demoStartStep : 1}
+                    defaultTab={isDemoMode ? demoDefaultTab : undefined}
+                    isDemo={isDemoMode}
+                    onResetDemo={isDemoMode ? resetDemo : undefined}
+                />
+            </div>
+        );
+    }
 
     return (
-        <div className="min-h-screen bg-opd-bg text-opd-text-primary p-6">
-            <div className="max-w-6xl mx-auto space-y-6 text-opd-text-primary">
+        <div className="min-h-screen bg-opd-bg text-opd-text-primary">
 
-                {/* Dashboard Navigation Header */}
-                <div className="flex items-center justify-between border-b border-opd-border pb-4 bg-white px-6 py-4 rounded-2xl shadow-sm">
-                    <div className="flex items-center gap-4">
-                        <Activity className="w-6 h-6 text-opd-primary animate-pulse" />
-                        <h1 className="text-xl font-bold font-lora text-opd-primary">Aivana India TPA Insurance Copilot</h1>
-                        
-                        {/* Case Selector Dropdown */}
-                        <div className="flex items-center gap-2 border-l pl-4 border-opd-border">
-                            <span className="text-sm font-semibold text-gray-500">Active Case:</span>
-                            <select
-                                className="text-sm p-1.5 border rounded-lg bg-gray-50 font-mono text-opd-primary font-bold focus:outline-none"
-                                value={activeCaseId || ''}
-                                onChange={e => handleCaseSelect(e.target.value)}
-                            >
-                                {cases.map(c => (
-                                    <option key={c.id} value={c.id}>
-                                        {c.id} ({c.patientProfile?.name || 'Incomplete'})
-                                    </option>
-                                ))}
-                                <option value="NEW">+ Ingest New Case...</option>
-                            </select>
+            {/* ── Top App Bar ─────────────────────────────────────────────────── */}
+            <div className="sticky top-0 z-30 bg-white border-b border-opd-border shadow-sm px-6 py-3 flex items-center justify-between gap-4">
+                {/* Brand */}
+                <div className="flex items-center gap-3 shrink-0">
+                    <Activity className="w-5 h-5 text-opd-primary animate-pulse" />
+                    <span className="text-base font-bold font-lora text-opd-primary tracking-tight">
+                        Aivana <span className="font-normal text-opd-text-secondary">India TPA Copilot</span>
+                    </span>
+                </div>
 
-                            {activeCaseId && (
-                                <button
-                                    onClick={() => {
-                                        setIsDemoMode(false);
-                                        setPrefilledData(null);
-                                        setSelectedRecord(null);
-                                        setShowWizard(true);
-                                    }}
-                                    className="ml-2 flex items-center gap-1.5 px-3 py-1.5 bg-opd-primary hover:bg-opd-primary-dark text-white rounded-xl text-sm font-bold transition shadow-sm active:scale-95 border border-transparent shrink-0"
-                                >
-                                    <Volume2 className="w-3.5 h-3.5" />
-                                    Launch Pre-Auth Scribe
-                                </button>
-                            )}
+                {/* View-mode tabs */}
+                <div className="flex items-center bg-opd-input-bg border border-opd-border rounded-xl p-1 gap-1">
+                    <button
+                        onClick={() => setViewMode('command_center')}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                            viewMode === 'command_center'
+                                ? 'bg-opd-primary text-white shadow-sm'
+                                : 'text-opd-text-secondary hover:text-opd-primary'
+                        }`}
+                    >
+                        <FileCheck className="w-3.5 h-3.5" />
+                        Case Queue
+                    </button>
+                    <button
+                        onClick={() => setViewMode('ops_tools')}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                            viewMode === 'ops_tools'
+                                ? 'bg-opd-primary text-white shadow-sm'
+                                : 'text-opd-text-secondary hover:text-opd-primary'
+                        }`}
+                    >
+                        <Database className="w-3.5 h-3.5" />
+                        Ops Tools
+                    </button>
+                </div>
+
+                {/* Right: Demo toggle */}
+                <div className="flex items-center bg-white border border-opd-border rounded-full px-3 py-1 gap-2 select-none shrink-0">
+                    <span className="text-sm font-bold text-opd-text-secondary tracking-wider">DEMO</span>
+                    <button
+                        onClick={() => {
+                            const val = !isDemoMode;
+                            setIsDemoMode(val);
+                            (window as any).VITE_DEMO_MODE = val;
+                        }}
+                        className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ${isDemoMode ? 'bg-opd-primary' : 'bg-opd-border'}`}
+                    >
+                        <div className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${isDemoMode ? 'translate-x-4' : 'translate-x-0'}`} />
+                    </button>
+                </div>
+            </div>
+
+            {/* ── COMMAND CENTER: PreAuthDashboard ──────────────────────────── */}
+            {viewMode === 'command_center' && !isDemoMode && (
+                <PreAuthDashboard
+                    onNewPreAuth={() => {
+                        setIsDemoMode(false);
+                        setPrefilledData(null);
+                        setSelectedRecord(null);
+                        setShowWizard(true);
+                    }}
+                    onOpenPreAuth={(record) => {
+                        setPrefilledData(null);
+                        setSelectedRecord(record);
+                        setIsDemoMode(false);
+                        setShowWizard(true);
+                    }}
+                    onSettings={() => {
+                        setViewMode('ops_tools');
+                        setSelectedScreen(14); // Navigate directly to Policy & Scheme Config
+                    }}
+                />
+            )}
+
+            {/* ── DEMO SANDBOX ──────────────────────────────────────────────── */}
+            {viewMode === 'command_center' && isDemoMode && (
+                <div className="max-w-4xl mx-auto p-6">
+                    <div className="w-full bg-white border border-opd-border rounded-2xl p-6 space-y-6">
+                        <div className="text-center space-y-2">
+                            <div className="inline-block bg-primary-tint border border-opd-primary/20 text-opd-primary text-sm font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                ⚡ Presentation Sandbox
+                            </div>
+                            <h3 className="text-xl font-bold font-lora text-opd-primary">Pre-Loaded Demo Scenarios</h3>
+                        </div>
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="p-4 border rounded-xl flex flex-col justify-between space-y-3">
+                                <h4 className="font-bold text-sm">Diabetes Profile</h4>
+                                <button onClick={() => {
+                                    setPrefilledData(DIABETES_DEMO_RECORD);
+                                    setDemoStartStep(4);
+                                    setDemoDefaultTab('tpa-review');
+                                    setShowWizard(true);
+                                }} className="btn-primary py-1.5 text-sm">Run Review</button>
+                            </div>
+                            <div className="p-4 border rounded-xl flex flex-col justify-between space-y-3">
+                                <h4 className="font-bold text-sm">Pneumonia Admittance</h4>
+                                <button onClick={() => {
+                                    setPrefilledData(PNEUMONIA_DEMO_RECORD);
+                                    setDemoStartStep(4);
+                                    setDemoDefaultTab('tpa-review');
+                                    setShowWizard(true);
+                                }} className="btn-primary py-1.5 text-sm">Run Review</button>
+                            </div>
+                            <div className="p-4 border rounded-xl flex flex-col justify-between space-y-3">
+                                <h4 className="font-bold text-sm">Appendicitis Clean</h4>
+                                <button onClick={() => {
+                                    setPrefilledData(APPENDICITIS_DEMO_RECORD);
+                                    setDemoStartStep(4);
+                                    setDemoDefaultTab('tpa-review');
+                                    setShowWizard(true);
+                                }} className="btn-primary py-1.5 text-sm">Run Review</button>
+                            </div>
                         </div>
                     </div>
+                </div>
+            )}
 
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center bg-white border border-opd-border rounded-full px-3 py-1 gap-2 select-none">
-                            <span className="text-sm font-bold text-opd-text-secondary tracking-wider">DEMO</span>
+            {/* ── OPS TOOLS: Legacy 12-Screen Pipeline ─────────────────────── */}
+            {viewMode === 'ops_tools' && (
+                <div className="max-w-6xl mx-auto p-6 space-y-6 text-opd-text-primary">
+                    {/* Case Selector header row */}
+                    <div className="flex items-center gap-3 bg-white border border-opd-border rounded-2xl px-5 py-3 shadow-sm">
+                        <span className="text-sm font-semibold text-gray-500 shrink-0">Active Case:</span>
+                        <select
+                            className="text-sm p-1.5 border rounded-lg bg-gray-50 font-mono text-opd-primary font-bold focus:outline-none flex-1 min-w-0 max-w-xs"
+                            value={activeCaseId || ''}
+                            onChange={e => {
+                                const val = e.target.value;
+                                if (val === 'NEW') { setActiveCaseId(null); setSelectedScreen(1); }
+                                else setActiveCaseId(val);
+                            }}
+                        >
+                            {cases.map(c => (
+                                <option key={c.id} value={c.id}>
+                                    {c.id} ({c.patientProfile?.name || 'Incomplete'})
+                                </option>
+                            ))}
+                            <option value="NEW">+ Ingest New Case...</option>
+                        </select>
+
+                        {activeCaseId && (
                             <button
                                 onClick={() => {
-                                    const val = !isDemoMode;
-                                    setIsDemoMode(val);
-                                    (window as any).VITE_DEMO_MODE = val;
+                                    setIsDemoMode(false);
+                                    setPrefilledData(null);
+                                    setSelectedRecord(null);
+                                    setShowWizard(true);
                                 }}
-                                className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ${isDemoMode ? 'bg-opd-primary' : 'bg-opd-border'}`}
+                                className="ml-2 flex items-center gap-1.5 px-3 py-1.5 bg-opd-primary hover:bg-opd-primary-dark text-white rounded-xl text-sm font-bold transition shadow-sm active:scale-95 shrink-0"
                             >
-                                <div className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${isDemoMode ? 'translate-x-4' : 'translate-x-0'}`} />
+                                <Volume2 className="w-3.5 h-3.5" />
+                                Launch Pre-Auth Scribe
                             </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 12 Screens Pipeline Panel Grid */}
-                <div className="grid grid-cols-4 gap-6 items-start">
-                    
-                    {/* Left Sidebar */}
-                    <div className="col-span-1 bg-white border border-opd-border rounded-2xl p-4 shadow-sm space-y-2">
-                        <div className="text-sm font-bold text-gray-400 uppercase px-2 mb-2 tracking-wider">
-                            12-Screen Navigation
-                        </div>
-                        {SCREENS.map(scr => (
-                            <button
-                                key={scr.id}
-                                onClick={() => setSelectedScreen(scr.id)}
-                                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition text-left ${
-                                    selectedScreen === scr.id
-                                        ? 'bg-opd-primary text-white shadow'
-                                        : 'text-opd-text-secondary hover:bg-gray-50 hover:text-opd-primary'
-                                }`}
-                            >
-                                <div className="flex items-center gap-2.5">
-                                    {scr.icon}
-                                    <span>{scr.name.split('. ')[1]}</span>
-                                </div>
-                                <span className={`text-[9px] px-1.5 py-0.5 rounded font-black border uppercase tracking-wide shrink-0 ${
-                                    scr.type === 'real' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                                    scr.type === 'extracted' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                    'bg-amber-50 text-amber-700 border-amber-200'
-                                }`}>
-                                    {scr.type}
-                                </span>
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Active View Container */}
-                    <div className="col-span-3">
-                        {showWizard ? (
-                            <PreAuthWizard
-                                onClose={resetDemo}
-                                prefilledData={prefilledData}
-                                existingRecord={selectedRecord || (isDemoMode ? (prefilledData as any) : activeCase ? mapCaseToPreAuth(activeCase) : undefined)}
-                                startAtStep={isDemoMode ? demoStartStep : 1}
-                                defaultTab={isDemoMode ? demoDefaultTab : undefined}
-                                isDemo={isDemoMode}
-                                onResetDemo={isDemoMode ? resetDemo : undefined}
-                            />
-                        ) : isDemoMode ? (
-                            <div className="w-full bg-white border border-opd-border rounded-2xl p-6 space-y-6">
-                                <div className="text-center space-y-2">
-                                    <div className="inline-block bg-primary-tint border border-opd-primary/20 text-opd-primary text-sm font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                        ⚡ Presentation Sandbox
-                                    </div>
-                                    <h3 className="text-xl font-bold font-lora text-opd-primary">Pre-Loaded Demo Scenarios</h3>
-                                </div>
-                                <div className="grid grid-cols-3 gap-4">
-                                    <div className="p-4 border rounded-xl flex flex-col justify-between space-y-3">
-                                        <h4 className="font-bold text-sm">Diabetes Profile</h4>
-                                        <button onClick={() => runDemoCase(DIABETES_DEMO_RECORD)} className="btn-primary py-1.5 text-sm">Run Review</button>
-                                    </div>
-                                    <div className="p-4 border rounded-xl flex flex-col justify-between space-y-3">
-                                        <h4 className="font-bold text-sm">Pneumonia Admittance</h4>
-                                        <button onClick={() => runDemoCase(PNEUMONIA_DEMO_RECORD)} className="btn-primary py-1.5 text-sm">Run Review</button>
-                                    </div>
-                                    <div className="p-4 border rounded-xl flex flex-col justify-between space-y-3">
-                                        <h4 className="font-bold text-sm">Appendicitis Clean</h4>
-                                        <button onClick={() => runDemoCase(APPENDICITIS_DEMO_RECORD)} className="btn-primary py-1.5 text-sm">Run Review</button>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="space-y-6">
-                                {selectedScreen === 1 && <PatientQRWorkflowView onCaseSelect={handleCaseSelect} />}
-                                {selectedScreen === 2 && <PatientDetailsView activeCase={activeCase} onSave={refreshCases} />}
-                                {selectedScreen === 3 && <UploadIngestionView onCaseCreated={handleCaseCreated} />}
-                                {selectedScreen === 4 && <DocumentIdentificationView activeCase={activeCase} />}
-                                {selectedScreen === 5 && <ExtractedInformationView activeCase={activeCase} />}
-                                {selectedScreen === 6 && <ClaimReadinessView activeCase={activeCase} onCaseUpdated={refreshCases} />}
-                                {selectedScreen === 7 && <EvidenceExplorerView activeCase={activeCase} />}
-                                {selectedScreen === 8 && <PolicyValidationView activeCase={activeCase} />}
-                                {selectedScreen === 9 && <TpaQueryPredictionView activeCase={activeCase} />}
-                                {selectedScreen === 10 && <ClaimWorkflowTimelineView activeCase={activeCase} />}
-                                {selectedScreen === 11 && <ClaimPacketPreviewView activeCase={activeCase} />}
-                                {selectedScreen === 12 && <AnalyticsView />}
-                                {selectedScreen === 13 && <DenialQueue />}
-                                {selectedScreen === 14 && <AdminPolicyConfigView />}
-                                {/* ── Next / Prev navigation ── */}
-                                <div className="flex items-center justify-between pt-2 border-t border-opd-border">
-                                    <button
-                                        onClick={() => setSelectedScreen(s => Math.max(1, s - 1))}
-                                        disabled={selectedScreen === 1}
-                                        className="flex items-center gap-2 px-4 py-2 text-sm font-bold border border-opd-border rounded-xl text-opd-text-secondary hover:border-opd-primary hover:text-opd-primary transition disabled:opacity-30 disabled:cursor-not-allowed"
-                                    >
-                                        ← Previous
-                                    </button>
-                                    <span className="text-sm text-gray-400 font-mono">Screen {selectedScreen} of {SCREENS.length}</span>
-                                    <button
-                                        onClick={() => setSelectedScreen(s => Math.min(SCREENS.length, s + 1))}
-                                        disabled={selectedScreen === SCREENS.length}
-                                        className="flex items-center gap-2 px-4 py-2 text-sm font-bold bg-opd-primary text-white rounded-xl hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed"
-                                    >
-                                        Next →
-                                    </button>
-                                </div>
-                            </div>
                         )}
                     </div>
-                </div>
 
-            </div>
+                    {/* 12-Screen Grid */}
+                    <div className="grid grid-cols-4 gap-6 items-start">
+                        {/* Left Sidebar */}
+                        <div className="col-span-1 bg-white border border-opd-border rounded-2xl p-4 shadow-sm space-y-2">
+                            <div className="text-sm font-bold text-gray-400 uppercase px-2 mb-2 tracking-wider">
+                                12-Screen Navigation
+                            </div>
+                            {SCREENS.map(scr => (
+                                <button
+                                    key={scr.id}
+                                    onClick={() => setSelectedScreen(scr.id)}
+                                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition text-left ${
+                                        selectedScreen === scr.id
+                                            ? 'bg-opd-primary text-white shadow'
+                                            : 'text-opd-text-secondary hover:bg-gray-50 hover:text-opd-primary'
+                                    }`}
+                                >
+                                    <div className="flex items-center gap-2.5">
+                                        {scr.icon}
+                                        <span>{scr.name.split('. ')[1]}</span>
+                                    </div>
+                                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-black border uppercase tracking-wide shrink-0 ${
+                                        scr.type === 'real' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                        scr.type === 'extracted' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                        'bg-amber-50 text-amber-700 border-amber-200'
+                                    }`}>
+                                        {scr.type}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Active View Container */}
+                        <div className="col-span-3 space-y-6">
+                            {selectedScreen === 1 && <PatientQRWorkflowView onCaseSelect={(id) => {
+                                if (id === 'NEW') { setActiveCaseId(null); setSelectedScreen(1); }
+                                else setActiveCaseId(id);
+                            }} />}
+                            {selectedScreen === 2 && <PatientDetailsView activeCase={activeCase} onSave={refreshCases} />}
+                            {selectedScreen === 3 && <UploadIngestionView onCaseCreated={handleCaseCreated} />}
+                            {selectedScreen === 4 && <DocumentIdentificationView activeCase={activeCase} />}
+                            {selectedScreen === 5 && <ExtractedInformationView activeCase={activeCase} />}
+                            {selectedScreen === 6 && <ClaimReadinessView activeCase={activeCase} onCaseUpdated={refreshCases} />}
+                            {selectedScreen === 7 && <EvidenceExplorerView activeCase={activeCase} />}
+                            {selectedScreen === 8 && <PolicyValidationView activeCase={activeCase} />}
+                            {selectedScreen === 9 && <TpaQueryPredictionView activeCase={activeCase} />}
+                            {selectedScreen === 10 && <ClaimWorkflowTimelineView activeCase={activeCase} />}
+                            {selectedScreen === 11 && <ClaimPacketPreviewView activeCase={activeCase} />}
+                            {selectedScreen === 12 && <AnalyticsView />}
+                            {selectedScreen === 13 && <DenialQueue />}
+                            {selectedScreen === 14 && <AdminPolicyConfigView />}
+
+                            {/* Prev / Next nav */}
+                            <div className="flex items-center justify-between pt-2 border-t border-opd-border">
+                                <button
+                                    onClick={() => setSelectedScreen(s => Math.max(1, s - 1))}
+                                    disabled={selectedScreen === 1}
+                                    className="flex items-center gap-2 px-4 py-2 text-sm font-bold border border-opd-border rounded-xl text-opd-text-secondary hover:border-opd-primary hover:text-opd-primary transition disabled:opacity-30 disabled:cursor-not-allowed"
+                                >
+                                    ← Previous
+                                </button>
+                                <span className="text-sm text-gray-400 font-mono">Screen {selectedScreen} of {SCREENS.length}</span>
+                                <button
+                                    onClick={() => setSelectedScreen(s => Math.min(SCREENS.length, s + 1))}
+                                    disabled={selectedScreen === SCREENS.length}
+                                    className="flex items-center gap-2 px-4 py-2 text-sm font-bold bg-opd-primary text-white rounded-xl hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                                >
+                                    Next →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

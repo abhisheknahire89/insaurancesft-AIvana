@@ -1,6 +1,7 @@
 import { getGoogleGenerativeAIClient, rotateApiKey, getActiveApiKey } from './apiKeys';
 import { MODEL_DOCUMENT } from '../config/modelConfig';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { queryMedGemma } from './llmClient';
 
 // Setup workerSrc
 if (typeof window !== 'undefined') {
@@ -489,8 +490,6 @@ export const extractFromDocument = async (file: File): Promise<ExtractedPatientD
         let attempts = 3;
         while (attempts > 0) {
             try {
-                const client = getGoogleGenerativeAIClient();
-                const model = client.getGenerativeModel({ model: MODEL_DOCUMENT });
                 const prompt = `You are processing a page Node from a medical record.
 Original PDF Page Reference: Page ${node.metadata.pageNumber} of ${node.metadata.fileName}.
 
@@ -516,14 +515,7 @@ Return strictly a valid JSON object matching this structure:
   ]
 }
 `;
-                const response = await model.generateContent({
-                    contents: prompt,
-                    config: {
-                        responseMimeType: 'application/json'
-                    }
-                });
-                
-                const responseText = response.response.text().trim();
+                const responseText = await queryMedGemma(prompt, "You are a professional medical document classifier.");
                 let cleanJson = responseText;
                 if (cleanJson.startsWith('```json')) {
                     cleanJson = cleanJson.replace(/^```json/, '').replace(/```$/, '').trim();
@@ -561,9 +553,6 @@ Return strictly a valid JSON object matching this structure:
 
     while (attempts > 0) {
         try {
-            const client = getGoogleGenerativeAIClient();
-            const model = client.getGenerativeModel({ model: MODEL_DOCUMENT });
-            
             const prompt = `You are a highly experienced Indian TPA claims and medical data extraction assistant.
 You have the complete text of a medical/insurance document, along with classifications and extracted tables from each page.
 
@@ -627,14 +616,7 @@ Return strictly a valid JSON object matching this structure:
   }
 }
 `;
-            const response = await model.generateContent({
-                contents: prompt,
-                config: {
-                    responseMimeType: 'application/json'
-                }
-            });
-
-            const text = response.response.text().trim();
+            const text = await queryMedGemma(prompt, "You are a highly experienced medical data extraction assistant.");
             let cleanJson = text;
             if (cleanJson.startsWith('```json')) {
                 cleanJson = cleanJson.replace(/^```json/, '').replace(/```$/, '').trim();

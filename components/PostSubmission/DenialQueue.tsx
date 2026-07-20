@@ -22,6 +22,8 @@ import { formatCurrency, formatDateTime } from '../../utils/formatters';
 import { submitPreAuthToTPA } from '../../services/tpaPortalService';
 import { logStageTimestamp } from '../../utils/stageLogger';
 
+import { generateQueryResponse } from '../../services/queryResponseService';
+
 // ─── Queue entry enriched with appeal data ───────────────────────────────────
 
 interface QueueEntry {
@@ -106,26 +108,12 @@ export const DenialQueue: React.FC<DenialQueueProps> = ({ activeCaseId }) => {
 
     const handleGenerateQueryResponse = async () => {
         if (!selected) return;
-        const queryDetailsText = selected.record.tpaResponse?.queryDetails ?? '';
-        if (!queryDetailsText.trim()) {
-            alert('No query details recorded for this case.');
-            return;
-        }
-
         setGeneratingQuery(true);
         try {
-            const prompt = `Write a brief, professional clarification response addressing EXACTLY this query: "${queryDetailsText}", using this case's documented clinical facts: "${selected.record.clinical?.chiefComplaints || ''}. ${selected.record.clinical?.historyOfPresentIllness || ''}". Respond as the Attending Medical Director. Do not introduce new claims.`;
-            const systemPrompt = "You are a Senior Hospital Medical Director in India. Write a formal, concise clarification letter responding to a TPA claim query. Be factual and brief.";
-            
-            let response = "";
-            try {
-                const { queryMedGemma } = await import('../../services/llmClient');
-                response = await queryMedGemma(prompt, systemPrompt);
-            } catch (llmError) {
-                console.warn('[DenialQueue] LLM query failed, using deterministic fallback letter.', llmError);
-                response = `Dear Sir/Madam,\n\nThis is in response to your query regarding the pre-authorization request for ${selected.record.patient?.patientName || 'the patient'} (Case ID: ${selected.record.id}).\n\nQuery Details:\n${queryDetailsText}\n\nClarification Response:\nWe have reviewed the clinical files. The patient is a ${selected.record.patient?.age || ''}-year-old ${selected.record.patient?.gender || 'patient'} admitted with diagnosis: ${selected.record.clinical?.diagnoses?.[selected.record.clinical.selectedDiagnosisIndex ?? 0]?.diagnosis || 'Osteoarthritis'}. The proposed line of treatment is medically necessary and requires continuous inpatient monitoring. All necessary clinical and lab findings have been verified.\n\nWe request you to kindly process the cashless authorization at the earliest.\n\nSincerely,\nAttending Medical Director\nAivana Hospital`;
-            }
+            const response = await generateQueryResponse(selected.record);
             setQueryResponseText(response);
+        } catch (err: any) {
+            alert(err.message || 'Error generating query response.');
         } finally {
             setGeneratingQuery(false);
         }

@@ -155,8 +155,8 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
 
         {/* SLA Breaches */}
         <div className="bg-white border border-opd-border rounded-lg p-4">
-          <span className="text-xs font-bold text-opd-text-muted uppercase tracking-wider">SLA Breaches (>7 days)</span>
-          <div className="text-2xl font-bold text-red-600 mt-2">{metrics.slaBreach%}%</div>
+          <span className="text-xs font-bold text-opd-text-muted uppercase tracking-wider">SLA Breaches (&gt;7 days)</span>
+          <div className="text-2xl font-bold text-red-600 mt-2">{metrics.slaBreachPercent}%</div>
           <div className="text-xs text-opd-text-muted mt-1">{metrics.slaBreachCount} cases over SLA</div>
         </div>
 

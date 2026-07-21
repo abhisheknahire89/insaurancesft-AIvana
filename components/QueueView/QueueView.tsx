@@ -23,7 +23,7 @@
 import React, { useState, useEffect } from 'react';
 import { QueueNav } from './QueueNav';
 import { QueueListView } from './QueueListView';
-import { Case, generateCaseId } from '../../services/caseModel';
+import { Case, generateCaseId, DEFAULT_QUEUES } from '../../services/caseModel';
 import { getAllCases } from '../../services/masterPatientRecord';
 import type { CaseWorkspaceNewProps } from '../CaseWorkspace/CaseWorkspaceNew';
 
@@ -119,7 +119,7 @@ export const QueueView: React.FC<QueueViewProps> = ({ onOpenCase, onCreateCase }
 
         {/* Queue List View — actual case table */}
         <QueueListView
-          queue={require('../../services/caseModel').DEFAULT_QUEUES[activeQueueId]}
+          queue={DEFAULT_QUEUES[activeQueueId]}
           cases={cases}
           onCaseClick={onOpenCase}
           isLoading={isLoading}

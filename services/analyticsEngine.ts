@@ -25,7 +25,7 @@ export interface CaseMetrics {
   queryRate: number; // percentage
   averageDaysInState: Record<CaseStatus, number>;
   slaBreachCount: number; // cases > 7 days in state
-  slaBreach% : number;
+  slaBreachPercent : number;
   averageTimeToSettlement: number; // days
   casesByStatus: Record<CaseStatus, number>;
   casesByCompleteness: {
@@ -114,7 +114,7 @@ export function computeCaseMetrics(cases: Case[]): CaseMetrics {
     );
     return days > 7 && c.status !== 'completed' && c.status !== 'cancelled';
   }).length;
-  const slaBreach% = activeCases > 0 ? Math.round((slaBreachCount / activeCases) * 100) : 0;
+  const slaBreachPercent = activeCases > 0 ? Math.round((slaBreachCount / activeCases) * 100) : 0;
 
   // Average time to settlement
   const settledCases = cases.filter(c => c.status === 'completed' && c.dischargeDate);
@@ -157,7 +157,7 @@ export function computeCaseMetrics(cases: Case[]): CaseMetrics {
     queryRate,
     averageDaysInState,
     slaBreachCount,
-    slaBreach%,
+    slaBreachPercent,
     averageTimeToSettlement,
     casesByStatus,
     casesByCompleteness,
@@ -179,7 +179,7 @@ export function getEmptyCaseMetrics(): CaseMetrics {
     queryRate: 0,
     averageDaysInState: {},
     slaBreachCount: 0,
-    slaBreach%: 0,
+    slaBreachPercent: 0,
     averageTimeToSettlement: 0,
     casesByStatus: {},
     casesByCompleteness: { veryLow: 0, low: 0, medium: 0, high: 0 },
@@ -266,7 +266,7 @@ export function computeDashboardSummary(cases: Case[]): DashboardSummary {
   // Health score: composite of readiness, denial rate, SLA breaches
   let healthScore = 100;
   healthScore -= caseMetrics.denialRate * 0.3; // Denials reduce health by 30%
-  healthScore -= caseMetrics.slaBreach% * 0.4; // SLA breaches reduce by 40%
+  healthScore -= caseMetrics.slaBreachPercent * 0.4; // SLA breaches reduce by 40%
   healthScore -= (100 - caseMetrics.medianCompletenessScore) * 0.3; // Low completeness reduces by 30%
   healthScore = Math.max(0, Math.min(100, Math.round(healthScore)));
 

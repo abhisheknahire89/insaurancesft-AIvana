@@ -13,7 +13,7 @@
 
 import React, { useState } from 'react';
 import {
-  Home, Inbox, Clock, MessageSquare, TrendingUp, Scale,
+  Home, Inbox, Clock, MessageSquare, TrendingUp, Scale, DollarSign,
   CheckCircle, BarChart3, Settings, ChevronDown, ChevronUp,
   Search, Plus
 } from 'lucide-react';

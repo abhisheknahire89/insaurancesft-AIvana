@@ -68,6 +68,9 @@ export interface EnhancementEntry {
     trigger: 'new_procedure' | 'extended_stay' | 'icu_upgrade';
     requestedAmount: number;
     approvedAmount?: number;              // set when TPA responds approved/partial
+    deductionReason?: string;
+    queryDetails?: string;
+    denialReason?: string;
     queryResponseText?: string;           // if TPA raised a query on this enhancement
     queryRespondedAt?: string;            // Phase 2: timestamp of response
     status: string;

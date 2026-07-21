@@ -14,10 +14,10 @@ import { PreAuthRecord } from '../components/PreAuthWizard/types';
  * Generate a formal query-clarification letter addressing the TPA's query.
  * Falls back to a deterministic letter template if the LLM call fails.
  */
-export async function generateQueryResponse(record: PreAuthRecord): Promise<string> {
-    const queryDetailsText = record.tpaResponse?.queryDetails ?? '';
+export async function generateQueryResponse(record: PreAuthRecord, overrideQueryText?: string): Promise<string> {
+    const queryDetailsText = overrideQueryText || record.tpaResponse?.queryDetails || '';
     if (!queryDetailsText.trim()) {
-        throw new Error('No query details recorded for this case. Log the TPA query first.');
+        throw new Error('No query details recorded for this case. Log the query details first.');
     }
 
     const selectedDx = record.clinical?.diagnoses?.[record.clinical.selectedDiagnosisIndex ?? 0];

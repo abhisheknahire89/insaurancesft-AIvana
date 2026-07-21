@@ -35,6 +35,8 @@ import { savePreAuth } from '../../services/masterPatientRecord';
 import { submitPreAuthToTPA } from '../../services/tpaPortalService';
 import { logFeedbackEvent } from '../../utils/feedbackLogger';
 import { logStageTimestamp } from '../../utils/stageLogger';
+import { simulateInsurerDecision } from '../../services/simulatedInsurerService';
+import { logEvent } from '../../utils/auditLog';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Tiny re-usable sub-components (design tokens from scoreColorClass)
@@ -330,6 +332,13 @@ const EnhancementRequestPanel: React.FC<EnhancementRequestPanelProps> = ({ recor
             const input = buildInput();
             const result = await reviewEnhancement(input, diagnosisText, admDate);
             setReport(result);
+            logEvent(record.id, 'enhancement_reviewed', {
+                status: result.status,
+                gapCount: result.gaps.length,
+                insufficientItems: result.insufficientEvidence.map(e => e.item),
+                originalApprovalRef: origRef,
+                additionalAmountRequested: addlAmount
+            });
             setStep(3);
         } catch (err: any) {
             setToast({ msg: `Review engine error: ${err.message}`, type: 'error' });
@@ -342,11 +351,20 @@ const EnhancementRequestPanel: React.FC<EnhancementRequestPanelProps> = ({ recor
         if (report?.status === 'pending_documents') return;
         setSubmitting(true);
         try {
+            const caseRecord = await getPatientRecord(record.id);
+            if (!caseRecord) {
+                throw new Error("Patient record not found");
+            }
+            const decision = simulateInsurerDecision(caseRecord, 'enhancement', addlAmount);
             const entry: EnhancementEntry = {
                 id: `ENH-${Math.floor(100000 + Math.random() * 900000)}`,
                 trigger,
                 requestedAmount: addlAmount,
-                status: report?.status === 'sufficient' ? 'submitted' : 'pending_documents',
+                status: decision.outcome,
+                approvedAmount: decision.approvedAmount,
+                deductionReason: decision.deductionReason,
+                queryDetails: decision.queryDetails,
+                denialReason: decision.denialReason,
                 gaps: report?.gaps ?? [],
                 anticipatedQueries: report?.anticipatedQueries ?? [],
                 reviewedAt: new Date().toISOString(),
@@ -361,7 +379,7 @@ const EnhancementRequestPanel: React.FC<EnhancementRequestPanelProps> = ({ recor
                 reviewEngineReport: report ?? undefined,
             };
             await recordEnhancement(record.id, entry);
-            setToast({ msg: `Enhancement ${entry.id} submitted successfully.`, type: 'success' });
+            setToast({ msg: `Enhancement ${entry.id} processed: ${decision.outcome.toUpperCase()}`, type: 'success' });
             setTimeout(() => onSubmitted(entry), 1200);
         } catch (err: any) {
             setToast({ msg: `Submit failed: ${err.message}`, type: 'error' });
@@ -665,10 +683,20 @@ const EnhancementRequestPanel: React.FC<EnhancementRequestPanelProps> = ({ recor
 
 interface QueryResponsePanelProps {
     record: PreAuthRecord;
+    parentType?: 'pre_auth' | 'enhancement';
+    parentId?: string;
+    queryDetails?: string;
     onSubmitted: () => void;
     onCancel: () => void;
 }
-const QueryResponsePanel: React.FC<QueryResponsePanelProps> = ({ record, onSubmitted, onCancel }) => {
+const QueryResponsePanel: React.FC<QueryResponsePanelProps> = ({
+    record,
+    parentType = 'pre_auth',
+    parentId,
+    queryDetails,
+    onSubmitted,
+    onCancel
+}) => {
     const [generating, setGenerating] = useState(false);
     const [responseText, setResponseText] = useState('');
     const [saving, setSaving] = useState(false);
@@ -677,8 +705,13 @@ const QueryResponsePanel: React.FC<QueryResponsePanelProps> = ({ record, onSubmi
     const handleGenerate = async () => {
         setGenerating(true);
         try {
-            const text = await generateQueryResponse(record);
+            const text = await generateQueryResponse(record, queryDetails);
             setResponseText(text);
+            logEvent(record.id, 'query_response_generated', {
+                parentType,
+                parentId: parentId || record.id,
+                responseText: text
+            });
         } catch (err: any) {
             setToast({ msg: err.message, type: 'error' });
         } finally {
@@ -690,7 +723,7 @@ const QueryResponsePanel: React.FC<QueryResponsePanelProps> = ({ record, onSubmi
         if (!responseText.trim()) return;
         setSaving(true);
         try {
-            await recordQueryResponse(record.id, record.id, 'pre_auth', responseText);
+            await recordQueryResponse(record.id, parentId || record.id, parentType, responseText);
             setToast({ msg: 'Query response saved and marked submitted.', type: 'success' });
             setTimeout(() => onSubmitted(), 1200);
         } catch (err: any) {
@@ -700,6 +733,8 @@ const QueryResponsePanel: React.FC<QueryResponsePanelProps> = ({ record, onSubmi
         }
     };
 
+    const displayQuery = queryDetails || record.tpaResponse?.queryDetails;
+
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-opd-border">
@@ -707,10 +742,10 @@ const QueryResponsePanel: React.FC<QueryResponsePanelProps> = ({ record, onSubmi
                 <button type="button" onClick={onCancel} className="text-opd-text-muted hover:text-opd-primary text-sm font-bold">← Back</button>
             </div>
 
-            {record.tpaResponse?.queryDetails && (
+            {displayQuery && (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 text-sm text-amber-800">
                     <div className="text-[9px] font-bold uppercase tracking-wider mb-1 text-amber-700">TPA Query</div>
-                    <p className="leading-snug">{record.tpaResponse.queryDetails}</p>
+                    <p className="leading-snug">{displayQuery}</p>
                 </div>
             )}
 
@@ -770,6 +805,11 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record: initialRec
     const [billingOutput, setBillingOutput] = useState<BillingCodingOutput | null>(null);
     const [billingLoading, setBillingLoading] = useState(false);
     const [caseRecord, setCaseRecord]       = useState<PatientCaseRecord | null>(null);
+    const [queryTarget, setQueryTarget] = useState<{
+        parentType: 'pre_auth' | 'enhancement';
+        parentId: string;
+        queryDetails: string;
+    } | null>(null);
     const [railView, setRailView]           = useState<RailView>('default');
     const [submitting, setSubmitting]       = useState(false);
     const [subToast, setSubToast]           = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
@@ -1041,7 +1081,18 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record: initialRec
                             ) : (
                                 <div className="space-y-3">
                                     {caseRecord.enhancements.map(enh => (
-                                        <EnhancementCard key={enh.id} enh={enh} />
+                                        <EnhancementCard
+                                            key={enh.id}
+                                            enh={enh}
+                                            onRespondToQuery={(id, details) => {
+                                                setQueryTarget({
+                                                    parentType: 'enhancement',
+                                                    parentId: id,
+                                                    queryDetails: details
+                                                });
+                                                setRailView('query_response');
+                                            }}
+                                        />
                                     ))}
                                 </div>
                             )}
@@ -1070,6 +1121,9 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record: initialRec
                     {railView === 'query_response' && (
                         <QueryResponsePanel
                             record={record}
+                            parentType={queryTarget?.parentType || 'pre_auth'}
+                            parentId={queryTarget?.parentId}
+                            queryDetails={queryTarget?.queryDetails}
                             onSubmitted={() => { setRailView('default'); refreshCaseRecord(); }}
                             onCancel={() => setRailView('default')}
                         />
@@ -1191,7 +1245,14 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record: initialRec
                                     </button>
                                 )}
                                 {canQueryResponse && (
-                                    <button type="button" onClick={() => setRailView('query_response')}
+                                    <button type="button" onClick={() => {
+                                        setQueryTarget({
+                                            parentType: 'pre_auth',
+                                            parentId: record.id,
+                                            queryDetails: record.tpaResponse?.queryDetails || ''
+                                        });
+                                        setRailView('query_response');
+                                    }}
                                         className="flex items-center justify-between px-3 py-2.5 rounded-xl border border-amber-200 bg-amber-50 hover:border-amber-400 text-sm font-semibold text-amber-800 transition group">
                                         <div className="flex items-center gap-2"><FileText className="w-3.5 h-3.5" />Generate Query Response</div>
                                         <ChevronRight className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-600" />
@@ -1248,7 +1309,7 @@ export const CaseWorkspace: React.FC<CaseWorkspaceProps> = ({ record: initialRec
 // Enhancement Card — Step 8: shows reviewEngineReport, approvedAmount, gaps
 // ─────────────────────────────────────────────────────────────────────────────
 
-function EnhancementCard({ enh }: { enh: EnhancementEntry }) {
+function EnhancementCard({ enh, onRespondToQuery }: { enh: EnhancementEntry; onRespondToQuery?: (id: string, details: string) => void }) {
     const [expanded, setExpanded] = useState(false);
     const engineStatus = enh.reviewEngineReport?.status;
 
@@ -1267,6 +1328,7 @@ function EnhancementCard({ enh }: { enh: EnhancementEntry }) {
                         enh.status === 'approved'         ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
                         enh.status === 'partial_approved' ? 'bg-amber-50 border-amber-200 text-amber-700' :
                         enh.status === 'pending_documents'? 'bg-red-50 border-red-200 text-red-700' :
+                        enh.status === 'query'             ? 'bg-blue-50 border-blue-200 text-blue-700' :
                         'bg-blue-50 border-blue-200 text-blue-700'}`}>
                         {enh.status.replace(/_/g, ' ')}
                     </span>
@@ -1287,7 +1349,38 @@ function EnhancementCard({ enh }: { enh: EnhancementEntry }) {
                         <span className="font-mono font-bold text-emerald-700">₹{enh.approvedAmount.toLocaleString('en-IN')}</span>
                     </div>
                 )}
+                {enh.deductionReason && (
+                    <div className="col-span-2 mt-1 text-[10px] text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 leading-relaxed">
+                        <strong>Deduction Note:</strong> {enh.deductionReason}
+                    </div>
+                )}
+                {enh.queryDetails && (
+                    <div className="col-span-2 mt-1 text-[10px] text-blue-700 bg-blue-50 border border-blue-200 rounded p-2 leading-relaxed">
+                        <strong>TPA Query:</strong> {enh.queryDetails}
+                    </div>
+                )}
+                {enh.denialReason && (
+                    <div className="col-span-2 mt-1 text-[10px] text-red-700 bg-red-50 border border-red-200 rounded p-2 leading-relaxed">
+                        <strong>Denial Reason:</strong> {enh.denialReason}
+                    </div>
+                )}
+                {enh.queryResponseText && (
+                    <div className="col-span-2 mt-1 text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 rounded p-2 leading-relaxed">
+                        <strong>Submitted Clarification:</strong>
+                        <p className="mt-0.5 whitespace-pre-wrap">{enh.queryResponseText}</p>
+                    </div>
+                )}
             </div>
+
+            {/* Respond to query action */}
+            {enh.status === 'query' && !enh.queryResponseText && onRespondToQuery && (
+                <button type="button"
+                    onClick={() => onRespondToQuery(enh.id, enh.queryDetails || '')}
+                    className="w-full flex items-center justify-center gap-1.5 py-2 mt-1 bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold rounded-xl hover:border-amber-400 hover:bg-amber-100 transition shadow-sm">
+                    <FileText className="w-3.5 h-3.5 text-amber-700" />
+                    Generate Query Response
+                </button>
+            )}
 
             {/* Expandable review report */}
             {enh.reviewEngineReport && (

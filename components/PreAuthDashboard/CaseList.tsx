@@ -350,12 +350,18 @@ export const CaseList: React.FC<CaseListProps> = ({ onNewPreAuth, onOpenCase, on
                                                                 title="Open workspace"
                                                             >→</button>
                                                             {/* Open in Wizard (Edit) */}
-                                                            <button
-                                                                type="button"
-                                                                className="text-sm p-1.5 rounded transition-all text-opd-text-secondary hover:text-opd-primary font-bold"
-                                                                onClick={e => { e.stopPropagation(); onOpenPreAuth(rec); }}
-                                                                title="Open in Wizard (Edit / Details)"
-                                                            >📝</button>
+                                                            {(() => {
+                                                                const canEdit = ['draft', 'pending_documents', 'ready_to_submit'].includes(rec.status);
+                                                                return (
+                                                                    <button
+                                                                        type="button"
+                                                                        disabled={!canEdit}
+                                                                        className={`text-sm p-1.5 rounded transition-all font-bold ${canEdit ? 'text-opd-text-secondary hover:text-opd-primary' : 'text-gray-300 cursor-not-allowed'}`}
+                                                                        onClick={e => { e.stopPropagation(); onOpenPreAuth(rec); }}
+                                                                        title={canEdit ? "Open in Wizard (Edit / Details)" : "Editing disabled (case submitted to TPA)"}
+                                                                    >📝</button>
+                                                                );
+                                                            })()}
                                                             {/* Delete */}
                                                             <button
                                                                 type="button"

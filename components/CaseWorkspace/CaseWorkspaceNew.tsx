@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import { Case, CaseStatus, computeCompletenessScore, Activity, Role } from '../../services/caseModel';
 import { useRole } from '../../contexts/RoleContext';
+import { CenterWorkspaceRouter } from './CenterWorkspaceRouter';
 
 interface CaseWorkspaceNewProps {
   caseRecord: Case;
@@ -227,41 +228,23 @@ interface CenterWorkspaceProps {
 }
 
 const CenterWorkspace: React.FC<CenterWorkspaceProps> = ({ caseRecord, onSave }) => {
+  const handleCaseUpdate = async (updated: Case) => {
+    await onSave(updated);
+  };
+
   return (
-    <div className="flex-1 overflow-y-auto p-6 space-y-6">
-      <div className="max-w-2xl">
-        <h2 className="text-lg font-bold text-opd-primary mb-4">
+    <div className="flex-1 overflow-y-auto p-6">
+      <div className="max-w-4xl">
+        <h2 className="text-lg font-bold text-opd-primary mb-6">
           {caseRecord.status.replace(/_/g, ' ').toUpperCase()}
         </h2>
 
-        {/* Placeholder for task-adaptive content */}
-        <div className="bg-opd-input-bg border border-opd-border rounded-xl p-6 text-center text-opd-text-muted">
-          <div className="text-sm font-semibold mb-2">Task-Adaptive Content Loading</div>
-          <div className="text-xs">
-            Based on case status: <span className="font-mono text-opd-primary">{caseRecord.status}</span>
-          </div>
-        </div>
+        {/* Task-Adaptive Content Router */}
+        <CenterWorkspaceRouter
+          caseRecord={caseRecord}
+          onUpdate={handleCaseUpdate}
+        />
 
-        {/* Timeline Integration */}
-        <div className="mt-8 space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-opd-text-muted">Timeline</div>
-          <div className="space-y-2 max-h-96 overflow-y-auto">
-            {caseRecord.activities.map((activity, idx) => (
-              <div key={activity.id} className="flex gap-3 text-xs">
-                <div className="w-5 h-5 rounded-full bg-opd-primary text-white flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">
-                  {idx + 1}
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold text-opd-text-primary capitalize">{activity.event.replace(/_/g, ' ')}</div>
-                  <div className="text-opd-text-muted text-[10px] mt-0.5">{activity.description}</div>
-                  <div className="text-opd-text-muted text-[9px] mt-1 font-mono">
-                    {new Date(activity.timestamp).toLocaleString()}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -2,8 +2,24 @@ import Dexie, { Table } from 'dexie';
 import { PreAuthRecord, PatientRecord } from '../components/PreAuthWizard/types';
 import type { DenialAppealResult } from '../engine/denialAppealGenerator';
 import { mapToWhoCode, validateCode, getDescription } from './icdService';
+import {
+  Case,
+  generateCaseId,
+  generateActivityId,
+  updateCompletenessMetric,
+  PatientInfo,
+  InsuranceInfo,
+  ClinicalInfo,
+  DocumentEntry,
+  AuthorizationRecord,
+  EnhancementRequest,
+  AppealRecord,
+  Activity,
+  BillingInfo,
+  CompletenessMetric,
+} from './caseModel';
 
-// --- SCHEMA DEFINITIONS ---
+// --- LEGACY SCHEMA DEFINITIONS (backward compat) ---
 
 export interface PatientProfile {
     name: string;
@@ -210,13 +226,15 @@ export interface PatientCaseRecord {
 // --- DEXIE DATABASE CLASS ---
 
 class MasterPatientDatabase extends Dexie {
-    patientCases!: Table<PatientCaseRecord, string>;
+    cases!: Table<Case, string>;
+    patientCases!: Table<PatientCaseRecord, string>; // Deprecated alias for backward compat
     patients!: Table<PatientRecord, string>; // Legacy table for wizard autocompletion
 
     constructor() {
         super('AivanaMasterPatientDB');
-        this.version(1).stores({
-            patientCases: 'id, updatedAt',
+        this.version(2).stores({
+            cases: 'id, updatedAt, status, hospitalId',
+            patientCases: 'id, updatedAt', // Deprecated
             patients: 'id, patientName, mobileNumber'
         });
     }
@@ -224,48 +242,71 @@ class MasterPatientDatabase extends Dexie {
 
 export const db = new MasterPatientDatabase();
 
-// --- MAPPING UTILITIES ---
+// --- MAPPING UTILITIES (NEW) ---
 
-export function mapPreAuthToCase(preAuth: PreAuthRecord): PatientCaseRecord {
+/**
+ * Convert legacy PreAuthRecord to new unified Case model.
+ * Used for data migration and backward compatibility.
+ */
+export function mapPreAuthToCase(preAuth: PreAuthRecord): Case {
     const selectedIndex = preAuth.clinical?.selectedDiagnosisIndex ?? 0;
     const selectedDx = preAuth.clinical?.diagnoses?.[selectedIndex];
-    
-    return {
+
+    const now = new Date().toISOString();
+
+    const caseRecord: Case = {
         id: preAuth.id,
-        patientProfile: {
+        type: 'insurance_case',
+        createdAt: preAuth.createdAt,
+        updatedAt: preAuth.updatedAt,
+        hospitalId: 'default', // TODO: will come from auth context
+        status: mapLegacyStatusToNewStatus(preAuth.status),
+
+        patient: {
             name: preAuth.patient?.patientName || '',
-            age: Number(preAuth.patient?.age || 0),
-            gender: preAuth.patient?.gender || '',
-            contact: preAuth.patient?.mobileNumber || '',
+            contactNumber: preAuth.patient?.mobileNumber || '',
+            gender: preAuth.patient?.gender,
+            age: preAuth.patient?.age,
             uhid: preAuth.patient?.uhid,
+            provenance: {},
         },
-        insuranceDetails: {
-            insurer: preAuth.insurance?.insurerName || '',
+
+        insurance: {
+            insurerName: preAuth.insurance?.insurerName || '',
+            tpaName: preAuth.insurance?.tpaName || '',
             policyNumber: preAuth.insurance?.policyNumber || '',
             sumInsured: Number(preAuth.insurance?.sumInsured || 0),
-            TPA: preAuth.insurance?.tpaName || '',
+            verified: false,
+            provenance: {},
         },
-        encounters: [{
-            admissionDate: preAuth.admission?.dateOfAdmission,
-            dischargeDate: undefined,
+
+        clinical: {
+            admissionDate: preAuth.admission?.dateOfAdmission || now.split('T')[0],
+            admissionType: preAuth.admission?.admissionType === 'Emergency' ? 'emergency' : 'planned',
+            wardType: preAuth.admission?.roomCategory,
             diagnosis: selectedDx?.diagnosis,
-            diagnoses: preAuth.clinical?.diagnoses,
+            icd10Code: selectedDx?.icd10Code,
+            icd10Confirmed: !!selectedDx?.icd10Code,
             chiefComplaints: preAuth.clinical?.chiefComplaints,
             historyOfPresentIllness: preAuth.clinical?.historyOfPresentIllness,
             relevantClinicalFindings: preAuth.clinical?.relevantClinicalFindings,
-            wardType: preAuth.admission?.roomCategory,
-            icuDays: preAuth.admission?.expectedDaysInICU,
-        }],
+            expectedLengthOfStay: preAuth.admission?.expectedLengthOfStay,
+            expectedDaysInICU: preAuth.admission?.expectedDaysInICU,
+            provenance: {},
+        },
+
         documents: (preAuth.uploadedDocuments || []).map(d => ({
             id: d.id,
             name: d.fileName,
-            type: d.fileType || '',
+            fileType: (d.fileType === 'pdf' ? 'pdf' : 'image') as 'pdf' | 'image',
+            uploadedAt: d.uploadedAt || now,
             extractedData: (d as any).extractedData,
         })),
-        authorizations: [{
+
+        authorization: {
             id: preAuth.id,
-            status: preAuth.status,
-            requestedAmount: preAuth.costEstimate?.amountClaimedFromInsurer,
+            status: mapLegacyAuthStatus(preAuth.status),
+            requestedAmount: preAuth.costEstimate?.amountClaimedFromInsurer || 0,
             approvedAmount: preAuth.tpaResponse?.approvedAmount,
             denialReason: preAuth.tpaResponse?.denialReason,
             queryDetails: preAuth.tpaResponse?.queryDetails,
@@ -274,86 +315,116 @@ export function mapPreAuthToCase(preAuth: PreAuthRecord): PatientCaseRecord {
             tpaReceiptId: (preAuth.outputs as any)?.tpaReceiptId,
             irdaiText: preAuth.outputs?.irdaiText,
             tpaEvidenceReview: preAuth.tpaEvidenceReview,
-        }],
-        enhancements: [],
-        claims: [{
-            id: preAuth.id,
-            claimAmount: preAuth.costEstimate?.amountClaimedFromInsurer || 0,
-            status: preAuth.status,
-        }],
-        appeals: [],
-        auditLog: [{
-            timestamp: new Date().toISOString(),
-            action: 'case_mapped',
-            user: preAuth.createdBy || 'doctor',
-        }],
-        timeline: [
-            { timestamp: preAuth.createdAt, event: 'created', description: 'Pre-auth record initialized' },
-            { timestamp: preAuth.updatedAt, event: 'updated', description: 'Pre-auth record modified' },
+        },
+
+        enhancements: (preAuth.enhancements || []).map((e: any) => ({
+            id: e.id,
+            trigger: e.trigger,
+            requestedAmount: e.requestedAmount,
+            justification: 'Migrated from legacy',
+            status: e.status,
+            approvedAmount: e.approvedAmount,
+            queryDetails: e.queryDetails,
+            queryRaisedAt: undefined,
+            queryResponseText: e.queryResponseText,
+            queryRespondedAt: e.queryRespondedAt,
+            reviewEngineReport: e.reviewEngineReport,
+            requestedAt: now,
+            respondedAt: e.respondedAt,
+        })),
+
+        billing: {
+            estimatedAmount: preAuth.costEstimate?.amountClaimedFromInsurer,
+            status: 'pending',
+        },
+
+        completeness: {
+            overallScore: 0,
+            sections: { patient: 0, insurance: 0, clinical: 0, documents: 0, prior_auth_ready: 0 },
+            missingItems: [],
+        },
+
+        activities: [
+            {
+                id: generateActivityId(),
+                timestamp: preAuth.createdAt,
+                event: 'case_created',
+                description: 'Migrated from legacy PreAuthRecord',
+            },
         ],
-        rawPreAuthRecord: preAuth,
-        currentStage: getStageFromStatus(preAuth.status, (preAuth.uploadedDocuments || []).length > 0),
-        createdAt: preAuth.createdAt,
-        updatedAt: preAuth.updatedAt,
+
+        pendingApprovals: [],
+        intakeChannel: (preAuth as any).intakeChannel,
     };
+
+    updateCompletenessMetric(caseRecord);
+    return caseRecord;
 }
 
-export function mapCaseToPreAuth(caseRecord: PatientCaseRecord): PreAuthRecord {
-    if (caseRecord.rawPreAuthRecord) {
-        const preAuth = { ...caseRecord.rawPreAuthRecord };
-        preAuth.id = caseRecord.id;
-        preAuth.status = caseRecord.authorizations[0]?.status || preAuth.status;
-        
-        if (caseRecord.authorizations[0]) {
-            preAuth.tpaResponse = {
-                respondedAt: caseRecord.authorizations[0].respondedAt || '',
-                status: caseRecord.authorizations[0].status as any,
-                approvedAmount: caseRecord.authorizations[0].approvedAmount,
-                denialReason: caseRecord.authorizations[0].denialReason,
-                queryDetails: caseRecord.authorizations[0].queryDetails,
-            };
-            preAuth.outputs = {
-                ...preAuth.outputs,
-                tpaReceiptId: caseRecord.authorizations[0].tpaReceiptId,
-                irdaiText: caseRecord.authorizations[0].irdaiText,
-            };
-            preAuth.tpaEvidenceReview = caseRecord.authorizations[0].tpaEvidenceReview;
-        }
-        
-        // Load latest appeal if available in caseRecord
-        if (caseRecord.appeals && caseRecord.appeals.length > 0) {
-            preAuth.appeal = caseRecord.appeals[0];
-        }
-        
-        return preAuth;
-    }
+// Helper to map legacy PreAuthStatus to new CaseStatus
+function mapLegacyStatusToNewStatus(legacyStatus: string): any {
+    const statusMap: Record<string, string> = {
+        'draft': 'insurance_verified',
+        'pending_documents': 'documents_uploaded',
+        'ready_to_submit': 'ready_for_prior_auth',
+        'submitted': 'submitted_to_tpa',
+        'query_raised': 'query_raised',
+        'approved': 'discharge_billing',
+        'denied': 'denied',
+        'appeal_drafted': 'appeal_drafted',
+        'enhancement_requested': 'enhancement_requested',
+        'closed': 'completed',
+    };
+    return statusMap[legacyStatus] || 'patient_registered';
+}
 
+function mapLegacyAuthStatus(legacyStatus: string): 'pending' | 'approved' | 'partial' | 'denied' | 'query_raised' {
+    const map: Record<string, 'pending' | 'approved' | 'partial' | 'denied' | 'query_raised'> = {
+        'draft': 'pending',
+        'pending_documents': 'pending',
+        'ready_to_submit': 'pending',
+        'submitted': 'pending',
+        'query_raised': 'query_raised',
+        'approved': 'approved',
+        'denied': 'denied',
+        'appeal_drafted': 'denied',
+        'enhancement_requested': 'pending',
+        'closed': 'approved',
+    };
+    return map[legacyStatus] || 'pending';
+}
+
+/**
+ * Convert new unified Case back to legacy PreAuthRecord.
+ * Used for backward compatibility during transition.
+ */
+export function mapCaseToPreAuth(caseRecord: Case): PreAuthRecord {
     return {
         id: caseRecord.id,
         createdAt: caseRecord.createdAt,
         updatedAt: caseRecord.updatedAt,
-        status: (caseRecord.authorizations[0]?.status || 'draft') as any,
+        status: mapNewStatusToLegacyStatus(caseRecord.status),
         version: 1,
         createdBy: 'doctor',
         patient: {
-            patientName: caseRecord.patientProfile.name,
-            age: caseRecord.patientProfile.age,
-            gender: caseRecord.patientProfile.gender as any,
-            mobileNumber: caseRecord.patientProfile.contact || (caseRecord.patientProfile as any).contactNumber || '',
-            uhid: caseRecord.patientProfile.uhid,
+            patientName: caseRecord.patient.name,
+            age: caseRecord.patient.age,
+            gender: (caseRecord.patient.gender as any) || 'Other',
+            mobileNumber: caseRecord.patient.contactNumber,
+            uhid: caseRecord.patient.uhid,
         },
         insurance: {
-            insurerName: caseRecord.insuranceDetails.insurer,
-            policyNumber: caseRecord.insuranceDetails.policyNumber,
-            sumInsured: caseRecord.insuranceDetails.sumInsured,
-            tpaName: caseRecord.insuranceDetails.TPA,
+            insurerName: caseRecord.insurance.insurerName,
+            policyNumber: caseRecord.insurance.policyNumber,
+            sumInsured: caseRecord.insurance.sumInsured,
+            tpaName: caseRecord.insurance.tpaName,
         },
         clinical: {
-            diagnoses: caseRecord.encounters[0]?.diagnoses || [],
+            diagnoses: [{ icd10Code: caseRecord.clinical.icd10Code, diagnosis: caseRecord.clinical.diagnosis }],
             selectedDiagnosisIndex: 0,
-            chiefComplaints: caseRecord.encounters[0]?.chiefComplaints || '',
-            historyOfPresentIllness: caseRecord.encounters[0]?.historyOfPresentIllness || '',
-            relevantClinicalFindings: caseRecord.encounters[0]?.relevantClinicalFindings || '',
+            chiefComplaints: caseRecord.clinical.chiefComplaints || '',
+            historyOfPresentIllness: caseRecord.clinical.historyOfPresentIllness || '',
+            relevantClinicalFindings: caseRecord.clinical.relevantClinicalFindings || '',
             durationOfPresentAilment: '',
             natureOfIllness: 'Acute',
             treatmentTakenSoFar: '',
@@ -363,210 +434,253 @@ export function mapCaseToPreAuth(caseRecord: PatientCaseRecord): PreAuthRecord {
             reasonForHospitalisation: ''
         },
         admission: {
-            roomCategory: caseRecord.encounters[0]?.wardType as any,
-            dateOfAdmission: caseRecord.encounters[0]?.admissionDate || '',
+            roomCategory: (caseRecord.clinical.wardType as any) || 'General Ward',
+            dateOfAdmission: caseRecord.clinical.admissionDate,
             timeOfAdmission: '',
-            admissionType: 'Planned',
-            expectedLengthOfStay: 3,
-            expectedDaysInICU: caseRecord.encounters[0]?.icuDays || 0,
+            admissionType: caseRecord.clinical.admissionType === 'emergency' ? 'Emergency' : 'Planned',
+            expectedLengthOfStay: caseRecord.clinical.expectedLengthOfStay || 3,
+            expectedDaysInICU: caseRecord.clinical.expectedDaysInICU || 0,
             expectedDaysInRoom: 3,
             pastMedicalHistory: {},
             previousHospitalization: { wasHospitalizedBefore: false }
         },
         costEstimate: {
-            amountClaimedFromInsurer: caseRecord.claims[0]?.claimAmount || 0,
+            amountClaimedFromInsurer: caseRecord.authorization.requestedAmount,
         },
         uploadedDocuments: caseRecord.documents.map(d => ({
             id: d.id,
             fileName: d.name,
             fileSizeDisplay: '0 KB',
-            fileType: d.type === 'image' ? 'image' : 'pdf',
-            mimeType: d.type === 'image' ? 'image/png' : 'application/pdf',
-            uploadedAt: new Date().toISOString(),
+            fileType: d.fileType,
+            mimeType: d.fileType === 'image' ? 'image/png' : 'application/pdf',
+            uploadedAt: d.uploadedAt,
             base64Data: '',
-            documentCategory: 'other',
+            documentCategory: d.category || 'other',
             autoClassified: true,
             isRequired: false,
             extractedData: d.extractedData,
         } as any)),
         documentRequirements: [],
         declarations: { patient: {}, doctor: {}, hospital: {} },
-        outputs: {},
-        enhancements: caseRecord.enhancements || [],
+        outputs: {
+            tpaReceiptId: caseRecord.authorization.tpaReceiptId,
+            irdaiText: caseRecord.authorization.irdaiText,
+        },
+        tpaResponse: caseRecord.authorization.respondedAt ? {
+            respondedAt: caseRecord.authorization.respondedAt,
+            status: mapNewAuthStatusToLegacy(caseRecord.authorization.status) as any,
+            approvedAmount: caseRecord.authorization.approvedAmount,
+            denialReason: caseRecord.authorization.denialReason,
+            queryDetails: caseRecord.authorization.queryDetails,
+        } : undefined,
+        tpaEvidenceReview: caseRecord.authorization.tpaEvidenceReview,
+        enhancements: caseRecord.enhancements as any,
     };
 }
 
+function mapNewStatusToLegacyStatus(newStatus: any): any {
+    const map: Record<string, string> = {
+        'patient_registered': 'draft',
+        'insurance_verified': 'draft',
+        'clinical_info_available': 'pending_documents',
+        'documents_uploaded': 'pending_documents',
+        'ready_for_prior_auth': 'ready_to_submit',
+        'submitted_to_tpa': 'submitted',
+        'query_raised': 'query_raised',
+        'enhancement_requested': 'enhancement_requested',
+        'denied': 'denied',
+        'appeal_drafted': 'appeal_drafted',
+        'discharge_billing': 'approved',
+        'settlement': 'approved',
+        'completed': 'closed',
+        'cancelled': 'draft',
+    };
+    return map[newStatus] || 'draft';
+}
+
+function mapNewAuthStatusToLegacy(newStatus: string): string {
+    const map: Record<string, string> = {
+        'pending': 'draft',
+        'approved': 'approved',
+        'partial': 'approved',
+        'denied': 'denied',
+        'query_raised': 'query_raised',
+    };
+    return map[newStatus] || 'draft';
+}
+
 // --- BACKEND SYNC SETTINGS ---
-const BACKEND_URL = 'http://localhost:3001/api/patients';
+const BACKEND_URL = 'http://localhost:3001/api/cases';
 
-// --- CORE FUNCTION EXPORTS ---
+// --- CORE FUNCTION EXPORTS (NEW UNIFIED API) ---
 
-export async function getPatientRecord(id: string): Promise<PatientCaseRecord | undefined> {
+export async function getCase(id: string): Promise<Case | undefined> {
     try {
         const response = await fetch(`${BACKEND_URL}/${id}`);
         if (response.ok) {
             const data = await response.json();
-            await db.patientCases.put(data); // Sync local IndexedDB
+            await db.cases.put(data);
             return data;
         }
     } catch (err) {
-        console.warn(`[Offline Mode] Backend unreachable for getPatientRecord(${id}), falling back to IndexedDB.`, err);
+        console.warn(`[Offline Mode] Backend unreachable for getCase(${id}), falling back to IndexedDB.`, err);
     }
-    return db.patientCases.get(id);
+    return db.cases.get(id);
 }
 
-export async function savePatientRecord(record: PatientCaseRecord): Promise<void> {
-    await db.patientCases.put(record); // Always save to local IndexedDB first for offline capabilities
+export async function saveCase(caseRecord: Case): Promise<void> {
+    updateCompletenessMetric(caseRecord);
+    caseRecord.updatedAt = new Date().toISOString();
+
+    await db.cases.put(caseRecord);
     try {
         await fetch(BACKEND_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(record)
+            body: JSON.stringify(caseRecord)
         });
     } catch (err) {
-        console.warn(`[Offline Mode] Backend unreachable for savePatientRecord(${record.id}), saved to IndexedDB only.`, err);
+        console.warn(`[Offline Mode] Backend unreachable for saveCase(${caseRecord.id}), saved to IndexedDB only.`, err);
     }
 }
 
-export async function getAllPatientRecords(): Promise<PatientCaseRecord[]> {
+export async function getAllCases(filter?: { hospitalId?: string; status?: string }): Promise<Case[]> {
     try {
         const response = await fetch(BACKEND_URL);
         if (response.ok) {
-            const data: PatientCaseRecord[] = await response.json();
+            const data: Case[] = await response.json();
             if (data && data.length > 0) {
-                await db.patientCases.bulkPut(data); // Bulk sync local IndexedDB
+                await db.cases.bulkPut(data);
             }
             return data;
         }
     } catch (err) {
-        console.warn('[Offline Mode] Backend unreachable for getAllPatientRecords, falling back to IndexedDB.', err);
+        console.warn('[Offline Mode] Backend unreachable for getAllCases, falling back to IndexedDB.', err);
     }
-    return db.patientCases.toArray();
+    return db.cases.toArray();
 }
 
-export async function deletePatientRecord(id: string): Promise<void> {
-    await db.patientCases.delete(id); // Delete from local IndexedDB first
+// --- LEGACY BACKWARD-COMPATIBILITY API ---
+
+export async function getPatientRecord(id: string): Promise<Case | undefined> {
+    return getCase(id);
+}
+
+export async function savePatientRecord(record: any): Promise<void> {
+    const caseRecord = record.type === 'insurance_case' ? record : mapPreAuthToCase(record);
+    return saveCase(caseRecord);
+}
+
+export async function getAllPatientRecords(): Promise<Case[]> {
+    return getAllCases();
+}
+
+export async function deleteCase(id: string): Promise<void> {
+    await db.cases.delete(id);
     try {
         await fetch(`${BACKEND_URL}/${id}`, { method: 'DELETE' });
     } catch (err) {
-        console.warn(`[Offline Mode] Backend unreachable for deletePatientRecord(${id}), deleted from IndexedDB only.`, err);
+        console.warn(`[Offline Mode] Backend unreachable for deleteCase(${id}), deleted from IndexedDB only.`, err);
     }
 }
 
-export async function saveEncounter(patientId: string, encounter: EncounterDetails): Promise<void> {
-    const caseRecord = await getPatientRecord(patientId);
+export async function updateClinicalInfo(caseId: string, clinical: Partial<ClinicalInfo>): Promise<void> {
+    const caseRecord = await getCase(caseId);
     if (!caseRecord) return;
-    caseRecord.encounters.push(encounter);
-    caseRecord.timeline.push({
+
+    caseRecord.clinical = { ...caseRecord.clinical, ...clinical };
+    caseRecord.activities.push({
+        id: generateActivityId(),
         timestamp: new Date().toISOString(),
-        event: 'encounter_saved',
-        description: `New encounter added with diagnosis: ${encounter.diagnosis}`
+        event: 'clinical_info_added',
+        description: `Clinical info updated: ${clinical.diagnosis ? 'diagnosis' : ''} ${clinical.icd10Code ? 'ICD-10' : ''}`,
     });
-    caseRecord.auditLog.push({
-        timestamp: new Date().toISOString(),
-        action: 'save_encounter',
-        user: 'doctor'
-    });
-    await savePatientRecord(caseRecord);
+
+    await saveCase(caseRecord);
 }
 
-export async function recordAuthorization(patientId: string, auth: AuthorizationRecord): Promise<void> {
-    const caseRecord = await getPatientRecord(patientId);
+export async function updateAuthorizationRecord(caseId: string, auth: Partial<AuthorizationRecord>): Promise<void> {
+    const caseRecord = await getCase(caseId);
     if (!caseRecord) return;
-    
-    const existingIndex = caseRecord.authorizations.findIndex(a => a.id === auth.id);
-    if (existingIndex > -1) {
-        caseRecord.authorizations[existingIndex] = auth;
-    } else {
-        caseRecord.authorizations.push(auth);
+
+    caseRecord.authorization = { ...caseRecord.authorization, ...auth };
+    caseRecord.activities.push({
+        id: generateActivityId(),
+        timestamp: new Date().toISOString(),
+        event: 'tpa_response_received',
+        description: `Auth status set to ${auth.status} with receipt ${auth.tpaReceiptId || 'N/A'}`,
+    });
+
+    await saveCase(caseRecord);
+}
+
+export async function saveAppeal(caseId: string, appeal: AppealRecord): Promise<void> {
+    const caseRecord = await getCase(caseId);
+    if (!caseRecord) return;
+
+    caseRecord.appeal = appeal;
+    caseRecord.status = 'appeal_drafted';
+    caseRecord.activities.push({
+        id: generateActivityId(),
+        timestamp: new Date().toISOString(),
+        event: 'appeal_drafted',
+        description: `Appeal generated with ${appeal.reasonsAddressed}/${appeal.totalReasons} reasons addressed`,
+    });
+
+    await saveCase(caseRecord);
+}
+
+export async function getAppeal(caseId: string): Promise<AppealRecord | undefined> {
+    const caseRecord = await getCase(caseId);
+    return caseRecord?.appeal;
+}
+
+export async function updateAppealStatus(caseId: string, status: AppealRecord['appealStatus']): Promise<void> {
+    const caseRecord = await getCase(caseId);
+    if (!caseRecord || !caseRecord.appeal) return;
+
+    caseRecord.appeal.appealStatus = status;
+    if (status === 'submitted') {
+        caseRecord.appeal.submittedAt = new Date().toISOString();
+        caseRecord.status = 'submitted_to_tpa';
     }
-    
-    caseRecord.timeline.push({
+
+    caseRecord.activities.push({
+        id: generateActivityId(),
         timestamp: new Date().toISOString(),
-        event: 'authorization_recorded',
-        description: `Auth status set to ${auth.status} with receipt ${auth.tpaReceiptId || 'N/A'}`
+        event: status === 'submitted' ? 'appeal_submitted' : 'appeal_drafted',
+        description: `Appeal status changed to ${status}`,
     });
-    caseRecord.auditLog.push({
-        timestamp: new Date().toISOString(),
-        action: 'record_authorization',
-        user: 'doctor'
-    });
-    await savePatientRecord(caseRecord);
+
+    await saveCase(caseRecord);
 }
 
-export async function saveAppeal(patientId: string, appeal: AppealEntry): Promise<void> {
-    const caseRecord = await getPatientRecord(patientId);
+// ── ENHANCEMENT & QUERY RESPONSE PERSISTENCE ────────────────────────────
+
+export async function recordEnhancement(caseId: string, entry: EnhancementRequest): Promise<void> {
+    const caseRecord = await getCase(caseId);
     if (!caseRecord) return;
-    
-    const existingIndex = caseRecord.appeals.findIndex(a => a.id === appeal.id);
-    if (existingIndex > -1) {
-        caseRecord.appeals[existingIndex] = appeal;
-    } else {
-        caseRecord.appeals.push(appeal);
-    }
-    
-    caseRecord.timeline.push({
-        timestamp: new Date().toISOString(),
-        event: 'appeal_saved',
-        description: `Appeal created with status: ${appeal.appealStatus}`
-    });
-    caseRecord.auditLog.push({
-        timestamp: new Date().toISOString(),
-        action: 'save_appeal',
-        user: 'doctor'
-    });
-    await savePatientRecord(caseRecord);
-}
 
-export async function getAppeal(patientId: string): Promise<AppealEntry | undefined> {
-    const caseRecord = await getPatientRecord(patientId);
-    return caseRecord?.appeals?.[0];
-}
-
-export async function updateAppealStatus(patientId: string, status: AppealEntry['appealStatus']): Promise<void> {
-    const caseRecord = await getPatientRecord(patientId);
-    if (!caseRecord || caseRecord.appeals.length === 0) return;
-    caseRecord.appeals[0].appealStatus = status;
-    caseRecord.timeline.push({
-        timestamp: new Date().toISOString(),
-        event: 'appeal_status_updated',
-        description: `Appeal status changed to ${status}`
-    });
-    caseRecord.auditLog.push({
-        timestamp: new Date().toISOString(),
-        action: 'update_appeal_status',
-        user: 'doctor'
-    });
-    await savePatientRecord(caseRecord);
-}
-
-// ── Phase 2: Enhancement & Query Response persistence ─────────────────────────
-
-export async function recordEnhancement(caseId: string, entry: EnhancementEntry): Promise<void> {
-    const caseRecord = await getPatientRecord(caseId);
-    if (!caseRecord) return;
     const idx = caseRecord.enhancements.findIndex(e => e.id === entry.id);
     if (idx > -1) {
         caseRecord.enhancements[idx] = entry;
     } else {
         caseRecord.enhancements.push(entry);
     }
-    caseRecord.timeline.push({
+
+    caseRecord.status = 'enhancement_requested';
+    caseRecord.activities.push({
+        id: generateActivityId(),
         timestamp: new Date().toISOString(),
-        event: AUDIT_EVENTS.ENHANCEMENT_REQUESTED,
-        description: `Enhancement ${entry.id} requested (${entry.trigger.replace(/_/g,' ')}) — ₹${entry.requestedAmount.toLocaleString('en-IN')} requested. Engine: ${entry.reviewEngineReport?.status ?? 'not-run'}`
+        event: 'enhancement_requested',
+        description: `Enhancement requested (${entry.trigger.replace(/_/g, ' ')}) — ₹${entry.requestedAmount.toLocaleString('en-IN')}`,
     });
-    caseRecord.auditLog.push({
-        timestamp: new Date().toISOString(),
-        action: AUDIT_EVENTS.ENHANCEMENT_REQUESTED,
-        details: { id: entry.id, trigger: entry.trigger, requestedAmount: entry.requestedAmount }
-    });
-    caseRecord.updatedAt = new Date().toISOString();
-    await savePatientRecord(caseRecord);
+
+    await saveCase(caseRecord);
 }
 
-export async function getEnhancements(caseId: string): Promise<EnhancementEntry[]> {
-    const caseRecord = await getPatientRecord(caseId);
+export async function getEnhancements(caseId: string): Promise<EnhancementRequest[]> {
+    const caseRecord = await getCase(caseId);
     return caseRecord?.enhancements ?? [];
 }
 
@@ -576,38 +690,34 @@ export async function recordQueryResponse(
     parentType: 'pre_auth' | 'enhancement',
     responseText: string
 ): Promise<void> {
-    const caseRecord = await getPatientRecord(caseId);
+    const caseRecord = await getCase(caseId);
     if (!caseRecord) return;
 
+    const now = new Date().toISOString();
+
     if (parentType === 'pre_auth') {
-        const auth = caseRecord.authorizations.find(a => a.id === parentId) || caseRecord.authorizations[0];
-        if (auth) {
-            auth.queryResponseText = responseText;
-            auth.queryRespondedAt = new Date().toISOString();
-        }
+        caseRecord.authorization.queryResponseText = responseText;
+        caseRecord.authorization.queryRespondedAt = now;
+        caseRecord.status = 'submitted_to_tpa'; // Back to awaiting TPA review
     } else {
         const enh = caseRecord.enhancements.find(e => e.id === parentId);
         if (enh) {
             enh.queryResponseText = responseText;
-            enh.queryRespondedAt = new Date().toISOString();
+            enh.queryRespondedAt = now;
         }
     }
 
-    caseRecord.timeline.push({
-        timestamp: new Date().toISOString(),
-        event: AUDIT_EVENTS.QUERY_RESPONSE_SENT,
-        description: `Query response submitted for ${parentType} (${parentId}) — ${responseText.slice(0, 80)}…`
+    caseRecord.activities.push({
+        id: generateActivityId(),
+        timestamp: now,
+        event: 'tpa_response_sent',
+        description: `Query response submitted for ${parentType} — ${responseText.slice(0, 80)}…`,
     });
-    caseRecord.auditLog.push({
-        timestamp: new Date().toISOString(),
-        action: AUDIT_EVENTS.QUERY_RESPONSE_SENT,
-        details: { parentId, parentType }
-    });
-    caseRecord.updatedAt = new Date().toISOString();
-    await savePatientRecord(caseRecord);
+
+    await saveCase(caseRecord);
 }
 
-// --- LEGACY BACKWARD-COMPATIBILITY ADAPTERS (REROUTES) ---
+// --- LEGACY BACKWARD-COMPATIBILITY ADAPTERS ───────────────────────────────
 
 export async function savePreAuth(record: PreAuthRecord): Promise<void> {
     // Legacy compliance check (sanitize diagnoses)
@@ -639,30 +749,31 @@ export async function savePreAuth(record: PreAuthRecord): Promise<void> {
     }
 
     const caseRecord = mapPreAuthToCase(record);
-    
-    // Retain existing appeals in case caseRecord is updated
-    const existing = await getPatientRecord(record.id);
+
+    // Retain existing data if case already exists
+    const existing = await getCase(record.id);
     if (existing) {
-        caseRecord.appeals = existing.appeals;
+        caseRecord.appeal = existing.appeal;
         caseRecord.enhancements = existing.enhancements;
+        caseRecord.activities = existing.activities;
     }
-    
-    await savePatientRecord(caseRecord);
+
+    await saveCase(caseRecord);
 }
 
 export async function getPreAuth(id: string): Promise<PreAuthRecord | undefined> {
-    const caseRecord = await getPatientRecord(id);
+    const caseRecord = await getCase(id);
     if (!caseRecord) return undefined;
     return mapCaseToPreAuth(caseRecord);
 }
 
 export async function getAllPreAuths(): Promise<PreAuthRecord[]> {
-    const cases = await getAllPatientRecords();
+    const cases = await getAllCases();
     return cases.map(mapCaseToPreAuth);
 }
 
 export async function deletePreAuth(id: string): Promise<void> {
-    await deletePatientRecord(id);
+    await deleteCase(id);
 }
 
 export async function savePatient(patient: PatientRecord): Promise<void> {
@@ -686,28 +797,30 @@ export async function searchPatients(query: string): Promise<PatientRecord[]> {
 }
 
 export async function saveLegacyAppeal(appeal: DenialAppealResult): Promise<void> {
-    const caseRecord = await getPatientRecord(appeal.recordId);
+    const caseRecord = await getCase(appeal.recordId);
     if (!caseRecord) return;
-    
-    const appealEntry: AppealEntry = {
+
+    const appealRecord: AppealRecord = {
         id: appeal.recordId,
         appealStatus: appeal.appealStatus,
         generatedAt: appeal.generatedAt,
         denialReason: appeal.denialReasonsParsed.join('. '),
         appealLetterEnglish: appeal.appealText,
         appealLetterHindi: appeal.hindiTranslation,
+        citedEvidence: appeal.citedEvidence,
         totalReasons: appeal.totalReasons,
-        addressedCount: appeal.addressedCount,
+        reasonsAddressed: appeal.addressedCount,
         priorityScore: appeal.priorityScore,
+        groundedCitations: true,
     };
-    
-    await saveAppeal(appeal.recordId, appealEntry);
+
+    await saveAppeal(appeal.recordId, appealRecord);
 }
 
 export async function getLegacyAppeal(recordId: string): Promise<DenialAppealResult | undefined> {
     const appeal = await getAppeal(recordId);
     if (!appeal) return undefined;
-    
+
     return {
         recordId: appeal.id,
         appealStatus: appeal.appealStatus,
@@ -716,19 +829,19 @@ export async function getLegacyAppeal(recordId: string): Promise<DenialAppealRes
         appealText: appeal.appealLetterEnglish,
         hindiTranslation: appeal.appealLetterHindi,
         totalReasons: appeal.totalReasons,
-        addressedCount: appeal.addressedCount,
+        addressedCount: appeal.reasonsAddressed,
         priorityScore: appeal.priorityScore,
-        citedEvidence: [],
+        citedEvidence: appeal.citedEvidence,
         stillMissing: [],
     };
 }
 
 export async function getAllLegacyAppeals(): Promise<DenialAppealResult[]> {
-    const cases = await getAllPatientRecords();
+    const cases = await getAllCases();
     const results: DenialAppealResult[] = [];
     for (const c of cases) {
-        if (c.appeals && c.appeals.length > 0) {
-            const appeal = c.appeals[0];
+        if (c.appeal) {
+            const appeal = c.appeal;
             results.push({
                 recordId: appeal.id,
                 appealStatus: appeal.appealStatus,
@@ -737,9 +850,9 @@ export async function getAllLegacyAppeals(): Promise<DenialAppealResult[]> {
                 appealText: appeal.appealLetterEnglish,
                 hindiTranslation: appeal.appealLetterHindi,
                 totalReasons: appeal.totalReasons,
-                addressedCount: appeal.addressedCount,
+                addressedCount: appeal.reasonsAddressed,
                 priorityScore: appeal.priorityScore,
-                citedEvidence: [],
+                citedEvidence: appeal.citedEvidence,
                 stillMissing: [],
             });
         }
@@ -751,16 +864,13 @@ export async function updateLegacyAppealStatus(
     recordId: string,
     newStatus: DenialAppealResult['appealStatus']
 ): Promise<void> {
-    await updateAppealStatus(recordId, newStatus);
+    await updateAppealStatus(recordId, newStatus as any);
 }
 
-// --- ID GENERATION ---
+// --- ID GENERATION (for backward compat) ---
 
 export const generatePreAuthId = (): string => {
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
-    const seq = String(Math.floor(Math.random() * 9000) + 1000);
-    return `PA-AIVANA-${dateStr}-${seq}`;
+    return generateCaseId();
 };
 
 export const generatePatientId = (): string => `PAT-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;

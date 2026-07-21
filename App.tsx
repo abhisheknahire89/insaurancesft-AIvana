@@ -1,10 +1,14 @@
 import React from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { RoleProvider, useRole } from './contexts/RoleContext';
 import { InsuranceModule } from './components/InsuranceModule';
 import { AuthModal } from './components/AuthModal';
 
 const AppContent: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user: authUser, loading: authLoading } = useAuth();
+  const { user: roleUser, loading: roleLoading } = useRole();
+
+  const loading = authLoading || roleLoading;
 
   if (loading) {
     return (
@@ -14,7 +18,7 @@ const AppContent: React.FC = () => {
     );
   }
 
-  if (!user) {
+  if (!authUser || !roleUser) {
     return <AuthModal isOpen={true} onClose={() => {}} />;
   }
 
@@ -29,7 +33,9 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => (
   <AuthProvider>
-    <AppContent />
+    <RoleProvider>
+      <AppContent />
+    </RoleProvider>
   </AuthProvider>
 );
 

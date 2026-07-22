@@ -8,6 +8,7 @@
 import { Case } from './caseModel';
 import { extractClinicalNoteFields, type ExtractedClinicalNoteFields } from './geminiService';
 import { extractFromDocument, type ExtractedPatientData } from './documentExtractionService';
+import { extractFromAllPages, type ConsolidatedExtractionResult } from './pageByPageExtractionService';
 
 export interface DocumentProcessingStatus {
   documentId: string;
@@ -208,6 +209,27 @@ async function extractViaSarvamAI(arrayBuffer: ArrayBuffer, mimeType: string): P
   const text = resJson.markdown || resJson.text || resJson.content || JSON.stringify(resJson);
   console.log(`[Sarvam] Extracted ${text.length} characters from document`);
   return text;
+}
+
+async function extractPdfPages(arrayBuffer: ArrayBuffer): Promise<string[]> {
+  try {
+    const pdfjsLib = await import('pdfjs-dist');
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    const pages: string[] = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map((item: any) => item.str).join(' ');
+      pages.push(pageText);
+    }
+
+    console.log(`Extracted ${pages.length} pages from PDF`);
+    return pages;
+  } catch (error) {
+    console.error('PDF page extraction error:', error);
+    throw error;
+  }
 }
 
 function generateMockOCRText(fileName: string): string {

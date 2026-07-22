@@ -500,6 +500,83 @@ export interface Case {
 
   // For audit/debugging
   notes?: string;
+
+  // ============================================
+  // EXTRACTION PIPELINE TRACKING (NEW)
+  // ============================================
+
+  extraction?: {
+    // Last extraction run
+    lastExtractedAt?: string;
+    extractedBy?: Actor;
+
+    // Patient note extraction
+    patientNoteExtraction?: {
+      status: 'pending' | 'completed' | 'error';
+      extractedAt?: string;
+      extractionMethod: 'manual' | 'ai_extracted';
+      confidence?: number;
+      extractionError?: string;
+    };
+
+    // Document extractions
+    documentExtractions?: Array<{
+      documentId: string;
+      fileName: string;
+      documentType?: string;
+      status: 'extracted' | 'error';
+      extractedAt?: string;
+      confidence?: number;
+      fieldsExtracted?: number;
+      error?: string;
+    }>;
+
+    // Reconciliation status
+    reconciliation?: {
+      status: 'pending' | 'completed' | 'requires_review';
+      reconciliedAt?: string;
+      conflictsDetected?: number;
+      conflictsResolved?: number;
+      pendingReviews?: number;
+    };
+
+    // Conflict tracking
+    conflicts?: Array<{
+      fieldPath: string;
+      patientNoteValue: any;
+      documentValue: any;
+      resolutionStatus?: 'patient_note_wins' | 'document_wins' | 'coordinator_review' | 'pending';
+      resolvedAt?: string;
+      resolvedBy?: Actor;
+      resolutionNotes?: string;
+    }>;
+
+    // Extraction statistics
+    statistics?: {
+      totalFieldsExtracted?: number;
+      fieldsFromPatientNote?: number;
+      fieldsFromDocuments?: number;
+      conflictedFields?: number;
+      extractionByMethod?: Record<string, number>;
+      extractionBySource?: Record<string, number>;
+      averageConfidence?: number;
+    };
+  };
+
+  // Audit trail & compliance
+  auditTrail?: {
+    // Full provenance export for IRDAI compliance
+    provenanceJson?: string; // JSON export of all field provenance
+    exportedAt?: string;
+
+    // Extraction report summary
+    extractionReport?: string; // JSON summary of extraction coverage
+    reportGeneratedAt?: string;
+
+    // Reconciliation report
+    reconciliationReport?: string; // JSON summary of conflicts and resolutions
+    reportGeneratedAt?: string;
+  };
 }
 
 // ============================================

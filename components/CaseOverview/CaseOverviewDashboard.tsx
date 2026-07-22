@@ -941,6 +941,7 @@ interface QuickActionsProps {
   setShowUploadModal?: (show: boolean) => void;
   showPreAuthModal?: boolean;
   setShowPreAuthModal?: (show: boolean) => void;
+  setCaseRecord?: (case: Case) => void;
 }
 
 const QuickActions: React.FC<QuickActionsProps> = ({
@@ -1244,7 +1245,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({
                     updateCompletenessMetric(updatedCase);
 
                     // Update local state
-                    setCaseRecord(updatedCase);
+                    externalSetCaseRecord?.(updatedCase);
 
                     // Notify parent of case update
                     if (onUpdate) {
@@ -1501,6 +1502,7 @@ export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ ca
           setShowUploadModal={setShowUploadModal}
           showPreAuthModal={showPreAuthModal}
           setShowPreAuthModal={setShowPreAuthModal}
+          setCaseRecord={setCaseRecord}
         />
 
         {/* Footer Note */}

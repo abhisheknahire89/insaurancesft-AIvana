@@ -1013,6 +1013,98 @@ const CaseTimeline: React.FC<CaseTimelineProps> = ({ caseRecord }) => {
 };
 
 // ──────────────────────────────────────────────────────────────────────────
+// EXTRACTION STATUS & SOURCE TRACEABILITY
+// ──────────────────────────────────────────────────────────────────────────
+
+interface ExtractionStatusProps {
+  caseRecord: Case;
+}
+
+const ExtractionStatus: React.FC<ExtractionStatusProps> = ({ caseRecord }) => {
+  const extractionMeta = caseRecord.metadata?.formExtractionResults;
+  
+  if (!extractionMeta) {
+    return null;
+  }
+
+  const results = extractionMeta.results || {};
+  const extractedCount = Object.values(results).filter(v => v).length;
+  const avgConfidence = extractionMeta.results ? 
+    Math.round(((extractionMeta.results as any).confidence || 0) * 100) : 0;
+
+  // Count lab results
+  const labResultsCount = caseRecord.clinical.labResults?.length || 0;
+  const imagingCount = caseRecord.clinical.imaging?.length || 0;
+  const medicationCount = caseRecord.clinical.medications?.length || 0;
+
+  return (
+    <SummaryCard title="Extraction Status & Data Sources">
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+          <div className="text-2xl font-bold text-green-700">{extractedCount}</div>
+          <div className="text-xs text-green-600">Fields Extracted</div>
+        </div>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div className="text-2xl font-bold text-blue-700">{avgConfidence}%</div>
+          <div className="text-xs text-blue-600">Avg Confidence</div>
+        </div>
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+          <div className="text-2xl font-bold text-purple-700">{labResultsCount + imagingCount + medicationCount}</div>
+          <div className="text-xs text-purple-600">Clinical Items</div>
+        </div>
+      </div>
+
+      {labResultsCount > 0 && (
+        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+          <div className="font-semibold text-blue-900 mb-2">Lab Results ({labResultsCount}):</div>
+          <div className="space-y-1 text-xs">
+            {caseRecord.clinical.labResults?.slice(0, 3).map((lab, i) => (
+              <div key={i} className="flex justify-between">
+                <span className="text-blue-800">{lab.testName}: {lab.value} {lab.units}</span>
+                <span className="text-blue-600">{Math.round((lab.extractionConfidence || 0) * 100)}%</span>
+              </div>
+            ))}
+            {labResultsCount > 3 && <div className="text-blue-600 italic">...and {labResultsCount - 3} more</div>}
+          </div>
+        </div>
+      )}
+
+      {imagingCount > 0 && (
+        <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded text-sm">
+          <div className="font-semibold text-green-900 mb-2">Imaging ({imagingCount}):</div>
+          <div className="space-y-1 text-xs">
+            {caseRecord.clinical.imaging?.slice(0, 2).map((img, i) => (
+              <div key={i} className="text-green-800">
+                {img.modalityType}: {img.findings}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {medicationCount > 0 && (
+        <div className="p-3 bg-amber-50 border border-amber-200 rounded text-sm">
+          <div className="font-semibold text-amber-900 mb-2">Medications ({medicationCount}):</div>
+          <div className="space-y-1 text-xs">
+            {caseRecord.clinical.medications?.slice(0, 3).map((med, i) => (
+              <div key={i} className="text-amber-800">
+                {med.drugName}{med.dosage ? ` (${med.dosage})` : ''}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {labResultsCount === 0 && imagingCount === 0 && medicationCount === 0 && (
+        <div className="p-3 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600 text-center">
+          No clinical data extracted yet. Upload medical documents to populate this section.
+        </div>
+      )}
+    </SummaryCard>
+  );
+};
+
+// ──────────────────────────────────────────────────────────────────────────
 // MAIN COMPONENT
 // ──────────────────────────────────────────────────────────────────────────
 
@@ -1028,6 +1120,9 @@ export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ ca
 
         {/* Clinical Note (Full Width) */}
         <ClinicalNoteSection caseRecord={caseRecord} onUpdate={onUpdate} />
+        
+        {/* Extraction Status */}
+        <ExtractionStatus caseRecord={caseRecord} />
 
         {/* Summary Cards Grid */}
         <div className="grid grid-cols-2 gap-6">

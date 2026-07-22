@@ -965,6 +965,84 @@ const QuickActions: React.FC<QuickActionsProps> = ({ caseRecord, onUpdate }) => 
       <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
         <strong>Workflow Enforcement:</strong> Buttons become available as you complete required steps. Hover over disabled buttons for details.
       </div>
+
+      {/* Pre-Auth Generation Modal */}
+      {showPreAuthModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl max-h-96 overflow-y-auto">
+            <h2 className="text-lg font-bold mb-4">Generate Prior Authorization</h2>
+            <p className="text-sm text-gray-600 mb-4">Generate a prior authorization document based on the case information.</p>
+            <div className="bg-gray-50 p-4 rounded mb-4 text-sm space-y-2">
+              <div><strong>Case ID:</strong> {caseRecord.id}</div>
+              <div><strong>Patient:</strong> {caseRecord.patient.name}</div>
+              <div><strong>Diagnosis:</strong> {caseRecord.clinical.diagnosis}</div>
+              <div><strong>Case Health:</strong> {calculateHealthScore(caseRecord).score}%</div>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setShowPreAuthModal(false)} className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
+                Cancel
+              </button>
+              <button onClick={() => { alert('Prior Auth generation workflow not yet implemented'); setShowPreAuthModal(false); }} className="px-4 py-2 bg-opd-primary text-white rounded hover:opacity-90">
+                Generate
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Extraction Review Modal */}
+      {showExtractionModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl max-h-96 overflow-y-auto">
+            <h2 className="text-lg font-bold mb-4">Review AI Extraction Results</h2>
+            <p className="text-sm text-gray-600 mb-4">Review and verify extracted data from documents.</p>
+            {caseRecord.metadata?.formExtractionResults?.results ? (
+              <div className="bg-gray-50 p-4 rounded mb-4 text-sm max-h-48 overflow-y-auto">
+                <pre className="text-xs">{JSON.stringify(caseRecord.metadata.formExtractionResults.results, null, 2)}</pre>
+              </div>
+            ) : (
+              <div className="bg-amber-50 p-4 rounded mb-4 text-sm text-amber-800">
+                No extraction results available
+              </div>
+            )}
+            <div className="flex gap-2">
+              <button onClick={() => setShowExtractionModal(false)} className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Document Upload Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl max-h-96 overflow-y-auto">
+            <h2 className="text-lg font-bold mb-4">Upload Missing Documents</h2>
+            <p className="text-sm text-gray-600 mb-4">Upload required documents to improve case completeness.</p>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-4 bg-gray-50">
+              <p className="text-sm text-gray-600">📎 Drag and drop files here or click to select</p>
+              <p className="text-xs text-gray-500 mt-2">Supported: PDF, JPG, PNG (Max 10MB each)</p>
+            </div>
+            <div className="mb-4 text-sm">
+              <div className="font-semibold text-gray-700 mb-2">Required Documents:</div>
+              <ul className="list-disc list-inside text-gray-600 space-y-1">
+                <li>Insurance Card</li>
+                <li>Doctor Notes</li>
+                <li>Discharge Summary</li>
+              </ul>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setShowUploadModal(false)} className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
+                Cancel
+              </button>
+              <button onClick={() => { alert('Document upload workflow not yet implemented'); setShowUploadModal(false); }} className="px-4 py-2 bg-opd-primary text-white rounded hover:opacity-90">
+                Upload
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </SummaryCard>
   );
 };

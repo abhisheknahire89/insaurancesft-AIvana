@@ -38,6 +38,7 @@ import {
   applyExtractedDataToCase,
   type DocumentProcessingStatus
 } from '../../services/documentProcessingService';
+import PreAuthGenerationModal from './PreAuthGenerationModal';
 
 interface CaseOverviewDashboardProps {
   caseRecord: Case;
@@ -1242,6 +1243,9 @@ const QuickActions: React.FC<QuickActionsProps> = ({
                     // Update completeness metric
                     updateCompletenessMetric(updatedCase);
 
+                    // Update local state
+                    setCaseRecord(updatedCase);
+
                     // Notify parent of case update
                     if (onUpdate) {
                       onUpdate(updatedCase);
@@ -1435,11 +1439,17 @@ const ExtractionStatus: React.FC<ExtractionStatusProps> = ({ caseRecord }) => {
 // MAIN COMPONENT
 // ──────────────────────────────────────────────────────────────────────────
 
-export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ caseRecord, onUpdate }) => {
+export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ caseRecord: initialCaseRecord, onUpdate }) => {
+  const [caseRecord, setCaseRecord] = React.useState(initialCaseRecord);
   const [showUploadModal, setShowUploadModal] = React.useState(false);
   const [showPreAuthModal, setShowPreAuthModal] = React.useState(false);
   const [showReviewModal, setShowReviewModal] = React.useState(false);
   const [showIcdModal, setShowIcdModal] = React.useState(false);
+
+  // Update local state when prop changes
+  React.useEffect(() => {
+    setCaseRecord(initialCaseRecord);
+  }, [initialCaseRecord]);
 
   return (
     <div className="flex-1 overflow-y-auto bg-opd-bg p-6">
@@ -1498,6 +1508,30 @@ export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ ca
           All fields automatically extracted from uploaded documents and AI analysis. No manual form filling required.
         </div>
       </div>
+
+      {/* Pre-Auth Generation Modal */}
+      <PreAuthGenerationModal
+        isOpen={showPreAuthModal}
+        caseRecord={caseRecord}
+        onClose={() => setShowPreAuthModal(false)}
+        onGenerate={(preAuthData) => {
+          // Update case with pre-auth status
+          const updated = { ...caseRecord };
+          updated.authorization.status = 'approved';
+          updated.authorization.generatedAt = new Date().toISOString();
+          if (!updated.metadata) {
+            updated.metadata = {};
+          }
+          updated.metadata.preAuthData = preAuthData;
+
+          setCaseRecord(updated);
+          if (onUpdate) {
+            onUpdate(updated);
+          }
+
+          alert('Pre-Auth packet generated successfully!');
+        }}
+      />
     </div>
   );
 };

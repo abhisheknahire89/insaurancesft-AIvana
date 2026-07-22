@@ -13,6 +13,7 @@
 
 import React from 'react';
 import { Case } from '../../services/caseModel';
+import { CaseOverviewDashboard } from '../CaseOverview/CaseOverviewDashboard';
 import { QueryRaisedView } from './TaskViews/QueryRaisedView';
 import { DenialView } from './TaskViews/DenialView';
 // TODO: Import other task views as they're created
@@ -33,6 +34,18 @@ export const CenterWorkspaceRouter: React.FC<CenterWorkspaceRouterProps> = ({
   onUpdate
 }) => {
   switch (caseRecord.status) {
+    // ──────────────────────────────────────────────────────────────────────────
+    // CASE OVERVIEW (NEW REGISTRATIONS & ENRICHMENT)
+    // ──────────────────────────────────────────────────────────────────────────
+    case 'patient_registered':
+    case 'insurance_verified':
+      return (
+        <CaseOverviewDashboard
+          caseRecord={caseRecord}
+          onUpdate={onUpdate}
+        />
+      );
+
     // ──────────────────────────────────────────────────────────────────────────
     // TPA QUERY RESPONSE
     // ──────────────────────────────────────────────────────────────────────────
@@ -58,39 +71,8 @@ export const CenterWorkspaceRouter: React.FC<CenterWorkspaceRouterProps> = ({
 
     // ──────────────────────────────────────────────────────────────────────────
     // PRIOR AUTH READY (TODO: wire PriorAuthReadyView)
-    // ──────────────────────────────────────────────────────────────────────────
-    // case 'ready_for_prior_auth':
-    //   return (
-    //     <PriorAuthReadyView
-    //       caseRecord={caseRecord}
-    //       onUpdate={onUpdate}
-    //     />
-    //   );
-
-    // ──────────────────────────────────────────────────────────────────────────
     // ENHANCEMENT REQUEST (TODO: wire EnhancementView)
-    // ──────────────────────────────────────────────────────────────────────────
-    // case 'enhancement_requested':
-    //   return (
-    //     <EnhancementView
-    //       caseRecord={caseRecord}
-    //       onUpdate={onUpdate}
-    //     />
-    //   );
-
-    // ──────────────────────────────────────────────────────────────────────────
     // DISCHARGE & BILLING (TODO: wire DischargeBillingView)
-    // ──────────────────────────────────────────────────────────────────────────
-    // case 'discharge_billing':
-    //   return (
-    //     <DischargeBillingView
-    //       caseRecord={caseRecord}
-    //       onUpdate={onUpdate}
-    //     />
-    //   );
-
-    // ──────────────────────────────────────────────────────────────────────────
-    // DEFAULT: Activity Timeline
     // ──────────────────────────────────────────────────────────────────────────
     default:
       return (
@@ -113,28 +95,12 @@ const DefaultCaseView: React.FC<{ caseRecord: Case }> = ({ caseRecord }) => {
         <h2 className="text-lg font-bold text-opd-primary mb-4">Case Status</h2>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <div className="text-xs font-bold text-opd-text-muted uppercase tracking-wider">Current Stage</div>
-            <div className="font-semibold text-opd-text-primary capitalize mt-1">
-              {caseRecord.status.replace(/_/g, ' ')}
-            </div>
+            <div className="text-opd-text-muted mb-1">Current Status</div>
+            <div className="font-bold text-opd-text-primary capitalize">{caseRecord.status.replace(/_/g, ' ')}</div>
           </div>
           <div>
-            <div className="text-xs font-bold text-opd-text-muted uppercase tracking-wider">Completeness</div>
-            <div className="font-semibold text-opd-text-primary mt-1">
-              {caseRecord.completeness.overallScore}%
-            </div>
-          </div>
-          <div>
-            <div className="text-xs font-bold text-opd-text-muted uppercase tracking-wider">Created</div>
-            <div className="font-semibold text-opd-text-primary mt-1">
-              {new Date(caseRecord.createdAt).toLocaleDateString()}
-            </div>
-          </div>
-          <div>
-            <div className="text-xs font-bold text-opd-text-muted uppercase tracking-wider">Last Updated</div>
-            <div className="font-semibold text-opd-text-primary mt-1">
-              {new Date(caseRecord.updatedAt).toLocaleDateString()}
-            </div>
+            <div className="text-opd-text-muted mb-1">Case ID</div>
+            <div className="font-mono text-opd-text-primary">{caseRecord.id}</div>
           </div>
         </div>
       </div>
@@ -142,28 +108,16 @@ const DefaultCaseView: React.FC<{ caseRecord: Case }> = ({ caseRecord }) => {
       {/* Activity Timeline */}
       <div className="bg-white border border-opd-border rounded-xl p-6">
         <h2 className="text-lg font-bold text-opd-primary mb-4">Activity Timeline</h2>
-
-        <div className="space-y-3">
+        <div className="space-y-4">
           {caseRecord.activities.length === 0 ? (
-            <div className="text-sm text-opd-text-muted text-center py-4">
-              No activities yet
-            </div>
+            <p className="text-sm text-opd-text-muted">No activities yet</p>
           ) : (
-            caseRecord.activities.map((activity, idx) => (
-              <div key={activity.id} className="flex gap-3 pb-3 border-b border-opd-border last:border-b-0">
-                <div className="w-6 h-6 rounded-full bg-opd-primary text-white flex items-center justify-center shrink-0 font-bold text-xs">
-                  {idx + 1}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-opd-text-primary capitalize">
-                    {activity.event.replace(/_/g, ' ')}
-                  </div>
-                  <div className="text-sm text-opd-text-muted mt-0.5">
-                    {activity.description}
-                  </div>
-                  <div className="text-xs text-opd-text-muted font-mono mt-1">
-                    {new Date(activity.timestamp).toLocaleString()}
-                  </div>
+            caseRecord.activities.slice(-10).reverse().map((activity, i) => (
+              <div key={i} className="flex gap-4 text-sm">
+                <div className="text-opd-text-muted min-w-fit">{new Date(activity.timestamp).toLocaleDateString()}</div>
+                <div>
+                  <div className="font-semibold text-opd-text-primary capitalize">{activity.event.replace(/_/g, ' ')}</div>
+                  <div className="text-opd-text-muted">{activity.description}</div>
                 </div>
               </div>
             ))

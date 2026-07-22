@@ -197,49 +197,6 @@ export interface InsuranceInfo {
 }
 
 // ============================================
-// LAB RESULTS & EXTRACTION (FROM EXTRACTED DOCUMENTS)
-// ============================================
-
-export interface LabResult {
-  testName: string;
-  value: number;
-  units: string;
-  normalRange?: {
-    min: number;
-    max: number;
-  };
-  status?: 'normal' | 'high' | 'low' | 'critical';
-  refDate?: string;
-  labName?: string;
-  sourceDocument?: string;
-  extractionConfidence?: number;
-}
-
-export interface ImagingFinding {
-  modalityType: string;
-  findings: string;
-  refDate?: string;
-  sourceDocument?: string;
-  extractionConfidence?: number;
-}
-
-export interface Medication {
-  drugName: string;
-  dosage?: string;
-  frequency?: string;
-  duration?: string;
-  sourceDocument?: string;
-}
-
-export interface SourceTraceability {
-  [fieldName: string]: {
-    source: string;
-    confidence: number;
-    extractedAt: string;
-  };
-}
-
-// ============================================
 // CLINICAL DETAILS (NEW UNIFIED SHAPE)
 // ============================================
 
@@ -288,19 +245,6 @@ export interface ClinicalInfo {
     refinedAt?: string;
     refinedBy?: Actor;
   };
-
-
-  // Lab Results (from extracted documents)
-  labResults?: LabResult[];
-
-  // Imaging findings (from extracted documents)
-  imaging?: ImagingFinding[];
-
-  // Medications (from extracted documents)
-  medications?: Medication[];
-
-  // Source traceability for all extracted fields
-  sourceTraceability?: SourceTraceability;
 
   // Provenance
   provenance: Record<keyof Omit<ClinicalInfo, 'provenance'>, FieldProvenance>;
@@ -693,97 +637,6 @@ export function computeMissingItems(c: Case): string[] {
   if (!c.clinical.icd10Code) missing.push('ICD-10 code');
   if (c.documents.length === 0) missing.push('Admission documents');
   return missing;
-}
-
-export interface ExtractedPatientData {
-  patient?: {
-    name?: string;
-    age?: number;
-    gender?: string;
-  };
-  insurance?: {
-    policy_number?: string;
-    insurance_company?: string;
-    tpa_name?: string;
-  };
-  clinical?: {
-    diagnosis_impression?: string;
-    vitals?: Record<string, any>;
-    doctor_name?: string;
-    hospital_name?: string;
-  };
-  sourceTraceability?: Record<string, any>;
-}
-
-export function enrichCaseFromExtraction(
-  caseRecord: Case,
-  extraction: ExtractedPatientData
-): Case {
-  // Only populate if field is empty (preserve manual entries)
-  if (extraction.patient?.name && !caseRecord.patient.name) {
-    caseRecord.patient.name = extraction.patient.name;
-    if (!caseRecord.patient.provenance) caseRecord.patient.provenance = {};
-    caseRecord.patient.provenance.name = {
-      confidence: 0.99,
-      source: 'extracted_from_government_id',
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  if (extraction.patient?.age && !caseRecord.patient.age) {
-    caseRecord.patient.age = extraction.patient.age;
-    if (!caseRecord.patient.provenance) caseRecord.patient.provenance = {};
-    caseRecord.patient.provenance.age = {
-      confidence: 1.0,
-      source: 'extracted_from_aadhaar_card',
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  if (extraction.patient?.gender && !caseRecord.patient.gender) {
-    caseRecord.patient.gender = extraction.patient.gender as any;
-  }
-
-  // Insurance data
-  if (extraction.insurance?.policy_number && !caseRecord.insurance.policyNumber) {
-    caseRecord.insurance.policyNumber = extraction.insurance.policy_number;
-  }
-
-  if (extraction.insurance?.insurance_company && !caseRecord.insurance.insurerName) {
-    caseRecord.insurance.insurerName = extraction.insurance.insurance_company;
-  }
-
-  if (extraction.insurance?.tpa_name && !caseRecord.insurance.tpaName) {
-    caseRecord.insurance.tpaName = extraction.insurance.tpa_name;
-  }
-
-  // Clinical data
-  if (extraction.clinical?.diagnosis_impression && !caseRecord.clinical.diagnosis) {
-    caseRecord.clinical.diagnosis = extraction.clinical.diagnosis_impression;
-    caseRecord.clinical.diagnosisSource = 'extracted_from_documents';
-  }
-
-  if (extraction.clinical?.vitals && !caseRecord.clinical.provenance.admissionDate) {
-    // Only set if we have vitals
-    if (!caseRecord.clinical.sourceTraceability) {
-      caseRecord.clinical.sourceTraceability = {};
-    }
-    caseRecord.clinical.sourceTraceability.vitals = {
-      source: 'extracted_from_discharge_summary',
-      confidence: 0.9,
-      extractedAt: new Date().toISOString(),
-    };
-  }
-
-  if (extraction.clinical?.doctor_name && !caseRecord.clinical.treatingDoctor) {
-    caseRecord.clinical.treatingDoctor = extraction.clinical.doctor_name;
-  }
-
-  if (extraction.clinical?.hospital_name && !caseRecord.patient.address) {
-    caseRecord.patient.address = extraction.clinical.hospital_name;
-  }
-
-  return caseRecord;
 }
 
 export function updateCompletenessMetric(c: Case): void {

@@ -1010,3 +1010,97 @@ export const extractBillingCodesAI = async (
         };
     }
 };
+
+// ============================================================================
+// ENHANCED MEDICAL NECESSITY WITH EXTRACTED DATA
+// ============================================================================
+
+/**
+ * Generate medical necessity with full extracted clinical evidence
+ * Integrates lab results, imaging, and medications from extraction pipeline
+ */
+export const generateMedicalNecessityWithExtraction = async (
+  caseRecord: any, // Case type - avoiding circular import
+  diagnosis: DdxItem,
+  severity: NexusInsuranceInput['severity'],
+  keyFindings: string[],
+  testResults: VoiceCapturedFinding[],
+  vitals: NexusInsuranceInput['vitals']
+): Promise<string> => {
+  // Enhance keyFindings with extracted lab evidence
+  const enhancedFindings = [...keyFindings];
+
+  if (caseRecord.clinical?.labResults && caseRecord.clinical.labResults.length > 0) {
+    const criticalLabs = caseRecord.clinical.labResults
+      .filter((lab: any) => lab.status === 'high' || lab.status === 'critical' || lab.status === 'low')
+      .map((lab: any) => `${lab.testName}: ${lab.value} ${lab.units} (${lab.status})`)
+      .slice(0, 5);
+
+    if (criticalLabs.length > 0) {
+      enhancedFindings.push('Laboratory Evidence (Extracted):');
+      enhancedFindings.push(...criticalLabs);
+    }
+  }
+
+  if (caseRecord.clinical?.imaging && caseRecord.clinical.imaging.length > 0) {
+    const imagingFindings = caseRecord.clinical.imaging
+      .map((img: any) => `${img.modalityType}: ${img.findings}`)
+      .slice(0, 3);
+
+    if (imagingFindings.length > 0) {
+      enhancedFindings.push('Imaging Evidence (Extracted):');
+      enhancedFindings.push(...imagingFindings);
+    }
+  }
+
+  return generateMedicalNecessityStatement(
+    diagnosis,
+    severity,
+    enhancedFindings,
+    testResults,
+    vitals
+  );
+};
+
+/**
+ * Extract fields from clinical note text
+ * Used to auto-populate case fields from doctor's notes
+ */
+export interface ExtractedClinicalNoteFields {
+  chiefComplaints?: string;
+  plannedProcedures?: string[];
+  severity?: 'low' | 'moderate' | 'high' | 'critical';
+  estimatedLOS?: number;
+  findings?: string[];
+}
+
+export const extractClinicalNoteFields = async (noteText: string): Promise<ExtractedClinicalNoteFields> => {
+  try {
+    const prompt = `Extract clinical information from this medical note:
+
+${noteText}
+
+Return a JSON object with:
+- chiefComplaints: main complaint or chief complaint
+- plannedProcedures: array of planned procedures/treatments
+- severity: overall severity (low/moderate/high/critical)
+- estimatedLOS: estimated length of stay in days
+- findings: array of key clinical findings
+
+Return only valid JSON, no additional text.`;
+
+    const response = await ai.models.generateContent({
+      model: MODEL_TEXT,
+      contents: prompt
+    });
+
+    try {
+      return JSON.parse(response.text || '{}') as ExtractedClinicalNoteFields;
+    } catch {
+      return {};
+    }
+  } catch (error) {
+    console.error('Error extracting clinical note fields:', error);
+    return {};
+  }
+};

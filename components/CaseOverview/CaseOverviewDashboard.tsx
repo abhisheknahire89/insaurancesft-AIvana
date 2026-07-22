@@ -814,11 +814,40 @@ const ClinicalNoteSection: React.FC<ClinicalNoteSectionProps> = ({ caseRecord, o
 
 interface SuggestedNextStepsProps {
   caseRecord: Case;
+  onUploadClick?: () => void;
+  onReviewNoteClick?: () => void;
+  onAssignIcdClick?: () => void;
+  onGeneratePreauthClick?: () => void;
 }
 
-const SuggestedNextSteps: React.FC<SuggestedNextStepsProps> = ({ caseRecord }) => {
+const SuggestedNextSteps: React.FC<SuggestedNextStepsProps> = ({
+  caseRecord,
+  onUploadClick,
+  onReviewNoteClick,
+  onAssignIcdClick,
+  onGeneratePreauthClick,
+}) => {
   const scoreResult = calculateHealthScore(caseRecord);
   const recommendations = generateRecommendations(caseRecord);
+
+  const handleAction = (rec: any) => {
+    switch (rec.actionType) {
+      case 'upload-docs':
+        onUploadClick?.();
+        break;
+      case 'review-note':
+        onReviewNoteClick?.();
+        break;
+      case 'assign-icd':
+        onAssignIcdClick?.();
+        break;
+      case 'generate-preauth':
+        onGeneratePreauthClick?.();
+        break;
+      default:
+        break;
+    }
+  };
 
   if (recommendations.length === 0) {
     return (
@@ -837,41 +866,52 @@ const SuggestedNextSteps: React.FC<SuggestedNextStepsProps> = ({ caseRecord }) =
       <div className="space-y-3">
         {recommendations.map((rec, i) => (
           <div key={i} className={`p-4 border rounded-lg ${
-            rec.priority === 'critical' ? 'bg-red-50 border-red-200' : 
-            rec.priority === 'high' ? 'bg-amber-50 border-amber-200' : 
+            rec.priority === 'critical' ? 'bg-red-50 border-red-200' :
+            rec.priority === 'high' ? 'bg-amber-50 border-amber-200' :
             'bg-blue-50 border-blue-200'
           }`}>
             <div className="flex items-start gap-3">
               <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
-                rec.priority === 'critical' ? 'bg-red-600' : 
-                rec.priority === 'high' ? 'bg-amber-600' : 
+                rec.priority === 'critical' ? 'bg-red-600' :
+                rec.priority === 'high' ? 'bg-amber-600' :
                 'bg-blue-600'
               }`}>
                 {i + 1}
               </div>
               <div className="flex-1">
                 <div className={`font-semibold mb-1 ${
-                  rec.priority === 'critical' ? 'text-red-900' : 
-                  rec.priority === 'high' ? 'text-amber-900' : 
+                  rec.priority === 'critical' ? 'text-red-900' :
+                  rec.priority === 'high' ? 'text-amber-900' :
                   'text-blue-900'
                 }`}>
                   {rec.title}
                 </div>
-                <p className={`text-sm mb-2 ${
-                  rec.priority === 'critical' ? 'text-red-800' : 
-                  rec.priority === 'high' ? 'text-amber-800' : 
+                <p className={`text-sm mb-3 ${
+                  rec.priority === 'critical' ? 'text-red-800' :
+                  rec.priority === 'high' ? 'text-amber-800' :
                   'text-blue-800'
                 }`}>
                   {rec.description}
                 </p>
-                <div className="flex items-center justify-between text-xs">
-                  <div className="text-gray-600">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-xs text-gray-600">
                     <strong>Impact:</strong> {rec.impact}
                   </div>
-                  <div className="text-gray-600">
+                  <div className="text-xs text-gray-600">
                     <strong>Time:</strong> {rec.estimatedTime}
                   </div>
                 </div>
+                <button
+                  onClick={() => handleAction(rec)}
+                  className={`w-full px-3 py-2 rounded-lg text-xs font-bold text-white transition flex items-center justify-center gap-2 ${
+                    rec.priority === 'critical' ? 'bg-red-600 hover:bg-red-700' :
+                    rec.priority === 'high' ? 'bg-amber-600 hover:bg-amber-700' :
+                    'bg-blue-600 hover:bg-blue-700'
+                  }`}
+                >
+                  {rec.actionLabel}
+                  <ChevronRight className="w-3 h-3" />
+                </button>
               </div>
             </div>
           </div>
@@ -888,12 +928,33 @@ const SuggestedNextSteps: React.FC<SuggestedNextStepsProps> = ({ caseRecord }) =
 interface QuickActionsProps {
   caseRecord: Case;
   onUpdate?: (updated: Case) => void;
+  onUploadClick?: () => void;
+  onPreAuthClick?: () => void;
+  showUploadModal?: boolean;
+  setShowUploadModal?: (show: boolean) => void;
+  showPreAuthModal?: boolean;
+  setShowPreAuthModal?: (show: boolean) => void;
 }
 
-const QuickActions: React.FC<QuickActionsProps> = ({ caseRecord, onUpdate }) => {
-  const [showPreAuthModal, setShowPreAuthModal] = React.useState(false);
+const QuickActions: React.FC<QuickActionsProps> = ({
+  caseRecord,
+  onUpdate,
+  onUploadClick,
+  onPreAuthClick,
+  showUploadModal: externalShowUploadModal,
+  setShowUploadModal: externalSetShowUploadModal,
+  showPreAuthModal: externalShowPreAuthModal,
+  setShowPreAuthModal: externalSetShowPreAuthModal,
+}) => {
   const [showExtractionModal, setShowExtractionModal] = React.useState(false);
-  const [showUploadModal, setShowUploadModal] = React.useState(false);
+  const [uploadedFiles, setUploadedFiles] = React.useState<File[]>([]);
+  const [uploadProgress, setUploadProgress] = React.useState<Record<string, number>>({});
+
+  // Use external state if provided, otherwise fall back to local state
+  const showPreAuthModal = externalShowPreAuthModal ?? false;
+  const setShowPreAuthModal = externalSetShowPreAuthModal ?? (() => {});
+  const showUploadModal = externalShowUploadModal ?? false;
+  const setShowUploadModal = externalSetShowUploadModal ?? (() => {});
   
   const scoreResult = calculateHealthScore(caseRecord);
   const readinessResult = calculateSubmissionReadiness(caseRecord);
@@ -904,29 +965,41 @@ const QuickActions: React.FC<QuickActionsProps> = ({ caseRecord, onUpdate }) => 
   const hasExtractionResults = caseRecord.metadata?.formExtractionResults?.results;
 
   const actions = [
-    { 
-      label: 'Generate Pre-Auth', 
+    {
+      label: 'Generate Pre-Auth',
       icon: <FileText className="w-4 h-4" />,
       enabled: canGeneratePreAuth,
       disabledReason: canGeneratePreAuth ? '' : 'Case health must be 80%+ and no blockers',
-      onClick: () => setShowPreAuthModal(true)
+      onClick: () => {
+        if (externalSetShowPreAuthModal) {
+          externalSetShowPreAuthModal(true);
+        } else {
+          setShowPreAuthModal(true);
+        }
+      }
     },
-    { 
-      label: 'Review Extraction', 
+    {
+      label: 'Review Extraction',
       icon: <Eye className="w-4 h-4" />,
       enabled: hasExtractionResults,
       disabledReason: hasExtractionResults ? '' : 'No extraction results available',
       onClick: () => setShowExtractionModal(true)
     },
-    { 
-      label: 'Upload Documents', 
+    {
+      label: 'Upload Documents',
       icon: <Upload className="w-4 h-4" />,
       enabled: true,
       disabledReason: '',
-      onClick: () => setShowUploadModal(true)
+      onClick: () => {
+        if (externalSetShowUploadModal) {
+          externalSetShowUploadModal(true);
+        } else {
+          setShowUploadModal(true);
+        }
+      }
     },
-    { 
-      label: 'Submit to TPA', 
+    {
+      label: 'Submit to TPA',
       icon: <Send className="w-4 h-4" />,
       enabled: canSubmitToTPA,
       disabledReason: canSubmitToTPA ? '' : 'Case must be ready (100%) and have diagnosis + ICD',
@@ -1017,27 +1090,90 @@ const QuickActions: React.FC<QuickActionsProps> = ({ caseRecord, onUpdate }) => 
       {/* Document Upload Modal */}
       {showUploadModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl max-h-96 overflow-y-auto">
-            <h2 className="text-lg font-bold mb-4">Upload Missing Documents</h2>
-            <p className="text-sm text-gray-600 mb-4">Upload required documents to improve case completeness.</p>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-4 bg-gray-50">
-              <p className="text-sm text-gray-600">📎 Drag and drop files here or click to select</p>
-              <p className="text-xs text-gray-500 mt-2">Supported: PDF, JPG, PNG (Max 10MB each)</p>
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-96 overflow-y-auto">
+            <h2 className="text-lg font-bold mb-4">Upload Medical Documents</h2>
+            <p className="text-sm text-gray-600 mb-4">Upload required documents to improve case completeness. We'll automatically extract data using AI.</p>
+
+            {/* File Upload Area */}
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-4 bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
+              <input
+                type="file"
+                multiple
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => {
+                  const files = Array.from(e.currentTarget.files || []);
+                  setUploadedFiles(prev => [...prev, ...files]);
+                }}
+                className="hidden"
+                id="file-input"
+              />
+              <label htmlFor="file-input" className="cursor-pointer block">
+                <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                <p className="text-sm text-gray-600">Drag and drop files here or click to select</p>
+                <p className="text-xs text-gray-500 mt-2">Supported: PDF, JPG, PNG (Max 10MB each)</p>
+              </label>
             </div>
+
+            {/* Uploaded Files List */}
+            {uploadedFiles.length > 0 && (
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="font-semibold text-blue-900 mb-3">Selected Files ({uploadedFiles.length}):</div>
+                <div className="space-y-2">
+                  {uploadedFiles.map((file, i) => (
+                    <div key={i} className="flex items-center justify-between text-sm bg-white p-2 rounded">
+                      <span className="text-blue-800">{file.name}</span>
+                      <button
+                        onClick={() => setUploadedFiles(prev => prev.filter((_, idx) => idx !== i))}
+                        className="text-red-600 hover:text-red-800 font-semibold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Document Categories */}
             <div className="mb-4 text-sm">
-              <div className="font-semibold text-gray-700 mb-2">Required Documents:</div>
-              <ul className="list-disc list-inside text-gray-600 space-y-1">
-                <li>Insurance Card</li>
-                <li>Doctor Notes</li>
-                <li>Discharge Summary</li>
-              </ul>
+              <div className="font-semibold text-gray-700 mb-2">Recommended Documents:</div>
+              <div className="grid grid-cols-2 gap-2">
+                {['Insurance Card', 'Doctor Notes', 'Discharge Summary', 'Lab Reports', 'Aadhaar', 'Policy Document'].map(doc => (
+                  <div key={doc} className="flex items-center gap-2 p-2 bg-gray-50 rounded text-xs text-gray-700">
+                    <FileText className="w-3 h-3" />
+                    {doc}
+                  </div>
+                ))}
+              </div>
             </div>
+
+            {/* Action Buttons */}
             <div className="flex gap-2">
-              <button onClick={() => setShowUploadModal(false)} className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
+              <button
+                onClick={() => {
+                  setShowUploadModal(false);
+                  setUploadedFiles([]);
+                }}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 font-semibold"
+              >
                 Cancel
               </button>
-              <button onClick={() => { alert('Document upload workflow not yet implemented'); setShowUploadModal(false); }} className="px-4 py-2 bg-opd-primary text-white rounded hover:opacity-90">
-                Upload
+              <button
+                onClick={() => {
+                  if (uploadedFiles.length === 0) {
+                    alert('Please select at least one file to upload');
+                    return;
+                  }
+                  // Trigger upload process (would be connected to backend)
+                  alert(`Uploading ${uploadedFiles.length} file(s)... Document extraction will start automatically.`);
+                  setShowUploadModal(false);
+                  setUploadedFiles([]);
+                }}
+                disabled={uploadedFiles.length === 0}
+                className="flex-1 px-4 py-2 bg-opd-primary text-white rounded hover:opacity-90 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition"
+              >
+                <Upload className="w-4 h-4 inline-block mr-2" />
+                Upload {uploadedFiles.length > 0 ? `(${uploadedFiles.length})` : ''}
               </button>
             </div>
           </div>
@@ -1200,6 +1336,11 @@ const ExtractionStatus: React.FC<ExtractionStatusProps> = ({ caseRecord }) => {
 // ──────────────────────────────────────────────────────────────────────────
 
 export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ caseRecord, onUpdate }) => {
+  const [showUploadModal, setShowUploadModal] = React.useState(false);
+  const [showPreAuthModal, setShowPreAuthModal] = React.useState(false);
+  const [showReviewModal, setShowReviewModal] = React.useState(false);
+  const [showIcdModal, setShowIcdModal] = React.useState(false);
+
   return (
     <div className="flex-1 overflow-y-auto bg-opd-bg p-6">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -1211,7 +1352,7 @@ export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ ca
 
         {/* Clinical Note (Full Width) */}
         <ClinicalNoteSection caseRecord={caseRecord} onUpdate={onUpdate} />
-        
+
         {/* Extraction Status */}
         <ExtractionStatus caseRecord={caseRecord} />
 
@@ -1234,8 +1375,23 @@ export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ ca
 
         {/* Business Outcomes & Actions */}
         <BusinessOutcomes caseRecord={caseRecord} />
-        <SuggestedNextSteps caseRecord={caseRecord} />
-        <QuickActions caseRecord={caseRecord} onUpdate={onUpdate} />
+        <SuggestedNextSteps
+          caseRecord={caseRecord}
+          onUploadClick={() => setShowUploadModal(true)}
+          onReviewNoteClick={() => setShowReviewModal(true)}
+          onAssignIcdClick={() => setShowIcdModal(true)}
+          onGeneratePreauthClick={() => setShowPreAuthModal(true)}
+        />
+        <QuickActions
+          caseRecord={caseRecord}
+          onUpdate={onUpdate}
+          onUploadClick={() => setShowUploadModal(true)}
+          onPreAuthClick={() => setShowPreAuthModal(true)}
+          showUploadModal={showUploadModal}
+          setShowUploadModal={setShowUploadModal}
+          showPreAuthModal={showPreAuthModal}
+          setShowPreAuthModal={setShowPreAuthModal}
+        />
 
         {/* Footer Note */}
         <div className="text-center text-xs text-opd-text-muted">

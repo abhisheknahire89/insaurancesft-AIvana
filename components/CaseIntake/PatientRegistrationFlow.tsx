@@ -196,25 +196,18 @@ export function PatientRegistrationFlow({
     setIsCreating(true);
     setError(null);
     try {
-      const newCaseData = newCase({
-        patient: {
+      const newCaseData = newCase(
+        'DEFAULT_HOSPITAL',
+        {
           name: formData.patientName,
-          mobile: formData.mobile,
-          dateOfBirth: formData.dateOfBirth,
-          gender: formData.gender,
+          contactNumber: formData.mobile,
         },
-        insurance: {
+        {
+          insurerName: '',
           tpaName: formData.tpaName,
           policyNumber: formData.policyNumber,
-          corporateType: formData.corporateType,
-        },
-        documents: formData.documents.map((doc) => ({
-          id: doc.id,
-          name: doc.name,
-          ocrText: doc.ocrText || '',
-        })),
-        status: 'patient_registered',
-      });
+        }
+      );
 
       const response = await fetch('/api/patients', {
         method: 'POST',
@@ -254,9 +247,9 @@ export function PatientRegistrationFlow({
         {currentStep === 1 && (
           <Step1Welcome
             patientName={formData.patientName}
-            onNameChange={(name) => updateFormData({ patientName: name })}
+            onPatientNameChange={(name) => updateFormData({ patientName: name })}
             onNext={() => setCurrentStep(2)}
-            onCancel={onCancel}
+            onDocumentUpload={() => {}}
           />
         )}
 

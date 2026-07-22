@@ -626,7 +626,7 @@ const ClinicalNoteSection: React.FC<ClinicalNoteSectionProps> = ({ caseRecord, o
               Coordinator Notes & Refinements
             </span>
           </div>
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-4">
+          <div className="space-y-4">
             {!isEditingRefinements ? (
               <div className="space-y-3">
                 {note.coordinatorNotes ? (

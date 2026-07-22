@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { X, Clock, CheckCircle, Upload, FileText, Eye, Send } from 'lucide-react';
+import { X, Clock, CheckCircle, Upload, FileText, Eye, Send, AlertCircle } from 'lucide-react';
 import { Case } from '../../services/caseModel';
 
 interface TimelineModalProps {
@@ -260,5 +260,3 @@ export const TimelineModal: React.FC<TimelineModalProps> = ({ isOpen, caseRecord
 };
 
 export default TimelineModal;
-
-import { AlertCircle } from 'lucide-react';

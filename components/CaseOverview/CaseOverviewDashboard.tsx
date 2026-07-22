@@ -941,7 +941,7 @@ interface QuickActionsProps {
   setShowUploadModal?: (show: boolean) => void;
   showPreAuthModal?: boolean;
   setShowPreAuthModal?: (show: boolean) => void;
-  setCaseRecord?: (case: Case) => void;
+  setCaseRecord?: (caseData: Case) => void;
 }
 
 const QuickActions: React.FC<QuickActionsProps> = ({
@@ -953,6 +953,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({
   setShowUploadModal: externalSetShowUploadModal,
   showPreAuthModal: externalShowPreAuthModal,
   setShowPreAuthModal: externalSetShowPreAuthModal,
+  setCaseRecord: externalSetCaseRecord,
 }) => {
   const [showExtractionModal, setShowExtractionModal] = React.useState(false);
   const [uploadedFiles, setUploadedFiles] = React.useState<File[]>([]);

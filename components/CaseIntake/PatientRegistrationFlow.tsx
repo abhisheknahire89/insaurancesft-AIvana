@@ -10,10 +10,17 @@ import { Step5Review } from './steps/Step5Review';
 export interface DocumentRecord {
   id: string;
   name: string;
-  status: 'uploading' | 'processing' | 'processed' | 'error';
+  size?: number;
+  mimeType?: string;
+  uploadedAt?: string;
+  status: 'uploading' | 'processing' | 'processed' | 'error' | 'retrying' | 'pending';
+  progress?: number;
   ocrText?: string;
   fields?: Record<string, any>;
   error?: string;
+  retryCount?: number;
+  detectedType?: string;
+  extractedFieldCount?: number;
 }
 
 export interface PatientRegistrationFormData {
@@ -69,14 +76,42 @@ export function PatientRegistrationFlow({
     setError(null);
   };
 
-  const handleDocumentUpload = async (file: File) => {
-    const documentId = `doc-${Date.now()}`;
-    updateFormData({
-      documents: [
-        ...formData.documents,
-        { id: documentId, name: file.name, status: 'uploading' },
-      ],
-    });
+  /**
+   * Exponential backoff delays: 2s, 5s, 10s for retries 1, 2, 3
+   */
+  const getRetryDelay = (retryCount: number): number => {
+    const delays = [0, 2000, 5000, 10000];
+    return delays[Math.min(retryCount, delays.length - 1)];
+  };
+
+  const handleDocumentUpload = async (file: File, existingDocId?: string, retryCount: number = 0) => {
+    const documentId = existingDocId || `doc-${Date.now()}`;
+    const isRetry = retryCount > 0;
+
+    if (!isRetry) {
+      updateFormData({
+        documents: [
+          ...formData.documents,
+          {
+            id: documentId,
+            name: file.name,
+            size: file.size,
+            mimeType: file.type,
+            status: 'uploading',
+            retryCount: 0,
+            uploadedAt: new Date().toISOString(),
+          },
+        ],
+      });
+    } else {
+      updateFormData({
+        documents: formData.documents.map((doc) =>
+          doc.id === documentId
+            ? { ...doc, status: 'retrying', retryCount }
+            : doc
+        ),
+      });
+    }
 
     try {
       const formDataToSend = new FormData();
@@ -85,13 +120,20 @@ export function PatientRegistrationFlow({
         method: 'POST',
         body: formDataToSend,
       });
+
       if (!uploadResponse.ok) throw new Error('Upload failed');
-      const { ocrText } = await uploadResponse.json();
+      const { ocrText, detectedType, fieldCount } = await uploadResponse.json();
 
       updateFormData({
         documents: formData.documents.map((doc) =>
           doc.id === documentId
-            ? { ...doc, status: 'processing', ocrText }
+            ? {
+                ...doc,
+                status: 'processing',
+                ocrText,
+                detectedType,
+                extractedFieldCount: fieldCount,
+              }
             : doc
         ),
       });
@@ -112,14 +154,41 @@ export function PatientRegistrationFlow({
           ),
         });
       }
-    } catch (err) {
-      updateFormData({
-        documents: formData.documents.map((doc) =>
-          doc.id === documentId
-            ? { ...doc, status: 'error', error: 'Upload failed' }
-            : doc
-        ),
-      });
+    } catch (err: any) {
+      const errorMessage = err.message || 'Upload failed';
+
+      if (retryCount < 3) {
+        const delay = getRetryDelay(retryCount + 1);
+        updateFormData({
+          documents: formData.documents.map((doc) =>
+            doc.id === documentId
+              ? {
+                  ...doc,
+                  status: 'error',
+                  error: `${errorMessage}. Retrying in ${delay / 1000}s...`,
+                  retryCount,
+                }
+              : doc
+          ),
+        });
+
+        setTimeout(() => {
+          handleDocumentUpload(file, documentId, retryCount + 1);
+        }, delay);
+      } else {
+        updateFormData({
+          documents: formData.documents.map((doc) =>
+            doc.id === documentId
+              ? {
+                  ...doc,
+                  status: 'error',
+                  error: `${errorMessage}. Max retries (3) exceeded. Please contact support or remove this file.`,
+                  retryCount,
+                }
+              : doc
+          ),
+        });
+      }
     }
   };
 

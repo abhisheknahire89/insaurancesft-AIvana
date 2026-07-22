@@ -291,10 +291,11 @@ export function Step4Documents({
  */
 interface DocumentCardProps {
   doc: DocumentRecord;
-  onRetry: () => void;
+  onRetry: (docId: string) => void;
+  onRemove?: (docId: string) => void;
 }
 
-function DocumentCard({ doc, onRetry }: DocumentCardProps) {
+function DocumentCard({ doc, onRetry, onRemove }: DocumentCardProps) {
   const statusIcon = {
     uploading: <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />,
     processing: <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />,
@@ -369,18 +370,21 @@ function DocumentCard({ doc, onRetry }: DocumentCardProps) {
       {(doc.status === 'error' || doc.status === 'retrying') && (
         <div className="mt-3 flex gap-2">
           <button
-            onClick={onRetry}
+            onClick={() => onRetry(doc.id)}
             className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-amber-600 bg-amber-50 rounded hover:bg-amber-100 transition-colors"
           >
             <RotateCw className="w-3.5 h-3.5" />
             Retry
           </button>
-          <button
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded hover:bg-red-100 transition-colors"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-            Remove
-          </button>
+          {onRemove && (
+            <button
+              onClick={() => onRemove(doc.id)}
+              className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded hover:bg-red-100 transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Remove
+            </button>
+          )}
         </div>
       )}
     </div>

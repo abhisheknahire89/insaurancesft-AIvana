@@ -25,13 +25,19 @@ import {
   Upload, Send, Eye, ChevronRight, MessageSquare, ChevronUp, ChevronDown, Loader
 } from 'lucide-react';
 import { Case, updateCompletenessMetric } from '../../services/caseModel';
-import { 
-  calculateHealthScore, 
+import {
+  calculateHealthScore,
   calculateSubmissionReadiness,
   calculateBusinessOutcomes,
-  generateRecommendations 
+  generateRecommendations
 } from '../../services/caseHealthScoringService';
 import { extractClinicalNoteFields, type ExtractedClinicalNoteFields } from '../../services/geminiService';
+import {
+  processDocumentFile,
+  onDocumentProcessingStatus,
+  applyExtractedDataToCase,
+  type DocumentProcessingStatus
+} from '../../services/documentProcessingService';
 
 interface CaseOverviewDashboardProps {
   caseRecord: Case;
@@ -948,7 +954,8 @@ const QuickActions: React.FC<QuickActionsProps> = ({
 }) => {
   const [showExtractionModal, setShowExtractionModal] = React.useState(false);
   const [uploadedFiles, setUploadedFiles] = React.useState<File[]>([]);
-  const [uploadProgress, setUploadProgress] = React.useState<Record<string, number>>({});
+  const [processingStatus, setProcessingStatus] = React.useState<Record<string, DocumentProcessingStatus>>({});
+  const [isProcessing, setIsProcessing] = React.useState(false);
 
   // Use external state if provided, otherwise fall back to local state
   const showPreAuthModal = externalShowPreAuthModal ?? false;
@@ -1147,33 +1154,126 @@ const QuickActions: React.FC<QuickActionsProps> = ({
               </div>
             </div>
 
+            {/* Processing Status (if files are being processed) */}
+            {isProcessing && Object.entries(processingStatus).length > 0 && (
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
+                <div className="font-semibold text-blue-900">Processing Documents...</div>
+                {Object.entries(processingStatus).map(([docId, status]) => (
+                  <div key={docId} className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-blue-800">{status.message}</span>
+                      <span className="text-xs font-semibold text-blue-600">{status.progress}%</span>
+                    </div>
+                    <div className="w-full bg-blue-200 rounded-full h-2 overflow-hidden">
+                      <div
+                        className="bg-blue-600 h-full rounded-full transition-all"
+                        style={{ width: `${status.progress}%` }}
+                      />
+                    </div>
+                    {status.confidence && (
+                      <div className="text-xs text-blue-700">
+                        Extraction Confidence: {Math.round(status.confidence * 100)}%
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="flex gap-2">
               <button
                 onClick={() => {
                   setShowUploadModal(false);
                   setUploadedFiles([]);
+                  setProcessingStatus({});
+                  setIsProcessing(false);
                 }}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 font-semibold"
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 font-semibold disabled:opacity-50"
+                disabled={isProcessing}
               >
                 Cancel
               </button>
               <button
-                onClick={() => {
+                onClick={async () => {
                   if (uploadedFiles.length === 0) {
                     alert('Please select at least one file to upload');
                     return;
                   }
-                  // Trigger upload process (would be connected to backend)
-                  alert(`Uploading ${uploadedFiles.length} file(s)... Document extraction will start automatically.`);
-                  setShowUploadModal(false);
-                  setUploadedFiles([]);
+
+                  setIsProcessing(true);
+                  let updatedCase = caseRecord;
+
+                  try {
+                    // Process each file
+                    for (const file of uploadedFiles) {
+                      try {
+                        // Process document (triggers OCR → extraction → validation)
+                        const processed = await processDocumentFile(
+                          file,
+                          updatedCase,
+                          'discharge_summary' // Default document type
+                        );
+
+                        // Listen for status updates
+                        const unsubscribe = onDocumentProcessingStatus(processed.documentId, (status) => {
+                          setProcessingStatus(prev => ({
+                            ...prev,
+                            [status.documentId]: status
+                          }));
+                        });
+
+                        // Apply extracted data to case model
+                        if (processed.extractedFields) {
+                          updatedCase = applyExtractedDataToCase(
+                            updatedCase,
+                            processed.extractedFields,
+                            'discharge_summary'
+                          );
+                        }
+
+                        // Cleanup
+                        unsubscribe();
+                      } catch (error) {
+                        console.error(`Failed to process ${file.name}:`, error);
+                      }
+                    }
+
+                    // Update completeness metric
+                    updateCompletenessMetric(updatedCase);
+
+                    // Notify parent of case update
+                    if (onUpdate) {
+                      onUpdate(updatedCase);
+                    }
+
+                    // Close modal
+                    setShowUploadModal(false);
+                    setUploadedFiles([]);
+
+                    // Show success message
+                    alert(`Processed ${uploadedFiles.length} file(s). Case data has been updated.`);
+                  } catch (error) {
+                    alert(`Error processing files: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                  } finally {
+                    setIsProcessing(false);
+                    setProcessingStatus({});
+                  }
                 }}
-                disabled={uploadedFiles.length === 0}
-                className="flex-1 px-4 py-2 bg-opd-primary text-white rounded hover:opacity-90 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition"
+                disabled={uploadedFiles.length === 0 || isProcessing}
+                className="flex-1 px-4 py-2 bg-opd-primary text-white rounded hover:opacity-90 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
               >
-                <Upload className="w-4 h-4 inline-block mr-2" />
-                Upload {uploadedFiles.length > 0 ? `(${uploadedFiles.length})` : ''}
+                {isProcessing ? (
+                  <>
+                    <Loader className="w-4 h-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4" />
+                    Upload {uploadedFiles.length > 0 ? `(${uploadedFiles.length})` : ''}
+                  </>
+                )}
               </button>
             </div>
           </div>

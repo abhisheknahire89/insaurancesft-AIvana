@@ -39,6 +39,7 @@ import {
   type DocumentProcessingStatus
 } from '../../services/documentProcessingService';
 import PreAuthGenerationModal from './PreAuthGenerationModal';
+import TimelineModal from './TimelineModal';
 
 interface CaseOverviewDashboardProps {
   caseRecord: Case;
@@ -617,20 +618,14 @@ const ClinicalNoteSection: React.FC<ClinicalNoteSectionProps> = ({ caseRecord, o
         )}
 
         {/* Coordinator Refinements */}
-        <button
-          onClick={() => setShowCoordinatorNotes(!showCoordinatorNotes)}
-          className="w-full flex items-center justify-between px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition"
-        >
-          <div className="flex items-center gap-2">
+        {/* Coordinator Notes & Refinements - Always Visible */}
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <div className="flex items-center gap-2 mb-4">
             <MessageSquare className="w-4 h-4 text-amber-600" />
             <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
               Coordinator Notes & Refinements
             </span>
           </div>
-          {showCoordinatorNotes ? <ChevronUp className="w-4 h-4 text-amber-600" /> : <ChevronDown className="w-4 h-4 text-amber-600" />}
-        </button>
-
-        {showCoordinatorNotes && (
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-4">
             {!isEditingRefinements ? (
               <div className="space-y-3">
@@ -809,7 +804,7 @@ const ClinicalNoteSection: React.FC<ClinicalNoteSectionProps> = ({ caseRecord, o
               </div>
             )}
           </div>
-        )}
+        </div>
       </div>
     </SummaryCard>
   );
@@ -1438,6 +1433,7 @@ export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ ca
   const [showPreAuthModal, setShowPreAuthModal] = React.useState(false);
   const [showReviewModal, setShowReviewModal] = React.useState(false);
   const [showIcdModal, setShowIcdModal] = React.useState(false);
+  const [showTimelineModal, setShowTimelineModal] = React.useState(false);
 
   // Update local state when prop changes
   React.useEffect(() => {
@@ -1447,10 +1443,26 @@ export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ ca
   return (
     <div className="flex-1 overflow-y-auto bg-opd-bg p-6">
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-opd-text-primary mb-2">Case Overview</h1>
-          <p className="text-opd-text-muted">AI-enriched case summary with business outcomes and quick actions</p>
+        {/* Header with Action Buttons */}
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-opd-text-primary mb-2">Case Overview</h1>
+            <p className="text-opd-text-muted">AI-enriched case summary with business outcomes and quick actions</p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowPreAuthModal(true)}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold text-sm whitespace-nowrap"
+            >
+              Submit Prior Auth
+            </button>
+            <button
+              onClick={() => setShowTimelineModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm whitespace-nowrap"
+            >
+              View Timeline
+            </button>
+          </div>
         </div>
 
         {/* Clinical Note (Full Width) */}
@@ -1525,6 +1537,13 @@ export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ ca
 
           alert('Pre-Auth packet generated successfully!');
         }}
+      />
+
+      {/* Timeline Modal */}
+      <TimelineModal
+        isOpen={showTimelineModal}
+        caseRecord={caseRecord}
+        onClose={() => setShowTimelineModal(false)}
       />
     </div>
   );

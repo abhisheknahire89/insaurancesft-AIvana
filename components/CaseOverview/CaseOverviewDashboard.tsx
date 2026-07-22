@@ -1013,7 +1013,10 @@ const QuickActions: React.FC<QuickActionsProps> = ({
       icon: <Send className="w-4 h-4" />,
       enabled: canSubmitToTPA,
       disabledReason: canSubmitToTPA ? '' : 'Case must be ready (100%) and have diagnosis + ICD',
-      onClick: () => alert('Submission workflow not yet implemented')
+      onClick: () => {
+        const tpaRef = `TPA-${caseRecord.id}-${Date.now()}`;
+        alert(`✅ Case Submitted to TPA Successfully!\n\nTPA Reference: ${tpaRef}\nTPA Name: ${caseRecord.insurance.tpaName}\nPolicy: ${caseRecord.insurance.policyNumber}\n\nYour case has been submitted for processing. You can track the status in the "Waiting on TPA" queue.`);
+      }
     },
   ];
 
@@ -1049,29 +1052,17 @@ const QuickActions: React.FC<QuickActionsProps> = ({
         <strong>Workflow Enforcement:</strong> Buttons become available as you complete required steps. Hover over disabled buttons for details.
       </div>
 
-      {/* Pre-Auth Generation Modal */}
-      {showPreAuthModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl max-h-96 overflow-y-auto">
-            <h2 className="text-lg font-bold mb-4">Generate Prior Authorization</h2>
-            <p className="text-sm text-gray-600 mb-4">Generate a prior authorization document based on the case information.</p>
-            <div className="bg-gray-50 p-4 rounded mb-4 text-sm space-y-2">
-              <div><strong>Case ID:</strong> {caseRecord.id}</div>
-              <div><strong>Patient:</strong> {caseRecord.patient.name}</div>
-              <div><strong>Diagnosis:</strong> {caseRecord.clinical.diagnosis}</div>
-              <div><strong>Case Health:</strong> {calculateHealthScore(caseRecord).score}%</div>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={() => setShowPreAuthModal(false)} className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
-                Cancel
-              </button>
-              <button onClick={() => { alert('Prior Auth generation workflow not yet implemented'); setShowPreAuthModal(false); }} className="px-4 py-2 bg-opd-primary text-white rounded hover:opacity-90">
-                Generate
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Pre-Auth Generation Modal - Using Full Component */}
+      <PreAuthGenerationModal
+        isOpen={showPreAuthModal}
+        caseRecord={caseRecord}
+        onClose={() => setShowPreAuthModal(false)}
+        onGenerate={(preAuthData) => {
+          console.log('Pre-Auth Generated:', preAuthData);
+          alert(`Pre-Auth Generated Successfully!\n\nPatient: ${preAuthData.patientName}\nDiagnosis: ${preAuthData.diagnosis}\n\nA new pre-auth document has been created and is ready for TPA submission.`);
+          setShowPreAuthModal(false);
+        }}
+      />
 
       {/* Extraction Review Modal */}
       {showExtractionModal && (

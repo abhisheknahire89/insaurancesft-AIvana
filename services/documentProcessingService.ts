@@ -143,9 +143,40 @@ async function extractTextFromFile(file: File): Promise<string> {
     });
   }
 
-  // For PDF and images, simulate OCR
-  console.log('Simulating OCR for:', file.type);
+  if (file.type === 'application/pdf') {
+    try {
+      return await extractPdfText(file);
+    } catch (error) {
+      console.error('PDF extraction failed, using fallback:', error);
+      return generateMockOCRText(file.name);
+    }
+  }
+
+  // For other image files, use mock OCR
+  console.log('Using mock OCR for:', file.type);
   return generateMockOCRText(file.name);
+}
+
+async function extractPdfText(file: File): Promise<string> {
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdfjsLib = await import('pdfjs-dist');
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map((item: any) => item.str).join(' ');
+      fullText += pageText + '\n\n';
+    }
+
+    console.log(`PDF extracted ${pdf.numPages} pages, ${fullText.length} characters`);
+    return fullText;
+  } catch (error) {
+    console.error('PDF.js extraction error:', error);
+    throw error;
+  }
 }
 
 function generateMockOCRText(fileName: string): string {
@@ -198,55 +229,125 @@ async function extractDataFromDocument(
   caseRecord: Case
 ): Promise<any> {
   try {
-    if (documentType === 'discharge_summary' || documentType === 'doctor_notes' || documentType === 'clinical_note') {
-      console.log('Using clinical extraction');
-      return await extractClinicalData(text);
+    // Step 1: Auto-classify document if type not provided
+    const detectedType = documentType || classifyDocument(text);
+    console.log(`Document classified as: ${detectedType}`);
+
+    // Step 2: Route to appropriate extraction based on classification
+    if (detectedType === 'discharge_summary' || detectedType === 'doctor_notes' || detectedType === 'clinical_note' || detectedType === 'medical_records') {
+      console.log('Using clinical extraction for:', detectedType);
+      return await extractClinicalData(text, detectedType);
     }
+
     console.log('Using fallback extraction');
     return performSimpleClinicalExtraction(text);
   } catch (error) {
     console.error('Extraction error:', error);
-    return {
-      extractedText: text.substring(0, 500),
-      confidence: 0.5,
-      error: 'Extraction failed',
-    };
+    // Return fallback extraction even on error
+    return performSimpleClinicalExtraction(text);
   }
 }
 
-async function extractClinicalData(text: string): Promise<ExtractedClinicalNoteFields> {
+function classifyDocument(text: string): string {
+  const lowerText = text.toLowerCase();
+
+  // Discharge summary detection
+  if (lowerText.includes('discharge summary') || (lowerText.includes('discharge') && lowerText.includes('diagnosis'))) {
+    return 'discharge_summary';
+  }
+
+  // Doctor's notes detection
+  if (lowerText.includes("doctor's note") || lowerText.includes('physician note') || lowerText.includes('clinical note')) {
+    return 'doctor_notes';
+  }
+
+  // Medical records detection
+  if (lowerText.includes('medical record') || lowerText.includes('patient record')) {
+    return 'medical_records';
+  }
+
+  // Imaging reports
+  if (lowerText.includes('mri') || lowerText.includes('ct scan') || lowerText.includes('x-ray') || lowerText.includes('imaging')) {
+    return 'imaging_report';
+  }
+
+  // Lab reports
+  if (lowerText.includes('lab result') || lowerText.includes('laboratory') || lowerText.includes('blood test')) {
+    return 'lab_report';
+  }
+
+  // Default to clinical note if has medical keywords
+  if (lowerText.includes('diagnosis') || lowerText.includes('procedure') || lowerText.includes('treatment')) {
+    return 'clinical_note';
+  }
+
+  return 'medical_document';
+}
+
+async function extractClinicalData(text: string, docType: string = 'clinical_note'): Promise<ExtractedClinicalNoteFields> {
   try {
-    console.log('Calling extractClinicalNoteFields');
+    console.log('Attempting AI extraction for:', docType);
     const extracted = await extractClinicalNoteFields(text);
-    console.log('Clinical extraction result:', extracted);
-    return {
-      ...extracted,
-      confidence: extracted.confidence || 0.8,
-    };
+
+    // Check if extraction actually returned data
+    if (extracted && Object.keys(extracted).length > 0) {
+      console.log('AI extraction successful:', extracted);
+      return {
+        ...extracted,
+        confidence: extracted.confidence || 0.8,
+      };
+    }
+
+    console.log('AI extraction returned empty, falling back to regex extraction');
+    return performSimpleClinicalExtraction(text);
   } catch (error) {
-    console.error('AI extraction failed, using fallback:', error);
+    console.error('AI extraction failed, using regex fallback:', error);
     return performSimpleClinicalExtraction(text);
   }
 }
 
 function performSimpleClinicalExtraction(text: string): ExtractedClinicalNoteFields {
-  console.log('Performing simple extraction');
-  
-  const diagnosis = extractValue(text, /(?:DIAGNOSIS|diagnosis)[:\s]+([\w\s\-,()]+?)(?=\n|ICD|$)/i);
-  const icd = extractValue(text, /(?:ICD-10|M\d{2}\.\d{2}|M\d{2}\.\d+)/i);
-  const procedure = extractValue(text, /(?:PROCEDURE|SURGERY|OPERATION)[:\s]+([\w\s\-,()]+?)(?=\n|EXPECTED|$)/i);
+  console.log('Performing regex-based clinical extraction');
+
+  // Extract multiple diagnosis formats
+  const diagnosis = extractValue(text, /(?:DIAGNOSIS|diagnosis|PRIMARY DIAGNOSIS)[:\s]+([\w\s\-,()]+?)(?=\n|ICD|Secondary|$)/i) ||
+                   extractValue(text, /(?:herniated|disc|pain|injury)[:\s]+([\w\s\-,()]+?)(?=\n|$)/i);
+
+  // Extract ICD codes
+  const icd = extractValue(text, /(?:ICD-10[:\s]*)?([A-Z]\d{2}(?:\.\d{1,2})?)/i);
+
+  // Extract procedure/surgery
+  const procedure = extractValue(text, /(?:PLANNED\s+PROCEDURE|PROCEDURE|SURGERY|OPERATION|PLANNED\s+SURGERY)[:\s]+([\w\s\-,()]+?)(?=\n|EXPECTED|$)/i) ||
+                   extractValue(text, /(?:microdiscectomy|laminectomy|fusion|decompression|arthroscopy)/i);
+
+  // Extract chief complaints
+  const complaints = extractValue(text, /(?:CHIEF\s+COMPLAINT|CC)[:\s]+([\w\s\-,()]+?)(?=\n|HISTORY|$)/i) ||
+                    extractValue(text, /(?:presenting\s+with|complaints?)[:\s]+([\w\s\-,()]+?)(?=\n|$)/i);
+
+  // Extract estimated LOS
   const losMatch = text.match(/(?:LENGTH\s+OF\s+STAY|LOS|EXPECTED\s+STAY)[:\s]*(\d+)\s*(?:days?)?/i);
   const losValue = losMatch ? parseInt(losMatch[1]) : undefined;
 
-  console.log('Extracted values:', { diagnosis, icd, procedure, losValue });
+  // Determine severity
+  const severity = text.match(/(?:severe|critical|urgent|emergent)/i) ? 'high' :
+                   text.match(/(?:moderate|significant)/i) ? 'moderate' :
+                   'low';
+
+  // Extract findings
+  const findings = [];
+  const imagingMatch = text.match(/(?:imaging|mri|ct|x-ray)[:\s]+([\w\s\-,()]+?)(?=\n|$)/i);
+  if (imagingMatch) findings.push(imagingMatch[1]);
+
+  console.log('Regex extraction values:', { diagnosis, icd, procedure, complaints, losValue, severity });
 
   return {
-    chiefComplaints: extractValue(text, /(?:CHIEF COMPLAINT|CC)[:\s]+([\w\s\-,()]+?)(?=\n|HISTORY|$)/i),
+    chiefComplaints: complaints,
     diagnosis: diagnosis,
     plannedProcedures: procedure ? [procedure] : undefined,
-    severity: text.match(/severe|critical|urgent/i) ? 'high' : 'moderate',
+    severity: severity,
     estimatedLOS: losValue,
-    confidence: 0.75,
+    findings: findings.length > 0 ? findings : undefined,
+    confidence: 0.65, // Lower confidence for regex extraction
   };
 }
 

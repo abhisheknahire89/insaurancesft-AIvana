@@ -1076,18 +1076,21 @@ export interface ExtractedClinicalNoteFields {
 
 export const extractClinicalNoteFields = async (noteText: string): Promise<ExtractedClinicalNoteFields> => {
   try {
-    const prompt = `Extract clinical information from this medical note:
+    const prompt = `Extract clinical information from this medical note. Be thorough and extract all available information:
 
-${noteText}
+${noteText.substring(0, 4000)}
 
-Return a JSON object with:
-- chiefComplaints: main complaint or chief complaint
-- plannedProcedures: array of planned procedures/treatments
-- severity: overall severity (low/moderate/high/critical)
-- estimatedLOS: estimated length of stay in days
-- findings: array of key clinical findings
-
-Return only valid JSON, no additional text.`;
+Return ONLY a valid JSON object (no extra text) with these fields:
+{
+  "chiefComplaints": "main complaint",
+  "diagnosis": "primary diagnosis",
+  "icd10Code": "ICD-10 code if found",
+  "plannedProcedures": ["procedure 1", "procedure 2"],
+  "severity": "low|moderate|high|critical",
+  "estimatedLOS": number of days,
+  "findings": ["finding 1", "finding 2"],
+  "confidence": 0.85
+}`;
 
     const response = await ai.models.generateContent({
       model: MODEL_TEXT,
@@ -1095,12 +1098,26 @@ Return only valid JSON, no additional text.`;
     });
 
     try {
-      return JSON.parse(response.text || '{}') as ExtractedClinicalNoteFields;
-    } catch {
-      return {};
+      const text = response.text || '{}';
+      // Try to extract JSON if response contains extra text
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const jsonStr = jsonMatch ? jsonMatch[0] : text;
+      const extracted = JSON.parse(jsonStr) as ExtractedClinicalNoteFields;
+
+      // Ensure confidence is set
+      if (!extracted.confidence) {
+        extracted.confidence = 0.8;
+      }
+
+      console.log('AI extraction successful:', extracted);
+      return extracted;
+    } catch (parseError) {
+      console.error('Failed to parse AI response:', parseError, 'Response:', response.text);
+      return {}; // Return empty object to trigger fallback
     }
   } catch (error) {
-    console.error('Error extracting clinical note fields:', error);
+    console.error('Error calling AI extraction service:', error);
+    // Return empty object to trigger fallback in caller
     return {};
   }
 };

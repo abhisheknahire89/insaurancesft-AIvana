@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { Case, newCase } from '../../services/caseModel';
+import { Step1Welcome } from './steps/Step1Welcome';
+import { Step2PatientEssentials } from './steps/Step2PatientEssentials';
+import { Step3InsuranceDetails } from './steps/Step3InsuranceDetails';
+import { Step4Documents } from './steps/Step4Documents';
+import { Step5Review } from './steps/Step5Review';
 
-// Step components to be created
 export interface DocumentRecord {
   id: string;
   name: string;
@@ -31,18 +35,16 @@ interface PatientRegistrationFlowProps {
 /**
  * PatientRegistrationFlow - PHASE 1
  * 5-step patient registration with complete data lineage
- * 
+ *
  * DATA LINEAGE:
  * User Input → React State → Form Data → API Call → Backend → Database → Response → onCaseCreated
- * 
+ *
  * STEPS:
  * 1. Welcome (patient name)
  * 2. Patient Essentials (mobile, DOB, gender)
  * 3. Insurance Details (TPA, policy)
  * 4. Documents (real OCR, real extraction)
  * 5. Review & Create
- * 
- * STATUS: Foundation complete, steps to be implemented
  */
 export function PatientRegistrationFlow({
   onCaseCreated,
@@ -171,11 +173,67 @@ export function PatientRegistrationFlow({
           </div>
         </div>
       </div>
+
       <div className="max-w-2xl mx-auto px-6 py-8">
-        <div className="text-center py-12">
-          <p className="text-gray-600">Step components loading...</p>
-          <p className="text-sm text-gray-400 mt-2">Phase 1 scaffold complete</p>
-        </div>
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+            <p className="text-sm text-red-800">{error}</p>
+          </div>
+        )}
+
+        {currentStep === 1 && (
+          <Step1Welcome
+            patientName={formData.patientName}
+            onNameChange={(name) => updateFormData({ patientName: name })}
+            onNext={() => setCurrentStep(2)}
+            onCancel={onCancel}
+          />
+        )}
+
+        {currentStep === 2 && (
+          <Step2PatientEssentials
+            mobile={formData.mobile}
+            dateOfBirth={formData.dateOfBirth}
+            gender={formData.gender}
+            onMobileChange={(mobile) => updateFormData({ mobile })}
+            onDateOfBirthChange={(dob) => updateFormData({ dateOfBirth: dob })}
+            onGenderChange={(gender) => updateFormData({ gender: gender as 'M' | 'F' | 'O' })}
+            onNext={() => setCurrentStep(3)}
+            onBack={() => setCurrentStep(1)}
+          />
+        )}
+
+        {currentStep === 3 && (
+          <Step3InsuranceDetails
+            tpaName={formData.tpaName}
+            policyNumber={formData.policyNumber}
+            corporateType={formData.corporateType}
+            onTpaNameChange={(tpa) => updateFormData({ tpaName: tpa })}
+            onPolicyNumberChange={(policy) => updateFormData({ policyNumber: policy })}
+            onCorporateTypeChange={(type) => updateFormData({ corporateType: type })}
+            onNext={() => setCurrentStep(4)}
+            onBack={() => setCurrentStep(2)}
+          />
+        )}
+
+        {currentStep === 4 && (
+          <Step4Documents
+            documents={formData.documents}
+            onDocumentUpload={handleDocumentUpload}
+            onNext={() => setCurrentStep(5)}
+            onBack={() => setCurrentStep(3)}
+          />
+        )}
+
+        {currentStep === 5 && (
+          <Step5Review
+            formData={formData}
+            onCreate={handleCreateCase}
+            onBack={() => setCurrentStep(4)}
+            isCreating={isCreating}
+          />
+        )}
       </div>
     </div>
   );

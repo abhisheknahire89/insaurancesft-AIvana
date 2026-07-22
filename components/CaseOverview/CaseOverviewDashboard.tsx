@@ -25,6 +25,12 @@ import {
   Upload, Send, Eye, ChevronRight, MessageSquare, ChevronUp, ChevronDown, Loader
 } from 'lucide-react';
 import { Case, updateCompletenessMetric } from '../../services/caseModel';
+import { 
+  calculateHealthScore, 
+  calculateSubmissionReadiness,
+  calculateBusinessOutcomes,
+  generateRecommendations 
+} from '../../services/caseHealthScoringService';
 import { extractClinicalNoteFields, type ExtractedClinicalNoteFields } from '../../services/geminiService';
 
 interface CaseOverviewDashboardProps {
@@ -255,18 +261,19 @@ interface CaseHealthScoreProps {
 }
 
 const CaseHealthScore: React.FC<CaseHealthScoreProps> = ({ caseRecord }) => {
-  const score = caseRecord.completeness.overallScore;
+  const scoreResult = calculateHealthScore(caseRecord);
+  const score = scoreResult.score;
   const scoreColor = score >= 80 ? 'text-green-600' : score >= 60 ? 'text-amber-600' : 'text-red-600';
   const scoreBg = score >= 80 ? 'bg-green-50' : score >= 60 ? 'bg-amber-50' : 'bg-red-50';
   const scoreBorder = score >= 80 ? 'border-green-200' : score >= 60 ? 'border-amber-200' : 'border-red-200';
 
   const factors = [
-    { label: 'Documents', value: '100%', icon: <FileText className="w-3 h-3" /> },
-    { label: 'Clinical Consistency', value: '85%', icon: <Check className="w-3 h-3" /> },
-    { label: 'Billing Consistency', value: '90%', icon: <Check className="w-3 h-3" /> },
-    { label: 'Policy Validation', value: '100%', icon: <Check className="w-3 h-3" /> },
-    { label: 'ICD Validation', value: '80%', icon: <AlertCircle className="w-3 h-3" /> },
-    { label: 'Physician Signature', value: '75%', icon: <AlertCircle className="w-3 h-3" /> },
+    { label: 'Documents', value: Math.round(scoreResult.factors.documentsCount) + '%', icon: <FileText className="w-3 h-3" /> },
+    { label: 'Diagnosis', value: Math.round(scoreResult.factors.diagnosisQuality) + '%', icon: <Check className="w-3 h-3" /> },
+    { label: 'ICD-10', value: Math.round(scoreResult.factors.icdQuality) + '%', icon: <Check className="w-3 h-3" /> },
+    { label: 'Billing', value: Math.round(scoreResult.factors.billingConsistency) + '%', icon: <Check className="w-3 h-3" /> },
+    { label: 'Policy', value: Math.round(scoreResult.factors.policyValidation) + '%', icon: <AlertCircle className="w-3 h-3" /> },
+    { label: 'Signature', value: Math.round(scoreResult.factors.signatureStatus) + '%', icon: <AlertCircle className="w-3 h-3" /> },
   ];
 
   return (
@@ -274,12 +281,22 @@ const CaseHealthScore: React.FC<CaseHealthScoreProps> = ({ caseRecord }) => {
       <div className={`rounded-lg border ${scoreBorder} ${scoreBg} p-4 mb-4`}>
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-opd-text-muted text-xs mb-1">Health Score</div>
+            <div className="text-opd-text-muted text-xs mb-1">Overall Health</div>
             <div className={`text-4xl font-bold ${scoreColor}`}>{score}</div>
           </div>
           <Target className={`w-12 h-12 ${scoreColor} opacity-20`} />
         </div>
       </div>
+      {scoreResult.issues.length > 0 && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+          <div className="font-semibold mb-2">Issues reducing score:</div>
+          <ul className="space-y-1">
+            {scoreResult.issues.slice(0, 3).map((issue, i) => (
+              <li key={i}>• {issue}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="space-y-2">
         {factors.map((factor, i) => (
           <div key={i} className="flex items-center justify-between text-sm">
@@ -304,23 +321,27 @@ interface ClaimReadinessProgressProps {
 }
 
 const ClaimReadinessProgress: React.FC<ClaimReadinessProgressProps> = ({ caseRecord }) => {
+  const readinessResult = calculateSubmissionReadiness(caseRecord);
+  
   const categories = [
-    { name: 'Patient Information', percent: 100 },
-    { name: 'Clinical Information', percent: 84 },
-    { name: 'Documents', percent: 100 },
-    { name: 'Billing', percent: 90 },
-    { name: 'Policy Validation', percent: 100 },
+    { name: 'Patient Information', percent: Math.round(readinessResult.byCategory.patient) },
+    { name: 'Clinical Information', percent: Math.round(readinessResult.byCategory.clinical) },
+    { name: 'Documents', percent: Math.round(readinessResult.byCategory.documents) },
+    { name: 'Billing', percent: Math.round(readinessResult.byCategory.billing) },
+    { name: 'Policy Validation', percent: Math.round(readinessResult.byCategory.policy) },
   ];
 
-  const avgPercent = Math.round(categories.reduce((sum, cat) => sum + cat.percent, 0) / categories.length);
+  const avgPercent = Math.round(readinessResult.overall);
+  const statusColor = readinessResult.readyToSubmit ? 'text-green-600' : avgPercent >= 80 ? 'text-amber-600' : 'text-red-600';
 
   return (
-    <SummaryCard title="Claim Readiness">
+    <SummaryCard title="Submission Readiness">
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <div>
             <div className="text-opd-text-muted text-xs mb-1">Overall Progress</div>
-            <div className="text-2xl font-bold text-opd-text-primary">{avgPercent}%</div>
+            <div className={`text-2xl font-bold ${statusColor}`}>{avgPercent}%</div>
+            {readinessResult.readyToSubmit && <div className="text-xs text-green-600 mt-1">✓ Ready to submit</div>}
           </div>
           <div className="relative w-16 h-16 rounded-full border-4 border-opd-border flex items-center justify-center"
             style={{
@@ -332,6 +353,28 @@ const ClaimReadinessProgress: React.FC<ClaimReadinessProgressProps> = ({ caseRec
           </div>
         </div>
       </div>
+
+      {readinessResult.blockers.length > 0 && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-sm">
+          <div className="font-semibold text-red-700 mb-2">Blockers preventing submission:</div>
+          <ul className="space-y-1 text-red-600">
+            {readinessResult.blockers.map((blocker, i) => (
+              <li key={i}>• {blocker}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {readinessResult.warnings.length > 0 && (
+        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded text-sm">
+          <div className="font-semibold text-amber-700 mb-2">Warnings to review:</div>
+          <ul className="space-y-1 text-amber-600">
+            {readinessResult.warnings.slice(0, 3).map((warning, i) => (
+              <li key={i}>• {warning}</li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="space-y-3">
         {categories.map((cat, i) => (
@@ -362,17 +405,49 @@ interface BusinessOutcomesProps {
 }
 
 const BusinessOutcomes: React.FC<BusinessOutcomesProps> = ({ caseRecord }) => {
+  const businessMetrics = calculateBusinessOutcomes(caseRecord);
+
   const outcomes = [
-    { label: 'Time Saved', value: '27 min', icon: <Clock className="w-5 h-5" />, color: 'text-blue-600' },
-    { label: 'Data Entry Reduced', value: '82%', icon: <TrendingUp className="w-5 h-5" />, color: 'text-green-600' },
-    { label: 'Form Auto-filled', value: '94%', icon: <Check className="w-5 h-5" />, color: 'text-green-600' },
-    { label: 'Docs Processed', value: '18', icon: <FileText className="w-5 h-5" />, color: 'text-purple-600' },
-    { label: 'AI Fields Generated', value: '126', icon: <TrendingUp className="w-5 h-5" />, color: 'text-indigo-600' },
-    { label: 'Claim Readiness', value: '96%', icon: <Target className="w-5 h-5" />, color: 'text-green-600' },
+    { 
+      label: 'Time Saved', 
+      value: businessMetrics.timeSavedMinutes ? `${Math.round(businessMetrics.timeSavedMinutes)} min` : 'Pending AI Processing', 
+      icon: <Clock className="w-5 h-5" />, 
+      color: 'text-blue-600' 
+    },
+    { 
+      label: 'Data Entry Reduced', 
+      value: `${Math.round(businessMetrics.dataReductionPercent)}%`, 
+      icon: <TrendingUp className="w-5 h-5" />, 
+      color: 'text-green-600' 
+    },
+    { 
+      label: 'Form Auto-filled', 
+      value: businessMetrics.fieldsExtracted > 0 ? `${Math.round((businessMetrics.fieldsExtracted / 12) * 100)}%` : '0%', 
+      icon: <Check className="w-5 h-5" />, 
+      color: 'text-green-600' 
+    },
+    { 
+      label: 'Docs Processed', 
+      value: `${businessMetrics.documentsProcessed}`, 
+      icon: <FileText className="w-5 h-5" />, 
+      color: 'text-purple-600' 
+    },
+    { 
+      label: 'Fields Extracted', 
+      value: `${businessMetrics.fieldsExtracted}`, 
+      icon: <TrendingUp className="w-5 h-5" />, 
+      color: 'text-indigo-600' 
+    },
+    { 
+      label: 'Submission Ready', 
+      value: `${Math.round(businessMetrics.submissionReadinessPercent)}%`, 
+      icon: <Target className="w-5 h-5" />, 
+      color: businessMetrics.submissionReadinessPercent >= 80 ? 'text-green-600' : 'text-amber-600' 
+    },
   ];
 
   return (
-    <SummaryCard title="Business Outcomes">
+    <SummaryCard title="Business Outcomes & Metrics">
       <div className="grid grid-cols-3 gap-3">
         {outcomes.map((outcome, i) => (
           <div key={i} className="bg-opd-input-bg rounded-lg p-4 border border-opd-border">
@@ -381,6 +456,9 @@ const BusinessOutcomes: React.FC<BusinessOutcomesProps> = ({ caseRecord }) => {
             <div className="text-xs text-opd-text-muted">{outcome.label}</div>
           </div>
         ))}
+      </div>
+      <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+        <strong>Calculation Method:</strong> Metrics are calculated from actual case data. If a metric shows "Pending AI Processing", it will update once extraction completes.
       </div>
     </SummaryCard>
   );
@@ -718,35 +796,216 @@ const ClinicalNoteSection: React.FC<ClinicalNoteSectionProps> = ({ caseRecord, o
 };
 
 // ──────────────────────────────────────────────────────────────────────────
+// SUGGESTED NEXT STEPS (AI-POWERED RECOMMENDATIONS)
+// ──────────────────────────────────────────────────────────────────────────
+
+interface SuggestedNextStepsProps {
+  caseRecord: Case;
+}
+
+const SuggestedNextSteps: React.FC<SuggestedNextStepsProps> = ({ caseRecord }) => {
+  const scoreResult = calculateHealthScore(caseRecord);
+  const recommendations = generateRecommendations(caseRecord);
+
+  if (recommendations.length === 0) {
+    return (
+      <SummaryCard title="Suggested Next Steps">
+        <div className="text-center py-6">
+          <Check className="w-8 h-8 text-green-600 mx-auto mb-2" />
+          <p className="text-sm text-green-700 font-semibold">Case is ready for submission</p>
+          <p className="text-xs text-green-600 mt-1">All critical items are complete</p>
+        </div>
+      </SummaryCard>
+    );
+  }
+
+  return (
+    <SummaryCard title="Suggested Next Steps">
+      <div className="space-y-3">
+        {recommendations.map((rec, i) => (
+          <div key={i} className={`p-4 border rounded-lg ${
+            rec.priority === 'critical' ? 'bg-red-50 border-red-200' : 
+            rec.priority === 'high' ? 'bg-amber-50 border-amber-200' : 
+            'bg-blue-50 border-blue-200'
+          }`}>
+            <div className="flex items-start gap-3">
+              <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
+                rec.priority === 'critical' ? 'bg-red-600' : 
+                rec.priority === 'high' ? 'bg-amber-600' : 
+                'bg-blue-600'
+              }`}>
+                {i + 1}
+              </div>
+              <div className="flex-1">
+                <div className={`font-semibold mb-1 ${
+                  rec.priority === 'critical' ? 'text-red-900' : 
+                  rec.priority === 'high' ? 'text-amber-900' : 
+                  'text-blue-900'
+                }`}>
+                  {rec.title}
+                </div>
+                <p className={`text-sm mb-2 ${
+                  rec.priority === 'critical' ? 'text-red-800' : 
+                  rec.priority === 'high' ? 'text-amber-800' : 
+                  'text-blue-800'
+                }`}>
+                  {rec.description}
+                </p>
+                <div className="flex items-center justify-between text-xs">
+                  <div className="text-gray-600">
+                    <strong>Impact:</strong> +{rec.impactOnScore}% score
+                  </div>
+                  <div className="text-gray-600">
+                    <strong>Time:</strong> ~{rec.estimatedTimeMinutes} min
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </SummaryCard>
+  );
+};
+
+// ──────────────────────────────────────────────────────────────────────────
 // QUICK ACTIONS
 // ──────────────────────────────────────────────────────────────────────────
 
 interface QuickActionsProps {
   caseRecord: Case;
+  onUpdate?: (updated: Case) => void;
 }
 
-const QuickActions: React.FC<QuickActionsProps> = ({ caseRecord }) => {
+const QuickActions: React.FC<QuickActionsProps> = ({ caseRecord, onUpdate }) => {
+  const [showPreAuthModal, setShowPreAuthModal] = React.useState(false);
+  const [showExtractionModal, setShowExtractionModal] = React.useState(false);
+  const [showUploadModal, setShowUploadModal] = React.useState(false);
+  
+  const scoreResult = calculateHealthScore(caseRecord);
+  const readinessResult = calculateSubmissionReadiness(caseRecord);
+  
+  // Determine action availability based on case state
+  const canGeneratePreAuth = scoreResult.score >= 80 && readinessResult.blockers.length === 0;
+  const canSubmitToTPA = readinessResult.readyToSubmit && caseRecord.clinical.diagnosis && caseRecord.clinical.icd10Code;
+  const hasExtractionResults = caseRecord.metadata?.formExtractionResults?.results;
+
   const actions = [
-    { label: 'Generate Pre-Auth', icon: <FileText className="w-4 h-4" /> },
-    { label: 'Review AI Extraction', icon: <Eye className="w-4 h-4" /> },
-    { label: 'Upload Missing Docs', icon: <Upload className="w-4 h-4" /> },
-    { label: 'Submit to TPA', icon: <Send className="w-4 h-4" /> },
+    { 
+      label: 'Generate Pre-Auth', 
+      icon: <FileText className="w-4 h-4" />,
+      enabled: canGeneratePreAuth,
+      disabledReason: canGeneratePreAuth ? '' : 'Case health must be 80%+ and no blockers',
+      onClick: () => setShowPreAuthModal(true)
+    },
+    { 
+      label: 'Review Extraction', 
+      icon: <Eye className="w-4 h-4" />,
+      enabled: hasExtractionResults,
+      disabledReason: hasExtractionResults ? '' : 'No extraction results available',
+      onClick: () => setShowExtractionModal(true)
+    },
+    { 
+      label: 'Upload Documents', 
+      icon: <Upload className="w-4 h-4" />,
+      enabled: true,
+      disabledReason: '',
+      onClick: () => setShowUploadModal(true)
+    },
+    { 
+      label: 'Submit to TPA', 
+      icon: <Send className="w-4 h-4" />,
+      enabled: canSubmitToTPA,
+      disabledReason: canSubmitToTPA ? '' : 'Case must be ready (100%) and have diagnosis + ICD',
+      onClick: () => alert('Submission workflow not yet implemented')
+    },
   ];
 
   return (
     <SummaryCard title="Quick Actions">
       <div className="grid grid-cols-2 gap-3">
         {actions.map((action, i) => (
-          <button
-            key={i}
-            className="flex items-center justify-between gap-2 px-4 py-3 bg-opd-primary text-white text-sm font-bold rounded-lg hover:opacity-90 transition"
-          >
-            <div className="flex items-center gap-2">
-              {action.icon}
-              {action.label}
+          <div key={i} className="relative group">
+            <button
+              onClick={action.onClick}
+              disabled={!action.enabled}
+              className={`w-full flex items-center justify-between gap-2 px-4 py-3 text-sm font-bold rounded-lg transition ${
+                action.enabled
+                  ? 'bg-opd-primary text-white hover:opacity-90 cursor-pointer'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                {action.icon}
+                {action.label}
+              </div>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+            {!action.enabled && action.disabledReason && (
+              <div className="absolute left-0 top-full mt-2 w-48 bg-gray-800 text-white text-xs rounded p-2 opacity-0 group-hover:opacity-100 transition pointer-events-none">
+                {action.disabledReason}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+        <strong>Workflow Enforcement:</strong> Buttons become available as you complete required steps. Hover over disabled buttons for details.
+      </div>
+    </SummaryCard>
+  );
+};
+
+// ──────────────────────────────────────────────────────────────────────────
+// CASE TIMELINE
+// ──────────────────────────────────────────────────────────────────────────
+
+interface CaseTimelineProps {
+  caseRecord: Case;
+}
+
+const CaseTimeline: React.FC<CaseTimelineProps> = ({ caseRecord }) => {
+  const activities = caseRecord.activities.slice().sort((a, b) => 
+    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  ).slice(0, 8);  // Show last 8 activities
+
+  if (activities.length === 0) {
+    return (
+      <SummaryCard title="Timeline">
+        <div className="text-center py-6">
+          <Clock className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+          <p className="text-sm text-gray-600">No activities recorded yet</p>
+        </div>
+      </SummaryCard>
+    );
+  }
+
+  return (
+    <SummaryCard title="Timeline & Activity Log">
+      <div className="space-y-4">
+        {activities.map((activity, i) => (
+          <div key={activity.id} className="flex gap-4">
+            <div className="flex flex-col items-center">
+              <div className={`w-3 h-3 rounded-full ${i === 0 ? 'bg-opd-primary' : 'bg-gray-300'}`} />
+              {i < activities.length - 1 && <div className="w-0.5 h-12 bg-gray-300 mt-2" />}
             </div>
-            <ChevronRight className="w-4 h-4" />
-          </button>
+            <div className="flex-1 pb-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-semibold text-opd-text-primary capitalize">
+                    {activity.event.replace(/_/g, ' ')}
+                  </p>
+                  <p className="text-sm text-opd-text-muted mt-1">{activity.description}</p>
+                  {activity.actor && (
+                    <p className="text-xs text-gray-500 mt-1">by {activity.actor.name}</p>
+                  )}
+                </div>
+                <div className="text-xs text-opd-text-muted whitespace-nowrap">
+                  {new Date(activity.timestamp).toLocaleDateString()} {new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </SummaryCard>
@@ -784,9 +1043,13 @@ export const CaseOverviewDashboard: React.FC<CaseOverviewDashboardProps> = ({ ca
           <ClaimReadinessProgress caseRecord={caseRecord} />
         </div>
 
+        {/* Timeline */}
+        <CaseTimeline caseRecord={caseRecord} />
+
         {/* Business Outcomes & Actions */}
         <BusinessOutcomes caseRecord={caseRecord} />
-        <QuickActions caseRecord={caseRecord} />
+        <SuggestedNextSteps caseRecord={caseRecord} />
+        <QuickActions caseRecord={caseRecord} onUpdate={onUpdate} />
 
         {/* Footer Note */}
         <div className="text-center text-xs text-opd-text-muted">

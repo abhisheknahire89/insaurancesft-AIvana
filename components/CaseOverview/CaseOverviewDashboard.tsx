@@ -423,39 +423,39 @@ const BusinessOutcomes: React.FC<BusinessOutcomesProps> = ({ caseRecord }) => {
   const outcomes = [
     { 
       label: 'Time Saved', 
-      value: businessMetrics.timeSavedMinutes ? `${Math.round(businessMetrics.timeSavedMinutes)} min` : 'Pending AI Processing', 
+      value: businessMetrics.timeSaved.value > 0 ? `${businessMetrics.timeSaved.value} ${businessMetrics.timeSaved.unit}` : 'Pending AI Processing', 
       icon: <Clock className="w-5 h-5" />, 
       color: 'text-blue-600' 
     },
     { 
       label: 'Data Entry Reduced', 
-      value: `${Math.round(businessMetrics.dataReductionPercent)}%`, 
+      value: businessMetrics.dataEntryReduction.calculated ? `${businessMetrics.dataEntryReduction.value}%` : '0%', 
       icon: <TrendingUp className="w-5 h-5" />, 
       color: 'text-green-600' 
     },
     { 
       label: 'Form Auto-filled', 
-      value: businessMetrics.fieldsExtracted > 0 ? `${Math.round((businessMetrics.fieldsExtracted / 12) * 100)}%` : '0%', 
+      value: businessMetrics.formAutoFilled.calculated ? `${businessMetrics.formAutoFilled.value}%` : '0%', 
       icon: <Check className="w-5 h-5" />, 
       color: 'text-green-600' 
     },
     { 
       label: 'Docs Processed', 
-      value: `${businessMetrics.documentsProcessed}`, 
+      value: `${businessMetrics.documentsProcessed.value}`, 
       icon: <FileText className="w-5 h-5" />, 
       color: 'text-purple-600' 
     },
     { 
       label: 'Fields Extracted', 
-      value: `${businessMetrics.fieldsExtracted}`, 
+      value: `${businessMetrics.fieldsExtracted.value}`, 
       icon: <TrendingUp className="w-5 h-5" />, 
       color: 'text-indigo-600' 
     },
     { 
       label: 'Submission Ready', 
-      value: `${Math.round(businessMetrics.submissionReadinessPercent)}%`, 
+      value: `${businessMetrics.submissionReadiness.value}%`, 
       icon: <Target className="w-5 h-5" />, 
-      color: businessMetrics.submissionReadinessPercent >= 80 ? 'text-green-600' : 'text-amber-600' 
+      color: businessMetrics.submissionReadiness.value >= 80 ? 'text-green-600' : 'text-amber-600' 
     },
   ];
 
@@ -866,10 +866,10 @@ const SuggestedNextSteps: React.FC<SuggestedNextStepsProps> = ({ caseRecord }) =
                 </p>
                 <div className="flex items-center justify-between text-xs">
                   <div className="text-gray-600">
-                    <strong>Impact:</strong> +{rec.impactOnScore}% score
+                    <strong>Impact:</strong> {rec.impact}
                   </div>
                   <div className="text-gray-600">
-                    <strong>Time:</strong> ~{rec.estimatedTimeMinutes} min
+                    <strong>Time:</strong> {rec.estimatedTime}
                   </div>
                 </div>
               </div>

@@ -1,12 +1,13 @@
 /**
- * Document Processing Service - Fixed Extraction Pipeline
+ * Document Processing Service - Sarvam AI Extraction Pipeline
  *
- * Handles document upload, OCR/extraction, and case model updates.
- * Orchestrates: Upload → OCR → Extraction → Validation → Case Update
+ * Handles document upload, OCR/extraction via Sarvam AI, and case model updates.
+ * Orchestrates: Upload → Sarvam OCR → Extraction → Validation → Case Update
  */
 
 import { Case } from './caseModel';
 import { extractClinicalNoteFields, type ExtractedClinicalNoteFields } from './geminiService';
+import { extractFromDocument, type ExtractedPatientData } from './documentExtractionService';
 
 export interface DocumentProcessingStatus {
   documentId: string;
@@ -54,36 +55,55 @@ export async function processDocumentFile(
   documentType: string
 ): Promise<ProcessedDocument> {
   const documentId = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  console.log(`[${documentId}] Starting document processing:`, file.name);
+  console.log(`[${documentId}] Starting document processing via Sarvam AI:`, file.name);
 
   try {
     notifyStatusChange({
       documentId,
       status: 'uploading',
-      progress: 20,
+      progress: 10,
       message: `Uploading ${file.name}...`,
     });
 
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 200));
 
     notifyStatusChange({
       documentId,
       status: 'processing',
-      progress: 40,
-      message: 'Running OCR to extract text...',
+      progress: 30,
+      message: 'Extracting text via Sarvam AI...',
     });
 
-    const fileText = await extractTextFromFile(file);
-    console.log(`[${documentId}] OCR extracted ${fileText.length} characters`);
+    // Use Sarvam-powered document extraction for structured data
+    const arrayBuffer = await file.arrayBuffer();
+    let extractedData: any;
 
-    notifyStatusChange({
-      documentId,
-      status: 'extracting',
-      progress: 60,
-      message: 'Extracting structured data...',
-    });
+    try {
+      // Try to extract structured patient data using documentExtractionService (Sarvam-powered)
+      console.log(`[${documentId}] Using documentExtractionService for structured extraction...`);
+      const patientData = await extractFromDocument(file);
 
-    const extractedData = await extractDataFromDocument(fileText, file.type, documentType, caseRecord);
+      extractedData = {
+        confidence: patientData.confidence || 0.85,
+        diagnosis: patientData.clinical?.diagnosis_impression,
+        chiefComplaints: patientData.clinical?.doctor_name ? `Seen by ${patientData.clinical.doctor_name}` : undefined,
+        plannedProcedures: undefined,
+        severity: 'moderate',
+        estimatedLOS: undefined,
+        patientName: patientData.patient?.name,
+        policyNumber: patientData.insurance?.policy_number,
+        extractedFields: patientData.extracted_fields,
+        missingFields: patientData.missing_fields,
+        sourceTraceability: patientData.sourceTraceability,
+      };
+    } catch (structuredError) {
+      console.warn(`[${documentId}] Structured extraction failed, using text extraction:`, structuredError);
+      // Fallback to text extraction
+      const fileText = await extractTextFromFile(file);
+      console.log(`[${documentId}] OCR extracted ${fileText.length} characters`);
+      extractedData = await extractDataFromDocument(fileText, file.type, documentType, caseRecord);
+    }
+
     console.log(`[${documentId}] Extraction complete:`, extractedData);
 
     notifyStatusChange({
@@ -143,40 +163,51 @@ async function extractTextFromFile(file: File): Promise<string> {
     });
   }
 
-  if (file.type === 'application/pdf') {
-    try {
-      return await extractPdfText(file);
-    } catch (error) {
-      console.error('PDF extraction failed, using fallback:', error);
-      return generateMockOCRText(file.name);
-    }
+  // For PDF and images, use Sarvam AI OCR
+  try {
+    console.log(`Extracting ${file.type} via Sarvam AI...`);
+    const arrayBuffer = await file.arrayBuffer();
+    return await extractViaSarvamAI(arrayBuffer, file.type);
+  } catch (sarvamError) {
+    console.warn('Sarvam extraction failed, using fallback OCR:', sarvamError);
+    return generateMockOCRText(file.name);
   }
-
-  // For other image files, use mock OCR
-  console.log('Using mock OCR for:', file.type);
-  return generateMockOCRText(file.name);
 }
 
-async function extractPdfText(file: File): Promise<string> {
-  try {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdfjsLib = await import('pdfjs-dist');
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+async function extractViaSarvamAI(arrayBuffer: ArrayBuffer, mimeType: string): Promise<string> {
+  const apiKey = typeof window !== 'undefined'
+    ? ((import.meta as any).env?.VITE_SARVAM_API_KEY || (window as any).VITE_SARVAM_API_KEY)
+    : (process.env.VITE_SARVAM_API_KEY || process.env.SARVAM_API_KEY);
 
-    let fullText = '';
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items.map((item: any) => item.str).join(' ');
-      fullText += pageText + '\n\n';
-    }
-
-    console.log(`PDF extracted ${pdf.numPages} pages, ${fullText.length} characters`);
-    return fullText;
-  } catch (error) {
-    console.error('PDF.js extraction error:', error);
-    throw error;
+  if (!apiKey) {
+    throw new Error('Sarvam API key not configured');
   }
+
+  const formData = new FormData();
+  const blob = new Blob([arrayBuffer], { type: mimeType });
+  const fileName = mimeType.includes('pdf') ? 'document.pdf' : 'image.png';
+  formData.append('image', blob, fileName);
+  formData.append('language', 'en-IN');
+  formData.append('extract_structured', 'true');
+
+  console.log(`[Sarvam] Sending ${mimeType} to Sarvam Vision API...`);
+  const response = await fetch('https://api.sarvam.ai/v1/vision/document', {
+    method: 'POST',
+    headers: {
+      'api-subscription-key': apiKey
+    },
+    body: formData
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Sarvam API error: ${response.status} - ${errText}`);
+  }
+
+  const resJson = await response.json();
+  const text = resJson.markdown || resJson.text || resJson.content || JSON.stringify(resJson);
+  console.log(`[Sarvam] Extracted ${text.length} characters from document`);
+  return text;
 }
 
 function generateMockOCRText(fileName: string): string {

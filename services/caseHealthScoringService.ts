@@ -83,8 +83,8 @@ export function calculateHealthScore(caseRecord: Case): HealthScoreResult {
   }
 
   // 3. ICD QUALITY (0-100)
-  const icdQuality = caseRecord.clinical.icdCode ? 100 : 0;
-  if (!caseRecord.clinical.icdCode) {
+  const icdQuality = caseRecord.clinical.icd10Code ? 100 : 0;
+  if (!caseRecord.clinical.icd10Code) {
     issues.push('No ICD-10 code assigned');
     recommendations.push('Assign ICD-10 code for diagnosis');
   }
@@ -208,7 +208,7 @@ export function calculateSubmissionReadiness(caseRecord: Case): SubmissionReadin
   // CLINICAL INFORMATION (0-100)
   const clinicalChecks = {
     hasDiagnosis: !!caseRecord.clinical.diagnosis,
-    hasIcd: !!caseRecord.clinical.icdCode,
+    hasIcd: !!caseRecord.clinical.icd10Code,
     hasProcedure: !!caseRecord.clinical.proposedProcedure,
     hasNote:
       (caseRecord.clinical.clinicalNote?.originalText?.length ?? 0) >= 50,
@@ -406,7 +406,7 @@ export function generateRecommendations(caseRecord: Case): Recommendation[] {
   }
 
   // 2. If diagnosis but no ICD, suggest assigning ICD
-  if (caseRecord.clinical.diagnosis && !caseRecord.clinical.icdCode) {
+  if (caseRecord.clinical.diagnosis && !caseRecord.clinical.icd10Code) {
     recommendations.push({
       id: 'assign-icd',
       title: 'Assign ICD-10 Code',
@@ -444,7 +444,7 @@ export function generateRecommendations(caseRecord: Case): Recommendation[] {
   if (
     healthScore >= 80 &&
     caseRecord.clinical.diagnosis &&
-    caseRecord.clinical.icdCode &&
+    caseRecord.clinical.icd10Code &&
     !caseRecord.authorization?.status
   ) {
     recommendations.push({

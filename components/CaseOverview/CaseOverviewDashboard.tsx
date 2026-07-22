@@ -119,7 +119,7 @@ const ClinicalSummary: React.FC<ClinicalSummaryProps> = ({ caseRecord }) => {
       <div className="space-y-4">
         <div>
           <div className="text-opd-text-muted text-xs mb-1">Chief Complaint</div>
-          <div className="text-opd-text-primary text-sm">{clinical.chiefComplaint || '—'}</div>
+          <div className="text-opd-text-primary text-sm">{clinical.chiefComplaints || '—'}</div>
         </div>
         <div>
           <div className="text-opd-text-muted text-xs mb-1">Diagnosis</div>
@@ -128,17 +128,17 @@ const ClinicalSummary: React.FC<ClinicalSummaryProps> = ({ caseRecord }) => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <div className="text-opd-text-muted text-xs mb-1">ICD-10</div>
-            <div className="font-mono text-opd-text-primary text-sm">{clinical.icdCode || '—'}</div>
+            <div className="font-mono text-opd-text-primary text-sm">{clinical.icd10Code || '—'}</div>
           </div>
           <div>
             <div className="text-opd-text-muted text-xs mb-1">Planned Procedure</div>
             <div className="text-opd-text-primary text-sm">{clinical.proposedProcedure || '—'}</div>
           </div>
         </div>
-        {clinical.icdPcsCode && (
+        {false && clinical.icdPcsCode && (
           <div>
             <div className="text-opd-text-muted text-xs mb-1">ICD PCS</div>
-            <div className="font-mono text-opd-text-primary text-sm">{clinical.icdPcsCode}</div>
+            <div className="font-mono text-opd-text-primary text-sm">{false && clinical.icdPcsCode}</div>
           </div>
         )}
       </div>
@@ -157,15 +157,17 @@ interface ClaimSummaryProps {
 const ClaimSummary: React.FC<ClaimSummaryProps> = ({ caseRecord }) => {
   const auth = caseRecord.authorization;
   const billing = caseRecord.billing;
+  const clinical = caseRecord.clinical;
+  const hasEnhancements = caseRecord.enhancements.length > 0;
 
   return (
     <SummaryCard title="Claim">
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className="text-opd-text-muted text-xs mb-1">Expected Cost</div>
+            <div className="text-opd-text-muted text-xs mb-1">Estimated Cost</div>
             <div className="text-lg font-bold text-opd-text-primary">
-              ₹{billing.expectedCost?.toLocaleString('en-IN') || '0'}
+              ₹{billing.estimatedAmount?.toLocaleString('en-IN') || '—'}
             </div>
           </div>
           <div>
@@ -177,23 +179,34 @@ const ClaimSummary: React.FC<ClaimSummaryProps> = ({ caseRecord }) => {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className="text-opd-text-muted text-xs mb-1">LOS (Expected)</div>
-            <div className="text-opd-text-primary text-sm">{billing.expectedLOS} days</div>
+            <div className="text-opd-text-muted text-xs mb-1">Expected LOS</div>
+            <div className="text-opd-text-primary text-sm">
+              {clinical.expectedLengthOfStay ? `${clinical.expectedLengthOfStay} days` : '—'}
+            </div>
           </div>
           <div>
             <div className="text-opd-text-muted text-xs mb-1">ICU Days</div>
-            <div className="text-opd-text-primary text-sm">{billing.icuDays || 0} days</div>
+            <div className="text-opd-text-primary text-sm">
+              {clinical.expectedDaysInICU ? `${clinical.expectedDaysInICU} days` : '—'}
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className="text-opd-text-muted text-xs mb-1">Package Type</div>
-            <div className="text-opd-text-primary text-sm capitalize">{auth.packageType || '—'}</div>
+            <div className="text-opd-text-muted text-xs mb-1">Auth Status</div>
+            <div className={`text-sm font-semibold capitalize ${
+              auth.status === 'approved' ? 'text-green-600' :
+              auth.status === 'denied' ? 'text-red-600' :
+              auth.status === 'query_raised' ? 'text-amber-600' :
+              'text-blue-600'
+            }`}>
+              {auth.status}
+            </div>
           </div>
           <div>
-            <div className="text-opd-text-muted text-xs mb-1">Enhancement Required</div>
-            <div className={`text-sm font-semibold ${auth.enhancementRequired ? 'text-amber-600' : 'text-green-600'}`}>
-              {auth.enhancementRequired ? 'Yes' : 'No'}
+            <div className="text-opd-text-muted text-xs mb-1">Enhancements</div>
+            <div className={`text-sm font-semibold ${hasEnhancements ? 'text-amber-600' : 'text-green-600'}`}>
+              {hasEnhancements ? `${caseRecord.enhancements.length} request(s)` : 'None'}
             </div>
           </div>
         </div>
@@ -222,9 +235,9 @@ const DocumentStatus: React.FC<DocumentStatusProps> = ({ caseRecord }) => {
   ];
 
   const getStatus = (key: string): 'verified' | 'missing' | 'needs_review' => {
-    const doc = caseRecord.documents.find(d => d.documentType === key);
+    const doc = caseRecord.documents.find(d => d.category === key);
     if (!doc) return 'missing';
-    if (doc.extractionStatus === 'verified') return 'verified';
+    if (doc.extractedAt) return 'verified';
     return 'needs_review';
   };
 
